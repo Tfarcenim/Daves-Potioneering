@@ -5,7 +5,8 @@
   "refmap": "davespotioneering.refmap.json",
   "mixins": [
     "PotionItemMixin",
-    "ProtectionEnchantmentMixin"
+    "ProtectionEnchantmentMixin",
+    "ThrowablePotionItemMixin"
   ],
   "client": [
     "ItemAccess"
