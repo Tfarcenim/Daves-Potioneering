@@ -4,7 +4,8 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "davespotioneering.refmap.json",
   "mixins": [
-    "PotionItemMixin"
+    "PotionItemMixin",
+    "ProtectionEnchantmentMixin"
   ],
   "client": [
     "ItemAccess"
