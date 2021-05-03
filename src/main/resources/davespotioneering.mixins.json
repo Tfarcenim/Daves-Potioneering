@@ -1,12 +1,13 @@
 {
   "required": true,
-  "package": "com.example.examplemod.mixin",
+  "package": "tfar.davespotioneering.mixin",
   "compatibilityLevel": "JAVA_8",
-  "refmap": "examplemod.refmap.json",
+  "refmap": "davespotioneering.refmap.json",
   "mixins": [
+    "PotionItemMixin"
   ],
-  "client":[
-    "ExampleMixin"
+  "client": [
+    "ItemAccess"
   ],
   "injectors": {
     "defaultRequire": 1
