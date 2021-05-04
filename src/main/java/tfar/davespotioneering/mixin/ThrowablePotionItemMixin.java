@@ -12,4 +12,5 @@ public class ThrowablePotionItemMixin {
     private float modifyThrowDistance(float old) {
         return 1f;
     }
+
 }

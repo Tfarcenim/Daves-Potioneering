@@ -46,6 +46,7 @@ public class DavesPotioneering {
         Util.setStackSize(Items.POTION,16);
         Util.setStackSize(Items.SPLASH_POTION,4);
         Util.setStackSize(Items.LINGERING_POTION,4);
+        MinecraftForge.EVENT_BUS.addListener(Events::potionCooldown);
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
