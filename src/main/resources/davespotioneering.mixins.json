@@ -4,6 +4,8 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "davespotioneering.refmap.json",
   "mixins": [
+    "BrewingRecipeRegistryMixin",
+    "BrewingStandContainerMixin",
     "PotionItemMixin",
     "ProtectionEnchantmentMixin",
     "ThrowablePotionItemMixin"
