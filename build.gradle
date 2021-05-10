@@ -44,7 +44,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                examplemod {
+                davespotioneering {
                     source sourceSets.main
                 }
             }
@@ -60,7 +60,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                examplemod {
+                davespotioneering {
                     source sourceSets.main
                 }
             }
@@ -70,9 +70,9 @@ minecraft {
             workingDirectory project.file('run')
             //property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
-            args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/'), '--existing', sourceSets.main.resources.srcDirs[0]
+            args '--mod', 'davespotioneering', '--all', '--output', file('src/generated/resources/'), '--existing', sourceSets.main.resources.srcDirs[0]
             mods {
-                examplemod {
+                davespotioneering {
                     source sourceSets.main
                 }
             }

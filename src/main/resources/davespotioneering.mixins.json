@@ -6,6 +6,7 @@
   "mixins": [
     "BrewingRecipeRegistryMixin",
     "BrewingStandContainerMixin",
+    "LivingEntityMixin",
     "PotionItemMixin",
     "ProtectionEnchantmentMixin",
     "ThrowablePotionItemMixin"

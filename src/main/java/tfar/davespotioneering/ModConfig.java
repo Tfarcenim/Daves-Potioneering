@@ -17,8 +17,14 @@ public class ModConfig {
     }
 
     public static class Server {
-        public Server(ForgeConfigSpec.Builder builder) {
 
+        public static int potion_cooldown = 30;
+        public static ForgeConfigSpec.BooleanValue return_empty_bottles;
+
+        public Server(ForgeConfigSpec.Builder builder) {
+            builder.push("general");
+            return_empty_bottles = builder.define("return_empty_bottles",true);
+            builder.pop();
         }
     }
 }
