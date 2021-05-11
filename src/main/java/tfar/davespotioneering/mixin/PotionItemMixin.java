@@ -32,7 +32,7 @@ public class PotionItemMixin {
      */
     @Overwrite
     public int getUseDuration(ItemStack stack) {
-        return 16;//half of 32
+        return 20;//half of 32
     }
 
     @Inject(method = "hasEffect",at = @At("HEAD"),cancellable = true)
@@ -82,7 +82,7 @@ public class PotionItemMixin {
                     //playerentity.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
                     playerentity.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
                 } else {
-                    InventoryHelper.spawnItemStack(worldIn,playerentity.getPosX(),playerentity.getPosY(),playerentity.getPosZ(),new ItemStack(Items.GLASS_BOTTLE));
+                    playerentity.dropItem(new ItemStack(Items.GLASS_BOTTLE),false);
                 }
             }
         }
