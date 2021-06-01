@@ -6,30 +6,43 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.PotionBrewing;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.LockableTileEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
+import org.apache.commons.lang3.tuple.Pair;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
 import tfar.davespotioneering.inv.BrewingHandler;
 import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 
-public class AdvancedBrewingStandBlockEntity extends LockableTileEntity implements ITickableTileEntity {
+public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
     /** an array of the output slot indices */
-    private static final int[] OUTPUT_SLOTS = new int[]{0, 1, 2, 4};
+
+    //potions are 0,1,2
+    private static final int[] POTIONS = new int[]{0, 1, 2};
+    //ingredients are 3,4,5,6
+    private static final int[] INGREDIENTS = new int[]{3,4,5,6};
+    //fuel is 7
+    private static final int FUEL = 7;
+
+    public static final int TIME = 200;
+
+
     /** The ItemStacks currently placed in the slots of the brewing stand */
-    private BrewingHandler brewingHandler = new BrewingHandler(4 + 4);
+    private BrewingHandler brewingHandler = new BrewingHandler(8);
     private int brewTime;
     /** an integer with each bit specifying whether that slot of the stand contains a potion */
     private boolean[] filledSlots;
@@ -76,52 +89,34 @@ public class AdvancedBrewingStandBlockEntity extends LockableTileEntity implemen
         return new TranslationTextComponent("container.davespotioneering.advanced_brewing");
     }
 
-    /**
-     * Returns the number of slots in the inventory.
-     */
-    public int getSizeInventory() {
-        return this.brewingHandler.getSlots();
-    }
-
-    public boolean isEmpty() {
-/*        for(ItemStack itemstack : this.brewingHandler) {
-            if (!itemstack.isEmpty()) {
-                return false;
-            }
-        }
-
-        return true;*/
-        return false;
-    }
-
     public void tick() {
-        ItemStack itemstack = this.brewingHandler.getStackInSlot(4);
-        if (this.fuel <= 0 && itemstack.getItem() == Items.BLAZE_POWDER) {
+        ItemStack fuelStack = this.brewingHandler.getStackInSlot(FUEL);
+        if (this.fuel <= 0 && fuelStack.getItem() == Items.BLAZE_POWDER) {
             this.fuel = 20;
-            itemstack.shrink(1);
+            fuelStack.shrink(1);
             this.markDirty();
         }
 
-        boolean flag = this.canBrew();
-        boolean flag1 = this.brewTime > 0;
-        ItemStack itemstack1 = this.brewingHandler.getStackInSlot(3);
-        if (flag1) {
+        boolean canBrew = this.canBrew();
+        boolean brewing = this.brewTime > 0;
+        ItemStack ing = getPriorityIngredient().getRight();
+        if (brewing) {
             --this.brewTime;
             boolean flag2 = this.brewTime == 0;
-            if (flag2 && flag) {
+            if (flag2 && canBrew) {
                 this.brewPotions();
                 this.markDirty();
-            } else if (!flag) {
+            } else if (!canBrew) {
                 this.brewTime = 0;
                 this.markDirty();
-            } else if (this.ingredientID != itemstack1.getItem()) {
+            } else if (this.ingredientID != ing.getItem()) {
                 this.brewTime = 0;
                 this.markDirty();
             }
-        } else if (flag && this.fuel > 0) {
+        } else if (canBrew && this.fuel > 0) {
             --this.fuel;
-            this.brewTime = 400;
-            this.ingredientID = itemstack1.getItem();
+            this.brewTime = TIME;
+            this.ingredientID = ing.getItem();
             this.markDirty();
         }
 
@@ -140,6 +135,39 @@ public class AdvancedBrewingStandBlockEntity extends LockableTileEntity implemen
 
                 this.world.setBlockState(this.pos, blockstate, 2);
             }
+        }
+    }
+
+    //searches 6 => 3
+    public Pair<Integer,ItemStack> getPriorityIngredient() {
+        for (int i = 6; i > 2;i--) {
+            ItemStack stack = brewingHandler.getStackInSlot(i);
+            if (!stack.isEmpty() && isThereARecipe(stack)) {
+                return Pair.of(i,stack);
+            }
+        }
+        return Pair.of(-1,ItemStack.EMPTY);
+    }
+
+
+    public boolean isThereARecipe(ItemStack stack) {
+
+        if (!stack.isEmpty()) {
+            return BrewingRecipeRegistry.canBrew(brewingHandler.getStacks(), stack, POTIONS); // divert to VanillaBrewingRegistry
+        }
+        if (stack.isEmpty()) {
+            return false;
+        } else if (!PotionBrewing.isReagent(stack)) {
+            return false;
+        } else {
+            for(int i = 0; i < 3; ++i) {
+                ItemStack itemstack1 = this.brewingHandler.getStackInSlot(i);
+                if (!itemstack1.isEmpty() && PotionBrewing.hasConversions(itemstack1, stack)) {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
     }
@@ -161,8 +189,10 @@ public class AdvancedBrewingStandBlockEntity extends LockableTileEntity implemen
     }
 
     private boolean canBrew() {
-        ItemStack itemstack = this.brewingHandler.getStackInSlot(3);
-        if (!itemstack.isEmpty()) return net.minecraftforge.common.brewing.BrewingRecipeRegistry.canBrew(brewingHandler.getStacks(), itemstack, OUTPUT_SLOTS); // divert to VanillaBrewingRegistry
+        ItemStack itemstack = getPriorityIngredient().getRight();
+        if (!itemstack.isEmpty()) {
+            return BrewingRecipeRegistry.canBrew(brewingHandler.getStacks(), itemstack, POTIONS); // divert to VanillaBrewingRegistry
+        }
         if (itemstack.isEmpty()) {
             return false;
         } else if (!PotionBrewing.isReagent(itemstack)) {
@@ -181,9 +211,10 @@ public class AdvancedBrewingStandBlockEntity extends LockableTileEntity implemen
 
     private void brewPotions() {
         if (net.minecraftforge.event.ForgeEventFactory.onPotionAttemptBrew(brewingHandler.getStacks())) return;
-        ItemStack itemstack = this.brewingHandler.getStackInSlot(3);
+        Pair<Integer,ItemStack> pair = getPriorityIngredient();
+        ItemStack itemstack = pair.getRight();
 
-        net.minecraftforge.common.brewing.BrewingRecipeRegistry.brewPotions(brewingHandler.getStacks(), itemstack, OUTPUT_SLOTS);
+        BrewingRecipeRegistry.brewPotions(brewingHandler.getStacks(), itemstack, POTIONS);
         net.minecraftforge.event.ForgeEventFactory.onPotionBrewed(brewingHandler.getStacks());
         BlockPos blockpos = this.getPos();
         if (itemstack.hasContainerItem()) {
@@ -195,9 +226,10 @@ public class AdvancedBrewingStandBlockEntity extends LockableTileEntity implemen
                 InventoryHelper.spawnItemStack(this.world, blockpos.getX(), blockpos.getY(), blockpos.getZ(), itemstack1);
             }
         }
+        //todo
         else itemstack.shrink(1);
 
-        this.brewingHandler.setStackInSlot(3, itemstack);
+        this.brewingHandler.setStackInSlot(pair.getLeft(), itemstack);
         this.world.playEvent(1035, blockpos, 0);
     }
 
@@ -219,78 +251,15 @@ public class AdvancedBrewingStandBlockEntity extends LockableTileEntity implemen
         return compound;
     }
 
-    /**
-     * Returns the stack in the given slot.
-     */
-    public ItemStack getStackInSlot(int index) {
-        return brewingHandler.getStackInSlot(index);
+    @Override
+    public ITextComponent getDisplayName() {
+        return getDefaultName();
     }
 
-    /**
-     * Removes up to a specified number of items from an inventory slot and returns them in a new stack.
-     */
-    public ItemStack decrStackSize(int index, int count) {
-        return this.brewingHandler.extractItem(index, count,false);
-    }
-
-    /**
-     * Removes a stack from the given slot and returns it.
-     */
-    public ItemStack removeStackFromSlot(int index) {
-        return this.brewingHandler.extractItem(index,Integer.MAX_VALUE,false);
-    }
-
-    /**
-     * Sets the given item stack to the specified slot in the inventory (can be crafting or armor sections).
-     */
-    public void setInventorySlotContents(int index, ItemStack stack) {
-        this.brewingHandler.setStackInSlot(index,stack);
-    }
-
-    /**
-     * Don't rename this method to canInteractWith due to conflicts with Container
-     */
-    public boolean isUsableByPlayer(PlayerEntity player) {
-        if (this.world.getTileEntity(this.pos) != this) {
-            return false;
-        } else {
-            return !(player.getDistanceSq((double)this.pos.getX() + 0.5D, (double)this.pos.getY() + 0.5D, (double)this.pos.getZ() + 0.5D) > 64.0D);
-        }
-    }
-
-    /**
-     * Returns true if automation is allowed to insert the given stack (ignoring stack size) into the given slot. For
-     * guis use Slot.isItemValid
-     */
-    public boolean isItemValidForSlot(int index, ItemStack stack) {
-        if (index == 3) {
-            return net.minecraftforge.common.brewing.BrewingRecipeRegistry.isValidIngredient(stack);
-        } else {
-            Item item = stack.getItem();
-            if (index == 4) {
-                return item == Items.BLAZE_POWDER;
-            } else {
-                return net.minecraftforge.common.brewing.BrewingRecipeRegistry.isValidInput(stack) && this.getStackInSlot(index).isEmpty();
-            }
-        }
-    }
-
-    /**
-     * Returns true if automation can extract the given item in the given slot from the given side.
-     */
-    public boolean canExtractItem(int index, ItemStack stack, Direction direction) {
-        if (index == 3) {
-            return stack.getItem() == Items.GLASS_BOTTLE;
-        } else {
-            return true;
-        }
-    }
-
-    public void clear() {
-    }
-
-    protected Container createMenu(int id, PlayerInventory player) {
-        return new AdvancedBrewingStandContainer(id, player, brewingHandler, this.data);
+    @Nullable
+    @Override
+    public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
+        return new AdvancedBrewingStandContainer(id, playerInventory, brewingHandler, this.data);
     }
 
     /*net.minecraftforge.common.util.LazyOptional<? extends net.minecraftforge.items.IItemHandler>[] handlers =

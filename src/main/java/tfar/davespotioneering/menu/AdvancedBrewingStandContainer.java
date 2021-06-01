@@ -13,8 +13,6 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.IntArray;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
@@ -135,13 +133,11 @@ public class AdvancedBrewingStandContainer extends Container {
         return itemstack;
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public int func_216982_e() {
+    public int getFuel() {
         return this.data.get(1);
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public int func_216981_f() {
+    public int getBrewTime() {
         return this.data.get(0);
     }
 
