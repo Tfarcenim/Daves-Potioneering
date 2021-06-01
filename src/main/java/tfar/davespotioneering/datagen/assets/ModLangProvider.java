@@ -2,9 +2,9 @@ package tfar.davespotioneering.datagen.assets;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Items;
-import net.minecraft.potion.Potion;
 import net.minecraftforge.common.data.LanguageProvider;
 import tfar.davespotioneering.DavesPotioneering;
+import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.init.ModEffects;
 import tfar.davespotioneering.init.ModPotions;
 
@@ -17,6 +17,8 @@ public class ModLangProvider extends LanguageProvider {
     protected void addTranslations() {
         addEffect(() -> ModEffects.MILK,"Milk");
         addPotions();
+        add("container.davespotioneering.advanced_brewing","Advanced Brewing Stand");
+        addBlock(() -> ModBlocks.ADVANCED_BREWING_STAND,"Advanced Brewing Stand");
     }
 
     public void addPotions() {

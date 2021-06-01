@@ -11,11 +11,10 @@ import java.util.Locale;
 
 public class ModPotions {
 
-    public static final Potion MILK = new Potion(new EffectInstance(ModEffects.MILK));
-
-    public static final Potion STRONG_INVISIBILITY = new Potion("invisibility", new EffectInstance(Effects.INVISIBILITY, 1800,1,false,false));
-
     private static List<Potion> MOD_POTIONS;
+
+    public static final Potion MILK = new Potion(new EffectInstance(ModEffects.MILK));
+    public static final Potion STRONG_INVISIBILITY = new Potion("invisibility", new EffectInstance(Effects.INVISIBILITY, 1800,1,false,false));
 
     public static void register(RegistryEvent.Register<Potion> e) {
         for (Field field : ModPotions.class.getFields()) {

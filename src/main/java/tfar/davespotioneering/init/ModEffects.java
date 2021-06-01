@@ -11,9 +11,9 @@ import java.util.Locale;
 
 public class ModEffects {
 
-    public static final Effect MILK = new MilkEffect(EffectType.NEUTRAL,0xffffff);
-
     private static List<Effect> MOD_EFFECTS;
+
+    public static final Effect MILK = new MilkEffect(EffectType.NEUTRAL,0xffffff);
 
     public static void register(RegistryEvent.Register<Effect> e) {
         for (Field field : ModEffects.class.getFields()) {

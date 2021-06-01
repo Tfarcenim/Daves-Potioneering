@@ -1,11 +1,18 @@
 package tfar.davespotioneering;
 
+import net.minecraft.block.Block;
+import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.brewing.BrewingRecipe;
@@ -13,13 +20,15 @@ import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.commons.lang3.tuple.Pair;
+import tfar.davespotioneering.client.AdvancedBrewingStandScreen;
 import tfar.davespotioneering.datagen.ModDatagen;
-import tfar.davespotioneering.init.ModEffects;
-import tfar.davespotioneering.init.ModPotions;
+import tfar.davespotioneering.init.*;
+import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(DavesPotioneering.MODID)
@@ -33,11 +42,15 @@ public class DavesPotioneering {
 
         bus.addListener(ModDatagen::start);
 
+        bus.addGenericListener(Block.class, ModBlocks::register);
+        bus.addGenericListener(Item.class, ModItems::register);
         bus.addGenericListener(Effect.class,ModEffects::register);
         bus.addGenericListener(Potion.class,ModPotions::register);
+        bus.addGenericListener(TileEntityType.class, ModBlockEntityTypes::register);
+        bus.addGenericListener(ContainerType.class, ModContainerTypes::register);
 
-        ModLoadingContext.get().registerConfig(net.minecraftforge.fml.config.ModConfig.Type.CLIENT, CLIENT_SPEC);
-        ModLoadingContext.get().registerConfig(net.minecraftforge.fml.config.ModConfig.Type.SERVER, SERVER_SPEC);
+        ModLoadingContext.get().registerConfig(Type.CLIENT, CLIENT_SPEC);
+        ModLoadingContext.get().registerConfig(Type.SERVER, SERVER_SPEC);
 
         // Register the setup method for modloading
         bus.addListener(this::setup);
@@ -86,5 +99,7 @@ public class DavesPotioneering {
 
     private void doClientStuff(final FMLClientSetupEvent event) {
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::playSound);
+        RenderTypeLookup.setRenderLayer(ModBlocks.ADVANCED_BREWING_STAND, RenderType.getCutoutMipped());
+        ScreenManager.registerFactory(ModContainerTypes.ADVANCED_BREWING_STAND, AdvancedBrewingStandScreen::new);
     }
 }
