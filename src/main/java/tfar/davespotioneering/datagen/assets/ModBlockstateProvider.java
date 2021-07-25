@@ -1,7 +1,10 @@
 package tfar.davespotioneering.datagen.assets;
 
+import net.minecraft.block.CauldronBlock;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
+import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.block.AdvancedBrewingStandBlock;
@@ -27,5 +30,10 @@ public class ModBlockstateProvider extends BlockStateProvider {
                 .part().modelFile(models().getExistingFile(modLoc("block/advanced_brewing_stand_empty1"))).addModel().condition(AdvancedBrewingStandBlock.HAS_BOTTLE[1], false).end()
                 .part().modelFile(models().getExistingFile(modLoc("block/advanced_brewing_stand_empty2"))).addModel().condition(AdvancedBrewingStandBlock.HAS_BOTTLE[2], false).end()
         ;
+
+        getVariantBuilder(ModBlocks.REINFORCED_CAULDRON).forAllStates(state -> {
+            ModelFile modelFile = models().getExistingFile(modLoc("block/reinforced_cauldron_level" + state.get(CauldronBlock.LEVEL)));
+            return ConfiguredModel.builder().modelFile(modelFile).build();
+        });
     }
 }

@@ -10,8 +10,11 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.PotionItem;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionBrewing;
+import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -20,7 +23,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
+import net.minecraftforge.event.ForgeEventFactory;
 import org.apache.commons.lang3.tuple.Pair;
+import tfar.davespotioneering.Util;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
 import tfar.davespotioneering.inv.BrewingHandler;
 import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
@@ -33,16 +38,16 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
 
     //potions are 0,1,2
     private static final int[] POTIONS = new int[]{0, 1, 2};
-    //ingredients are 3,4,5,6
-    private static final int[] INGREDIENTS = new int[]{3,4,5,6};
-    //fuel is 7
-    private static final int FUEL = 7;
+    //ingredients are 3,4,5,6,7
+    public static final int[] INGREDIENTS = new int[]{3,4,5,6,7};
+    //fuel is 8
+    public static final int FUEL = 8;
 
     public static final int TIME = 200;
 
 
     /** The ItemStacks currently placed in the slots of the brewing stand */
-    private BrewingHandler brewingHandler = new BrewingHandler(8);
+    private BrewingHandler brewingHandler = new BrewingHandler(9);
     private int brewTime;
     /** an integer with each bit specifying whether that slot of the stand contains a potion */
     private boolean[] filledSlots;
@@ -102,8 +107,8 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
         ItemStack ing = getPriorityIngredient().getRight();
         if (brewing) {
             --this.brewTime;
-            boolean flag2 = this.brewTime == 0;
-            if (flag2 && canBrew) {
+            boolean done = this.brewTime == 0;
+            if (done && canBrew) {
                 this.brewPotions();
                 this.markDirty();
             } else if (!canBrew) {
@@ -121,26 +126,30 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
         }
 
         if (!this.world.isRemote) {
-            boolean[] aboolean = this.createFilledSlotsArray();
-            if (!Arrays.equals(aboolean, this.filledSlots)) {
-                this.filledSlots = aboolean;
-                BlockState blockstate = this.world.getBlockState(this.getPos());
-                if (!(blockstate.getBlock() instanceof BrewingStandBlock)) {
-                    return;
-                }
-
-                for(int i = 0; i < BrewingStandBlock.HAS_BOTTLE.length; ++i) {
-                    blockstate = blockstate.with(BrewingStandBlock.HAS_BOTTLE[i], aboolean[i]);
-                }
-
-                this.world.setBlockState(this.pos, blockstate, 2);
-            }
+            setBottleBlockStates();
         }
     }
 
-    //searches 6 => 3
+    private void setBottleBlockStates() {
+        boolean[] aboolean = this.createFilledSlotsArray();
+        if (!Arrays.equals(aboolean, this.filledSlots)) {
+            this.filledSlots = aboolean;
+            BlockState blockstate = this.world.getBlockState(this.getPos());
+            if (!(blockstate.getBlock() instanceof BrewingStandBlock)) {
+                return;
+            }
+
+            for(int i = 0; i < BrewingStandBlock.HAS_BOTTLE.length; ++i) {
+                blockstate = blockstate.with(BrewingStandBlock.HAS_BOTTLE[i], aboolean[i]);
+            }
+
+            this.world.setBlockState(this.pos, blockstate, 2);
+        }
+    }
+
+    //searches 7 => 3
     public Pair<Integer,ItemStack> getPriorityIngredient() {
-        for (int i = 6; i > 2;i--) {
+        for (int i = 7; i > 2;i--) {
             ItemStack stack = brewingHandler.getStackInSlot(i);
             if (!stack.isEmpty() && isThereARecipe(stack)) {
                 return Pair.of(i,stack);
@@ -150,23 +159,22 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
     }
 
 
-    public boolean isThereARecipe(ItemStack stack) {
+    public boolean isThereARecipe(ItemStack ingredient) {
 
-        if (!stack.isEmpty()) {
-            return BrewingRecipeRegistry.canBrew(brewingHandler.getStacks(), stack, POTIONS); // divert to VanillaBrewingRegistry
+        if (!ingredient.isEmpty()) {
+            return BrewingRecipeRegistry.canBrew(brewingHandler.getStacks(), ingredient, POTIONS) || ingredient.getItem() == Items.MILK_BUCKET; // divert to VanillaBrewingRegistry
         }
-        if (stack.isEmpty()) {
+        if (ingredient.isEmpty()) {
             return false;
-        } else if (!PotionBrewing.isReagent(stack)) {
+        } else if (!PotionBrewing.isReagent(ingredient)) {
             return false;
         } else {
             for(int i = 0; i < 3; ++i) {
                 ItemStack itemstack1 = this.brewingHandler.getStackInSlot(i);
-                if (!itemstack1.isEmpty() && PotionBrewing.hasConversions(itemstack1, stack)) {
+                if (!itemstack1.isEmpty() && PotionBrewing.hasConversions(itemstack1, ingredient)) {
                     return true;
                 }
             }
-
             return false;
         }
 
@@ -191,6 +199,13 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
     private boolean canBrew() {
         ItemStack itemstack = getPriorityIngredient().getRight();
         if (!itemstack.isEmpty()) {
+
+            if (itemstack.getItem() == Items.MILK_BUCKET) {
+                if (canMilkify()) {
+                    return true;
+                }
+            }
+
             return BrewingRecipeRegistry.canBrew(brewingHandler.getStacks(), itemstack, POTIONS); // divert to VanillaBrewingRegistry
         }
         if (itemstack.isEmpty()) {
@@ -210,27 +225,52 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
     }
 
     private void brewPotions() {
-        if (net.minecraftforge.event.ForgeEventFactory.onPotionAttemptBrew(brewingHandler.getStacks())) return;
+        if (ForgeEventFactory.onPotionAttemptBrew(brewingHandler.getStacks())) return;
         Pair<Integer,ItemStack> pair = getPriorityIngredient();
-        ItemStack itemstack = pair.getRight();
+        ItemStack ingredient = pair.getRight();
 
-        BrewingRecipeRegistry.brewPotions(brewingHandler.getStacks(), itemstack, POTIONS);
-        net.minecraftforge.event.ForgeEventFactory.onPotionBrewed(brewingHandler.getStacks());
+        boolean canMilkify = ingredient.getItem() == Items.MILK_BUCKET;
+
+        BrewingRecipeRegistry.brewPotions(brewingHandler.getStacks(), ingredient, POTIONS);
+        ForgeEventFactory.onPotionBrewed(brewingHandler.getStacks());
+
+        if (canMilkify) {
+            for (int i = 0; i < POTIONS.length; i++) {
+                ItemStack potion = brewingHandler.getStackInSlot(i);
+                Util.milkifyPotion(potion);
+            }
+        }
+
         BlockPos blockpos = this.getPos();
-        if (itemstack.hasContainerItem()) {
-            ItemStack itemstack1 = itemstack.getContainerItem();
-            itemstack.shrink(1);
-            if (itemstack.isEmpty()) {
-                itemstack = itemstack1;
+        if (ingredient.hasContainerItem()) {
+            ItemStack ingredientContainerItem = ingredient.getContainerItem();
+            ingredient.shrink(1);
+            if (ingredient.isEmpty()) {
+                ingredient = ingredientContainerItem;
             } else if (!this.world.isRemote) {
-                InventoryHelper.spawnItemStack(this.world, blockpos.getX(), blockpos.getY(), blockpos.getZ(), itemstack1);
+                InventoryHelper.spawnItemStack(this.world, blockpos.getX(), blockpos.getY(), blockpos.getZ(), ingredientContainerItem);
             }
         }
         //todo
-        else itemstack.shrink(1);
+        else ingredient.shrink(1);
 
-        this.brewingHandler.setStackInSlot(pair.getLeft(), itemstack);
+        this.brewingHandler.setStackInSlot(pair.getLeft(), ingredient);
         this.world.playEvent(1035, blockpos, 0);
+    }
+
+    private boolean canMilkify() {
+        for (int i : POTIONS) {
+            ItemStack potionStack = brewingHandler.getStackInSlot(i);
+            if (potionStack.getItem() instanceof PotionItem) {
+                Potion potion = PotionUtils.getPotionFromItem(potionStack);
+                String name = potion.getRegistryName().toString();
+                if (name.contains("long") || name.contains("strong")) {
+                    continue;
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

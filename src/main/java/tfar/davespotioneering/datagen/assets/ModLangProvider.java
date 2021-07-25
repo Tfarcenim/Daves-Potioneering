@@ -19,6 +19,7 @@ public class ModLangProvider extends LanguageProvider {
         addPotions();
         add("container.davespotioneering.advanced_brewing","Advanced Brewing Stand");
         addBlock(() -> ModBlocks.ADVANCED_BREWING_STAND,"Advanced Brewing Stand");
+        addBlock(() -> ModBlocks.REINFORCED_CAULDRON,"Reinforced Cauldron");
     }
 
     public void addPotions() {

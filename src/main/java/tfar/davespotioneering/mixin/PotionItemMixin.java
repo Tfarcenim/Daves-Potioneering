@@ -19,6 +19,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tfar.davespotioneering.ModConfig;
+import tfar.davespotioneering.Util;
 import tfar.davespotioneering.init.ModEffects;
 
 @Mixin(PotionItem.class)
@@ -49,14 +50,17 @@ public class PotionItemMixin {
      * @author Tfar
      */
     @Overwrite
-    public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving) {
+    public ItemStack onItemUseFinish(ItemStack potion, World worldIn, LivingEntity entityLiving) {
+        if (Util.isMilkified(potion)) {
+            entityLiving.clearActivePotions();
+        }
         PlayerEntity playerentity = entityLiving instanceof PlayerEntity ? (PlayerEntity)entityLiving : null;
         if (playerentity instanceof ServerPlayerEntity) {
-            CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayerEntity)playerentity, stack);
+            CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayerEntity)playerentity, potion);
         }
 
         if (!worldIn.isRemote) {
-            for(EffectInstance effectinstance : PotionUtils.getEffectsFromStack(stack)) {
+            for(EffectInstance effectinstance : PotionUtils.getEffectsFromStack(potion)) {
                 if (effectinstance.getPotion().isInstant()) {
                     effectinstance.getPotion().affectEntity(playerentity, playerentity, entityLiving, effectinstance.getAmplifier(), 1.0D);
                 } else {
@@ -68,12 +72,12 @@ public class PotionItemMixin {
         if (playerentity != null) {
             playerentity.addStat(Stats.ITEM_USED.get((Item)(Object)this));
             if (!playerentity.abilities.isCreativeMode) {
-                stack.shrink(1);
+                potion.shrink(1);
             }
         }
 
         if (playerentity == null || !playerentity.abilities.isCreativeMode) {
-            if (stack.isEmpty()) {
+            if (potion.isEmpty()) {
                 return new ItemStack(Items.GLASS_BOTTLE);
             }
 
@@ -87,7 +91,7 @@ public class PotionItemMixin {
             }
         }
 
-        return stack;
+        return potion;
     }
 
 }

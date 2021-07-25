@@ -36,7 +36,7 @@ abstract class BrewingStandContainerMixin extends Container {
         if (slot != null && slot.getHasStack()) {
             ItemStack itemstack1 = slot.getStack();
             itemstack = itemstack1.copy();
-            if ((index < 0 || index > 2) && index != 3 && index != 4) {
+            if (index > 2 && index != 3 && index != 4) {
                 if (BrewingStandContainer.FuelSlot.isValidBrewingFuel(itemstack)) {
                     if (this.mergeItemStack(itemstack1, 4, 5, false) || this.slot.isItemValid(itemstack1) && !this.mergeItemStack(itemstack1, 3, 4, false)) {
                         return ItemStack.EMPTY;
@@ -49,11 +49,11 @@ abstract class BrewingStandContainerMixin extends Container {
                     if (!this.mergeItemStack(itemstack1, 0, 3, false)) {
                         return ItemStack.EMPTY;
                     }
-                } else if (index >= 5 && index < 32) {
+                } else if (index < 32) {
                     if (!this.mergeItemStack(itemstack1, 32, 41, false)) {
                         return ItemStack.EMPTY;
                     }
-                } else if (index >= 32 && index < 41) {
+                } else if (index < 41) {
                     if (!this.mergeItemStack(itemstack1, 5, 32, false)) {
                         return ItemStack.EMPTY;
                     }

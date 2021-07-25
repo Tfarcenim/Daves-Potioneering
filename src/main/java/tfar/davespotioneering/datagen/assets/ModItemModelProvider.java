@@ -18,7 +18,18 @@ public class ModItemModelProvider extends ItemModelProvider {
     @Override
     protected void registerModels() {
         makeOneLayerItem(ModItems.ADVANCED_BREWING_STAND);
+        makeSimpleBlockItem(ModItems.REINFORCED_CAULDRON,new ResourceLocation(DavesPotioneering.MODID,"block/reinforced_cauldron_level0"));
     }
+
+    protected void makeSimpleBlockItem(Item item,ResourceLocation loc) {
+        getBuilder(item.getRegistryName().toString())
+                .parent(new ModelFile.UncheckedModelFile(loc));
+    }
+
+    protected void makeSimpleBlockItem(Item item) {
+        makeSimpleBlockItem(item,new ResourceLocation(DavesPotioneering.MODID,"block/" + item.getRegistryName().getPath()));
+    }
+
 
     protected void makeOneLayerItem(Item item, ResourceLocation texture) {
         String path = item.getRegistryName().getPath();

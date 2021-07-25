@@ -8,6 +8,7 @@ import net.minecraft.item.Items;
 import net.minecraft.item.ThrowablePotionItem;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.SoundEvents;
+import net.minecraftforge.event.entity.living.PotionEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import tfar.davespotioneering.init.ModPotions;
 

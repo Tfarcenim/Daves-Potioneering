@@ -15,6 +15,7 @@ public class ModItems {
     private static List<Item> MOD_ITEMS;
 
     public static final Item ADVANCED_BREWING_STAND = new BlockItem(ModBlocks.ADVANCED_BREWING_STAND,new Item.Properties().group(ItemGroup.DECORATIONS));
+    public static final Item REINFORCED_CAULDRON = new BlockItem(ModBlocks.REINFORCED_CAULDRON,new Item.Properties().group(ItemGroup.DECORATIONS));
 
     public static void register(RegistryEvent.Register<Item> e) {
         for (Field field : ModItems.class.getFields()) {

@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "level=0": {
+      "model": "davespotioneering:block/reinforced_cauldron_level0"
+    },
+    "level=1": {
+      "model": "davespotioneering:block/reinforced_cauldron_level1"
+    },
+    "level=2": {
+      "model": "davespotioneering:block/reinforced_cauldron_level2"
+    },
+    "level=3": {
+      "model": "davespotioneering:block/reinforced_cauldron_level3"
+    }
+  }
+}

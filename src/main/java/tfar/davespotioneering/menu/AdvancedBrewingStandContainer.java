@@ -16,16 +16,16 @@ import net.minecraft.util.IntArray;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
+import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
 import tfar.davespotioneering.init.ModContainerTypes;
 
 public class AdvancedBrewingStandContainer extends Container {
     private final ItemStackHandler tileBrewingStand;
     private final IIntArray data;
-    private final Slot slot;
 
     //client
     public AdvancedBrewingStandContainer(int id, PlayerInventory playerInventory) {
-        this(id, playerInventory, new ItemStackHandler(4+4), new IntArray(2));
+        this(id, playerInventory, new ItemStackHandler(9), new IntArray(2));
     }
 
     //common
@@ -36,25 +36,27 @@ public class AdvancedBrewingStandContainer extends Container {
         this.tileBrewingStand = inventory;
         this.data = data;
 
-        int potY = 103;
+        int potY = 77;
 
         this.addSlot(new PotionSlot(inventory, 0, 56, potY));
         this.addSlot(new PotionSlot(inventory, 1, 79, potY + 7));
         this.addSlot(new PotionSlot(inventory, 2, 102, potY));
 
-        int ingY = 15;
 
-        this.slot = this.addSlot(new IngredientSlot(inventory, 3, 79, ingY));
-        this.addSlot(new IngredientSlot(inventory, 4, 79, ingY + 18 * 1));
-        this.addSlot(new IngredientSlot(inventory, 5, 79, ingY + 18 * 2));
-        this.addSlot(new IngredientSlot(inventory, 6, 79, ingY + 18 * 3));
+        for (int i = 3; i < 3 + 4;i++) {
+            this.addSlot(new IngredientSlot(inventory, i, 22 * i - 20, 17));
+        }
 
-        this.addSlot(new FuelSlot(inventory, 7, 17, ingY + 18 * 3));
+        int ing1 = 43;
+
+        this.addSlot(new IngredientSlot(inventory, 7, 79, ing1));
+
+        this.addSlot(new FuelSlot(inventory, AdvancedBrewingStandBlockEntity.FUEL, 17, ing1));
 
         this.trackIntArray(data);
 
         int invX = 8;
-        int invY = 136;
+        int invY = 110;
 
         for(int i = 0; i < 3; ++i) {
             for(int j = 0; j < 9; ++j) {
@@ -65,7 +67,6 @@ public class AdvancedBrewingStandContainer extends Container {
         for(int k = 0; k < 9; ++k) {
             this.addSlot(new Slot(playerInventory, k, invX + k * 18, invY + 58));
         }
-
     }
 
     /**
@@ -87,10 +88,10 @@ public class AdvancedBrewingStandContainer extends Container {
             itemstack = slotStack.copy();
             if (index > 2 && index != 3 && index != 4) {
                 if (BrewingStandContainer.FuelSlot.isValidBrewingFuel(itemstack)) {
-                    if (this.mergeItemStack(slotStack, 4, 5, false) || this.slot.isItemValid(slotStack) && !this.mergeItemStack(slotStack, 3, 4, false)) {
+                    if (this.mergeItemStack(slotStack, 4, 5, false) /*|| this.slot.isItemValid(slotStack)*/ && !this.mergeItemStack(slotStack, 3, 4, false)) {
                         return ItemStack.EMPTY;
                     }
-                } else if (this.slot.isItemValid(slotStack)) {
+                } else if (/*this.slot.isItemValid(slotStack)*/false) {
                     if (!this.mergeItemStack(slotStack, 3, 4, false)) {
                         return ItemStack.EMPTY;
                     }
@@ -98,11 +99,11 @@ public class AdvancedBrewingStandContainer extends Container {
                     if (!this.mergeItemStack(slotStack, 0, 3, false)) {
                         return ItemStack.EMPTY;
                     }
-                } else if (index >= 5 && index < 32) {
+                } else if (index < 32) {
                     if (!this.mergeItemStack(slotStack, 32, 41, false)) {
                         return ItemStack.EMPTY;
                     }
-                } else if (index >= 32 && index < 41) {
+                } else if (index < 41) {
                     if (!this.mergeItemStack(slotStack, 5, 32, false)) {
                         return ItemStack.EMPTY;
                     }
@@ -178,15 +179,7 @@ public class AdvancedBrewingStandContainer extends Container {
          * Check if the stack is allowed to be placed in this slot, used for armor slots as well as furnace fuel.
          */
         public boolean isItemValid(ItemStack stack) {
-            return net.minecraftforge.common.brewing.BrewingRecipeRegistry.isValidIngredient(stack);
-        }
-
-        /**
-         * Returns the maximum stack size for a given slot (usually the same as getInventoryStackLimit(), but 1 in the
-         * case of armor slots)
-         */
-        public int getSlotStackLimit() {
-            return 64;
+            return stack.getItem() == Items.MILK_BUCKET || net.minecraftforge.common.brewing.BrewingRecipeRegistry.isValidIngredient(stack);
         }
     }
 

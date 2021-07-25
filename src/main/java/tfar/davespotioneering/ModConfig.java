@@ -20,10 +20,12 @@ public class ModConfig {
 
         public static int potion_cooldown = 30;
         public static ForgeConfigSpec.BooleanValue return_empty_bottles;
+        public static ForgeConfigSpec.BooleanValue milkification;
 
         public Server(ForgeConfigSpec.Builder builder) {
             builder.push("general");
             return_empty_bottles = builder.define("return_empty_bottles",true);
+            milkification = builder.define("milkification",false);
             builder.pop();
         }
     }

@@ -18,8 +18,8 @@ public class AdvancedBrewingStandScreen extends ContainerScreen<AdvancedBrewingS
 
     public AdvancedBrewingStandScreen(AdvancedBrewingStandContainer p_i51097_1_, PlayerInventory p_i51097_2_, ITextComponent p_i51097_3_) {
         super(p_i51097_1_, p_i51097_2_, p_i51097_3_);
-        ySize += 54;
-        this.playerInventoryTitleY += 54;
+        ySize += 26;
+        this.playerInventoryTitleY += 28;
     }
 
     protected void init() {
@@ -41,20 +41,24 @@ public class AdvancedBrewingStandScreen extends ContainerScreen<AdvancedBrewingS
         this.blit(matrixStack, i, j, 0, 0, this.xSize, this.ySize);
         int fuel = this.container.getFuel();
         int l = MathHelper.clamp((18 * fuel + 20 - 1) / 20, 0, 18);
+
+        int y1 = 42;
+
         if (l > 0) {
-            this.blit(matrixStack, i + 60, j + 96, 176, 29, l, 4);
+            this.blit(matrixStack, i + 60, j + 28 + y1, 176, 29, l, 4);
         }
+
 
         int brewTime = this.container.getBrewTime();
         if (brewTime > 0) {
             int length = (int)(28.0F * (1.0F - (float)brewTime / AdvancedBrewingStandBlockEntity.TIME));
             if (length > 0) {
-                this.blit(matrixStack, i + 97, j + 68, 176, 0, 9, length);
+                this.blit(matrixStack, i + 97, j + y1, 176, 0, 9, length);
             }
 
             length = BUBBLELENGTHS[brewTime / 2 % 7];
             if (length > 0) {
-                this.blit(matrixStack, i + 63, j + 95 - length, 185, 29 - length, 12, length);
+                this.blit(matrixStack, i + 63, j + y1 + 27 - length, 185, 29 - length, 12, length);
             }
         }
 
