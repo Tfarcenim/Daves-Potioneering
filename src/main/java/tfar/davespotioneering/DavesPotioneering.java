@@ -1,12 +1,10 @@
 package tfar.davespotioneering;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -17,8 +15,6 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockDisplayReader;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.brewing.BrewingRecipe;
@@ -35,9 +31,6 @@ import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.client.AdvancedBrewingStandScreen;
 import tfar.davespotioneering.datagen.ModDatagen;
 import tfar.davespotioneering.init.*;
-import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
-
-import javax.annotation.Nullable;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(DavesPotioneering.MODID)
@@ -119,7 +112,7 @@ public class DavesPotioneering {
                     return ((ReinforcedCauldronBlockEntity)blockEntity).getColor();
                 }
             }
-            return 0;
+            return 0xffffff;
         },ModBlocks.REINFORCED_CAULDRON);
     }
 }
