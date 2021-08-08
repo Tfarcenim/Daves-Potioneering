@@ -18,6 +18,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
@@ -30,11 +31,25 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        ItemStack stack = player.getHeldItem(handIn);
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+        ItemStack stack = player.getHeldItem(hand);
         int level = state.get(LEVEL);
-        if (stack.getItem() instanceof PotionItem && PotionUtils.getPotionFromItem(stack) != Potions.WATER) {
-            if (level < 3 && !worldIn.isRemote) {
+        if (stack.getItem() instanceof PotionItem) {
+            handlePotionBottle(state,world,pos,player,stack,level);
+            return ActionResultType.func_233537_a_(world.isRemote);
+        } else if (stack.getItem() == Items.GLASS_BOTTLE) {
+            handleEmptyBottle(state,world,pos,player, hand, stack,level);
+            return ActionResultType.func_233537_a_(world.isRemote);
+        }
+        return super.onBlockActivated(state, world, pos, player, hand, hit);
+    }
+
+    private void handlePotionBottle(BlockState state,World world,BlockPos pos,PlayerEntity player,ItemStack stack,int level) {
+        Potion potion = PotionUtils.getPotionFromItem(stack);
+        ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) world.getTileEntity(pos);
+        Potion storedPotion = reinforcedCauldronBlockEntity.getPotion();
+        if (!world.isRemote) {
+            if (level < 3) {
                 if (!player.abilities.isCreativeMode) {
                     player.addStat(Stats.USE_CAULDRON);
                     stack.shrink(1);
@@ -44,42 +59,47 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
                     if (!player.inventory.addItemStackToInventory(itemstack4)) {
                         player.dropItem(itemstack4, false);
                     } else if (player instanceof ServerPlayerEntity) {
-                        ((ServerPlayerEntity)player).sendContainerToPlayer(player.container);
+                        ((ServerPlayerEntity) player).sendContainerToPlayer(player.container);
                     }
 
                     if (player instanceof ServerPlayerEntity) {
-                        ((ServerPlayerEntity)player).sendContainerToPlayer(player.container);
+                        ((ServerPlayerEntity) player).sendContainerToPlayer(player.container);
                     }
                 }
 
-                worldIn.playSound(null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                this.setWaterLevel(worldIn, pos, state, level + 1);
-                ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) worldIn.getTileEntity(pos);
-                reinforcedCauldronBlockEntity.setPotion(PotionUtils.getPotionFromItem(stack));
-            }
-            return ActionResultType.func_233537_a_(worldIn.isRemote);
-        } else if (stack.getItem() == Items.GLASS_BOTTLE) {
-            if (level > 0 && !worldIn.isRemote) {
-                if (!player.abilities.isCreativeMode) {
-                    ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) worldIn.getTileEntity(pos);
-                    Potion potion = reinforcedCauldronBlockEntity.getPotion();
-                    ItemStack itemstack4 = PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), potion);
-                    player.addStat(Stats.USE_CAULDRON);
-                    stack.shrink(1);
-                    if (stack.isEmpty()) {
-                        player.setHeldItem(handIn, itemstack4);
-                    } else if (!player.inventory.addItemStackToInventory(itemstack4)) {
-                        player.dropItem(itemstack4, false);
-                    } else if (player instanceof ServerPlayerEntity) {
-                        ((ServerPlayerEntity)player).sendContainerToPlayer(player.container);
-                    }
+                world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+
+                if (level > 0 && storedPotion != potion) {
+                    this.setWaterLevel(world, pos, state, 0);
+                    world.createExplosion(null,pos.getX(),pos.getY(),pos.getZ(),1,false, Explosion.Mode.NONE);
+                } else {
+                    this.setWaterLevel(world, pos, state, level + 1);
+                    reinforcedCauldronBlockEntity.setPotion(potion);
                 }
-                worldIn.playSound(null, pos, SoundEvents.ITEM_BOTTLE_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                this.setWaterLevel(worldIn, pos, state, level - 1);
             }
-            return ActionResultType.func_233537_a_(worldIn.isRemote);
         }
-        return super.onBlockActivated(state, worldIn, pos, player, handIn, hit);
+    }
+
+    private void handleEmptyBottle(BlockState state,World world,BlockPos pos,PlayerEntity player,Hand hand,ItemStack stack,int level) {
+        if (level > 0 && !world.isRemote) {
+            ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) world.getTileEntity(pos);
+            Potion potion = reinforcedCauldronBlockEntity.getPotion();
+            if (!player.abilities.isCreativeMode) {
+                ItemStack itemstack4 = PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), potion);
+                player.addStat(Stats.USE_CAULDRON);
+                stack.shrink(1);
+                if (stack.isEmpty()) {
+                    player.setHeldItem(hand, itemstack4);
+                } else if (!player.inventory.addItemStackToInventory(itemstack4)) {
+                    player.dropItem(itemstack4, false);
+                } else if (player instanceof ServerPlayerEntity) {
+                    ((ServerPlayerEntity)player).sendContainerToPlayer(player.container);
+                }
+            }
+            world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            if (potion != Potions.WATER)
+            this.setWaterLevel(world, pos, state, level - 1);
+        }
     }
 
     @Override

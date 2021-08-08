@@ -5,11 +5,14 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.biome.BiomeColors;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
 
 import javax.annotation.Nonnull;
@@ -37,9 +40,9 @@ public class ReinforcedCauldronBlockEntity extends TileEntity {
 
     public int getColor() {
         if (!potion.getEffects().isEmpty()) {
-            return potion.getEffects().get(0).getPotion().getLiquidColor();
+            return PotionUtils.getPotionColor(potion);
         }
-        return 0;
+        return BiomeColors.getWaterColor(world, pos);
     }
 
     @Override
