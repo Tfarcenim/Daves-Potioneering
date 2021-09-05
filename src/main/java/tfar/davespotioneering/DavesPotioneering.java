@@ -83,6 +83,7 @@ public class DavesPotioneering {
         Util.setStackSize(Items.LINGERING_POTION,4);
         MinecraftForge.EVENT_BUS.addListener(Events::potionCooldown);
         MinecraftForge.EVENT_BUS.addListener(Events::milkCow);
+        MinecraftForge.EVENT_BUS.addListener(Events::afterHit);
 
         ItemStack milkPot = new ItemStack(Items.POTION);
         PotionUtils.addPotionToItemStack(milkPot,ModPotions.MILK);

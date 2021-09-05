@@ -1,6 +1,10 @@
 package tfar.davespotioneering.blockentity;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.CauldronBlock;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
@@ -10,9 +14,10 @@ import net.minecraft.potion.Potions;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.biome.BiomeColors;
+import tfar.davespotioneering.block.ReinforcedCauldronBlock;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
 
 import javax.annotation.Nonnull;
@@ -53,7 +58,7 @@ public class ReinforcedCauldronBlockEntity extends TileEntity {
 
     @Override
     public CompoundNBT write(CompoundNBT compound) {
-        compound.putString("potion",potion.getRegistryName().toString());
+        compound.putString("potion", potion.getRegistryName().toString());
         return super.write(compound);
     }
 
@@ -70,7 +75,18 @@ public class ReinforcedCauldronBlockEntity extends TileEntity {
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
-        this.read(null,packet.getNbtCompound());
-        world.notifyBlockUpdate(pos,getBlockState(),getBlockState(),3);
+        this.read(null, packet.getNbtCompound());
+        world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 3);
+    }
+
+    public void onEntityCollision(Entity entity) {
+        if (entity instanceof ItemEntity) {
+            ItemStack stack = ((ItemEntity)entity).getItem();
+            BlockPos blockpos = this.getPos();
+            BlockState blockState = getBlockState();
+            if (blockState.get(CauldronBlock.LEVEL) == 3) {
+                ReinforcedCauldronBlock.handleCoating(blockState,world,blockpos,null,stack);
+            }
+        }
     }
 }

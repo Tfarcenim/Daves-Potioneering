@@ -1,15 +1,26 @@
 package tfar.davespotioneering;
 
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.block.CauldronBlock;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.ThrowablePotionItem;
+import net.minecraft.item.TieredItem;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
+import net.minecraft.potion.Potions;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.PotionEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import tfar.davespotioneering.block.ReinforcedCauldronBlock;
 import tfar.davespotioneering.init.ModPotions;
 
 public class Events {
@@ -34,6 +45,30 @@ public class Events {
                 ItemStack milkBottle = new ItemStack(Items.POTION);
                 PotionUtils.addPotionToItemStack(milkBottle, ModPotions.MILK);
                 player.addItemStackToInventory(milkBottle);
+            }
+        }
+    }
+
+    public static void afterHit(LivingDamageEvent e) {
+        LivingEntity victim = e.getEntityLiving();
+
+        DamageSource source = e.getSource();
+
+        Entity trueSource = source.getTrueSource();
+
+        if (trueSource instanceof LivingEntity) {
+            LivingEntity attacker = (LivingEntity)trueSource;
+
+            ItemStack weapon = attacker.getHeldItemMainhand();
+
+            if (weapon.getItem() instanceof TieredItem) {
+                Potion potion = PotionUtils.getPotionFromItem(weapon);
+                if (potion != Potions.EMPTY) {
+                    for(EffectInstance effectinstance : potion.getEffects()) {
+                        victim.addPotionEffect(new EffectInstance(effectinstance.getPotion(), Math.max(effectinstance.getDuration() / 8, 1), effectinstance.getAmplifier(), effectinstance.isAmbient(), effectinstance.doesShowParticles()));
+                    }
+                    ReinforcedCauldronBlock.useCharge(weapon);
+                }
             }
         }
     }
