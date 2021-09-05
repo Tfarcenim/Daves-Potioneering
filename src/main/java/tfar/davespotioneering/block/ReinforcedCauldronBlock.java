@@ -5,6 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CauldronBlock;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -23,17 +24,20 @@ import net.minecraft.stats.Stats;
 import net.minecraft.tileentity.HopperTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Random;
 
 public class ReinforcedCauldronBlock extends CauldronBlock {
@@ -85,14 +89,18 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
                 world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
 
                 if (level > 0 && storedPotion != potion) {
-                    this.setWaterLevel(world, pos, state, 0);
-                    world.createExplosion(null, pos.getX(), pos.getY(), pos.getZ(), 1, false, Explosion.Mode.NONE);
+                    boom(world, pos, state);
                 } else {
                     this.setWaterLevel(world, pos, state, level + 1);
                     reinforcedCauldronBlockEntity.setPotion(potion);
                 }
             }
         }
+    }
+
+    public void boom(World world,BlockPos pos,BlockState state) {
+        this.setWaterLevel(world, pos, state, 0);
+        world.createExplosion(null, pos.getX(), pos.getY(), pos.getZ(), 1, false, Explosion.Mode.NONE);
     }
 
     private void handleDragonBreath(BlockState state, World world, BlockPos pos, PlayerEntity player, ItemStack stack) {
@@ -203,8 +211,8 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
             double d0 = pos.getX();
             double d1 = (double) pos.getY() + 1D;
             double d2 = pos.getZ();
-            for (int i = 0; i < 4; i++) {
-                worldIn.addOptionalParticle(ParticleTypes.FISHING, d0 + (double) rand.nextFloat(), d1 + (double) rand.nextFloat(), d2 + (double) rand.nextFloat(), 0.0D, 0.04D, 0.0D);
+            for (int i = 0; i < 5; i++) {
+                worldIn.addOptionalParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, d0 + (double) rand.nextFloat(), d1 + (double) rand.nextFloat(), d2 + (double) rand.nextFloat(), 0.0D, 0.04D, 0.0D);
             }
         }
     }
@@ -215,5 +223,28 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
             ((ReinforcedCauldronBlockEntity) tileentity).onEntityCollision(entityIn);
         }
         super.onEntityCollision(state, worldIn, pos, entityIn);
+    }
+
+
+    //this is used for the coating
+    @Override
+    public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
+        int level = state.get(LEVEL);
+        setWaterLevel(world,pos,state,level - 1);
+
+        world.playSound(null,pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.8F, 1);
+
+        if (state.get(LEVEL) > 0) {
+            world.getPendingBlockTicks().scheduleTick(pos, this, 10);
+        } else {
+            List<ItemEntity> items = world.getEntitiesWithinAABB(ItemEntity.class,
+                    new AxisAlignedBB(pos));
+
+            if (items.size() == 1) {
+                handleCoating(state, world, pos, null, items.get(0).getItem());
+            } else {
+                boom(world,pos,state);
+            }
+        }
     }
 }

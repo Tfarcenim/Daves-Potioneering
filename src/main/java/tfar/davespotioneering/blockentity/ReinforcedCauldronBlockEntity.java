@@ -14,6 +14,8 @@ import net.minecraft.potion.Potions;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.BiomeColors;
@@ -81,12 +83,17 @@ public class ReinforcedCauldronBlockEntity extends TileEntity {
 
     public void onEntityCollision(Entity entity) {
         if (entity instanceof ItemEntity) {
-            ItemStack stack = ((ItemEntity)entity).getItem();
-            BlockPos blockpos = this.getPos();
             BlockState blockState = getBlockState();
             if (blockState.get(CauldronBlock.LEVEL) == 3) {
-                ReinforcedCauldronBlock.handleCoating(blockState,world,blockpos,null,stack);
+                //burn off a layer, then schedule the rest of the ticks
+                world.playSound(null,pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.8F, 1);
+                ((CauldronBlock)blockState.getBlock()).setWaterLevel(world,pos,blockState,2);
+                scheduleTick();
             }
         }
+    }
+
+    private void scheduleTick() {
+        this.world.getPendingBlockTicks().scheduleTick(this.getPos(), this.getBlockState().getBlock(), 10);
     }
 }
