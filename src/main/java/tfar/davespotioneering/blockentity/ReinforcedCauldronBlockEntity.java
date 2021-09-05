@@ -94,6 +94,6 @@ public class ReinforcedCauldronBlockEntity extends TileEntity {
     }
 
     private void scheduleTick() {
-        this.world.getPendingBlockTicks().scheduleTick(this.getPos(), this.getBlockState().getBlock(), 10);
+        this.world.getPendingBlockTicks().scheduleTick(this.getPos(), this.getBlockState().getBlock(), ReinforcedCauldronBlock.brew_speed);
     }
 }

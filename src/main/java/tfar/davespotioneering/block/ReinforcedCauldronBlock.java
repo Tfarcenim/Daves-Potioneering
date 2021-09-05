@@ -1,6 +1,5 @@
 package tfar.davespotioneering.block;
 
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CauldronBlock;
@@ -19,15 +18,15 @@ import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.stats.Stats;
-import net.minecraft.tileentity.HopperTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -43,6 +42,9 @@ import java.util.Random;
 public class ReinforcedCauldronBlock extends CauldronBlock {
 
     public static final BooleanProperty DRAGONS_BREATH = BooleanProperty.create("dragons_breath");
+
+
+    public static int brew_speed = 12;
 
     public ReinforcedCauldronBlock(Properties properties) {
         super(properties);
@@ -235,7 +237,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
         world.playSound(null,pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.8F, 1);
 
         if (state.get(LEVEL) > 0) {
-            world.getPendingBlockTicks().scheduleTick(pos, this, 10);
+            world.getPendingBlockTicks().scheduleTick(pos, this, brew_speed);
         } else {
             List<ItemEntity> items = world.getEntitiesWithinAABB(ItemEntity.class,
                     new AxisAlignedBB(pos));
