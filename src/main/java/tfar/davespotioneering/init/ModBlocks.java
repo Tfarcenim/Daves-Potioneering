@@ -2,9 +2,12 @@ package tfar.davespotioneering.init;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.LecternBlock;
 import net.minecraft.block.material.Material;
 import net.minecraftforge.event.RegistryEvent;
 import tfar.davespotioneering.block.AdvancedBrewingStandBlock;
+import tfar.davespotioneering.block.MagicLecternBlock;
 import tfar.davespotioneering.block.ReinforcedCauldronBlock;
 
 import java.lang.reflect.Field;
@@ -20,6 +23,8 @@ public class ModBlocks {
 
     public static final Block REINFORCED_CAULDRON = new ReinforcedCauldronBlock(AbstractBlock.Properties.create(Material.IRON)
             .setRequiresTool().hardnessAndResistance(0.5F).setLightLevel(state -> 1).notSolid());
+
+    public static final Block MAGIC_LECTERN = new MagicLecternBlock(AbstractBlock.Properties.from(Blocks.LECTERN));
 
 
     public static void register(RegistryEvent.Register<Block> e) {

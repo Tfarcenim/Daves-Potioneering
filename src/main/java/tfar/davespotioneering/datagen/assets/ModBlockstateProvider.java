@@ -1,7 +1,9 @@
 package tfar.davespotioneering.datagen.assets;
 
 import net.minecraft.block.CauldronBlock;
+import net.minecraft.block.LecternBlock;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.util.Direction;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -35,5 +37,11 @@ public class ModBlockstateProvider extends BlockStateProvider {
             ModelFile modelFile = models().getExistingFile(modLoc("block/reinforced_cauldron_level" + state.get(CauldronBlock.LEVEL)));
             return ConfiguredModel.builder().modelFile(modelFile).build();
         });
+
+        getVariantBuilder(ModBlocks.MAGIC_LECTERN).forAllStatesExcept(state -> {
+            Direction facing = state.get(LecternBlock.FACING);
+            ModelFile modelFile = models().getExistingFile(modLoc("block/magic_lectern"));
+            return ConfiguredModel.builder().modelFile(modelFile).rotationY((facing.getHorizontalIndex() + 3) % 4 * 90).build();
+        }, LecternBlock.HAS_BOOK, LecternBlock.POWERED);
     }
 }

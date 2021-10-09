@@ -19,11 +19,12 @@ public class ModItemModelProvider extends ItemModelProvider {
     protected void registerModels() {
         makeOneLayerItem(ModItems.ADVANCED_BREWING_STAND);
         makeSimpleBlockItem(ModItems.REINFORCED_CAULDRON,new ResourceLocation(DavesPotioneering.MODID,"block/reinforced_cauldron_level0"));
+        makeSimpleBlockItem(ModItems.MAGIC_LECTERN);
     }
 
     protected void makeSimpleBlockItem(Item item,ResourceLocation loc) {
         getBuilder(item.getRegistryName().toString())
-                .parent(new ModelFile.UncheckedModelFile(loc));
+                .parent(getExistingFile(loc));
     }
 
     protected void makeSimpleBlockItem(Item item) {
@@ -35,7 +36,7 @@ public class ModItemModelProvider extends ItemModelProvider {
         String path = item.getRegistryName().getPath();
         if (existingFileHelper.exists(new ResourceLocation(texture.getNamespace(),"item/" + texture.getPath())
                 , ResourcePackType.CLIENT_RESOURCES, ".png", "textures")) {
-            getBuilder(path).parent(new ModelFile.UncheckedModelFile(mcLoc("item/generated")))
+            getBuilder(path).parent(getExistingFile(mcLoc("item/generated")))
                     .texture("layer0",new ResourceLocation(texture.getNamespace(),"item/" + texture.getPath()));
         } else {
             System.out.println("no texture for " + item + " found, skipping");

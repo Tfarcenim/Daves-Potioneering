@@ -1,10 +1,6 @@
 package tfar.davespotioneering;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -13,7 +9,6 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
@@ -23,14 +18,17 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig.Type;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.apache.commons.lang3.tuple.Pair;
-import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
-import tfar.davespotioneering.client.AdvancedBrewingStandScreen;
+import tfar.davespotioneering.client.ClientEvents;
 import tfar.davespotioneering.datagen.ModDatagen;
 import tfar.davespotioneering.init.*;
+import tfar.davespotioneering.mixin.BlockEntityTypeAcces;
+
+import java.util.HashSet;
+import java.util.Set;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(DavesPotioneering.MODID)
@@ -56,8 +54,10 @@ public class DavesPotioneering {
 
         // Register the setup method for modloading
         bus.addListener(this::setup);
-        // Register the doClientStuff method for modloading
-        bus.addListener(this::doClientStuff);
+        if (FMLEnvironment.dist.isClient()) {
+            // Register the doClientStuff method for modloading
+            bus.addListener(ClientEvents::doClientStuff);
+        }
     }
 
 
@@ -98,22 +98,12 @@ public class DavesPotioneering {
 
         BrewingRecipeRegistry.addRecipe(new BrewingRecipe(Ingredient.fromStacks(milkPot),Ingredient.fromItems(Items.DRAGON_BREATH),lingerMilkPot));
 
+        Set<Block> newSet = new HashSet<>(((BlockEntityTypeAcces)TileEntityType.LECTERN).getValidBlocks());
+
+        newSet.add(ModBlocks.MAGIC_LECTERN);
+
+        ((BlockEntityTypeAcces)TileEntityType.LECTERN).setValidBlocks(newSet);
+
     }
 
-    private void doClientStuff(final FMLClientSetupEvent event) {
-        MinecraftForge.EVENT_BUS.addListener(ClientEvents::playSound);
-        MinecraftForge.EVENT_BUS.addListener(ClientEvents::tooltips);
-        RenderTypeLookup.setRenderLayer(ModBlocks.ADVANCED_BREWING_STAND, RenderType.getCutoutMipped());
-        ScreenManager.registerFactory(ModContainerTypes.ADVANCED_BREWING_STAND, AdvancedBrewingStandScreen::new);
-
-        Minecraft.getInstance().getBlockColors().register((state, reader, pos, index) -> {
-            if (pos != null) {
-                TileEntity blockEntity = reader.getTileEntity(pos);
-                if (blockEntity instanceof ReinforcedCauldronBlockEntity) {
-                    return ((ReinforcedCauldronBlockEntity)blockEntity).getColor();
-                }
-            }
-            return 0xffffff;
-        },ModBlocks.REINFORCED_CAULDRON);
-    }
 }

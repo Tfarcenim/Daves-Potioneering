@@ -1,9 +1,10 @@
 package tfar.davespotioneering.init;
 
-import net.minecraft.block.Block;
+import net.minecraft.block.LecternBlock;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ShieldItem;
 import net.minecraftforge.event.RegistryEvent;
 
 import java.lang.reflect.Field;
@@ -16,6 +17,9 @@ public class ModItems {
 
     public static final Item ADVANCED_BREWING_STAND = new BlockItem(ModBlocks.ADVANCED_BREWING_STAND,new Item.Properties().group(ItemGroup.DECORATIONS));
     public static final Item REINFORCED_CAULDRON = new BlockItem(ModBlocks.REINFORCED_CAULDRON,new Item.Properties().group(ItemGroup.DECORATIONS));
+    public static final Item POTIONEER_GAUNTLET = new Item(new Item.Properties().group(ItemGroup.COMBAT));
+    public static final Item POTIONEER_SHIELD = new ShieldItem(new Item.Properties().group(ItemGroup.COMBAT));
+    public static final Item MAGIC_LECTERN = new BlockItem(ModBlocks.MAGIC_LECTERN,new Item.Properties().group(ItemGroup.DECORATIONS));
 
     public static void register(RegistryEvent.Register<Item> e) {
         for (Field field : ModItems.class.getFields()) {
