@@ -6,6 +6,7 @@ import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import tfar.davespotioneering.datagen.assets.ModBlockstateProvider;
 import tfar.davespotioneering.datagen.assets.ModItemModelProvider;
 import tfar.davespotioneering.datagen.assets.ModLangProvider;
+import tfar.davespotioneering.datagen.data.ModLootTableProvider;
 
 public class ModDatagen {
 
@@ -17,6 +18,9 @@ public class ModDatagen {
             generator.addProvider(new ModLangProvider(generator));
             generator.addProvider(new ModBlockstateProvider(generator,helper));
             generator.addProvider(new ModItemModelProvider(generator,helper));
+        }
+        if (e.includeServer()) {
+            generator.addProvider(new ModLootTableProvider(generator));
         }
     }
 }

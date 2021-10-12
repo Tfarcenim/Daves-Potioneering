@@ -1,8 +1,8 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "Desktop/alchemical_gauntlet",
-		"particle": "Desktop/alchemical_gauntlet"
+		"0": "davespotioneering:item/alchemical_gauntlet",
+		"particle": "davespotioneering:item/alchemical_gauntlet"
 	},
 	"elements": [
 		{
