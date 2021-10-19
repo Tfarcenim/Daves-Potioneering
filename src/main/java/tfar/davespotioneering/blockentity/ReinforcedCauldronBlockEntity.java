@@ -19,8 +19,10 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.BiomeColors;
+import net.minecraftforge.items.ItemStackHandler;
 import tfar.davespotioneering.block.ReinforcedCauldronBlock;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
+import tfar.davespotioneering.init.ModPotions;
 
 import javax.annotation.Nonnull;
 
@@ -83,8 +85,11 @@ public class ReinforcedCauldronBlockEntity extends TileEntity {
 
     public void onEntityCollision(Entity entity) {
         if (entity instanceof ItemEntity) {
+            ItemStack stack =  ((ItemEntity) entity).getItem();
             BlockState blockState = getBlockState();
-            if (blockState.get(CauldronBlock.LEVEL) == 3) {
+            if (potion == ModPotions.MILK && PotionUtils.getPotionFromItem(stack) != Potions.EMPTY) {
+                ReinforcedCauldronBlock.removeCoating(blockState,world,pos,null,stack);
+            } else if (blockState.get(CauldronBlock.LEVEL) == 3) {
                 //burn off a layer, then schedule the rest of the ticks
                 world.playSound(null,pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.8F, 1);
                 ((CauldronBlock)blockState.getBlock()).setWaterLevel(world,pos,blockState,2);

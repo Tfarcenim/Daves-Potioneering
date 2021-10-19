@@ -34,6 +34,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
+import tfar.davespotioneering.init.ModPotions;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -65,6 +66,8 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
             handleDragonBreath(state,world, pos, player, stack);
         } else if (stack.getItem() instanceof TieredItem && level == 3) {
             handleCoating(state,world, pos, player, stack);
+        } else if (PotionUtils.getPotionFromItem(stack) != Potions.EMPTY && level > 0) {
+            removeCoating(state,world, pos, player, stack);
         }
         return super.onBlockActivated(state, world, pos, player, hand, hit);
     }
@@ -163,6 +166,34 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
         }
     }
 
+    public static void removeCoating(BlockState state, World world, BlockPos pos,@Nullable PlayerEntity player, ItemStack stack) {
+        ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) world.getTileEntity(pos);
+        Potion potion = reinforcedCauldronBlockEntity.getPotion();
+        if (potion == ModPotions.MILK && !world.isRemote) {
+            if (player != null && !player.abilities.isCreativeMode) {
+                player.addStat(Stats.USE_CAULDRON);
+            }
+            removeCoating(stack);
+            world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            ((CauldronBlock)state.getBlock()).setWaterLevel(world,pos,state,state.get(LEVEL) - 1);
+        }
+    }
+
+    @Override
+    public void setWaterLevel(World world, BlockPos pos, BlockState state, int level) {
+        super.setWaterLevel(world, pos, state, level);
+        if (level == 0) {
+            ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) world.getTileEntity(pos);
+            reinforcedCauldronBlockEntity.setPotion(Potions.EMPTY);
+        }
+    }
+
+    public static void removeCoating(ItemStack stack) {
+        CompoundNBT nbt = stack.getTag();
+        nbt.remove("uses");
+        nbt.remove("Potion");
+    }
+
     public static void addCoating(ItemStack stack,Potion potion) {
         CompoundNBT nbt = stack.getOrCreateTag();
         nbt.putInt("uses",25);
@@ -178,8 +209,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
             if (uses > 0) {
                 nbt.putInt("uses",uses);
             } else {
-                nbt.remove("uses");
-                nbt.remove("Potion");
+                removeCoating(stack);
             }
         }
     }
@@ -232,11 +262,11 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
     @Override
     public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
         int level = state.get(LEVEL);
-        setWaterLevel(world,pos,state,level - 1);
 
         world.playSound(null,pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.8F, 1);
 
-        if (state.get(LEVEL) > 0) {
+        if (state.get(LEVEL) > 1) {
+            setWaterLevel(world,pos,state,level - 1);
             world.getPendingBlockTicks().scheduleTick(pos, this, brew_speed);
         } else {
             List<ItemEntity> items = world.getEntitiesWithinAABB(ItemEntity.class,

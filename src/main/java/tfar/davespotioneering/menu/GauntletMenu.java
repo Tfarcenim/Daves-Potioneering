@@ -18,7 +18,7 @@ public class GauntletMenu extends Container {
 
     //common
     public GauntletMenu(int id, PlayerInventory playerInventory, ItemStackHandler inventory) {
-        super(ModContainerTypes.ADVANCED_BREWING_STAND, id);
+        super(ModContainerTypes.ALCHEMICAL_GAUNTLET, id);
         // assertInventorySize(inventory, 5);
         // assertIntArraySize(data, 2);
 
