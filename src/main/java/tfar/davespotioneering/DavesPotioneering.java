@@ -56,6 +56,7 @@ public class DavesPotioneering {
         bus.addListener(this::setup);
         if (FMLEnvironment.dist.isClient()) {
             // Register the doClientStuff method for modloading
+            bus.addListener(ClientEvents::onBakeModels);
             bus.addListener(ClientEvents::doClientStuff);
         }
     }

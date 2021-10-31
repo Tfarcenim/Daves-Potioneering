@@ -2,26 +2,43 @@ package tfar.davespotioneering.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.PotionItem;
 import net.minecraft.item.TieredItem;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.init.ModContainerTypes;
+import tfar.davespotioneering.init.ModItems;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class ClientEvents {
 
@@ -66,5 +83,42 @@ public class ClientEvents {
             }
             return 0xffffff;
         },ModBlocks.REINFORCED_CAULDRON);
+
+        ItemModelsProperties.registerProperty(ModItems.ALCHEMICAL_GAUNTLET,new ResourceLocation("active"),
+                (ItemStack a, ClientWorld b, LivingEntity c) -> {
+           return a.hasTag() ? a.getTag().getBoolean("active") ? 1 : 0: 0;
+        });
+
+    }
+
+    public static void onBakeModels(ModelBakeEvent event)
+    {
+        // we want to replace some of the regular baked block models with models that
+        // have emissive/fullbright textures
+        Map<ResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
+
+        // the model registry uses ModelResourceLocations that can't easily be compared
+        // to regular resource locations
+        // they have an additional field for the blockstate properties of a blockstate
+        // so we need to replace models on a per-blockstate bases
+
+        // we need to use existing models to create our enhanced models, so we'll need to make sure they're in the registry first and get them
+        // let's make a reusable model override function
+        // the resourcelocations we specify in the FullbrightBakedModel constructor are *texture* locations
+
+        List<ResourceLocation> possibilities =
+                modelRegistry.keySet().stream().filter(m -> m.getPath().contains("alchemical")).collect(Collectors.toList());
+
+        IBakedModel litGauntlet3dModel = modelRegistry.get(
+                new ModelResourceLocation(new ResourceLocation(DavesPotioneering.MODID,"alchemical_gauntlet"),"inventory"
+        ));
+
+        if (litGauntlet3dModel != null) {
+
+        }
+
+        // now we get all the blockstates from our block, narrow them down to the only ones we want to have fullbright textures,
+        // and replace the models with fullbright-enabled models
+
     }
 }

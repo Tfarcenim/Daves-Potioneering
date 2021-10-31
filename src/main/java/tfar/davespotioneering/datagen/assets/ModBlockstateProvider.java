@@ -20,6 +20,17 @@ public class ModBlockstateProvider extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         brewingStand();
+
+        getVariantBuilder(ModBlocks.REINFORCED_CAULDRON).forAllStates(state -> {
+            ModelFile modelFile = models().getExistingFile(modLoc("block/reinforced_cauldron_level" + state.get(CauldronBlock.LEVEL)));
+            return ConfiguredModel.builder().modelFile(modelFile).build();
+        });
+
+        getVariantBuilder(ModBlocks.MAGIC_LECTERN).forAllStatesExcept(state -> {
+            Direction facing = state.get(LecternBlock.FACING);
+            ModelFile modelFile = models().getExistingFile(modLoc("block/magic_lectern"));
+            return ConfiguredModel.builder().modelFile(modelFile).rotationY((facing.getHorizontalIndex() + 3) % 4 * 90).build();
+        }, LecternBlock.HAS_BOOK, LecternBlock.POWERED);
     }
 
     protected void brewingStand() {
@@ -33,15 +44,6 @@ public class ModBlockstateProvider extends BlockStateProvider {
                 .part().modelFile(models().getExistingFile(modLoc("block/advanced_brewing_stand_empty2"))).addModel().condition(AdvancedBrewingStandBlock.HAS_BOTTLE[2], false).end()
         ;
 
-        getVariantBuilder(ModBlocks.REINFORCED_CAULDRON).forAllStates(state -> {
-            ModelFile modelFile = models().getExistingFile(modLoc("block/reinforced_cauldron_level" + state.get(CauldronBlock.LEVEL)));
-            return ConfiguredModel.builder().modelFile(modelFile).build();
-        });
 
-        getVariantBuilder(ModBlocks.MAGIC_LECTERN).forAllStatesExcept(state -> {
-            Direction facing = state.get(LecternBlock.FACING);
-            ModelFile modelFile = models().getExistingFile(modLoc("block/magic_lectern"));
-            return ConfiguredModel.builder().modelFile(modelFile).rotationY((facing.getHorizontalIndex() + 3) % 4 * 90).build();
-        }, LecternBlock.HAS_BOOK, LecternBlock.POWERED);
     }
 }

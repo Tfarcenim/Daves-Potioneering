@@ -1,11 +1,14 @@
 package tfar.davespotioneering.datagen.assets;
 
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Item;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.client.model.generators.loaders.SeparatePerspectiveModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.init.ModItems;
@@ -20,6 +23,21 @@ public class ModItemModelProvider extends ItemModelProvider {
         makeOneLayerItem(ModItems.ADVANCED_BREWING_STAND);
         makeSimpleBlockItem(ModItems.REINFORCED_CAULDRON,new ResourceLocation(DavesPotioneering.MODID,"block/reinforced_cauldron_level0"));
         makeSimpleBlockItem(ModItems.MAGIC_LECTERN);
+
+        gauntlet();
+    }
+
+    private void gauntlet() {
+
+
+        ModelFile unlitFile = getExistingFile(modLoc("item/3d/alchemical_gauntlet"));
+
+        ModelFile litFile = getExistingFile(modLoc("item/3d/lit_alchemical_gauntlet"));
+
+        getBuilder("alchemical_gauntlet").parent(getExistingFile(mcLoc("item/generated")))
+                .override().model(unlitFile).predicate(mcLoc("active"),0).end()
+        .override().model(litFile).predicate(mcLoc("active"),1).end()
+        ;
     }
 
     protected void makeSimpleBlockItem(Item item,ResourceLocation loc) {

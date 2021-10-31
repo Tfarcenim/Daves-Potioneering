@@ -1,0 +1,17 @@
+{
+  "parent": "minecraft:item/generated",
+  "overrides": [
+    {
+      "predicate": {
+        "minecraft:active": 0.0
+      },
+      "model": "davespotioneering:item/3d/alchemical_gauntlet"
+    },
+    {
+      "predicate": {
+        "minecraft:active": 1.0
+      },
+      "model": "davespotioneering:item/3d/lit_alchemical_gauntlet"
+    }
+  ]
+}
