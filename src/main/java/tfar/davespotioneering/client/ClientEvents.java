@@ -2,13 +2,13 @@ package tfar.davespotioneering.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.PotionItem;
@@ -21,6 +21,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
@@ -32,12 +33,10 @@ import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.init.ModContainerTypes;
 import tfar.davespotioneering.init.ModItems;
+import tfar.davespotioneering.item.GauntletItem;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ClientEvents {
@@ -72,7 +71,7 @@ public class ClientEvents {
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::onKeyPress);
         RenderTypeLookup.setRenderLayer(ModBlocks.ADVANCED_BREWING_STAND, RenderType.getCutoutMipped());
         ScreenManager.registerFactory(ModContainerTypes.ADVANCED_BREWING_STAND, AdvancedBrewingStandScreen::new);
-        ScreenManager.registerFactory(ModContainerTypes.ALCHEMICAL_GAUNTLET, AlchemicalGauntletScreen::new);
+        ScreenManager.registerFactory(ModContainerTypes.ALCHEMICAL_GAUNTLET, GauntletWorkstationScreen::new);
 
         Minecraft.getInstance().getBlockColors().register((state, reader, pos, index) -> {
             if (pos != null) {
@@ -91,8 +90,7 @@ public class ClientEvents {
 
     }
 
-    public static void onBakeModels(ModelBakeEvent event)
-    {
+    public static void onBakeModels(ModelBakeEvent event) {
         // we want to replace some of the regular baked block models with models that
         // have emissive/fullbright textures
         Map<ResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
@@ -120,5 +118,15 @@ public class ClientEvents {
         // now we get all the blockstates from our block, narrow them down to the only ones we want to have fullbright textures,
         // and replace the models with fullbright-enabled models
 
+    }
+
+    public static void gauntletHud(RenderGameOverlayEvent.Post e) {
+        if (e.getType() == RenderGameOverlayEvent.ElementType.HOTBAR) {
+            PlayerEntity player = Minecraft.getInstance().player;
+            ItemStack g = player.getHeldItemMainhand();
+            if (g.getItem() instanceof GauntletItem) {
+
+            }
+        }
     }
 }

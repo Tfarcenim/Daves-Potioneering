@@ -9,12 +9,13 @@ import net.minecraft.util.text.ITextComponent;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.menu.GauntletMenu;
 
-public class AlchemicalGauntletScreen extends ContainerScreen<GauntletMenu> {
-    public AlchemicalGauntletScreen(GauntletMenu screenContainer, PlayerInventory inv, ITextComponent titleIn) {
+public class GauntletWorkstationScreen extends ContainerScreen<GauntletMenu> {
+    public GauntletWorkstationScreen(GauntletMenu screenContainer, PlayerInventory inv, ITextComponent titleIn) {
         super(screenContainer, inv, titleIn);
+        ySize+=30;
     }
 
-    private static final ResourceLocation BREWING_STAND_GUI_TEXTURES = new ResourceLocation(DavesPotioneering.MODID,"textures/gui/alchemical_gauntlet.png");
+    private static final ResourceLocation BREWING_STAND_GUI_TEXTURES = new ResourceLocation(DavesPotioneering.MODID,"textures/gui/gauntlet_workstation.png");
 
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);

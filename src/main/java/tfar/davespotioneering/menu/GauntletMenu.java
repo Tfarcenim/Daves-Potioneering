@@ -25,11 +25,11 @@ public class GauntletMenu extends Container {
         int potY = 77;
 
         for (int i = 0; i < 6;i++) {
-            this.addSlot(new SlotItemHandler(inventory, i, 22 * i - 20, 17));
+            this.addSlot(new SlotItemHandler(inventory, i, 18 * i + 40, 20));
         }
 
         int invX = 8;
-        int invY = 110;
+        int invY = 89;
 
         for(int i = 0; i < 3; ++i) {
             for(int j = 0; j < 9; ++j) {

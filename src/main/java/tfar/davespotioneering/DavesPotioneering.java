@@ -9,6 +9,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
+import net.minecraft.potion.Potions;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
@@ -58,6 +59,7 @@ public class DavesPotioneering {
             // Register the doClientStuff method for modloading
             bus.addListener(ClientEvents::onBakeModels);
             bus.addListener(ClientEvents::doClientStuff);
+            MinecraftForge.EVENT_BUS.addListener(ClientEvents::gauntletHud);
         }
     }
 
@@ -99,6 +101,8 @@ public class DavesPotioneering {
 
         BrewingRecipeRegistry.addRecipe(new BrewingRecipe(Ingredient.fromStacks(milkPot),Ingredient.fromItems(Items.DRAGON_BREATH),lingerMilkPot));
 
+        strongRecipe(Potions.INVISIBILITY,ModPotions.STRONG_INVISIBILITY);
+
         Set<Block> newSet = new HashSet<>(((BlockEntityTypeAcces)TileEntityType.LECTERN).getValidBlocks());
 
         newSet.add(ModBlocks.MAGIC_LECTERN);
@@ -107,4 +111,11 @@ public class DavesPotioneering {
 
     }
 
+    protected static void strongRecipe(Potion potion,Potion strong) {
+        BrewingRecipeRegistry.addRecipe(
+                new BrewingRecipe(Ingredient.fromStacks(
+                        PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION),potion)),
+                        Ingredient.fromItems(Items.GLOWSTONE_DUST),
+                        PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), strong)));
+    }
 }
