@@ -64,8 +64,10 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
             return ActionResultType.func_233537_a_(world.isRemote);
         } else if (stack.getItem() == Items.DRAGON_BREATH && level == 3) {
             handleDragonBreath(state,world, pos, player, stack);
-        } else if (stack.getItem() instanceof TieredItem && level == 3) {
-            handleCoating(state,world, pos, player, stack);
+        } else if (stack.getItem() instanceof TieredItem && level == 3 ) {
+            handleWeaponCoating(state,world, pos, player, stack);
+        } else if (stack.getItem() == Items.ARROW && level > 0) {
+            handleArrowCoating(state,world, pos, player, stack,level);
         } else if (PotionUtils.getPotionFromItem(stack) != Potions.EMPTY && level > 0) {
             removeCoating(state,world, pos, player, stack);
         }
@@ -150,7 +152,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
         }
     }
 
-    public static void handleCoating(BlockState state, World world, BlockPos pos,@Nullable PlayerEntity player, ItemStack stack) {
+    public static void handleWeaponCoating(BlockState state, World world, BlockPos pos, @Nullable PlayerEntity player, ItemStack stack) {
         if (state.get(DRAGONS_BREATH)) {
             ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) world.getTileEntity(pos);
             Potion potion = reinforcedCauldronBlockEntity.getPotion();
@@ -162,6 +164,31 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
                 world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 state = state.with(DRAGONS_BREATH, false);
                 ((CauldronBlock)state.getBlock()).setWaterLevel(world,pos,state,0);
+            }
+        }
+    }
+
+    public static void handleArrowCoating(BlockState state, World world, BlockPos pos,@Nullable PlayerEntity player, ItemStack stack,int level) {
+        if (state.get(DRAGONS_BREATH)) {
+            //can't tip arrows if there's less than 8
+            if (stack.getCount() < 8) {
+                return;
+            }
+            ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) world.getTileEntity(pos);
+            Potion potion = reinforcedCauldronBlockEntity.getPotion();
+            if (!world.isRemote) {
+                if (player != null && !player.abilities.isCreativeMode) {
+                    player.addStat(Stats.USE_CAULDRON);
+                }
+                ItemStack tippedArrows = new ItemStack(Items.TIPPED_ARROW,8);
+                addCoating(tippedArrows,potion);
+                stack.shrink(8);
+                world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+
+                world.addEntity(new ItemEntity(world,pos.getX(),pos.getY()+1,pos.getZ(),tippedArrows));
+                if (level <= 1)
+                state = state.with(DRAGONS_BREATH, false);
+                ((CauldronBlock)state.getBlock()).setWaterLevel(world,pos,state,level - 1);
             }
         }
     }
@@ -195,9 +222,13 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
     }
 
     public static void addCoating(ItemStack stack,Potion potion) {
-        CompoundNBT nbt = stack.getOrCreateTag();
-        nbt.putInt("uses",25);
-        nbt.putString("Potion",potion.getRegistryName().toString());
+        if (stack.getItem() instanceof TieredItem) {
+            CompoundNBT nbt = stack.getOrCreateTag();
+            nbt.putInt("uses", 25);
+            nbt.putString("Potion", potion.getRegistryName().toString());
+        } else if (stack.getItem() == Items.TIPPED_ARROW) {
+            PotionUtils.addPotionToItemStack(stack, potion);
+        }
     }
 
     public static void useCharge(ItemStack stack) {
@@ -273,7 +304,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
                     new AxisAlignedBB(pos));
 
             if (items.size() == 1) {
-                handleCoating(state, world, pos, null, items.get(0).getItem());
+                handleWeaponCoating(state, world, pos, null, items.get(0).getItem());
             } else {
                 boom(world,pos,state);
             }

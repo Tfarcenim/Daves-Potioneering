@@ -5,6 +5,7 @@ import net.minecraft.block.CauldronBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
@@ -87,9 +88,12 @@ public class ReinforcedCauldronBlockEntity extends TileEntity {
         if (entity instanceof ItemEntity) {
             ItemStack stack =  ((ItemEntity) entity).getItem();
             BlockState blockState = getBlockState();
+            int level = blockState.get(CauldronBlock.LEVEL);
             if (potion == ModPotions.MILK && PotionUtils.getPotionFromItem(stack) != Potions.EMPTY) {
                 ReinforcedCauldronBlock.removeCoating(blockState,world,pos,null,stack);
-            } else if (blockState.get(CauldronBlock.LEVEL) == 3) {
+            } else if (stack.getItem() == Items.ARROW && level > 0) {
+              ReinforcedCauldronBlock.handleArrowCoating(blockState,world,pos,null,stack,level);
+            } else if (level == 3) {
                 //burn off a layer, then schedule the rest of the ticks
                 world.playSound(null,pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.8F, 1);
                 ((CauldronBlock)blockState.getBlock()).setWaterLevel(world,pos,blockState,2);
