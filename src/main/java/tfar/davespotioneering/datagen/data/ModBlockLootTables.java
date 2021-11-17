@@ -15,7 +15,7 @@ public class ModBlockLootTables extends BlockLootTables {
         registerDropSelfLootTable(ModBlocks.REINFORCED_CAULDRON);
         registerDropSelfLootTable(ModBlocks.ADVANCED_BREWING_STAND);
         registerDropSelfLootTable(ModBlocks.MAGIC_LECTERN);
-        registerDropSelfLootTable(ModBlocks.GAUNTLET_WORKSTATION);
+        registerDropSelfLootTable(ModBlocks.POTION_INJECTOR);
     }
 
     @Override

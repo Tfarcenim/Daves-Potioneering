@@ -23,6 +23,7 @@ public class ModItemModelProvider extends ItemModelProvider {
         makeOneLayerItem(ModItems.ADVANCED_BREWING_STAND);
         makeSimpleBlockItem(ModItems.REINFORCED_CAULDRON,new ResourceLocation(DavesPotioneering.MODID,"block/reinforced_cauldron_level0"));
         makeSimpleBlockItem(ModItems.MAGIC_LECTERN);
+        makeSimpleBlockItem(ModItems.POTION_INJECTOR);
 
         gauntlet();
     }

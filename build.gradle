@@ -85,6 +85,9 @@ minecraft {
 }
 
 repositories{
+
+    maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+
     maven {
         // location of the maven that hosts JEI files
         name = "Progwml6 maven"
@@ -105,6 +108,7 @@ dependencies {
     // You may put jars on which you depend on in ./libs or you may define them like so..
     // compile "some.group:artifact:version:classifier"
     // compile "some.group:artifact:version"
+    compile fg.deobf("software.bernie.geckolib:geckolib-forge-1.16.5:${geckolib}")
 
     // Real examples
     // compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env

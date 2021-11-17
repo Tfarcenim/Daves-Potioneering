@@ -20,7 +20,7 @@ public class ModItems {
     public static final Item ALCHEMICAL_GAUNTLET = new GauntletItem(new Item.Properties().group(ItemGroup.COMBAT));
     public static final Item POTIONEER_SHIELD = new ShieldItem(new Item.Properties().group(ItemGroup.COMBAT));
     public static final Item MAGIC_LECTERN = new BlockItem(ModBlocks.MAGIC_LECTERN,new Item.Properties().group(ItemGroup.DECORATIONS));
-    public static final Item GAUNTLET_WORKSTATION = new BlockItem(ModBlocks.GAUNTLET_WORKSTATION,new Item.Properties().group(ItemGroup.DECORATIONS));
+    public static final Item POTION_INJECTOR = new BlockItem(ModBlocks.POTION_INJECTOR,new Item.Properties().group(ItemGroup.DECORATIONS));
 
     public static void register(RegistryEvent.Register<Item> e) {
         for (Field field : ModItems.class.getFields()) {

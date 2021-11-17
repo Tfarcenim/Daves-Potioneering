@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "active=false,facing=north": {
+      "model": "davespotioneering:block/potion_injector"
+    },
+    "active=true,facing=north": {
+      "model": "davespotioneering:block/potion_injector"
+    },
+    "active=false,facing=south": {
+      "model": "davespotioneering:block/potion_injector",
+      "y": 180
+    },
+    "active=true,facing=south": {
+      "model": "davespotioneering:block/potion_injector",
+      "y": 180
+    },
+    "active=false,facing=west": {
+      "model": "davespotioneering:block/potion_injector",
+      "y": 270
+    },
+    "active=true,facing=west": {
+      "model": "davespotioneering:block/potion_injector",
+      "y": 270
+    },
+    "active=false,facing=east": {
+      "model": "davespotioneering:block/potion_injector",
+      "y": 90
+    },
+    "active=true,facing=east": {
+      "model": "davespotioneering:block/potion_injector",
+      "y": 90
+    }
+  }
+}
