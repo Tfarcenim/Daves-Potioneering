@@ -2,7 +2,9 @@
   "block.davespotioneering.advanced_brewing_stand": "Advanced Brewing Stand",
   "block.davespotioneering.reinforced_cauldron": "Reinforced Cauldron",
   "container.davespotioneering.advanced_brewing": "Advanced Brewing Stand",
+  "davespotioneering.container.potion_injector": "Potion Injector",
   "effect.davespotioneering.milk": "Milk",
+  "item.davespotioneering.alchemical_gauntlet": "Alchemical Gauntlet",
   "item.minecraft.lingering_potion.effect.milk": "Lingering Milk Bottle",
   "item.minecraft.potion.effect.milk": "Milk Bottle",
   "item.minecraft.splash_potion.effect.milk": "Splash Milk Bottle"

@@ -27,6 +27,7 @@ import tfar.davespotioneering.client.ClientEvents;
 import tfar.davespotioneering.datagen.ModDatagen;
 import tfar.davespotioneering.init.*;
 import tfar.davespotioneering.mixin.BlockEntityTypeAcces;
+import tfar.davespotioneering.net.PacketHandler;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -104,10 +105,10 @@ public class DavesPotioneering {
         strongRecipe(Potions.INVISIBILITY,ModPotions.STRONG_INVISIBILITY);
 
         Set<Block> newSet = new HashSet<>(((BlockEntityTypeAcces)TileEntityType.LECTERN).getValidBlocks());
-
         newSet.add(ModBlocks.MAGIC_LECTERN);
-
         ((BlockEntityTypeAcces)TileEntityType.LECTERN).setValidBlocks(newSet);
+
+        PacketHandler.registerMessages();
 
     }
 

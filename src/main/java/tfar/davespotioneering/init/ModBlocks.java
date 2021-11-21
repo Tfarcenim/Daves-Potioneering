@@ -27,7 +27,7 @@ public class ModBlocks {
 
     public static final Block MAGIC_LECTERN = new MagicLecternBlock(AbstractBlock.Properties.from(Blocks.LECTERN));
 
-    public static final Block POTION_INJECTOR = new GauntletWorkstationBlock(AbstractBlock.Properties.from(Blocks.CRAFTING_TABLE));
+    public static final Block POTION_INJECTOR = new GauntletWorkstationBlock(AbstractBlock.Properties.from(Blocks.FLETCHING_TABLE));
 
 
     public static void register(RegistryEvent.Register<Block> e) {

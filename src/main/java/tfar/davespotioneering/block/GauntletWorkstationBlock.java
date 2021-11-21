@@ -1,12 +1,9 @@
 package tfar.davespotioneering.block;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.inventory.container.SimpleNamedContainerProvider;
-import net.minecraft.inventory.container.WorkbenchContainer;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
@@ -17,37 +14,83 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.IBooleanFunction;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.items.ItemStackHandler;
-import tfar.davespotioneering.menu.GauntletMenu;
+import tfar.davespotioneering.blockentity.PotionInjectorBlockEntity;
 
 import javax.annotation.Nullable;
 
 public class GauntletWorkstationBlock extends Block {
     public GauntletWorkstationBlock(Properties properties) {
         super(properties);
-        setDefaultState(stateContainer.getBaseState().with(FACING, Direction.NORTH).with(ACTIVE,false));
+        setDefaultState(stateContainer.getBaseState().with(FACING, Direction.NORTH).with(HAS_GAUNTLET,false));
     }
-    private static final ITextComponent CONTAINER_NAME = new TranslationTextComponent("davespotioneering.container.gauntlet_workbench");
 
-    public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
+
+
+    public static final String TRANS_KEY = "davespotioneering.container.potion_injector";
+
+    public static final ITextComponent CONTAINER_NAME = new TranslationTextComponent(TRANS_KEY);
+
+    public static final BooleanProperty HAS_GAUNTLET = BooleanProperty.create("has_gauntlet");
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         if (worldIn.isRemote) {
             return ActionResultType.SUCCESS;
         } else {
-            player.openContainer(
-                    new SimpleNamedContainerProvider((id, inventory, player1) -> new GauntletMenu(id, inventory, loadFromGauntlet(player1)), CONTAINER_NAME));
+            player.openContainer((INamedContainerProvider) worldIn.getTileEntity(pos));
             player.addStat(Stats.INTERACT_WITH_CRAFTING_TABLE);
             return ActionResultType.CONSUME;
         }
+    }
+
+    protected static final VoxelShape BOTTOM_SHAPE = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D);
+
+    protected static final VoxelShape NORTH_SHAPE = Block.makeCuboidShape(0.0D, 8.0D, 0.0D, 8.0D, 16.0D, 16.0D);
+    protected static final VoxelShape SOUTH_SHAPE = Block.makeCuboidShape(8.0D, 8.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+    protected static final VoxelShape EAST_SHAPE = Block.makeCuboidShape(0.0D, 8.0D, 0.0D, 16.0D, 16.0D, 8.0D);
+    protected static final VoxelShape WEST_SHAPE = Block.makeCuboidShape(0.0D, 8.0D, 8.0D, 16.0D, 16.0D, 16.0D);
+
+    public static final VoxelShape[] SHAPES =
+            new VoxelShape[]{VoxelShapes.combineAndSimplify(BOTTOM_SHAPE,EAST_SHAPE, IBooleanFunction.OR),
+                    VoxelShapes.combineAndSimplify(BOTTOM_SHAPE,SOUTH_SHAPE, IBooleanFunction.OR),
+                    VoxelShapes.combineAndSimplify(BOTTOM_SHAPE,WEST_SHAPE, IBooleanFunction.OR),
+                    VoxelShapes.combineAndSimplify(BOTTOM_SHAPE,NORTH_SHAPE, IBooleanFunction.OR),
+            };
+
+    @Override
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+        return SHAPES[state.get(FACING).getHorizontalIndex()];
+    }
+
+    /*@Override
+    public boolean isTransparent(BlockState state) {
+        return true;
+    }
+
+    @Override
+    public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
+        return true;
+    }
+
+    @Override
+    public float getAmbientOcclusionLightValue(BlockState state, IBlockReader worldIn, BlockPos pos) {
+        return 1;
+    }*/
+
+    public static void setHasGauntlet(World worldIn, BlockPos pos, BlockState state, boolean hasBook) {
+        worldIn.setBlockState(pos, state.with(HAS_GAUNTLET, hasBook), 3);
+        //notifyNeighbors(worldIn, pos, state);
     }
 
     public BlockState getStateForPlacement(BlockItemUseContext context) {
@@ -57,7 +100,7 @@ public class GauntletWorkstationBlock extends Block {
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         super.fillStateContainer(builder);
-        builder.add(ACTIVE,FACING);
+        builder.add(HAS_GAUNTLET,FACING);
     }
 
     public static ItemStackHandler loadFromGauntlet(PlayerEntity player) {
@@ -67,12 +110,12 @@ public class GauntletWorkstationBlock extends Block {
 
     @Override
     public boolean hasTileEntity(BlockState state) {
-        return false;
+        return true;
     }
 
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return null;
+        return new PotionInjectorBlockEntity();
     }
 }

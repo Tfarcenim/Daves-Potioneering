@@ -25,11 +25,13 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
+import tfar.davespotioneering.init.ModBlockEntityTypes;
 import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.init.ModContainerTypes;
 import tfar.davespotioneering.init.ModItems;
@@ -72,6 +74,8 @@ public class ClientEvents {
         RenderTypeLookup.setRenderLayer(ModBlocks.ADVANCED_BREWING_STAND, RenderType.getCutoutMipped());
         ScreenManager.registerFactory(ModContainerTypes.ADVANCED_BREWING_STAND, AdvancedBrewingStandScreen::new);
         ScreenManager.registerFactory(ModContainerTypes.ALCHEMICAL_GAUNTLET, GauntletWorkstationScreen::new);
+
+        ClientRegistry.bindTileEntityRenderer(ModBlockEntityTypes.POTION_INJECTOR,PotionInjectorRenderer::new);
 
         Minecraft.getInstance().getBlockColors().register((state, reader, pos, index) -> {
             if (pos != null) {

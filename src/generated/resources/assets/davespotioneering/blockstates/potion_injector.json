@@ -1,32 +1,32 @@
 {
   "variants": {
-    "active=false,facing=north": {
+    "facing=north,has_gauntlet=false": {
       "model": "davespotioneering:block/potion_injector"
     },
-    "active=true,facing=north": {
-      "model": "davespotioneering:block/potion_injector"
-    },
-    "active=false,facing=south": {
+    "facing=south,has_gauntlet=false": {
       "model": "davespotioneering:block/potion_injector",
       "y": 180
     },
-    "active=true,facing=south": {
-      "model": "davespotioneering:block/potion_injector",
-      "y": 180
-    },
-    "active=false,facing=west": {
+    "facing=west,has_gauntlet=false": {
       "model": "davespotioneering:block/potion_injector",
       "y": 270
     },
-    "active=true,facing=west": {
-      "model": "davespotioneering:block/potion_injector",
-      "y": 270
-    },
-    "active=false,facing=east": {
+    "facing=east,has_gauntlet=false": {
       "model": "davespotioneering:block/potion_injector",
       "y": 90
     },
-    "active=true,facing=east": {
+    "facing=north,has_gauntlet=true": {
+      "model": "davespotioneering:block/potion_injector"
+    },
+    "facing=south,has_gauntlet=true": {
+      "model": "davespotioneering:block/potion_injector",
+      "y": 180
+    },
+    "facing=west,has_gauntlet=true": {
+      "model": "davespotioneering:block/potion_injector",
+      "y": 270
+    },
+    "facing=east,has_gauntlet=true": {
       "model": "davespotioneering:block/potion_injector",
       "y": 90
     }

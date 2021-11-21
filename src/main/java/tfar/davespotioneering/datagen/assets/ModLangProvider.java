@@ -4,8 +4,10 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Items;
 import net.minecraftforge.common.data.LanguageProvider;
 import tfar.davespotioneering.DavesPotioneering;
+import tfar.davespotioneering.block.GauntletWorkstationBlock;
 import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.init.ModEffects;
+import tfar.davespotioneering.init.ModItems;
 import tfar.davespotioneering.init.ModPotions;
 
 public class ModLangProvider extends LanguageProvider {
@@ -18,8 +20,10 @@ public class ModLangProvider extends LanguageProvider {
         addEffect(() -> ModEffects.MILK,"Milk");
         addPotions();
         add("container.davespotioneering.advanced_brewing","Advanced Brewing Stand");
+        add(GauntletWorkstationBlock.TRANS_KEY,"Potion Injector");
         addBlock(() -> ModBlocks.ADVANCED_BREWING_STAND,"Advanced Brewing Stand");
         addBlock(() -> ModBlocks.REINFORCED_CAULDRON,"Reinforced Cauldron");
+        addItem(() -> ModItems.ALCHEMICAL_GAUNTLET,"Alchemical Gauntlet");
     }
 
     public void addPotions() {

@@ -3,16 +3,21 @@ package tfar.davespotioneering.client;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.menu.GauntletMenu;
+import tfar.davespotioneering.net.C2SPotionInjector;
+import tfar.davespotioneering.net.PacketHandler;
 
 public class GauntletWorkstationScreen extends ContainerScreen<GauntletMenu> {
     public GauntletWorkstationScreen(GauntletMenu screenContainer, PlayerInventory inv, ITextComponent titleIn) {
         super(screenContainer, inv, titleIn);
         ySize+=30;
+        playerInventoryTitleY += 26;
     }
 
     private static final ResourceLocation BREWING_STAND_GUI_TEXTURES = new ResourceLocation(DavesPotioneering.MODID,"textures/gui/gauntlet_workstation.png");
@@ -21,6 +26,25 @@ public class GauntletWorkstationScreen extends ContainerScreen<GauntletMenu> {
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
         this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        int x = guiLeft + 47;
+        int y = guiTop + 76;
+        int w = 24;
+        addButton(new Button(x,y,36,20,new StringTextComponent("Strip"),this::strip));
+        addButton(new Button(x + 46,y,36,20,new StringTextComponent("Inject"),this::inject));
+
+    }
+
+    private void inject(Button b) {
+        PacketHandler.INSTANCE.sendToServer(new C2SPotionInjector(0));
+    }
+
+    private void strip(Button b) {
+        PacketHandler.INSTANCE.sendToServer(new C2SPotionInjector(1));
     }
 
     @Override
