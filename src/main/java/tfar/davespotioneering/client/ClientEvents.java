@@ -88,9 +88,7 @@ public class ClientEvents {
         },ModBlocks.REINFORCED_CAULDRON);
 
         ItemModelsProperties.registerProperty(ModItems.ALCHEMICAL_GAUNTLET,new ResourceLocation("active"),
-                (ItemStack a, ClientWorld b, LivingEntity c) -> {
-           return a.hasTag() ? a.getTag().getBoolean("active") ? 1 : 0: 0;
-        });
+                (stack, world, entity) -> stack.hasTag() ? stack.getTag().getBoolean("active") ? 1 : 0: 0);
 
     }
 
