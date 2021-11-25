@@ -24,12 +24,27 @@ public class ModItemModelProvider extends ItemModelProvider {
         makeSimpleBlockItem(ModItems.POTION_INJECTOR);
         gauntlet();
 
-        addTippedLayer(Items.DIAMOND_SWORD);
+
+       // addTippedLayer(Items.DIAMOND_SWORD);
     }
 
+    //this is complicated
     private void addTippedLayer(Item item) {
-        ModelFile.ExistingModelFile modelFile = getExistingFile(new ResourceLocation("item/"+item.getRegistryName().getPath()));
-        ModelFile newFile = getBuilder(modelFile.getLocation().toString()).parent(modelFile).texture("layer1",modLoc("item/sword_dripping"));
+        ResourceLocation rl = new ResourceLocation("item/"+item.getRegistryName().getPath());
+        //first, get the original model from the item
+        ModelFile.ExistingModelFile modelFile = getExistingFile(rl);
+        //then replace it with a new file
+
+        ModelFile newTippedFile = getBuilder("tipped_"+modelFile.getLocation().toString()).parent(modelFile)
+                .texture("layer1",modLoc("item/sword_dripping"));
+
+        ModelFile newFile = getBuilder(modelFile.getLocation().toString()).parent(getExistingFile(mcLoc("item/handheld")))
+                .texture("layer0",rl)
+                //1 means that it's tipped, and should use the new tipped + original model
+                //0 means that it should use the original parent model
+                .override()
+                .predicate(new ResourceLocation("tipped"),1)
+                .model(newTippedFile).end();
     }
 
     private void gauntlet() {

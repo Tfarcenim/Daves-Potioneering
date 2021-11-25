@@ -9,10 +9,8 @@ import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemModelsProperties;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.PotionItem;
-import net.minecraft.item.TieredItem;
+import net.minecraft.item.*;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 import net.minecraft.tileentity.TileEntity;
@@ -90,6 +88,15 @@ public class ClientEvents {
         ItemModelsProperties.registerProperty(ModItems.ALCHEMICAL_GAUNTLET,new ResourceLocation("active"),
                 (stack, world, entity) -> stack.hasTag() ? stack.getTag().getBoolean("active") ? 1 : 0: 0);
 
+       /* ItemModelsProperties.registerProperty(Items.DIAMOND_SWORD,new ResourceLocation("tipped"),
+                (stack,world,entity) -> PotionUtils.getPotionFromItem(stack) != Potions.EMPTY ? 1 : 0);
+
+        Minecraft.getInstance().getItemColors().register((stack, index) -> {
+            if (stack.hasTag() && index == 1) {
+                return PotionUtils.getColor(stack);
+            }
+            return 0xffffff;
+        },Items.DIAMOND_SWORD);*/
     }
 
     public static void onBakeModels(ModelBakeEvent event) {
