@@ -88,6 +88,7 @@ public class DavesPotioneering {
         MinecraftForge.EVENT_BUS.addListener(Events::potionCooldown);
         MinecraftForge.EVENT_BUS.addListener(Events::milkCow);
         MinecraftForge.EVENT_BUS.addListener(Events::afterHit);
+        MinecraftForge.EVENT_BUS.addListener(Events::playerTick);
 
         ItemStack milkPot = new ItemStack(Items.POTION);
         PotionUtils.addPotionToItemStack(milkPot,ModPotions.MILK);
