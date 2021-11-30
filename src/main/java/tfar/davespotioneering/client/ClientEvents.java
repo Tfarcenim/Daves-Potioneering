@@ -2,6 +2,7 @@ package tfar.davespotioneering.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.particle.DripParticle;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -10,6 +11,7 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
@@ -19,6 +21,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -29,10 +32,7 @@ import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
-import tfar.davespotioneering.init.ModBlockEntityTypes;
-import tfar.davespotioneering.init.ModBlocks;
-import tfar.davespotioneering.init.ModContainerTypes;
-import tfar.davespotioneering.init.ModItems;
+import tfar.davespotioneering.init.*;
 import tfar.davespotioneering.item.GauntletItem;
 
 import java.util.List;
@@ -65,6 +65,10 @@ public class ClientEvents {
         }
     }
 
+    public static void particleFact(ParticleFactoryRegisterEvent e) {
+        Minecraft.getInstance().particles.registerFactory(ModParticleTypes.FAST_DRIPPING_WATER, FastDripParticle.DrippingWaterFactory::new);
+    }
+
     public static void doClientStuff(final FMLClientSetupEvent event) {
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::playSound);
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::tooltips);
@@ -72,6 +76,8 @@ public class ClientEvents {
         RenderTypeLookup.setRenderLayer(ModBlocks.ADVANCED_BREWING_STAND, RenderType.getCutoutMipped());
         ScreenManager.registerFactory(ModContainerTypes.ADVANCED_BREWING_STAND, AdvancedBrewingStandScreen::new);
         ScreenManager.registerFactory(ModContainerTypes.ALCHEMICAL_GAUNTLET, GauntletWorkstationScreen::new);
+
+
 
         ClientRegistry.bindTileEntityRenderer(ModBlockEntityTypes.POTION_INJECTOR,PotionInjectorRenderer::new);
 
