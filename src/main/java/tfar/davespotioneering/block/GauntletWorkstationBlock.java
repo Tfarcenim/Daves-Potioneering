@@ -35,8 +35,6 @@ public class GauntletWorkstationBlock extends Block {
         setDefaultState(stateContainer.getBaseState().with(FACING, Direction.NORTH).with(HAS_GAUNTLET,false));
     }
 
-
-
     public static final String TRANS_KEY = "davespotioneering.container.potion_injector";
 
     public static final ITextComponent CONTAINER_NAME = new TranslationTextComponent(TRANS_KEY);

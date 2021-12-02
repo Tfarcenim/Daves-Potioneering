@@ -1,0 +1,11 @@
+{
+  "gauntlet_scroll": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "davespotioneering:gauntlet_scroll",
+        "stream": true
+      }
+    ]
+  }
+}

@@ -110,6 +110,7 @@ public class GauntletMenu extends Container {
                 nbt1.add(StringNBT.valueOf(PotionUtils.getPotionFromItem(potionStack).getRegistryName().toString()));
                 inventory.extractItem(i,64,false);
             }
+            nbt.putInt("activePotionIndex", 0);
             nbt.put("potions",nbt1);
             nbt.putInt("blaze",inventory.getStackInSlot(PotionInjectorHandler.BLAZE).getCount());
             inventory.extractItem(PotionInjectorHandler.BLAZE,64,false);
