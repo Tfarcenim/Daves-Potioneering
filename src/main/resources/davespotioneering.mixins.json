@@ -14,7 +14,8 @@
     "ThrowablePotionItemMixin"
   ],
   "client": [
-    "ItemAccess"
+    "ItemAccess",
+    "IngameGuiMixin"
   ],
   "injectors": {
     "defaultRequire": 1

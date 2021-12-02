@@ -11,6 +11,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.brewing.BrewingRecipe;
@@ -50,6 +51,7 @@ public class DavesPotioneering {
         bus.addGenericListener(Potion.class,ModPotions::register);
         bus.addGenericListener(TileEntityType.class, ModBlockEntityTypes::register);
         bus.addGenericListener(ContainerType.class, ModContainerTypes::register);
+        bus.addGenericListener(SoundEvent.class, ModSounds::register);
 
         ModLoadingContext.get().registerConfig(Type.CLIENT, CLIENT_SPEC);
         ModLoadingContext.get().registerConfig(Type.SERVER, SERVER_SPEC);
@@ -63,7 +65,6 @@ public class DavesPotioneering {
             MinecraftForge.EVENT_BUS.addListener(ClientEvents::gauntletHud);
         }
     }
-
 
     public static final ModConfig.Client CLIENT;
     public static final ForgeConfigSpec CLIENT_SPEC;
@@ -88,6 +89,7 @@ public class DavesPotioneering {
         MinecraftForge.EVENT_BUS.addListener(Events::potionCooldown);
         MinecraftForge.EVENT_BUS.addListener(Events::milkCow);
         MinecraftForge.EVENT_BUS.addListener(Events::afterHit);
+        MinecraftForge.EVENT_BUS.addListener(Events::switchGameMode);
 
         ItemStack milkPot = new ItemStack(Items.POTION);
         PotionUtils.addPotionToItemStack(milkPot,ModPotions.MILK);

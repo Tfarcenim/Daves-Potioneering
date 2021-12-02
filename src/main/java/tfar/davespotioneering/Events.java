@@ -1,7 +1,6 @@
 package tfar.davespotioneering;
 
-import com.mojang.datafixers.util.Pair;
-import net.minecraft.block.CauldronBlock;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.CowEntity;
@@ -16,14 +15,25 @@ import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.GameType;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import net.minecraftforge.event.entity.living.PotionEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import tfar.davespotioneering.block.ReinforcedCauldronBlock;
+import tfar.davespotioneering.client.GauntletHUD;
+import tfar.davespotioneering.client.GauntletHUDMovementGui;
 import tfar.davespotioneering.init.ModPotions;
 
 public class Events {
+
+    public static void switchGameMode(PlayerEvent.PlayerChangeGameModeEvent event) {
+        if (event.getNewGameMode() == GameType.SURVIVAL && event.getCurrentGameMode() == GameType.CREATIVE && GauntletHUD.hudInstance.preset == GauntletHUD.HudPresets.ABOVE_HOTBAR) {
+            GauntletHUD.hudInstance.y = GauntletHUDMovementGui.getFixedPositionValue(Minecraft.getInstance().getMainWindow().getScaledHeight() - 42 - 40, false);
+        }
+        if (event.getNewGameMode() == GameType.CREATIVE && event.getCurrentGameMode() == GameType.SURVIVAL && GauntletHUD.hudInstance.preset == GauntletHUD.HudPresets.ABOVE_HOTBAR) {
+            GauntletHUD.hudInstance.y = GauntletHUDMovementGui.getFixedPositionValue(Minecraft.getInstance().getMainWindow().getScaledHeight() - 42 - 25, false);
+        }
+    }
 
     public static void potionCooldown(PlayerInteractEvent.RightClickItem e) {
         ItemStack stack = e.getItemStack();
