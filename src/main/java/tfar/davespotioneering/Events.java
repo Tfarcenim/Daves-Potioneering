@@ -99,7 +99,7 @@ public class Events {
 
             if (stack.getItem() instanceof ToolItem && PotionUtils.getPotionFromItem(stack) != Potions.EMPTY) {
 
-                IParticleData particleData = ModParticleTypes.FAST_DRIPPING_WATER;
+                IParticleData particleData = ParticleTypes.DRIPPING_WATER;
 
 
                 Vector3d vec = player.getPositionVec().add(0, +player.getHeight() / 2, 0);
