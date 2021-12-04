@@ -1,6 +1,7 @@
 package tfar.davespotioneering.datagen.assets;
 
 import net.minecraft.data.DataGenerator;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.Items;
 import net.minecraftforge.common.data.LanguageProvider;
 import tfar.davespotioneering.DavesPotioneering;
@@ -33,6 +34,11 @@ public class ModLangProvider extends LanguageProvider {
         add("davespotioneering.gui.moveGauntletHUD.preset5", "Above Hotbar");
         add("davespotioneering.tooltip.gauntlet", "%s %s");
         add("davespotioneering.tooltip.gauntlet.withDuration", "%s %s (%s)");
+        addGroup(ModItems.tab,"Dave's Potioneering");
+    }
+
+    protected void addGroup(ItemGroup group,String name) {
+        add(group.getGroupName().getString(),name);
     }
 
     public void addPotions() {
