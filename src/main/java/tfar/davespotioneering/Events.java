@@ -6,6 +6,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.BrewingStandContainer;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.ThrowablePotionItem;
@@ -17,12 +19,17 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
+import net.minecraft.tileentity.BrewingStandTileEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.GameType;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.brewing.PlayerBrewedPotionEvent;
+import net.minecraftforge.event.brewing.PotionBrewEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -30,7 +37,12 @@ import net.minecraftforge.fml.LogicalSide;
 import tfar.davespotioneering.block.ReinforcedCauldronBlock;
 import tfar.davespotioneering.client.GauntletHUD;
 import tfar.davespotioneering.client.GauntletHUDMovementGui;
+import tfar.davespotioneering.duck.BrewingStandDuck;
 import tfar.davespotioneering.init.ModPotions;
+import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
+import tfar.davespotioneering.mixin.BrewingStandContainerAccess;
+
+import java.util.List;
 
 public class Events {
 
@@ -115,6 +127,29 @@ public class Events {
                 vec = vec.add(x1 + x2, 0, z1 + z2);
 
                 spawnFluidParticle(Minecraft.getInstance().world, vec, particleData);
+            }
+        }
+    }
+
+    //this is called when the potion is done brewing, we use this instead of the forge event because it has a reference to the blockentity that created the potions
+    public static void potionBrew(TileEntity brewingStandTileEntity, ItemStack ingredient) {
+        ((BrewingStandDuck)brewingStandTileEntity).addXp(Util.getBrewXp(ingredient));
+    }
+
+    //this is called when the player takes a potion from the brewing stand
+    public static void playerBrew(PlayerBrewedPotionEvent e) {
+        PlayerEntity player = e.getPlayer();
+        if (!player.world.isRemote) {
+            Container container = player.openContainer;
+            TileEntity entity = null;
+            if (container instanceof BrewingStandContainer) {
+                entity = (BrewingStandTileEntity)((BrewingStandContainerAccess)container).getTileBrewingStand();
+            } else if (container instanceof AdvancedBrewingStandContainer) {
+                entity = ((AdvancedBrewingStandContainer)container).blockEntity;
+            }
+
+            if (entity != null) {
+                ((BrewingStandDuck)entity).dump(player);
             }
         }
     }

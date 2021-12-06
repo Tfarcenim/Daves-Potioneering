@@ -1,3 +1,6 @@
 {
-  "parent": "davespotioneering:block/reinforced_cauldron_level0"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "davespotioneering:item/reinforced_cauldron"
+  }
 }

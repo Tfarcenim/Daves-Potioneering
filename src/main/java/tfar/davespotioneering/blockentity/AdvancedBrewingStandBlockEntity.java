@@ -20,12 +20,15 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.event.ForgeEventFactory;
 import org.apache.commons.lang3.tuple.Pair;
+import tfar.davespotioneering.Events;
 import tfar.davespotioneering.Util;
+import tfar.davespotioneering.duck.BrewingStandDuck;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
 import tfar.davespotioneering.inv.BrewingHandler;
 import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
@@ -33,7 +36,7 @@ import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 
-public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
+public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITickableTileEntity, INamedContainerProvider, BrewingStandDuck {
     /** an array of the output slot indices */
 
     //potions are 0,1,2
@@ -44,6 +47,8 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
     public static final int FUEL = 8;
 
     public static final int TIME = 200;
+
+    protected int xp;
 
 
     /** The ItemStacks currently placed in the slots of the brewing stand */
@@ -233,6 +238,7 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
 
         BrewingRecipeRegistry.brewPotions(brewingHandler.getStacks(), ingredient, POTIONS);
         ForgeEventFactory.onPotionBrewed(brewingHandler.getStacks());
+        Events.potionBrew(this,ingredient);
 
         if (canMilkify) {
             for (int i = 0; i < POTIONS.length; i++) {
@@ -280,6 +286,7 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
         brewingHandler.deserializeNBT(items);
         this.brewTime = nbt.getShort("BrewTime");
         this.fuel = nbt.getInt("Fuel");
+        xp = nbt.getInt("xp");
     }
 
     @Override
@@ -288,6 +295,7 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
         compound.putShort("BrewTime", (short)this.brewTime);
         compound.put("Items",brewingHandler.serializeNBT());
         compound.putInt("Fuel", this.fuel);
+        compound.putInt("xp",xp);
         return compound;
     }
 
@@ -299,7 +307,19 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
     @Nullable
     @Override
     public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
-        return new AdvancedBrewingStandContainer(id, playerInventory, brewingHandler, this.data);
+        return new AdvancedBrewingStandContainer(id, playerInventory, brewingHandler, this.data,this);
+    }
+
+    @Override
+    public void addXp(double xp) {
+        this.xp += xp;
+    }
+
+    @Override
+    public void dump(PlayerEntity player) {
+        Util.splitAndSpawnExperience(world,player.getPositionVec(),xp);
+        xp = 0;
+        markDirty();
     }
 
     /*net.minecraftforge.common.util.LazyOptional<? extends net.minecraftforge.items.IItemHandler>[] handlers =

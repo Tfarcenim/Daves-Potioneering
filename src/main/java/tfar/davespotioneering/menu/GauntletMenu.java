@@ -7,9 +7,15 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
+import net.minecraft.potion.Potions;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import tfar.davespotioneering.init.ModContainerTypes;
@@ -112,8 +118,11 @@ public class GauntletMenu extends Container {
             }
             nbt.putInt("activePotionIndex", 0);
             nbt.put("potions",nbt1);
-            nbt.putInt("blaze",inventory.getStackInSlot(PotionInjectorHandler.BLAZE).getCount());
-            inventory.extractItem(PotionInjectorHandler.BLAZE,64,false);
+
+            int blazeInsert = Math.min(32,inventory.getStackInSlot(PotionInjectorHandler.BLAZE).getCount());
+
+            nbt.putInt("blaze",blazeInsert);
+            inventory.extractItem(PotionInjectorHandler.BLAZE,blazeInsert,false);
             gauntlet.getOrCreateTag().put("info",nbt);
         }
     }
@@ -122,6 +131,17 @@ public class GauntletMenu extends Container {
         ItemStack gauntlet = inventory.getStackInSlot(PotionInjectorHandler.GAUNTLET);
         if (!gauntlet.isEmpty()) {
             CompoundNBT nbt = gauntlet.getTag().getCompound("info");
+            ListNBT listNBT = nbt.getList("potions", Constants.NBT.TAG_STRING);
+            for (int i = 0; i < listNBT.size(); i++) {
+                INBT inbt = listNBT.get(i);
+
+                Potion potion = Registry.POTION.getOrDefault(new ResourceLocation(inbt.getString()));
+                if (potion != Potions.EMPTY) {
+                    ItemStack stack = new ItemStack(Items.LINGERING_POTION);
+                    PotionUtils.addPotionToItemStack(stack, potion);
+                    inventory.insertItem(i, stack, false);
+                }
+            }
             nbt.remove("potions");
             int blaze = nbt.getInt("blaze");
             inventory.insertItem(PotionInjectorHandler.BLAZE,new ItemStack(Items.BLAZE_POWDER,blaze),false);

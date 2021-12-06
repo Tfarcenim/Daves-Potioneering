@@ -21,7 +21,7 @@ public class ModItemModelProvider extends ItemModelProvider {
     @Override
     protected void registerModels() {
         makeOneLayerItem(ModItems.ADVANCED_BREWING_STAND);
-        makeSimpleBlockItem(ModItems.REINFORCED_CAULDRON,new ResourceLocation(DavesPotioneering.MODID,"block/reinforced_cauldron_level0"));
+        makeOneLayerItem(ModItems.REINFORCED_CAULDRON);
         makeSimpleBlockItem(ModItems.MAGIC_LECTERN);
         makeSimpleBlockItem(ModItems.POTION_INJECTOR);
 

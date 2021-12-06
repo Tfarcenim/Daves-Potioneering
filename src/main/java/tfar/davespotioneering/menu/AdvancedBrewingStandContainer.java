@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.IntArray;
 import net.minecraftforge.items.IItemHandler;
@@ -23,18 +24,22 @@ public class AdvancedBrewingStandContainer extends Container {
     private final ItemStackHandler tileBrewingStand;
     private final IIntArray data;
 
+    public AdvancedBrewingStandBlockEntity blockEntity;
+
     //client
     public AdvancedBrewingStandContainer(int id, PlayerInventory playerInventory) {
-        this(id, playerInventory, new ItemStackHandler(9), new IntArray(2));
+        this(id, playerInventory, new ItemStackHandler(9), new IntArray(2),null);
     }
 
     //common
-    public AdvancedBrewingStandContainer(int id, PlayerInventory playerInventory, ItemStackHandler inventory, IIntArray data) {
+    public AdvancedBrewingStandContainer(int id, PlayerInventory playerInventory, ItemStackHandler inventory, IIntArray data, AdvancedBrewingStandBlockEntity advancedBrewingStandBlockEntity) {
         super(ModContainerTypes.ADVANCED_BREWING_STAND, id);
        // assertInventorySize(inventory, 5);
        // assertIntArraySize(data, 2);
         this.tileBrewingStand = inventory;
         this.data = data;
+
+        this.blockEntity = advancedBrewingStandBlockEntity;
 
         int potY = 77;
 
@@ -184,8 +189,8 @@ public class AdvancedBrewingStandContainer extends Container {
     }
 
     public static class PotionSlot extends SlotItemHandler {
-        public PotionSlot(IItemHandler p_i47598_1_, int p_i47598_2_, int p_i47598_3_, int p_i47598_4_) {
-            super(p_i47598_1_, p_i47598_2_, p_i47598_3_, p_i47598_4_);
+        public PotionSlot(IItemHandler iItemHandler, int index, int x, int y) {
+            super(iItemHandler, index, x, y);
         }
 
         /**

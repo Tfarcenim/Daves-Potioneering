@@ -6,6 +6,8 @@
   "mixins": [
     "BlockEntityTypeAcces",
     "BrewingRecipeRegistryMixin",
+    "BrewingStandBlockEntityMixin",
+    "BrewingStandContainerAccess",
     "BrewingStandContainerMixin",
     "LivingEntityMixin",
     "PotionEntityMixin",
@@ -14,8 +16,8 @@
     "ThrowablePotionItemMixin"
   ],
   "client": [
-    "ItemAccess",
-    "IngameGuiMixin"
+    "IngameGuiMixin",
+    "ItemAccess"
   ],
   "injectors": {
     "defaultRequire": 1
