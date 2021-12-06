@@ -25,6 +25,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.registries.ForgeRegistries;
 import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.init.ModItems;
+import tfar.davespotioneering.menu.GauntletMenu;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ public class GauntletItem extends SwordItem {
     public int getDamage(ItemStack stack) {
         CompoundNBT info = stack.getOrCreateTag().getCompound("info");
         double blaze = info.getInt("blaze");
-        return 32 - (int) blaze;
+        return GauntletMenu.BLAZE_CAP - (int) blaze;
     }
 
     @Override
