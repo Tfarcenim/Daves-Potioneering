@@ -10,6 +10,7 @@
     "BrewingStandContainerAccess",
     "BrewingStandContainerMixin",
     "LivingEntityMixin",
+    "PlayerEntityMixin",
     "PotionEntityMixin",
     "PotionItemMixin",
     "ProtectionEnchantmentMixin",

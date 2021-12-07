@@ -31,13 +31,16 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.brewing.PlayerBrewedPotionEvent;
 import net.minecraftforge.event.brewing.PotionBrewEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.PotionEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.LogicalSide;
 import tfar.davespotioneering.block.ReinforcedCauldronBlock;
 import tfar.davespotioneering.client.GauntletHUD;
 import tfar.davespotioneering.client.GauntletHUDMovementGui;
 import tfar.davespotioneering.duck.BrewingStandDuck;
+import tfar.davespotioneering.init.ModItems;
 import tfar.davespotioneering.init.ModPotions;
 import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
 import tfar.davespotioneering.mixin.BrewingStandContainerAccess;
@@ -150,6 +153,16 @@ public class Events {
 
             if (entity != null) {
                 ((BrewingStandDuck)entity).dump(player);
+            }
+        }
+    }
+
+    public static void canApplyEffect(PotionEvent.PotionApplicableEvent e) {
+        LivingEntity entity = e.getEntityLiving();
+        if (entity instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity)entity;
+            if (player.getActiveItemStack().getItem() == ModItems.POTIONEER_SHIELD) {
+                e.setResult(Event.Result.DENY);
             }
         }
     }
