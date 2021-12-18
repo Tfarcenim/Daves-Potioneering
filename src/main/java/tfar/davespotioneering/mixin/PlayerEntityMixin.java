@@ -17,6 +17,6 @@ abstract class PlayerEntityMixin extends LivingEntity {
 
     @ModifyArg(method = "disableShield",at = @At(value = "INVOKE",target = "Lnet/minecraft/util/CooldownTracker;setCooldown(Lnet/minecraft/item/Item;I)V"))
     private int moreDelay(int old) {
-        return this.getActiveItemStack().getItem() == ModItems.POTIONEER_SHIELD ? 200 : old;
+        return this.getActiveItemStack().getItem() == ModItems.UMBRELLA ? 200 : old;
     }
 }

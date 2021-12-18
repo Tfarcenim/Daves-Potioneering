@@ -22,14 +22,12 @@ import net.minecraft.potion.Potions;
 import net.minecraft.tileentity.BrewingStandTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.GameType;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.brewing.PlayerBrewedPotionEvent;
-import net.minecraftforge.event.brewing.PotionBrewEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.PotionEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -44,8 +42,6 @@ import tfar.davespotioneering.init.ModItems;
 import tfar.davespotioneering.init.ModPotions;
 import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
 import tfar.davespotioneering.mixin.BrewingStandContainerAccess;
-
-import java.util.List;
 
 public class Events {
 
@@ -161,7 +157,7 @@ public class Events {
         LivingEntity entity = e.getEntityLiving();
         if (entity instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity)entity;
-            if (player.getActiveItemStack().getItem() == ModItems.POTIONEER_SHIELD) {
+            if (player.getActiveItemStack().getItem() == ModItems.UMBRELLA) {
                 e.setResult(Event.Result.DENY);
             }
         }
