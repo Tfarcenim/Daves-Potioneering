@@ -40,6 +40,7 @@ import tfar.davespotioneering.client.GauntletHUDMovementGui;
 import tfar.davespotioneering.duck.BrewingStandDuck;
 import tfar.davespotioneering.init.ModItems;
 import tfar.davespotioneering.init.ModPotions;
+import tfar.davespotioneering.item.UmbrellaItem;
 import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
 import tfar.davespotioneering.mixin.BrewingStandContainerAccess;
 
@@ -157,7 +158,7 @@ public class Events {
         LivingEntity entity = e.getEntityLiving();
         if (entity instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity)entity;
-            if (player.getActiveItemStack().getItem() == ModItems.UMBRELLA) {
+            if (player.getActiveItemStack().getItem() instanceof UmbrellaItem) {
                 e.setResult(Event.Result.DENY);
             }
         }

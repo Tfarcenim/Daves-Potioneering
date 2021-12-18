@@ -7,7 +7,7 @@ import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-import tfar.davespotioneering.init.ModItems;
+import tfar.davespotioneering.item.UmbrellaItem;
 
 @Mixin(PlayerEntity.class)
 abstract class PlayerEntityMixin extends LivingEntity {
@@ -17,6 +17,6 @@ abstract class PlayerEntityMixin extends LivingEntity {
 
     @ModifyArg(method = "disableShield",at = @At(value = "INVOKE",target = "Lnet/minecraft/util/CooldownTracker;setCooldown(Lnet/minecraft/item/Item;I)V"))
     private int moreDelay(int old) {
-        return this.getActiveItemStack().getItem() == ModItems.UMBRELLA ? 200 : old;
+        return this.getActiveItemStack().getItem() instanceof UmbrellaItem ? 200 : old;
     }
 }

@@ -1,5 +1,6 @@
 package tfar.davespotioneering.init;
 
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.item.*;
 import net.minecraft.util.ResourceLocation;
@@ -7,6 +8,7 @@ import net.minecraftforge.event.RegistryEvent;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.client.gecko.GeoItemStackRenderer;
 import tfar.davespotioneering.item.GauntletItem;
+import tfar.davespotioneering.item.UmbrellaItem;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -27,10 +29,17 @@ public class ModItems {
     public static final Item ADVANCED_BREWING_STAND = new BlockItem(ModBlocks.ADVANCED_BREWING_STAND,new Item.Properties().group(tab));
     public static final Item REINFORCED_CAULDRON = new BlockItem(ModBlocks.REINFORCED_CAULDRON,new Item.Properties().group(tab));
     public static final Item ALCHEMICAL_GAUNTLET = new GauntletItem(new Item.Properties().group(tab).maxDamage(32));
-    public static final Item UMBRELLA = new ShieldItem(new Item.Properties().group(tab).maxDamage(300)
-            .setISTER(() -> () -> HideISTERsFromServer.createGeoItemStackRenderer(new ResourceLocation(DavesPotioneering.MODID,"umbrella"),() -> ModItems.UMBRELLA)));
+
     public static final Item MAGIC_LECTERN = new BlockItem(ModBlocks.MAGIC_LECTERN,new Item.Properties());
     public static final Item POTION_INJECTOR = new BlockItem(ModBlocks.POTION_INJECTOR,new Item.Properties().group(tab));
+
+    public static final Item UMBRELLA = new UmbrellaItem(new Item.Properties().group(tab).maxDamage(300)
+            .setISTER(() -> () -> HideISTERsFromServer.createGeoItemStackRenderer(new ResourceLocation(DavesPotioneering.MODID,"umbrella"),() -> ModItems.GENTLEMAN_UMBRELLA)));
+    public static final Item GENTLEMAN_UMBRELLA = new UmbrellaItem(new Item.Properties().group(tab).maxDamage(300)
+            .setISTER(() -> () -> HideISTERsFromServer.createGeoItemStackRenderer(new ResourceLocation(DavesPotioneering.MODID,"gentleman_umbrella"),() -> ModItems.GENTLEMAN_UMBRELLA)));
+
+    public static final Item CLEAR_UMBRELLA = new UmbrellaItem(new Item.Properties().group(tab).maxDamage(300)
+            .setISTER(() -> () -> HideISTERsFromServer.createGeoItemStackRendererTransparent(new ResourceLocation(DavesPotioneering.MODID,"clear_umbrella"),() -> ModItems.GENTLEMAN_UMBRELLA)));
 
     public static void register(RegistryEvent.Register<Item> e) {
         for (Field field : ModItems.class.getFields()) {
@@ -49,6 +58,10 @@ public class ModItems {
 
         private static ItemStackTileEntityRenderer createGeoItemStackRenderer(ResourceLocation itemName, Supplier<Item> supplier) {
             return new GeoItemStackRenderer<>(new GeoItemStackRenderer.GeoItemModel<>(itemName),new GeoItemStackRenderer.DummyAnimations(supplier));
+        }
+
+        private static ItemStackTileEntityRenderer createGeoItemStackRendererTransparent(ResourceLocation itemName, Supplier<Item> supplier) {
+            return new GeoItemStackRenderer<>(new GeoItemStackRenderer.GeoItemModel<>(itemName), RenderType::getEntityTranslucent,new GeoItemStackRenderer.DummyAnimations(supplier));
         }
     }
 }
