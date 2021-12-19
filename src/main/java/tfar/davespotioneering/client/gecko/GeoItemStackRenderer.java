@@ -25,6 +25,7 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 import tfar.davespotioneering.DavesPotioneering;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.Collections;
 import java.util.Map;
@@ -110,6 +111,11 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends ItemStackTileEn
                 (float) renderColor.getRed() / 255f, (float) renderColor.getGreen() / 255f,
                 (float) renderColor.getBlue() / 255f, (float) renderColor.getAlpha() / 255);
         matrices.pop();
+    }
+
+    @Override
+    public RenderType getRenderType(T animatable, float partialTicks, MatrixStack stack, @Nullable IRenderTypeBuffer renderTypeBuffer, @Nullable IVertexBuilder vertexBuilder, int packedLightIn, ResourceLocation textureLocation) {
+        return renderTypeGetter.apply(textureLocation);
     }
 
     @Override
