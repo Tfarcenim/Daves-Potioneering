@@ -6,7 +6,7 @@ import net.minecraft.item.*;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import tfar.davespotioneering.DavesPotioneering;
-import tfar.davespotioneering.client.gecko.GeoItemStackRenderer;
+import tfar.davespotioneering.client.model.gecko.GeoItemStackRenderer;
 import tfar.davespotioneering.item.GauntletItem;
 import tfar.davespotioneering.item.UmbrellaItem;
 

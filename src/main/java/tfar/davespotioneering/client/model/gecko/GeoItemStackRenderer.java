@@ -1,4 +1,4 @@
-package tfar.davespotioneering.client.gecko;
+package tfar.davespotioneering.client.model.gecko;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;

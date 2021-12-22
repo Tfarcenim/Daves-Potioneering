@@ -60,9 +60,8 @@ public class DavesPotioneering {
         bus.addListener(this::setup);
         if (FMLEnvironment.dist.isClient()) {
             // Register the doClientStuff method for modloading
-            bus.addListener(ClientEvents::onBakeModels);
             bus.addListener(ClientEvents::doClientStuff);
-            MinecraftForge.EVENT_BUS.addListener(ClientEvents::gauntletHud);
+            bus.addListener(ClientEvents::registerLoader);
         }
     }
 

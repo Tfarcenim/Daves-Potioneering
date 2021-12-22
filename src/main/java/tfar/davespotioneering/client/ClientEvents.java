@@ -23,8 +23,10 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -45,12 +47,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static tfar.davespotioneering.DavesPotioneering.MODID;
+
 public class ClientEvents {
 
     public static void playSound(PlaySoundEvent event) {
         if (event.getName().equals(SoundEvents.BLOCK_BREWING_STAND_BREW.getName().getPath()) && !ModConfig.Client.play_block_brewing_stand_brew.get()) {
             event.setResultSound(null);
         }
+    }
+
+    public static void registerLoader(final ModelRegistryEvent event) {
+        ModelLoaderRegistry.registerLoader(new ResourceLocation(MODID, "fullbright"), ModelLoader.INSTANCE);
     }
 
     public static void onMouseInput(InputEvent.MouseInputEvent e) {
@@ -120,39 +128,7 @@ public class ClientEvents {
         }, ModBlocks.REINFORCED_CAULDRON);
 
         ItemModelsProperties.registerProperty(ModItems.ALCHEMICAL_GAUNTLET, new ResourceLocation("active"),
-                (ItemStack a, ClientWorld b, LivingEntity c) -> {
-                    return a.hasTag() ? a.getTag().getBoolean("active") ? 1 : 0 : 0;
-                });
-
-    }
-
-    public static void onBakeModels(ModelBakeEvent event) {
-        // we want to replace some of the regular baked block models with models that
-        // have emissive/fullbright textures
-        Map<ResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
-
-        // the model registry uses ModelResourceLocations that can't easily be compared
-        // to regular resource locations
-        // they have an additional field for the blockstate properties of a blockstate
-        // so we need to replace models on a per-blockstate bases
-
-        // we need to use existing models to create our enhanced models, so we'll need to make sure they're in the registry first and get them
-        // let's make a reusable model override function
-        // the resourcelocations we specify in the FullbrightBakedModel constructor are *texture* locations
-
-        List<ResourceLocation> possibilities =
-                modelRegistry.keySet().stream().filter(m -> m.getPath().contains("alchemical")).collect(Collectors.toList());
-
-        IBakedModel litGauntlet3dModel = modelRegistry.get(
-                new ModelResourceLocation(new ResourceLocation(DavesPotioneering.MODID, "alchemical_gauntlet"), "inventory"
-                ));
-
-        if (litGauntlet3dModel != null) {
-
-        }
-
-        // now we get all the blockstates from our block, narrow them down to the only ones we want to have fullbright textures,
-        // and replace the models with fullbright-enabled models
+                (ItemStack a, ClientWorld b, LivingEntity c) -> a.hasTag() ? a.getTag().getBoolean("active") ? 1 : 0 : 0);
 
     }
 
