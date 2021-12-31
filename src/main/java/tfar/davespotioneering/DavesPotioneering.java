@@ -6,6 +6,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.particles.ParticleType;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
@@ -52,6 +53,7 @@ public class DavesPotioneering {
         bus.addGenericListener(TileEntityType.class, ModBlockEntityTypes::register);
         bus.addGenericListener(ContainerType.class, ModContainerTypes::register);
         bus.addGenericListener(SoundEvent.class, ModSounds::register);
+        bus.addGenericListener(ParticleType.class,ModParticleTypes::register);
 
         ModLoadingContext.get().registerConfig(Type.CLIENT, CLIENT_SPEC);
         ModLoadingContext.get().registerConfig(Type.SERVER, SERVER_SPEC);
@@ -62,6 +64,7 @@ public class DavesPotioneering {
             // Register the doClientStuff method for modloading
             bus.addListener(ClientEvents::doClientStuff);
             bus.addListener(ClientEvents::registerLoader);
+            bus.addListener(ClientEvents::particle);
         }
     }
 

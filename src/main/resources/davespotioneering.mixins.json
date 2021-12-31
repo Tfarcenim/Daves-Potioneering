@@ -18,7 +18,8 @@
   ],
   "client": [
     "IngameGuiMixin",
-    "ItemAccess"
+    "ItemAccess",
+    "ParticleManagerAccess"
   ],
   "injectors": {
     "defaultRequire": 1

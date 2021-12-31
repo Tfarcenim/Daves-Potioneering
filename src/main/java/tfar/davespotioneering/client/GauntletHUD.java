@@ -157,10 +157,10 @@ public class GauntletHUD extends AbstractGui {
     // copy-pasted from ItemRenderer class
     private void draw(BufferBuilder renderer, int x, int y, int width, int height, int red, int green, int blue, int alpha) {
         renderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        renderer.pos((double)(x + 0), (double)(y + 0), 0.0D).color(red, green, blue, alpha).endVertex();
-        renderer.pos((double)(x + 0), (double)(y + height), 0.0D).color(red, green, blue, alpha).endVertex();
-        renderer.pos((double)(x + width), (double)(y + height), 0.0D).color(red, green, blue, alpha).endVertex();
-        renderer.pos((double)(x + width), (double)(y + 0), 0.0D).color(red, green, blue, alpha).endVertex();
+        renderer.pos(x, y, 0.0D).color(red, green, blue, alpha).endVertex();
+        renderer.pos(x, y + height, 0.0D).color(red, green, blue, alpha).endVertex();
+        renderer.pos(x + width, y + height, 0.0D).color(red, green, blue, alpha).endVertex();
+        renderer.pos(x + width, y, 0.0D).color(red, green, blue, alpha).endVertex();
         Tessellator.getInstance().draw();
     }
 
@@ -184,6 +184,6 @@ public class GauntletHUD extends AbstractGui {
         BTM_LEFT,
         BTM_RIGHT,
         ABOVE_HOTBAR,
-        FREE_MOVE;
+        FREE_MOVE
     }
 }

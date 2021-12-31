@@ -1,14 +1,11 @@
 package tfar.davespotioneering.datagen.assets;
 
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Item;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
-import net.minecraftforge.client.model.generators.loaders.SeparatePerspectiveModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.init.ModItems;
@@ -25,10 +22,19 @@ public class ModItemModelProvider extends ItemModelProvider {
         makeSimpleBlockItem(ModItems.MAGIC_LECTERN);
         makeSimpleBlockItem(ModItems.POTION_INJECTOR);
 
-        gauntlet();
+        otherGauntlets();
+        alchemicalGauntlet();
     }
 
-    private void gauntlet() {
+    private void otherGauntlets() {
+        ModelFile rFile = getExistingFile(modLoc("item/3d/rudimentary_gauntlet"));
+        ModelFile nFile = getExistingFile(modLoc("item/3d/netherite_gauntlet"));
+        getBuilder("rudimentary_gauntlet").parent(rFile);
+        getBuilder("netherite_gauntlet").parent(nFile);
+
+    }
+
+    private void alchemicalGauntlet() {
 
 
         ModelFile unlitFile = getExistingFile(modLoc("item/3d/alchemical_gauntlet"));

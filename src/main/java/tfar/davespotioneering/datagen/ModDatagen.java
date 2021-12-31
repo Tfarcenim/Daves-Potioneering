@@ -7,6 +7,7 @@ import tfar.davespotioneering.datagen.assets.ModBlockstateProvider;
 import tfar.davespotioneering.datagen.assets.ModItemModelProvider;
 import tfar.davespotioneering.datagen.assets.ModLangProvider;
 import tfar.davespotioneering.datagen.data.ModLootTableProvider;
+import tfar.davespotioneering.datagen.data.ModRecipeProvider;
 
 public class ModDatagen {
 
@@ -21,6 +22,7 @@ public class ModDatagen {
         }
         if (e.includeServer()) {
             generator.addProvider(new ModLootTableProvider(generator));
+            generator.addProvider(new ModRecipeProvider(generator));
         }
     }
 }

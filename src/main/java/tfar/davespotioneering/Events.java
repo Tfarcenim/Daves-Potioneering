@@ -103,34 +103,6 @@ public class Events {
         }
     }
 
-    public static void playerTick(TickEvent.PlayerTickEvent e) {
-        PlayerEntity player = e.player;
-        if (e.phase == TickEvent.Phase.END && e.side == LogicalSide.CLIENT && player.world.getGameTime() %4 == 0) {
-
-            ItemStack stack = player.getHeldItemMainhand();
-
-            if (stack.getItem() instanceof ToolItem && PotionUtils.getPotionFromItem(stack) != Potions.EMPTY) {
-
-                IParticleData particleData = ParticleTypes.DRIPPING_WATER;
-
-
-                Vector3d vec = player.getPositionVec().add(0, +player.getHeight() / 2, 0);
-
-                double yaw = -MathHelper.wrapDegrees(player.rotationYaw);
-
-                double z1 = Math.cos(yaw * Math.PI / 180) * .75;
-                double x1 = Math.sin(yaw * Math.PI / 180) * .75;
-
-                double z2 = Math.cos((yaw + 270) * Math.PI / 180) * .45;
-                double x2 = Math.sin((yaw + 270) * Math.PI / 180) * .45;
-
-                vec = vec.add(x1 + x2, 0, z1 + z2);
-
-                spawnFluidParticle(Minecraft.getInstance().world, vec, particleData);
-            }
-        }
-    }
-
     //this is called when the potion is done brewing, we use this instead of the forge event because it has a reference to the blockentity that created the potions
     public static void potionBrew(TileEntity brewingStandTileEntity, ItemStack ingredient) {
         ((BrewingStandDuck)brewingStandTileEntity).addXp(Util.getBrewXp(ingredient));
@@ -164,8 +136,5 @@ public class Events {
         }
     }
 
-    private static void spawnFluidParticle(ClientWorld world, Vector3d blockPosIn, IParticleData particleDataIn) {
-        // world.spawnParticle(new BlockPos(blockPosIn), particleDataIn, voxelshape, blockPosIn.getY() +.5);
-        world.addParticle(particleDataIn,blockPosIn.x,blockPosIn.y,blockPosIn.z,0,0,0);
-    }
+
 }

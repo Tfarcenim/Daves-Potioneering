@@ -8,6 +8,7 @@ import net.minecraftforge.event.RegistryEvent;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.client.model.gecko.GeoItemStackRenderer;
 import tfar.davespotioneering.item.GauntletItem;
+import tfar.davespotioneering.item.SimpleGauntletItem;
 import tfar.davespotioneering.item.UmbrellaItem;
 
 import java.lang.reflect.Field;
@@ -29,6 +30,8 @@ public class ModItems {
     public static final Item ADVANCED_BREWING_STAND = new BlockItem(ModBlocks.ADVANCED_BREWING_STAND,new Item.Properties().group(tab));
     public static final Item REINFORCED_CAULDRON = new BlockItem(ModBlocks.REINFORCED_CAULDRON,new Item.Properties().group(tab));
     public static final Item ALCHEMICAL_GAUNTLET = new GauntletItem(new Item.Properties().group(tab).maxDamage(32));
+    public static final Item NETHERITE_GAUNTLET = new SimpleGauntletItem(ItemTier.NETHERITE,1,-2.8f,new Item.Properties().group(tab));
+    public static final Item RUDIMENTARY_GAUNTLET = new SimpleGauntletItem(ItemTier.IRON,1,-2.8f,new Item.Properties().group(tab));
 
     public static final Item MAGIC_LECTERN = new BlockItem(ModBlocks.MAGIC_LECTERN,new Item.Properties());
     public static final Item POTION_INJECTOR = new BlockItem(ModBlocks.POTION_INJECTOR,new Item.Properties().group(tab));

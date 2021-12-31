@@ -15,6 +15,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimatableModel;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
@@ -56,15 +57,13 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends ItemStackTileEn
         animatedRenderers.put(item, renderer);
     }
 
-    static {
-        AnimationController.addModelFetcher((IAnimatable object) -> {
-            if (object instanceof GeoItemStackRenderer.DummyAnimations) {
-                GeoItemStackRenderer<?> renderer = animatedRenderers.get(((DummyAnimations) object).itemSupplier.get());
-                return renderer == null ? null : renderer.getGeoModelProvider();
-            }
-            return null;
-        });
-    }
+    static final AnimationController.ModelFetcher<? extends IAnimatable> modelFetcher = (IAnimatable animatable) -> {
+        if(animatable instanceof GeoItemStackRenderer.DummyAnimations){
+            GeoItemStackRenderer<?> renderer = animatedRenderers.get(((GeoItemStackRenderer.DummyAnimations)animatable).itemSupplier.get());
+            return renderer == null ? null : (IAnimatableModel<IAnimatable>) renderer.getGeoModelProvider();
+        }
+        return null;
+    };
 
     public void func_239207_a_(ItemStack stack, ItemCameraTransforms.TransformType transformType, MatrixStack matrices, IRenderTypeBuffer bufferIn,
             int combinedLightIn,

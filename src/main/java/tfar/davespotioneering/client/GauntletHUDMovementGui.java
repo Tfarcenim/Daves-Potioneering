@@ -25,30 +25,32 @@ public class GauntletHUDMovementGui extends Screen {
         hud.render(matrixStack);
     }
 
+    public static final String KEY = "davespotioneering.gui.moveGauntletHUD.preset";
+
     @Override
     protected void init() {
         super.init();
-        addButton(new Button(5, 15, 75, 20, new TranslationTextComponent("davespotioneering.gui.moveGauntletHUD.preset1"), (button) -> {
+        addButton(new Button(5, 15, 75, 20, new TranslationTextComponent(KEY + GauntletHUD.HudPresets.TOP_LEFT.ordinal()), (button) -> {
             hud.x = getFixedPositionValue(5, true);
             hud.y = getFixedPositionValue(5, false);
             hud.preset = GauntletHUD.HudPresets.TOP_LEFT;
         }));
-        addButton(new Button(85, 15, 75, 20, new TranslationTextComponent("davespotioneering.gui.moveGauntletHUD.preset2"), (button) -> {
+        addButton(new Button(85, 15, 75, 20, new TranslationTextComponent(KEY + GauntletHUD.HudPresets.TOP_RIGHT.ordinal()), (button) -> {
             hud.x = getFixedPositionValue(width - 120 - 5, true);
             hud.y = getFixedPositionValue(5, false);
             hud.preset = GauntletHUD.HudPresets.TOP_RIGHT;
         }));
-        addButton(new Button(165, 15, 75, 20, new TranslationTextComponent("davespotioneering.gui.moveGauntletHUD.preset3"), (button) -> {
+        addButton(new Button(165, 15, 75, 20, new TranslationTextComponent(KEY + GauntletHUD.HudPresets.BTM_LEFT.ordinal()), (button) -> {
             hud.x = getFixedPositionValue(5, true);
             hud.y = getFixedPositionValue(height - 45 - 5, false);
             hud.preset = GauntletHUD.HudPresets.BTM_LEFT;
         }));
-        addButton(new Button(245, 15, 75, 20, new TranslationTextComponent("davespotioneering.gui.moveGauntletHUD.preset4"), (button) -> {
+        addButton(new Button(245, 15, 75, 20, new TranslationTextComponent(KEY + GauntletHUD.HudPresets.BTM_RIGHT.ordinal()), (button) -> {
             hud.x = getFixedPositionValue(width - 120 - 5, true);
             hud.y = getFixedPositionValue(height - 45 - 5, false);
             hud.preset = GauntletHUD.HudPresets.BTM_RIGHT;
         }));
-        addButton(new Button(325, 15, 75, 20, new TranslationTextComponent("davespotioneering.gui.moveGauntletHUD.preset5"), (button) -> {
+        addButton(new Button(325, 15, 75, 20, new TranslationTextComponent(KEY + GauntletHUD.HudPresets.ABOVE_HOTBAR.ordinal()), (button) -> {
             if (minecraft != null && minecraft.player != null && minecraft.player.isCreative()) {
                 hud.x = getFixedPositionValue((width - 120) / 2, true);
                 hud.y = getFixedPositionValue(height - 42 - 25, false);

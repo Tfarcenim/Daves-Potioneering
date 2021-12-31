@@ -2,50 +2,44 @@ package tfar.davespotioneering.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemModelsProperties;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.PotionItem;
-import net.minecraft.item.TieredItem;
+import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.particles.IParticleData;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
-import tfar.davespotioneering.init.ModBlockEntityTypes;
-import tfar.davespotioneering.init.ModBlocks;
-import tfar.davespotioneering.init.ModContainerTypes;
-import tfar.davespotioneering.init.ModItems;
+import tfar.davespotioneering.client.particle.FastDripParticle;
+import tfar.davespotioneering.client.particle.TintedSplashParticle;
+import tfar.davespotioneering.init.*;
 import tfar.davespotioneering.item.GauntletItem;
+import tfar.davespotioneering.mixin.ParticleManagerAccess;
 import tfar.davespotioneering.net.GauntletCyclePacket;
 import tfar.davespotioneering.net.PacketHandler;
-
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static tfar.davespotioneering.DavesPotioneering.MODID;
 
@@ -55,6 +49,15 @@ public class ClientEvents {
         if (event.getName().equals(SoundEvents.BLOCK_BREWING_STAND_BREW.getName().getPath()) && !ModConfig.Client.play_block_brewing_stand_brew.get()) {
             event.setResultSound(null);
         }
+    }
+
+    public static void particle(ParticleFactoryRegisterEvent e) {
+
+        ParticleManager manager = Minecraft.getInstance().particles;
+
+        manager.registerFactory(ModParticleTypes.FAST_DRIPPING_WATER, FastDripParticle.DrippingWaterFactory::new);
+        manager.registerFactory(ModParticleTypes.FAST_FALLING_WATER, FastDripParticle.FallingWaterFactory::new);
+        manager.registerFactory(ModParticleTypes.TINTED_SPLASH, TintedSplashParticle.Factory::new);
     }
 
     public static void registerLoader(final ModelRegistryEvent event) {
@@ -111,6 +114,7 @@ public class ClientEvents {
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::onMouseInput);
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::onMouseScroll);
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::gauntletHud);
+        MinecraftForge.EVENT_BUS.addListener(ClientEvents::playerTick);
         RenderTypeLookup.setRenderLayer(ModBlocks.ADVANCED_BREWING_STAND, RenderType.getCutoutMipped());
         ScreenManager.registerFactory(ModContainerTypes.ADVANCED_BREWING_STAND, AdvancedBrewingStandScreen::new);
         ScreenManager.registerFactory(ModContainerTypes.ALCHEMICAL_GAUNTLET, GauntletWorkstationScreen::new);
@@ -156,4 +160,54 @@ public class ClientEvents {
             }
         }
     }
+
+    public static void playerTick(TickEvent.PlayerTickEvent e) {
+        PlayerEntity player = e.player;
+        if (e.phase == TickEvent.Phase.END && e.side == LogicalSide.CLIENT && player.world.getGameTime() % ModConfig.Client.particle_drip_rate.get() == 0) {
+
+            ItemStack stack = player.getHeldItemMainhand();
+
+            if (stack.getItem() instanceof TieredItem && PotionUtils.getPotionFromItem(stack) != Potions.EMPTY) {
+
+
+                IParticleData particleData = ModParticleTypes.FAST_DRIPPING_WATER;
+
+                Vector3d vec = player.getPositionVec().add(0, +player.getHeight() / 2, 0);
+
+                double yaw = -MathHelper.wrapDegrees(player.rotationYaw);
+
+                double of1 = Math.random() * .60 + .15;
+                double of2 = .40 + Math.random() * .10;
+
+
+                double z1 = Math.cos(yaw * Math.PI / 180) * of1;
+                double x1 = Math.sin(yaw * Math.PI / 180) * of1;
+
+                double z2 = Math.cos((yaw + 270) * Math.PI / 180) * of2;
+                double x2 = Math.sin((yaw + 270) * Math.PI / 180) * of2;
+
+                vec = vec.add(x1 + x2, 0, z1 + z2);
+
+                int color = PotionUtils.getColor(stack);
+                spawnFluidParticle(Minecraft.getInstance().world, vec, particleData, color);
+            }
+        }
+    }
+
+    private static void spawnFluidParticle(ClientWorld world, Vector3d blockPosIn, IParticleData particleDataIn, int color) {
+        // world.spawnParticle(new BlockPos(blockPosIn), particleDataIn, voxelshape, blockPosIn.getY() +.5);
+
+        Particle particle = ((ParticleManagerAccess) Minecraft.getInstance().particles).$makeParticle(particleDataIn, blockPosIn.x, blockPosIn.y, blockPosIn.z, 0, -.10, 0);
+
+        float red = (color >> 16 & 0xff) / 255f;
+        float green = (color >> 8 & 0xff) / 255f;
+        float blue = (color & 0xff) / 255f;
+
+        particle.setColor(red, green, blue);
+
+        Minecraft.getInstance().particles.addEffect(particle);
+
+        //world.addParticle(particleDataIn,blockPosIn.x,blockPosIn.y,blockPosIn.z,0,-.10,0);
+    }
+
 }
