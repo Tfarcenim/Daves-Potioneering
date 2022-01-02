@@ -36,12 +36,13 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     private void alchemicalGauntlet() {
 
+        String s = ModItems.POTIONEER_GAUNTLET.getRegistryName().getPath();
 
-        ModelFile unlitFile = getExistingFile(modLoc("item/3d/alchemical_gauntlet"));
+        ModelFile unlitFile = getExistingFile(modLoc("item/3d/"+s));
 
-        ModelFile litFile = getExistingFile(modLoc("item/3d/lit_alchemical_gauntlet"));
+        ModelFile litFile = getExistingFile(modLoc("item/3d/lit_"+s));
 
-        getBuilder("alchemical_gauntlet").parent(getExistingFile(mcLoc("item/generated")))
+        getBuilder(s).parent(getExistingFile(mcLoc("item/generated")))
                 .override().model(unlitFile).predicate(mcLoc("active"),0).end()
         .override().model(litFile).predicate(mcLoc("active"),1).end()
         ;

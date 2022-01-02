@@ -2,14 +2,14 @@
 	"loader" : "davespotioneering:fullbright",
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "davespotioneering:item/lit_alchemical_gauntlet",
-		"particle": "davespotioneering:item/lit_alchemical_gauntlet"
+		"0": "davespotioneering:item/lit_potioneer_gauntlet",
+		"particle": "davespotioneering:item/lit_potioneer_gauntlet"
 	},
 	"base": {
 
 		"textures": {
-			"0": "davespotioneering:item/lit_alchemical_gauntlet",
-			"particle": "davespotioneering:item/lit_alchemical_gauntlet"
+			"0": "davespotioneering:item/lit_potioneer_gauntlet",
+			"particle": "davespotioneering:item/lit_potioneer_gauntlet"
 		},
 
 		"elements": [

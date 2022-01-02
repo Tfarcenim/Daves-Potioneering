@@ -1,8 +1,8 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "davespotioneering:item/alchemical_gauntlet",
-		"particle": "davespotioneering:item/alchemical_gauntlet"
+		"0": "davespotioneering:item/netherite_gauntlet",
+		"particle": "davespotioneering:item/netherite_gauntlet"
 	},
 	"elements": [
 		{
@@ -39,7 +39,7 @@
 			"to": [10.5, 5, 10.5],
 			"rotation": {"angle": -22.5, "axis": "x", "origin": [8.5, 5, 9.5]},
 			"faces": {
-				"north": {"uv": [0, 0, 5, 1], "texture": "#missing"},
+				"north": {"uv": [0, 0, 5, 1], "texture": "#0"},
 				"east": {"uv": [12, 4, 13, 5], "texture": "#0"},
 				"south": {"uv": [8, 15, 13, 16], "texture": "#0"},
 				"west": {"uv": [4, 15, 5, 16], "texture": "#0"},
@@ -52,9 +52,9 @@
 			"to": [10.01, 4.51, 8.5],
 			"rotation": {"angle": 0, "axis": "y", "origin": [14, 8.5, 14.5]},
 			"faces": {
-				"north": {"uv": [0, 0, 4, 4], "texture": "#missing"},
+				"north": {"uv": [0, 0, 4, 4], "texture": "#0"},
 				"east": {"uv": [10, 11, 6, 12], "texture": "#0"},
-				"south": {"uv": [0, 0, 4, 4], "texture": "#missing"},
+				"south": {"uv": [0, 0, 4, 4], "texture": "#0"},
 				"west": {"uv": [6, 11, 10, 12], "texture": "#0"},
 				"up": {"uv": [6, 11, 10, 12], "texture": "#0"},
 				"down": {"uv": [6, 11, 10, 12], "texture": "#0"}

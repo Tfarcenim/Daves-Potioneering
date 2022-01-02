@@ -116,6 +116,7 @@ public class ClientEvents {
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::gauntletHud);
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::playerTick);
         RenderTypeLookup.setRenderLayer(ModBlocks.ADVANCED_BREWING_STAND, RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(ModBlocks.POTION_INJECTOR,RenderType.getTranslucent());
         ScreenManager.registerFactory(ModContainerTypes.ADVANCED_BREWING_STAND, AdvancedBrewingStandScreen::new);
         ScreenManager.registerFactory(ModContainerTypes.ALCHEMICAL_GAUNTLET, GauntletWorkstationScreen::new);
 

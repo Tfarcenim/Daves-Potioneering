@@ -1,7 +1,7 @@
 {
   "type": "minecraft:smithing",
   "base": {
-    "item": "davespotioneering:alchemical_gauntlet"
+    "item": "davespotioneering:potioneer_gauntlet"
   },
   "addition": {
     "item": "minecraft:netherite_ingot"

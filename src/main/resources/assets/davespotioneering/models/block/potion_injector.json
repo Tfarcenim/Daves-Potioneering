@@ -4,7 +4,7 @@
 	"textures": {
 		"0": "davespotioneering:block/potion_injector",
 		"1": "davespotioneering:block/potion_inector2",
-		"particle": "potion_injector"
+		"particle": "davespotioneering:block/potion_injector"
 	},
 	"elements": [
 		{

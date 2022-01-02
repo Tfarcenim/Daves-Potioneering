@@ -1,8 +1,8 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"4": "davespotioneering:item/alchemical_gauntlet",
-		"particle": "davespotioneering:item/alchemical_gauntlet"
+		"4": "davespotioneering:item/netherite_gauntlet",
+		"particle": "davespotioneering:item/netherite_gauntlet"
 	},
 	"elements": [
 		{
