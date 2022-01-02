@@ -52,7 +52,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .patternLine("b b").patternLine("bab").patternLine("b b")
                 .addCriterion("has_gold", hasItem(Items.GOLD_INGOT)).build(consumer);
 
-        smithingReinforce(consumer, ModItems.ALCHEMICAL_GAUNTLET, ModItems.NETHERITE_GAUNTLET);
+        smithingReinforce(consumer, ModItems.POTIONEER_GAUNTLET, ModItems.NETHERITE_GAUNTLET);
 
         ShapedRecipeBuilder.shapedRecipe(ModItems.POTION_INJECTOR)
                 .key('a', Blocks.DIORITE)
@@ -62,7 +62,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .patternLine("aba").patternLine("cac").patternLine("dad")
                 .addCriterion("has_leather", hasItem(Items.LEATHER)).build(consumer);
 
-        ShapedRecipeBuilder.shapedRecipe(ModItems.ALCHEMICAL_GAUNTLET)
+        ShapedRecipeBuilder.shapedRecipe(ModItems.POTIONEER_GAUNTLET)
                 .key('a', Items.GLASS_BOTTLE)
                 .key('b', Items.HOPPER)
                 .key('c', ModItems.NETHERITE_GAUNTLET)

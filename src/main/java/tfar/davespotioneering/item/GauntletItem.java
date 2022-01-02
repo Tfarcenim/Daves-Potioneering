@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.function.Function;
 
 public class GauntletItem extends SwordItem {
-    private static PlayerEntity player;
 
     public GauntletItem(Properties properties) {
         super(ItemTier.STONE, 7, -2.8f, properties);
@@ -86,11 +85,6 @@ public class GauntletItem extends SwordItem {
     }
 
     @Override
-    public boolean isRepairable(ItemStack p_isRepairable_1_) {
-        return false;
-    }
-
-    @Override
     public int getRGBDurabilityForDisplay(ItemStack stack) {
         return TextFormatting.GOLD.getColor();
     }
@@ -132,8 +126,8 @@ public class GauntletItem extends SwordItem {
     public void inventoryTick(ItemStack stack, World world, Entity entity, int p_77663_4_, boolean p_77663_5_) {
         super.inventoryTick(stack, world, entity, p_77663_4_, p_77663_5_);
         if (entity instanceof PlayerEntity && !entity.getEntityWorld().isRemote()) {
-            GauntletItem.player = (PlayerEntity) entity;
-            ItemStack gauntletInstance = new ItemStack(ModItems.ALCHEMICAL_GAUNTLET);
+            PlayerEntity player = (PlayerEntity) entity;
+            ItemStack gauntletInstance = new ItemStack(ModItems.POTIONEER_GAUNTLET);
             if (player.inventory.hasItemStack(gauntletInstance)) {
                 List<ItemStack> gauntlets = getItemsFromInventory(gauntletInstance, player.inventory);
                 for (ItemStack gauntlet : gauntlets) {
@@ -170,7 +164,7 @@ public class GauntletItem extends SwordItem {
         return new Tuple<>(effects, potions);
     }
 
-    public static void cycleGauntletForward() {
+    public static void cycleGauntletForward(PlayerEntity player) {
         if (player == null) return;
         CompoundNBT info = player.getHeldItemMainhand().getOrCreateTag().getCompound("info");
         ListNBT nbts = info.getList("potions", Constants.NBT.TAG_STRING);
@@ -183,7 +177,7 @@ public class GauntletItem extends SwordItem {
         info.putInt("activePotionIndex", index);
     }
 
-    public static void cycleGauntletBackward() {
+    public static void cycleGauntletBackward(PlayerEntity player) {
         if (player == null) return;
         CompoundNBT info = player.getHeldItemMainhand().getOrCreateTag().getCompound("info");
         ListNBT nbts = info.getList("potions", Constants.NBT.TAG_STRING);

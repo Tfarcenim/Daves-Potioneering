@@ -131,7 +131,7 @@ public class ClientEvents {
             return 0xffffff;
         }, ModBlocks.REINFORCED_CAULDRON);
 
-        ItemModelsProperties.registerProperty(ModItems.ALCHEMICAL_GAUNTLET, new ResourceLocation("active"),
+        ItemModelsProperties.registerProperty(ModItems.POTIONEER_GAUNTLET, new ResourceLocation("active"),
                 (ItemStack a, ClientWorld b, LivingEntity c) -> a.hasTag() ? a.getTag().getBoolean("active") ? 1 : 0 : 0);
 
     }

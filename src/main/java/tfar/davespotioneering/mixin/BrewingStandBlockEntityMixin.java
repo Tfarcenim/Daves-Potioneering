@@ -37,7 +37,7 @@ public class BrewingStandBlockEntityMixin extends TileEntity implements BrewingS
         this.markDirty();
     }
 
-    @Inject(method = "brewPotions",at = @At(value = "INVOKE",target = "Lnet/minecraftforge/event/ForgeEventFactory;onPotionBrewed(Lnet/minecraft/util/NonNullList;)V"),remap = false)
+    @Inject(method = "brewPotions",at = @At(value = "INVOKE",target = "Lnet/minecraftforge/event/ForgeEventFactory;onPotionBrewed(Lnet/minecraft/util/NonNullList;)V",remap = false))
     private void betterIntercept(CallbackInfo ci) {
         Events.potionBrew((BrewingStandTileEntity)(Object)this,this.brewingItemStacks.get(3));
     }

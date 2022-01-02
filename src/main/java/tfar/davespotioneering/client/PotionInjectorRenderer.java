@@ -2,7 +2,6 @@ package tfar.davespotioneering.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.LecternBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
@@ -12,7 +11,6 @@ import net.minecraft.util.math.vector.Vector3f;
 import tfar.davespotioneering.block.GauntletWorkstationBlock;
 import tfar.davespotioneering.blockentity.PotionInjectorBlockEntity;
 import tfar.davespotioneering.init.ModItems;
-import tfar.davespotioneering.item.GauntletItem;
 
 public class PotionInjectorRenderer extends TileEntityRenderer<PotionInjectorBlockEntity> {
     public PotionInjectorRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
@@ -29,7 +27,7 @@ public class PotionInjectorRenderer extends TileEntityRenderer<PotionInjectorBlo
             matrixStackIn.rotate(Vector3f.YP.rotationDegrees(-f));
             matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(67.5F));
             matrixStackIn.translate(0.0D, -0.125D, 0.0D);
-            Minecraft.getInstance().getItemRenderer().renderItem(ModItems.ALCHEMICAL_GAUNTLET.getDefaultInstance(), ItemCameraTransforms.TransformType.FIXED,combinedLightIn,combinedOverlayIn,matrixStackIn,bufferIn);
+            Minecraft.getInstance().getItemRenderer().renderItem(ModItems.POTIONEER_GAUNTLET.getDefaultInstance(), ItemCameraTransforms.TransformType.FIXED,combinedLightIn,combinedOverlayIn,matrixStackIn,bufferIn);
             matrixStackIn.pop();
         }
     }
