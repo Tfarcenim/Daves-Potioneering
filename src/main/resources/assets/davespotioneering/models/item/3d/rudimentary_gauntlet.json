@@ -65,6 +65,9 @@
 		"thirdperson_righthand": {
 			"rotation": [0, 0, -90],
 			"translation": [5.5, -2, 4]
+		},
+		"ground": {
+			"translation": [0, 4, 0]
 		}
 	},
 	"groups": [

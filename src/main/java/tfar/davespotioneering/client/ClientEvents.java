@@ -114,6 +114,7 @@ public class ClientEvents {
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::onMouseInput);
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::onMouseScroll);
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::gauntletHud);
+        MinecraftForge.EVENT_BUS.addListener(ClientEvents::gaun);
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::playerTick);
         RenderTypeLookup.setRenderLayer(ModBlocks.ADVANCED_BREWING_STAND, RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(ModBlocks.POTION_INJECTOR,RenderType.getTranslucent());
@@ -135,6 +136,15 @@ public class ClientEvents {
         ItemModelsProperties.registerProperty(ModItems.POTIONEER_GAUNTLET, new ResourceLocation("active"),
                 (ItemStack a, ClientWorld b, LivingEntity c) -> a.hasTag() ? a.getTag().getBoolean("active") ? 1 : 0 : 0);
 
+        registerBlockingProperty(ModItems.UMBRELLA);
+        registerBlockingProperty(ModItems.GENTLEMAN_UMBRELLA);
+        registerBlockingProperty(ModItems.CLEAR_UMBRELLA);
+
+    }
+
+    private static void registerBlockingProperty(Item item) {
+        ItemModelsProperties.registerProperty(item, new ResourceLocation("blocking"),
+                (stack, world, entity) -> entity != null && entity.isHandActive() && entity.getActiveItemStack() == stack ? 1.0F : 0.0F);
     }
 
     public static void gauntletHud(RenderGameOverlayEvent.Post e) {
@@ -160,6 +170,10 @@ public class ClientEvents {
                 GauntletHUD.hudInstance.init(potions[0], potions[1], potions[2]);
             }
         }
+    }
+
+    public static void gaun(RenderGameOverlayEvent.Pre e) {
+
     }
 
     public static void playerTick(TickEvent.PlayerTickEvent e) {

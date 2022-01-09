@@ -4,5 +4,13 @@
   "texture_size": [
     64,
     64
+  ],
+  "overrides": [
+    {
+      "predicate": {
+        "blocking": 1
+      },
+      "model": "davespotioneering:item/gentleman_umbrella_blocking"
+    }
   ]
 }

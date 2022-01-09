@@ -3,13 +3,15 @@
 	"credit": "Made with Blockbench",
 	"textures": {
 		"0": "davespotioneering:item/lit_potioneer_gauntlet",
+		"1": "davespotioneering:item/lit_potioneer_gauntlet_bright",
 		"particle": "davespotioneering:item/lit_potioneer_gauntlet"
 	},
 	"base": {
 
 		"textures": {
 			"0": "davespotioneering:item/lit_potioneer_gauntlet",
-			"particle": "davespotioneering:item/lit_potioneer_gauntlet"
+			"particle": "davespotioneering:item/lit_potioneer_gauntlet",
+			"1": "davespotioneering:item/lit_potioneer_gauntlet_bright"
 		},
 
 		"elements": [
