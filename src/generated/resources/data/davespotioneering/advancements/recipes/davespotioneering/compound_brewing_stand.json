@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "davespotioneering:advanced_brewing_stand"
+      "davespotioneering:compound_brewing_stand"
     ]
   },
   "criteria": {
@@ -19,7 +19,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "davespotioneering:advanced_brewing_stand"
+        "recipe": "davespotioneering:compound_brewing_stand"
       }
     }
   },

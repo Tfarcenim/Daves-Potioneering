@@ -13,7 +13,7 @@ public class ModBlockLootTables extends BlockLootTables {
     @Override
     protected void addTables() {
         registerDropSelfLootTable(ModBlocks.REINFORCED_CAULDRON);
-        registerDropSelfLootTable(ModBlocks.ADVANCED_BREWING_STAND);
+        registerDropSelfLootTable(ModBlocks.COMPOUND_BREWING_STAND);
         registerDropSelfLootTable(ModBlocks.MAGIC_LECTERN);
         registerDropSelfLootTable(ModBlocks.POTION_INJECTOR);
     }

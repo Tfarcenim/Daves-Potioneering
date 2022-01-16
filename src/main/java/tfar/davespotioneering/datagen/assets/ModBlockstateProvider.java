@@ -63,7 +63,7 @@ public class ModBlockstateProvider extends BlockStateProvider {
     }
 
     protected void brewingStand() {
-        getMultipartBuilder(ModBlocks.ADVANCED_BREWING_STAND)
+        getMultipartBuilder(ModBlocks.COMPOUND_BREWING_STAND)
                 .part().modelFile(models().getExistingFile(modLoc("block/advanced_brewing_stand"))).addModel().end()
                 .part().modelFile(models().getExistingFile(modLoc("block/advanced_brewing_stand_bottle0"))).addModel().condition(AdvancedBrewingStandBlock.HAS_BOTTLE[0], true).end()
                 .part().modelFile(models().getExistingFile(modLoc("block/advanced_brewing_stand_bottle1"))).addModel().condition(AdvancedBrewingStandBlock.HAS_BOTTLE[1], true).end()

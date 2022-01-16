@@ -4,7 +4,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
-import tfar.davespotioneering.menu.GauntletMenu;
+import tfar.davespotioneering.menu.PotionInjectorMenu;
 
 import java.util.function.Supplier;
 
@@ -31,9 +31,9 @@ public class C2SPotionInjector {
       if (player == null) return;
       ctx.get().enqueueWork(  ()->  {
         Container container = player.openContainer;
-        if (container instanceof GauntletMenu) {
-          GauntletMenu gauntletMenu = (GauntletMenu) container;
-          gauntletMenu.handleButton(button);
+        if (container instanceof PotionInjectorMenu) {
+          PotionInjectorMenu potionInjectorMenu = (PotionInjectorMenu) container;
+          potionInjectorMenu.handleButton(button);
 
         }
       });

@@ -103,7 +103,8 @@ public class Events {
         }
     }
 
-    //this is called when the potion is done brewing, we use this instead of the forge event because it has a reference to the blockentity that created the potions
+    //this is called when the potion is done brewing, we use this instead of the forge event because it has a reference
+    // to the blockentity that created the potions
     public static void potionBrew(TileEntity brewingStandTileEntity, ItemStack ingredient) {
         ((BrewingStandDuck)brewingStandTileEntity).addXp(Util.getBrewXp(ingredient));
     }
@@ -135,6 +136,4 @@ public class Events {
             }
         }
     }
-
-
 }

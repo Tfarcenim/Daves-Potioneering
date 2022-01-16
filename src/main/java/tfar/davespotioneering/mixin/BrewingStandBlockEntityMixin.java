@@ -32,9 +32,11 @@ public class BrewingStandBlockEntityMixin extends TileEntity implements BrewingS
 
     @Override
     public void dump(PlayerEntity player) {
-        Util.splitAndSpawnExperience(world,player.getPositionVec(),xp);
-        xp = 0;
-        this.markDirty();
+        if (xp > 0) {
+            xp = 0;
+            Util.splitAndSpawnExperience(world, player.getPositionVec(), xp);
+            this.markDirty();
+        }
     }
 
     @Inject(method = "brewPotions",at = @At(value = "INVOKE",target = "Lnet/minecraftforge/event/ForgeEventFactory;onPotionBrewed(Lnet/minecraft/util/NonNullList;)V",remap = false))

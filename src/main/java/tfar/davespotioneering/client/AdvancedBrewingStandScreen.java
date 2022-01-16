@@ -13,7 +13,7 @@ import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
 
 public class AdvancedBrewingStandScreen extends ContainerScreen<AdvancedBrewingStandContainer> {
 
-    private static final ResourceLocation BREWING_STAND_GUI_TEXTURES = new ResourceLocation(DavesPotioneering.MODID,"textures/gui/advanced_brewing_stand.png");
+    private static final ResourceLocation BREWING_STAND_GUI_TEXTURES = new ResourceLocation(DavesPotioneering.MODID,"textures/gui/compound_brewing_stand.png");
     private static final int[] BUBBLELENGTHS = new int[]{29, 24, 20, 16, 11, 6, 0};
 
     public AdvancedBrewingStandScreen(AdvancedBrewingStandContainer p_i51097_1_, PlayerInventory p_i51097_2_, ITextComponent p_i51097_3_) {

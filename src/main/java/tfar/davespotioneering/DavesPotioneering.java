@@ -52,7 +52,7 @@ public class DavesPotioneering {
         bus.addGenericListener(Potion.class,ModPotions::register);
         bus.addGenericListener(TileEntityType.class, ModBlockEntityTypes::register);
         bus.addGenericListener(ContainerType.class, ModContainerTypes::register);
-        bus.addGenericListener(SoundEvent.class, ModSounds::register);
+        bus.addGenericListener(SoundEvent.class, ModSoundEvents::register);
         bus.addGenericListener(ParticleType.class,ModParticleTypes::register);
 
         ModLoadingContext.get().registerConfig(Type.CLIENT, CLIENT_SPEC);

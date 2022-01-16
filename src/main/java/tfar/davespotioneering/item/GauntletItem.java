@@ -12,10 +12,7 @@ import net.minecraft.nbt.*;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.EffectUtils;
 import net.minecraft.potion.Potion;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Tuple;
+import net.minecraft.util.*;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -25,7 +22,8 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.registries.ForgeRegistries;
 import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.init.ModItems;
-import tfar.davespotioneering.menu.GauntletMenu;
+import tfar.davespotioneering.init.ModSoundEvents;
+import tfar.davespotioneering.menu.PotionInjectorMenu;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -39,12 +37,17 @@ public class GauntletItem extends SwordItem {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity playerIn, Hand handIn) {
         ItemStack stack = playerIn.getHeldItem(handIn);
-        if (!worldIn.isRemote) {
-            if (playerIn.isSneaking()) {
+        if (playerIn.isSneaking()) {
 //                PacketHandler.sendToClient(new GauntletHUDMovementGuiPacket(), (ServerPlayerEntity) playerIn);
-                toggleGauntlet(stack);
+
+
+            boolean b = stack.getOrCreateTag().getBoolean("active");
+            if (!world.isRemote) {
+                stack.getOrCreateTag().putBoolean("active", !b);
+                world.playSound(null,playerIn.getPosX(),playerIn.getPosY(),playerIn.getPosZ(),b ? ModSoundEvents.GAUNTLET_TURNING_OFF : ModSoundEvents.GAUNTLET_TURNING_ON, SoundCategory.PLAYERS,.5f,1);
+            } else {
             }
         }
         return ActionResult.resultSuccess(stack);
@@ -54,7 +57,7 @@ public class GauntletItem extends SwordItem {
     public int getDamage(ItemStack stack) {
         CompoundNBT info = stack.getOrCreateTag().getCompound("info");
         double blaze = info.getInt("blaze");
-        return GauntletMenu.BLAZE_CAP - (int) blaze;
+        return PotionInjectorMenu.BLAZE_CAP - (int) blaze;
     }
 
     @Override
@@ -82,6 +85,11 @@ public class GauntletItem extends SwordItem {
             }
         }
         return super.hitEntity(stack, victim, attacker);
+    }
+
+    @Override
+    public boolean isDamageable() {
+        return false;
     }
 
     @Override
@@ -123,8 +131,8 @@ public class GauntletItem extends SwordItem {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World world, Entity entity, int p_77663_4_, boolean p_77663_5_) {
-        super.inventoryTick(stack, world, entity, p_77663_4_, p_77663_5_);
+    public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
+        super.inventoryTick(stack, world, entity, itemSlot, isSelected);
         if (entity instanceof PlayerEntity && !entity.getEntityWorld().isRemote()) {
             PlayerEntity player = (PlayerEntity) entity;
             ItemStack gauntletInstance = new ItemStack(ModItems.POTIONEER_GAUNTLET);
@@ -138,11 +146,6 @@ public class GauntletItem extends SwordItem {
                 }
             }
         }
-    }
-
-    private static void toggleGauntlet(ItemStack stack) {
-        boolean b = stack.getOrCreateTag().getBoolean("active");
-        stack.getOrCreateTag().putBoolean("active", !b);
     }
 
     @Nullable

@@ -3,7 +3,6 @@ package tfar.davespotioneering.init;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.LecternBlock;
 import net.minecraft.block.material.Material;
 import net.minecraftforge.event.RegistryEvent;
 import tfar.davespotioneering.block.AdvancedBrewingStandBlock;
@@ -19,7 +18,7 @@ public class ModBlocks {
 
     private static List<Block> MOD_BLOCKS;
 
-    public static final Block ADVANCED_BREWING_STAND = new AdvancedBrewingStandBlock(AbstractBlock.Properties.create(Material.IRON)
+    public static final Block COMPOUND_BREWING_STAND = new AdvancedBrewingStandBlock(AbstractBlock.Properties.create(Material.IRON)
             .setRequiresTool().hardnessAndResistance(0.5F).setLightLevel(state -> 1).notSolid());
 
     public static final Block REINFORCED_CAULDRON = new ReinforcedCauldronBlock(AbstractBlock.Properties.create(Material.IRON)
@@ -27,7 +26,7 @@ public class ModBlocks {
 
     public static final Block MAGIC_LECTERN = new MagicLecternBlock(AbstractBlock.Properties.from(Blocks.LECTERN));
 
-    public static final Block POTION_INJECTOR = new GauntletWorkstationBlock(AbstractBlock.Properties.from(Blocks.FLETCHING_TABLE));
+    public static final Block POTION_INJECTOR = new GauntletWorkstationBlock(AbstractBlock.Properties.from(Blocks.FLETCHING_TABLE).notSolid());
 
 
     public static void register(RegistryEvent.Register<Block> e) {

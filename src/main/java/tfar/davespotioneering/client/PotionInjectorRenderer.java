@@ -23,9 +23,9 @@ public class PotionInjectorRenderer extends TileEntityRenderer<PotionInjectorBlo
         if (blockstate.get(GauntletWorkstationBlock.HAS_GAUNTLET)) {
             matrixStackIn.push();
             matrixStackIn.translate(0.5D, 1.0625D, 0.5D);
-            float f = blockstate.get(GauntletWorkstationBlock.FACING).rotateY().getHorizontalAngle();
+            float f = blockstate.get(GauntletWorkstationBlock.FACING).getHorizontalAngle();
             matrixStackIn.rotate(Vector3f.YP.rotationDegrees(-f));
-            matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(67.5F));
+           // matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(67.5F));
             matrixStackIn.translate(0.0D, -0.125D, 0.0D);
             Minecraft.getInstance().getItemRenderer().renderItem(ModItems.POTIONEER_GAUNTLET.getDefaultInstance(), ItemCameraTransforms.TransformType.FIXED,combinedLightIn,combinedOverlayIn,matrixStackIn,bufferIn);
             matrixStackIn.pop();

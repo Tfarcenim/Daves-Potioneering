@@ -1,3 +1,24 @@
 {
-  "parent": "davespotioneering:item/3d/netherite_gauntlet"
+  "gui_light": "front",
+  "loader": "forge:separate-perspective",
+  "base": {
+    "parent": "minecraft:item/generated",
+    "textures": {
+      "layer0": "davespotioneering:item/sprite/netherite_gauntlet"
+    }
+  },
+  "perspectives": {
+    "first_person_right_hand": {
+      "parent": "davespotioneering:item/3d/netherite_gauntlet"
+    },
+    "first_person_left_hand": {
+      "parent": "davespotioneering:item/3d/netherite_gauntlet"
+    },
+    "third_person_right_hand": {
+      "parent": "davespotioneering:item/3d/netherite_gauntlet"
+    },
+    "third_person_left_hand": {
+      "parent": "davespotioneering:item/3d/netherite_gauntlet"
+    }
+  }
 }

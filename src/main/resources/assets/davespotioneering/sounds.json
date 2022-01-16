@@ -1,10 +1,29 @@
 {
-  "gauntlet_scroll": {
-    "category": "player",
+  "gauntlet_equip": {
     "sounds": [
       {
-        "name": "davespotioneering:gauntlet_scroll",
-        "stream": true
+        "name": "davespotioneering:gauntlet_equip"
+      }
+    ]
+  },
+  "gauntlet_scroll": {
+    "sounds": [
+      {
+        "name": "davespotioneering:gauntlet_scroll"
+      }
+    ]
+  },
+  "gauntlet_turning_off": {
+    "sounds": [
+      {
+        "name": "davespotioneering:gauntlet_turning_off"
+      }
+    ]
+  },
+  "gauntlet_turning_on": {
+    "sounds": [
+      {
+        "name": "davespotioneering:gauntlet_turning_on"
       }
     ]
   }

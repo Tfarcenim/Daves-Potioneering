@@ -1,16 +1,11 @@
 {
-  "credit": "Made with Blockbench",
-  "parent": "builtin/entity",
-  "texture_size": [
-    64,
-    64
-  ],
+  "parent": "davespotioneering:item/3d/umbrella",
   "overrides": [
     {
       "predicate": {
         "blocking": 1
       },
-      "model": "davespotioneering:item/umbrella_blocking"
+      "model": "davespotioneering:item/3d/umbrella_blocking"
     }
   ]
 }

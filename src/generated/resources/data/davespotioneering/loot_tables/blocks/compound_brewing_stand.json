@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "davespotioneering:advanced_brewing_stand"
+          "name": "davespotioneering:compound_brewing_stand"
         }
       ],
       "conditions": [

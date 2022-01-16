@@ -14,7 +14,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import tfar.davespotioneering.block.GauntletWorkstationBlock;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
 import tfar.davespotioneering.inv.PotionInjectorHandler;
-import tfar.davespotioneering.menu.GauntletMenu;
+import tfar.davespotioneering.menu.PotionInjectorMenu;
 
 import javax.annotation.Nullable;
 
@@ -47,7 +47,7 @@ public class PotionInjectorBlockEntity extends TileEntity implements INamedConta
     @Nullable
     @Override
     public Container createMenu(int p_createMenu_1_, PlayerInventory p_createMenu_2_, PlayerEntity p_createMenu_3_) {
-        return new GauntletMenu(p_createMenu_1_,p_createMenu_2_,handler);
+        return new PotionInjectorMenu(p_createMenu_1_,p_createMenu_2_,handler);
     }
 
     @Override

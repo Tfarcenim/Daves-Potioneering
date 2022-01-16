@@ -26,8 +26,9 @@ public class ModLangProvider extends LanguageProvider {
         addPotions();
         add("container.davespotioneering.advanced_brewing","Advanced Brewing Stand");
         add(GauntletWorkstationBlock.TRANS_KEY,"Potion Injector");
-        addBlock(() -> ModBlocks.ADVANCED_BREWING_STAND,"Advanced Brewing Stand");
+        addBlock(() -> ModBlocks.COMPOUND_BREWING_STAND,"Compound Brewing Stand");
         addBlock(() -> ModBlocks.REINFORCED_CAULDRON,"Reinforced Cauldron");
+        addBlock(() -> ModBlocks.POTION_INJECTOR,"Potion Injector");
         addItem(() -> ModItems.POTIONEER_GAUNTLET,getNameFromItem(ModItems.POTIONEER_GAUNTLET));
         addItem(() -> ModItems.UMBRELLA,"Umbrella");
         addItem(() -> ModItems.GENTLEMAN_UMBRELLA,"Gentleman Umbrella");

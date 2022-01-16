@@ -18,7 +18,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.ModConfig;
-import tfar.davespotioneering.init.ModSounds;
+import tfar.davespotioneering.init.ModSoundEvents;
 import tfar.davespotioneering.item.GauntletItem;
 
 public class GauntletHUD extends AbstractGui {
@@ -67,7 +67,7 @@ public class GauntletHUD extends AbstractGui {
             cooldown--;
             blit(matrixStack, xFixed, yFixed, getBlitOffset(), 0, 87, 120, 41, 128, 128);
             if (cooldown <= 0) {
-                mc.getSoundHandler().play(SimpleSound.master(ModSounds.GAUNTLET_SCROLL, 1.0F));
+               mc.getSoundHandler().play(SimpleSound.master(ModSoundEvents.GAUNTLET_SCROLL, 1.0F));
                 forwardCycle = false;
                 cooldown = maxCooldown;
             }
@@ -75,7 +75,7 @@ public class GauntletHUD extends AbstractGui {
             cooldown--;
             blit(matrixStack, xFixed, yFixed, getBlitOffset(), 0, 44, 120, 41, 128, 128);
             if (cooldown <= 0) {
-                mc.getSoundHandler().play(SimpleSound.master(ModSounds.GAUNTLET_SCROLL, 1.0F));
+                mc.getSoundHandler().play(SimpleSound.master(ModSoundEvents.GAUNTLET_SCROLL, 1.0F));
                 backwardCycle = false;
                 cooldown = maxCooldown;
             }
@@ -89,7 +89,7 @@ public class GauntletHUD extends AbstractGui {
 
         CompoundNBT info = g.getOrCreateTag().getCompound("info");
         renderPotion(prePotion, matrixStack, xFixed + 3, yFixed + 21, GauntletItem.getCooldownFromPotionByIndex(info.getInt("activePotionIndex")-1, g), false);
-        renderPotion(activePotion, matrixStack, xFixed + 50, yFixed + 5, GauntletItem.getCooldownFromPotionByIndex(info.getInt("activePotionIndex"), g), true);
+        renderPotion(activePotion, matrixStack, xFixed + 51, yFixed + 5, GauntletItem.getCooldownFromPotionByIndex(info.getInt("activePotionIndex"), g), true);
         renderPotion(postPotion, matrixStack, xFixed + 99, yFixed + 21, GauntletItem.getCooldownFromPotionByIndex(info.getInt("activePotionIndex")+1, g), false);
         RenderSystem.popMatrix();
     }

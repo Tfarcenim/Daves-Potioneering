@@ -1,5 +1,6 @@
 {
-  "block.davespotioneering.advanced_brewing_stand": "Advanced Brewing Stand",
+  "block.davespotioneering.compound_brewing_stand": "Compound Brewing Stand",
+  "block.davespotioneering.potion_injector": "Potion Injector",
   "block.davespotioneering.reinforced_cauldron": "Reinforced Cauldron",
   "container.davespotioneering.advanced_brewing": "Advanced Brewing Stand",
   "davespotioneering.container.potion_injector": "Potion Injector",

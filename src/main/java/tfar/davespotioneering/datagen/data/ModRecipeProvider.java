@@ -38,7 +38,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .patternLine("aba").patternLine(" c ").patternLine(" c ")
                 .addCriterion("has_shield", hasItem(Items.SHIELD)).build(consumer);
 
-        ShapedRecipeBuilder.shapedRecipe(ModItems.ADVANCED_BREWING_STAND)
+        ShapedRecipeBuilder.shapedRecipe(ModItems.COMPOUND_BREWING_STAND)
                 .key('a', Blocks.HOPPER)
                 .key('b', Items.CRYING_OBSIDIAN)
                 .key('c', Items.BREWING_STAND)

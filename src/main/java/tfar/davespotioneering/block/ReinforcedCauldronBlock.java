@@ -107,7 +107,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
 
     public void boom(World world,BlockPos pos,BlockState state) {
         this.setWaterLevel(world, pos, state, 0);
-        world.createExplosion(null, pos.getX(), pos.getY(), pos.getZ(), 1, false, Explosion.Mode.NONE);
+        world.createExplosion(null, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, 1, false, Explosion.Mode.NONE);
     }
 
     private void handleDragonBreath(BlockState state, World world, BlockPos pos, PlayerEntity player, ItemStack stack) {

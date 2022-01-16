@@ -317,9 +317,11 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
 
     @Override
     public void dump(PlayerEntity player) {
-        Util.splitAndSpawnExperience(world,player.getPositionVec(),xp);
-        xp = 0;
-        markDirty();
+        if(xp > 0) {
+            Util.splitAndSpawnExperience(world, player.getPositionVec(), xp);
+            xp = 0;
+            markDirty();
+        }
     }
 
     /*net.minecraftforge.common.util.LazyOptional<? extends net.minecraftforge.items.IItemHandler>[] handlers =

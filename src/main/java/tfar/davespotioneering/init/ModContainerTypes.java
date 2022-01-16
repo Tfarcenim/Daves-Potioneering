@@ -3,7 +3,7 @@ package tfar.davespotioneering.init;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
-import tfar.davespotioneering.menu.GauntletMenu;
+import tfar.davespotioneering.menu.PotionInjectorMenu;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -13,7 +13,7 @@ public class ModContainerTypes {
     private static List<ContainerType<?>> MOD_CONTAINER_TYPES;
 
     public static final ContainerType<AdvancedBrewingStandContainer> ADVANCED_BREWING_STAND = new ContainerType<>(AdvancedBrewingStandContainer::new);
-    public static final ContainerType<GauntletMenu> ALCHEMICAL_GAUNTLET = new ContainerType<>(GauntletMenu::new);
+    public static final ContainerType<PotionInjectorMenu> ALCHEMICAL_GAUNTLET = new ContainerType<>(PotionInjectorMenu::new);
 
     public static void register(RegistryEvent.Register<ContainerType<?>> e) {
         for (Field field : ModContainerTypes.class.getFields()) {

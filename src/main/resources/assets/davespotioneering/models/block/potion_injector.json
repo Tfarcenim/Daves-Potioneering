@@ -1,6 +1,7 @@
 {
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
+	"parent": "block/block",
 	"textures": {
 		"0": "davespotioneering:block/potion_injector",
 		"1": "davespotioneering:block/potion_inector2",

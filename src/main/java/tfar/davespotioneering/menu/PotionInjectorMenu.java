@@ -21,17 +21,17 @@ import net.minecraftforge.items.SlotItemHandler;
 import tfar.davespotioneering.init.ModContainerTypes;
 import tfar.davespotioneering.inv.PotionInjectorHandler;
 
-public class GauntletMenu extends Container {
+public class PotionInjectorMenu extends Container {
 
     private final ItemStackHandler inventory;
 
     //client
-    public GauntletMenu(int id, PlayerInventory playerInventory) {
+    public PotionInjectorMenu(int id, PlayerInventory playerInventory) {
         this(id, playerInventory, new PotionInjectorHandler(8));
     }
 
     //common
-    public GauntletMenu(int id, PlayerInventory playerInventory, ItemStackHandler inventory) {
+    public PotionInjectorMenu(int id, PlayerInventory playerInventory, ItemStackHandler inventory) {
         super(ModContainerTypes.ALCHEMICAL_GAUNTLET, id);
         this.inventory = inventory;
         // assertInventorySize(inventory, 5);
@@ -187,5 +187,24 @@ public class GauntletMenu extends Container {
                 nbt.remove("blaze");
             }
         }
+    }
+
+    public boolean blazeOnly(boolean inject){
+        if (inject) {
+            for (int i = 0; i < 6; i++) {
+                if (!inventory.getStackInSlot(i).isEmpty()) {
+                    return false;
+                }
+            }
+        } else {
+            ItemStack stack = inventory.getStackInSlot(PotionInjectorHandler.GAUNTLET);
+            CompoundNBT nbt = stack.getTag();
+            if (nbt != null) {
+                CompoundNBT info = nbt.getCompound("info");
+                ListNBT listNBT = info.getList("potions", Constants.NBT.TAG_STRING);
+                return listNBT.isEmpty();
+            }
+        }
+        return true;
     }
 }
