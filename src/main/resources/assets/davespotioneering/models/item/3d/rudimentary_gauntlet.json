@@ -66,6 +66,14 @@
 			"rotation": [0, 0, -90],
 			"translation": [5.5, -2, 4]
 		},
+		"firstperson_righthand": {
+			"rotation": [23, -20, -35],
+			"translation": [3, 1.5, 0.5]
+		},
+		"firstperson_lefthand": {
+			"rotation": [23, -20, -35],
+			"translation": [3, 1.5, 0.5]
+		},
 		"ground": {
 			"translation": [0, 4, 0]
 		}

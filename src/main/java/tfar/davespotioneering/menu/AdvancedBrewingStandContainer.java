@@ -4,14 +4,12 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.BrewingStandContainer;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.IntArray;
 import net.minecraftforge.items.IItemHandler;
@@ -19,6 +17,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
 import tfar.davespotioneering.init.ModContainerTypes;
+import tfar.davespotioneering.inv.BrewingHandler;
 
 public class AdvancedBrewingStandContainer extends Container {
     private final ItemStackHandler tileBrewingStand;
@@ -28,7 +27,7 @@ public class AdvancedBrewingStandContainer extends Container {
 
     //client
     public AdvancedBrewingStandContainer(int id, PlayerInventory playerInventory) {
-        this(id, playerInventory, new ItemStackHandler(9), new IntArray(2),null);
+        this(id, playerInventory, new BrewingHandler(AdvancedBrewingStandBlockEntity.SLOTS), new IntArray(2),null);
     }
 
     //common
@@ -91,35 +90,14 @@ public class AdvancedBrewingStandContainer extends Container {
         if (slot != null && slot.getHasStack()) {
             ItemStack slotStack = slot.getStack();
             itemstack = slotStack.copy();
-            if (index > 2 && index != 3 && index != 4) {
-                if (BrewingStandContainer.FuelSlot.isValidBrewingFuel(itemstack)) {
-                    if (this.mergeItemStack(slotStack, 4, 5, false) /*|| this.slot.isItemValid(slotStack)*/ && !this.mergeItemStack(slotStack, 3, 4, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (/*this.slot.isItemValid(slotStack)*/false) {
-                    if (!this.mergeItemStack(slotStack, 3, 4, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (PotionSlot.canHoldPotion(itemstack) && itemstack.getCount() == 1) {
-                    if (!this.mergeItemStack(slotStack, 0, 3, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (index < 32) {
-                    if (!this.mergeItemStack(slotStack, 32, 41, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (index < 41) {
-                    if (!this.mergeItemStack(slotStack, 5, 32, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (!this.mergeItemStack(slotStack, 5, 41, false)) {
+            if (index < AdvancedBrewingStandBlockEntity.SLOTS) {
+                if (!this.mergeItemStack(slotStack, AdvancedBrewingStandBlockEntity.SLOTS, 41, false)) {
                     return ItemStack.EMPTY;
                 }
             } else {
-                if (!this.mergeItemStack(slotStack, 5, 41, true)) {
+                if (!this.mergeItemStack(slotStack, 0, AdvancedBrewingStandBlockEntity.SLOTS, true)) {
                     return ItemStack.EMPTY;
                 }
-
                 slot.onSlotChange(slotStack, itemstack);
             }
 
@@ -205,7 +183,7 @@ public class AdvancedBrewingStandContainer extends Container {
          * case of armor slots)
          */
         public int getSlotStackLimit() {
-            return 1;
+            return 2;
         }
 
         public ItemStack onTake(PlayerEntity thePlayer, ItemStack stack) {

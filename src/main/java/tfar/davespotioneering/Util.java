@@ -4,21 +4,22 @@ import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import tfar.davespotioneering.mixin.ItemAccess;
 
 public class Util {
 
     public static void setStackSize(Item item, int count) {
-        ((ItemAccess)item).setMaxStackSize(count);
+        ((ItemAccess) item).setMaxStackSize(count);
     }
 
     public static final String MILKIFY = "milkified";
 
     public static void milkifyPotion(ItemStack potion) {
-        potion.getOrCreateTag().putBoolean(MILKIFY,true);
+        potion.getOrCreateTag().putBoolean(MILKIFY, true);
     }
 
     public static boolean isMilkified(ItemStack potion) {
@@ -31,6 +32,16 @@ public class Util {
     }
 
     public static void splitAndSpawnExperience(World world, Vector3d pos, double experience) {
-            world.addEntity(new ExperienceOrbEntity(world, pos.x, pos.y, pos.z, (int)experience));
+        world.addEntity(new ExperienceOrbEntity(world, pos.x, pos.y, pos.z, (int) experience));
+    }
+
+    public static void brewPotions(NonNullList<ItemStack> inputs, ItemStack ingredient, int[] inputIndexes) {
+        for (int i : inputIndexes) {
+            ItemStack output = BrewingRecipeRegistry.getOutput(inputs.get(i), ingredient);
+            output.setCount(inputs.get(i).getCount());//the change from the forge version
+            if (!output.isEmpty()) {
+                inputs.set(i, output);
+            }
+        }
     }
 }

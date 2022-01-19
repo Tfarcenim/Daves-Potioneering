@@ -27,6 +27,7 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.apache.commons.lang3.tuple.Pair;
 import tfar.davespotioneering.client.ClientEvents;
 import tfar.davespotioneering.datagen.ModDatagen;
+import tfar.davespotioneering.effect.PotionIngredient;
 import tfar.davespotioneering.init.*;
 import tfar.davespotioneering.mixin.BlockEntityTypeAcces;
 import tfar.davespotioneering.net.PacketHandler;
@@ -121,7 +122,7 @@ public class DavesPotioneering {
 
     protected static void strongRecipe(Potion potion,Potion strong) {
         BrewingRecipeRegistry.addRecipe(
-                new BrewingRecipe(Ingredient.fromStacks(
+                new BrewingRecipe(PotionIngredient.create(
                         PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION),potion)),
                         Ingredient.fromItems(Items.GLOWSTONE_DUST),
                         PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), strong)));

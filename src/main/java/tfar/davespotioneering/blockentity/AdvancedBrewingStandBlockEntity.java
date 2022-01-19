@@ -20,7 +20,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
@@ -40,7 +39,7 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
     /** an array of the output slot indices */
 
     //potions are 0,1,2
-    private static final int[] POTIONS = new int[]{0, 1, 2};
+    public static final int[] POTIONS = new int[]{0, 1, 2};
     //ingredients are 3,4,5,6,7
     public static final int[] INGREDIENTS = new int[]{3,4,5,6,7};
     //fuel is 8
@@ -50,9 +49,10 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
 
     protected int xp;
 
+    public static final int SLOTS = POTIONS.length + INGREDIENTS.length + 1;
 
     /** The ItemStacks currently placed in the slots of the brewing stand */
-    private BrewingHandler brewingHandler = new BrewingHandler(9);
+    private final BrewingHandler brewingHandler = new BrewingHandler(SLOTS);
     private int brewTime;
     /** an integer with each bit specifying whether that slot of the stand contains a potion */
     private boolean[] filledSlots;
@@ -236,7 +236,8 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
 
         boolean canMilkify = ingredient.getItem() == Items.MILK_BUCKET;
 
-        BrewingRecipeRegistry.brewPotions(brewingHandler.getStacks(), ingredient, POTIONS);
+        //note: this is changed from the BrewingRecipeRegistry version to allow for >1 potion in a stack
+        Util.brewPotions(brewingHandler.getStacks(), ingredient, POTIONS);
         ForgeEventFactory.onPotionBrewed(brewingHandler.getStacks());
         Events.potionBrew(this,ingredient);
 
@@ -261,6 +262,7 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
         else ingredient.shrink(1);
 
         this.brewingHandler.setStackInSlot(pair.getLeft(), ingredient);
+        //plays brewing stand block brewing finished sound
         this.world.playEvent(1035, blockpos, 0);
     }
 

@@ -14,4 +14,10 @@ public class BrewingRecipeRegistryMixin {
     private static int always1(ItemStack stack) {
         return 1;
     }
+
+    //makes conditional in BrewingRecipeRegistry always return 1 so brewing check works for >1 potion
+    @Redirect(method = "getOutput",at = @At(value = "INVOKE",target = "Lnet/minecraft/item/ItemStack;getCount()I"))
+    private static int alwaysOne(ItemStack stack) {
+        return 1;
+    }
 }
