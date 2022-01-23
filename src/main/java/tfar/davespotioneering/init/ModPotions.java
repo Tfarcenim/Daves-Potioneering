@@ -14,7 +14,10 @@ public class ModPotions {
     private static List<Potion> MOD_POTIONS;
 
     public static final Potion MILK = new Potion(new EffectInstance(ModEffects.MILK));
-    public static final Potion STRONG_INVISIBILITY = new Potion("invisibility", new EffectInstance(Effects.INVISIBILITY, 1800,1,false,false));
+
+    public static final EffectInstance INVIS_2 =  new EffectInstance(Effects.INVISIBILITY, 1800,1,false,false);
+
+    public static final Potion STRONG_INVISIBILITY = new Potion("invisibility",INVIS_2);
 
     public static void register(RegistryEvent.Register<Potion> e) {
         for (Field field : ModPotions.class.getFields()) {

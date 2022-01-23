@@ -9,11 +9,12 @@
     "BrewingStandBlockEntityMixin",
     "BrewingStandContainerAccess",
     "BrewingStandContainerMixin",
-    "LivingEntityMixin",
     "PlayerEntityMixin",
     "PotionEntityMixin",
     "PotionItemMixin",
+    "PotionUtilsMixin",
     "ProtectionEnchantmentMixin",
+    "ServerPlayNetHandlerMixin",
     "ThrowablePotionItemMixin"
   ],
   "client": [

@@ -33,7 +33,7 @@ import java.util.function.Function;
 public class GauntletItem extends SwordItem {
 
     public GauntletItem(Properties properties) {
-        super(ItemTier.STONE, 7, -2.8f, properties);
+        super(ItemTier.NETHERITE, 3, -2.8f, properties);
     }
 
     @Override
@@ -49,8 +49,9 @@ public class GauntletItem extends SwordItem {
                 world.playSound(null,playerIn.getPosX(),playerIn.getPosY(),playerIn.getPosZ(),b ? ModSoundEvents.GAUNTLET_TURNING_OFF : ModSoundEvents.GAUNTLET_TURNING_ON, SoundCategory.PLAYERS,.5f,1);
             } else {
             }
+            return ActionResult.resultSuccess(stack);
         }
-        return ActionResult.resultSuccess(stack);
+        return ActionResult.resultPass(stack);
     }
 
     @Override
@@ -58,6 +59,28 @@ public class GauntletItem extends SwordItem {
         CompoundNBT info = stack.getOrCreateTag().getCompound("info");
         double blaze = info.getInt("blaze");
         return PotionInjectorMenu.BLAZE_CAP - (int) blaze;
+    }
+
+    @Override
+    public boolean isDamageable() {
+        return false;
+    }
+
+    @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        return oldStack.getItem() != newStack.getItem();
+    }
+
+    @Override
+    public boolean showDurabilityBar(ItemStack stack) {
+        CompoundNBT info = stack.getOrCreateTag().getCompound("info");
+        double blaze = info.getInt("blaze");
+        return blaze > 0;
+    }
+
+    @Override
+    public int getRGBDurabilityForDisplay(ItemStack stack) {
+        return TextFormatting.GOLD.getColor();
     }
 
     @Override
@@ -85,16 +108,6 @@ public class GauntletItem extends SwordItem {
             }
         }
         return super.hitEntity(stack, victim, attacker);
-    }
-
-    @Override
-    public boolean isDamageable() {
-        return false;
-    }
-
-    @Override
-    public int getRGBDurabilityForDisplay(ItemStack stack) {
-        return TextFormatting.GOLD.getColor();
     }
 
     @Override

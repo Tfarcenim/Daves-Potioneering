@@ -105,7 +105,7 @@ public class FullBrightModel extends BakedModelWrapper<IBakedModel> {
         for (int i = 0; i < quads.size(); ++i) {
             BakedQuad quad = quads.get(i);
 
-            if (true || textures.contains(quad.getSprite().getName())) {
+            if (textures.contains(quad.getSprite().getName())) {
                 quads.set(i, transformQuad(quad));
             }
         }
@@ -184,7 +184,7 @@ public class FullBrightModel extends BakedModelWrapper<IBakedModel> {
         @Override
         public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<RenderMaterial,
                 TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {
-            return new FullBrightModel(baseModel.bakeModel(bakery, baseModel, spriteGetter, modelTransform, modelLocation, true),false);
+            return new FullBrightModel(baseModel.bakeModel(bakery, baseModel, spriteGetter, modelTransform, modelLocation, true),false,new ResourceLocation("davespotioneering:item/lit_potioneer_gauntlet_bright"));
         }
 
         @Override

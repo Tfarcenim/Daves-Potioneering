@@ -30,8 +30,8 @@ public class ModItems {
     public static final Item COMPOUND_BREWING_STAND = new BlockItem(ModBlocks.COMPOUND_BREWING_STAND,new Item.Properties().group(tab));
     public static final Item REINFORCED_CAULDRON = new BlockItem(ModBlocks.REINFORCED_CAULDRON,new Item.Properties().group(tab));
     public static final Item POTIONEER_GAUNTLET = new GauntletItem(new Item.Properties().group(tab).maxDamage(32));
-    public static final Item NETHERITE_GAUNTLET = new SimpleGauntletItem(ItemTier.NETHERITE,1,-2.8f,new Item.Properties().group(tab));
-    public static final Item RUDIMENTARY_GAUNTLET = new SimpleGauntletItem(ItemTier.IRON,1,-2.8f,new Item.Properties().group(tab));
+    public static final Item NETHERITE_GAUNTLET = new SimpleGauntletItem(ItemTier.NETHERITE,3,-2.8f,new Item.Properties().group(tab));
+    public static final Item RUDIMENTARY_GAUNTLET = new SimpleGauntletItem(ItemTier.IRON,3,-2.8f,new Item.Properties().group(tab));
 
     public static final Item MAGIC_LECTERN = new BlockItem(ModBlocks.MAGIC_LECTERN,new Item.Properties());
     public static final Item POTION_INJECTOR = new BlockItem(ModBlocks.POTION_INJECTOR,new Item.Properties().group(tab));

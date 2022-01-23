@@ -109,6 +109,14 @@ public class Events {
         ((BrewingStandDuck)brewingStandTileEntity).addXp(Util.getBrewXp(ingredient));
     }
 
+    public static void heldItemChangeEvent(PlayerEntity player) {
+        ItemStack stack = player.getHeldItemMainhand();
+        if ((stack.getItem() instanceof LingeringPotionItem || stack.getItem() instanceof SplashPotionItem)) {
+            player.getCooldownTracker().setCooldown(Items.SPLASH_POTION, ModConfig.Server.potion_cooldown);
+            player.getCooldownTracker().setCooldown(Items.LINGERING_POTION, ModConfig.Server.potion_cooldown);
+        }
+    }
+
     //this is called when the player takes a potion from the brewing stand
     public static void playerBrew(PlayerBrewedPotionEvent e) {
         PlayerEntity player = e.getPlayer();

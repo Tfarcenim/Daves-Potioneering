@@ -106,9 +106,9 @@ public class DavesPotioneering {
         ItemStack lingerMilkPot = new ItemStack(Items.LINGERING_POTION);
         PotionUtils.addPotionToItemStack(lingerMilkPot,ModPotions.MILK);
 
-        BrewingRecipeRegistry.addRecipe(new BrewingRecipe(Ingredient.fromStacks(milkPot),Ingredient.fromItems(Items.GUNPOWDER),splashMilkPot));
+        BrewingRecipeRegistry.addRecipe(PotionIngredient.create(milkPot),Ingredient.fromItems(Items.GUNPOWDER),splashMilkPot);
 
-        BrewingRecipeRegistry.addRecipe(new BrewingRecipe(Ingredient.fromStacks(milkPot),Ingredient.fromItems(Items.DRAGON_BREATH),lingerMilkPot));
+        BrewingRecipeRegistry.addRecipe(PotionIngredient.create(milkPot),Ingredient.fromItems(Items.DRAGON_BREATH),lingerMilkPot);
 
         strongRecipe(Potions.INVISIBILITY,ModPotions.STRONG_INVISIBILITY);
 
@@ -121,10 +121,9 @@ public class DavesPotioneering {
     }
 
     protected static void strongRecipe(Potion potion,Potion strong) {
-        BrewingRecipeRegistry.addRecipe(
-                new BrewingRecipe(PotionIngredient.create(
+        BrewingRecipeRegistry.addRecipe(PotionIngredient.create(
                         PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION),potion)),
                         Ingredient.fromItems(Items.GLOWSTONE_DUST),
-                        PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), strong)));
+                        PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), strong));
     }
 }
