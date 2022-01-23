@@ -56,9 +56,9 @@ public class ModItemModelProvider extends ItemModelProvider {
 
         String s = ModItems.POTIONEER_GAUNTLET.getRegistryName().getPath();
 
-        ModelFile unlitFile = getExistingFile(modLoc("item/3d/"+s));
+        ModelFile unlitFile = getExistingFile(modLoc("item/perspective/"+s));
 
-        ModelFile litFile = getExistingFile(modLoc("item/3d/lit_"+s));
+        ModelFile litFile = getExistingFile(modLoc("item/perspective/lit_"+s));
 
         getBuilder(s).parent(getExistingFile(mcLoc("item/generated")))
                 .override().model(unlitFile).predicate(mcLoc("active"),0).end()
