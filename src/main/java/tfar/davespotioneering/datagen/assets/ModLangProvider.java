@@ -24,7 +24,7 @@ public class ModLangProvider extends LanguageProvider {
     protected void addTranslations() {
         addEffect(() -> ModEffects.MILK,"Milk");
         addPotions();
-        add("container.davespotioneering.advanced_brewing","Advanced Brewing Stand");
+        add("container.davespotioneering.compound_brewing","Compound Brewing Stand");
         add(GauntletWorkstationBlock.TRANS_KEY,"Potion Injector");
         addBlock(() -> ModBlocks.COMPOUND_BREWING_STAND,"Compound Brewing Stand");
         addBlock(() -> ModBlocks.REINFORCED_CAULDRON,"Reinforced Cauldron");

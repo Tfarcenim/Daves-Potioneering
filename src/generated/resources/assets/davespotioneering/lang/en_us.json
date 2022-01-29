@@ -2,7 +2,7 @@
   "block.davespotioneering.compound_brewing_stand": "Compound Brewing Stand",
   "block.davespotioneering.potion_injector": "Potion Injector",
   "block.davespotioneering.reinforced_cauldron": "Reinforced Cauldron",
-  "container.davespotioneering.advanced_brewing": "Advanced Brewing Stand",
+  "container.davespotioneering.compound_brewing": "Compound Brewing Stand",
   "davespotioneering.container.potion_injector": "Potion Injector",
   "davespotioneering.gui.moveGauntletHUD": "Use your mouse to drag the Gauntlet HUD wherever you would like or use one of these default positions.",
   "davespotioneering.gui.moveGauntletHUD.preset0": "Left Top",

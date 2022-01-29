@@ -8,6 +8,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
+import net.minecraftforge.common.brewing.IBrewingRecipe;
 import tfar.davespotioneering.mixin.ItemAccess;
 
 public class Util {
@@ -44,4 +45,15 @@ public class Util {
             }
         }
     }
+
+
+    public static boolean isValidInputCountInsensitive(ItemStack stack) {
+        for (IBrewingRecipe recipe : BrewingRecipeRegistry.getRecipes()) {
+            if (recipe.isInput(stack)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

@@ -12,9 +12,12 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.IntArray;
+import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
+import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
 import tfar.davespotioneering.init.ModContainerTypes;
 import tfar.davespotioneering.inv.BrewingHandler;
@@ -162,7 +165,7 @@ public class AdvancedBrewingStandContainer extends Container {
          * Check if the stack is allowed to be placed in this slot, used for armor slots as well as furnace fuel.
          */
         public boolean isItemValid(ItemStack stack) {
-            return stack.getItem() == Items.MILK_BUCKET || net.minecraftforge.common.brewing.BrewingRecipeRegistry.isValidIngredient(stack);
+            return stack.getItem() == Items.MILK_BUCKET || BrewingRecipeRegistry.isValidIngredient(stack);
         }
     }
 
@@ -175,7 +178,7 @@ public class AdvancedBrewingStandContainer extends Container {
          * Check if the stack is allowed to be placed in this slot, used for armor slots as well as furnace fuel.
          */
         public boolean isItemValid(ItemStack stack) {
-            return canHoldPotion(stack);
+            return Util.isValidInputCountInsensitive(stack);
         }
 
         /**
@@ -189,19 +192,12 @@ public class AdvancedBrewingStandContainer extends Container {
         public ItemStack onTake(PlayerEntity thePlayer, ItemStack stack) {
             Potion potion = PotionUtils.getPotionFromItem(stack);
             if (thePlayer instanceof ServerPlayerEntity) {
-                net.minecraftforge.event.ForgeEventFactory.onPlayerBrewedPotion(thePlayer, stack);
+                ForgeEventFactory.onPlayerBrewedPotion(thePlayer, stack);
                 CriteriaTriggers.BREWED_POTION.trigger((ServerPlayerEntity)thePlayer, potion);
             }
 
             super.onTake(thePlayer, stack);
             return stack;
-        }
-
-        /**
-         * Returns true if this itemstack can be filled with a potion
-         */
-        public static boolean canHoldPotion(ItemStack stack) {
-            return net.minecraftforge.common.brewing.BrewingRecipeRegistry.isValidInput(stack);
         }
     }
 }

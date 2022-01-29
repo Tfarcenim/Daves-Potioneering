@@ -18,22 +18,29 @@ import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
 import tfar.davespotioneering.Events;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.duck.BrewingStandDuck;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
 import tfar.davespotioneering.inv.BrewingHandler;
+import tfar.davespotioneering.inv.SidedItemHandler;
 import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
+import java.util.Map;
 
 public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITickableTileEntity, INamedContainerProvider, BrewingStandDuck {
     /** an array of the output slot indices */
@@ -88,7 +95,7 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
     };
 
     public AdvancedBrewingStandBlockEntity() {
-        super(ModBlockEntityTypes.ADVANCED_BREWING_STAND);
+        super(ModBlockEntityTypes.COMPOUND_BREWING_STAND);
     }
 
     protected AdvancedBrewingStandBlockEntity(TileEntityType<?> typeIn) {
@@ -96,7 +103,7 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
     }
 
     protected ITextComponent getDefaultName() {
-        return new TranslationTextComponent("container.davespotioneering.advanced_brewing");
+        return new TranslationTextComponent("container.davespotioneering.compound_brewing");
     }
 
     public void tick() {
@@ -326,18 +333,12 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
         }
     }
 
-    /*net.minecraftforge.common.util.LazyOptional<? extends net.minecraftforge.items.IItemHandler>[] handlers =
-            net.minecraftforge.items.wrapper.SidedInvWrapper.create(this, Direction.UP, Direction.DOWN, Direction.NORTH);
+    Map<Direction,LazyOptional<? extends IItemHandler>> handlers = SidedItemHandler.create(brewingHandler);
 
     @Override
-    public <T> net.minecraftforge.common.util.LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @Nullable Direction facing) {
-        if (!this.removed && facing != null && capability == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            if (facing == Direction.UP)
-                return handlers[0].cast();
-            else if (facing == Direction.DOWN)
-                return handlers[1].cast();
-            else
-                return handlers[2].cast();
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
+        if (!this.removed && facing != null && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return handlers.get(facing).cast();
         }
         return super.getCapability(capability, facing);
     }
@@ -345,7 +346,8 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
     @Override
     protected void invalidateCaps() {
         super.invalidateCaps();
-        for (int x = 0; x < handlers.length; x++)
-            handlers[x].invalidate();
-    }*/
+        for (Map.Entry<Direction, LazyOptional<? extends IItemHandler>> entry : handlers.entrySet()) {
+            entry.getValue().invalidate();
+        }
+    }
 }
