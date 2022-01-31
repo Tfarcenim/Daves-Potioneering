@@ -19,6 +19,9 @@
     },
     "third_person_left_hand": {
       "parent": "davespotioneering:item/3d/lit_potioneer_gauntlet"
+    },
+    "fixed": {
+      "parent": "davespotioneering:item/3d/lit_potioneer_gauntlet"
     }
   }
 }

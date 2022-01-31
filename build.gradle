@@ -85,7 +85,6 @@ minecraft {
 }
 
 repositories{
-
     maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
 
     maven {
@@ -93,9 +92,7 @@ repositories{
         name = "Progwml6 maven"
         url = "https://dvs1.progwml6.com/files/maven/"
     }
-    jcenter()
     mavenCentral()
-
 }
 
 dependencies {

@@ -17,12 +17,13 @@ import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.client.event.*;
-import net.minecraftforge.client.event.sound.PlaySoundEvent;
+import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -44,12 +45,6 @@ import tfar.davespotioneering.net.PacketHandler;
 import static tfar.davespotioneering.DavesPotioneering.MODID;
 
 public class ClientEvents {
-
-    public static void playSound(PlaySoundEvent event) {
-        if (event.getName().equals(SoundEvents.BLOCK_BREWING_STAND_BREW.getName().getPath()) && !ModConfig.Client.play_block_brewing_stand_brew.get()) {
-            event.setResultSound(null);
-        }
-    }
 
     public static void particle(ParticleFactoryRegisterEvent e) {
 
@@ -109,7 +104,6 @@ public class ClientEvents {
     }
 
     public static void doClientStuff(final FMLClientSetupEvent event) {
-        MinecraftForge.EVENT_BUS.addListener(ClientEvents::playSound);
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::tooltips);
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::onMouseInput);
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::onMouseScroll);

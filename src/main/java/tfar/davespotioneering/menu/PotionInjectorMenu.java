@@ -189,22 +189,40 @@ public class PotionInjectorMenu extends Container {
         }
     }
 
-    public boolean blazeOnly(boolean inject){
+    public SoundTy getSound(boolean inject) {
         if (inject) {
             for (int i = 0; i < 6; i++) {
                 if (!inventory.getStackInSlot(i).isEmpty()) {
-                    return false;
+                    return SoundTy.BOTH;
                 }
             }
+
+            return inventory.getStackInSlot(PotionInjectorHandler.BLAZE).isEmpty() ? SoundTy.NONE : SoundTy.BLAZE;
+
+
         } else {
             ItemStack stack = inventory.getStackInSlot(PotionInjectorHandler.GAUNTLET);
             CompoundNBT nbt = stack.getTag();
             if (nbt != null) {
                 CompoundNBT info = nbt.getCompound("info");
                 ListNBT listNBT = info.getList("potions", Constants.NBT.TAG_STRING);
-                return listNBT.isEmpty();
+                if (!listNBT.isEmpty()) {
+                    for (INBT nb : listNBT) {
+                        Potion potion = Registry.POTION.getOrDefault(new ResourceLocation(nb.getString()));
+                        if (potion != Potions.EMPTY) {
+                            return SoundTy.BOTH;
+                        }
+                    }
+                }
+                if (info.getInt("blaze") > 0) {
+                    return SoundTy.BLAZE;
+                }
             }
+            return SoundTy.NONE;
         }
-        return true;
+    }
+
+    public enum SoundTy {
+     NONE,BLAZE,BOTH
     }
 }

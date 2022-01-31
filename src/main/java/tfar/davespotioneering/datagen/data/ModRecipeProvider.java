@@ -52,7 +52,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .patternLine("b b").patternLine("bab").patternLine("b b")
                 .addCriterion("has_gold", hasItem(Items.GOLD_INGOT)).build(consumer);
 
-        smithingReinforce(consumer, ModItems.POTIONEER_GAUNTLET, ModItems.NETHERITE_GAUNTLET);
+        smithingReinforce(consumer, ModItems.RUDIMENTARY_GAUNTLET, ModItems.NETHERITE_GAUNTLET);
 
         ShapedRecipeBuilder.shapedRecipe(ModItems.POTION_INJECTOR)
                 .key('a', Blocks.DIORITE)

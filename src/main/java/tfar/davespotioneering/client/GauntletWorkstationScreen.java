@@ -8,6 +8,7 @@ import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -40,15 +41,35 @@ public class GauntletWorkstationScreen extends ContainerScreen<PotionInjectorMen
         addButton(new Button(x,y,36,20,new StringTextComponent("Strip"),this::strip){
             @Override
             public void playDownSound(SoundHandler handler) {
-                handler.play(SimpleSound.master(container.blazeOnly(false) ? SoundEvents.ENTITY_BLAZE_SHOOT :
-                        SoundEvents.ITEM_BOTTLE_FILL, 1.0F));
+
+                PotionInjectorMenu.SoundTy soundTy = container.getSound(false);
+                SoundEvent soundEvent;
+
+                switch (soundTy) {
+                    case BOTH:soundEvent = SoundEvents.ITEM_BOTTLE_FILL;break;
+                    case BLAZE:soundEvent = SoundEvents.ENTITY_BLAZE_SHOOT;break;
+                    case NONE: default:
+                        soundEvent = SoundEvents.UI_BUTTON_CLICK;
+                }
+
+                handler.play(SimpleSound.master(soundEvent, 1.0F));
             }
         });
         addButton(new Button(x + 46,y,36,20,new StringTextComponent("Inject"),this::inject){
             @Override
             public void playDownSound(SoundHandler handler) {
-                handler.play(SimpleSound.master(container.blazeOnly(true) ? SoundEvents.ENTITY_BLAZE_SHOOT :
-                        SoundEvents.BLOCK_BREWING_STAND_BREW, 1.0F));
+
+                PotionInjectorMenu.SoundTy soundTy = container.getSound(true);
+                SoundEvent soundEvent;
+
+                switch (soundTy) {
+                    case BOTH: soundEvent = SoundEvents.BLOCK_BREWING_STAND_BREW;break;
+                    case BLAZE:soundEvent = SoundEvents.ENTITY_BLAZE_SHOOT;break;
+                    case NONE: default:
+                        soundEvent = SoundEvents.UI_BUTTON_CLICK;
+                }
+
+                handler.play(SimpleSound.master(soundEvent, 1.0F));
             }
         });
 
