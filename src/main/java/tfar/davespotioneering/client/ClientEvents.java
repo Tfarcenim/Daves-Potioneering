@@ -130,9 +130,7 @@ public class ClientEvents {
         ItemModelsProperties.registerProperty(ModItems.POTIONEER_GAUNTLET, new ResourceLocation("active"),
                 (ItemStack a, ClientWorld b, LivingEntity c) -> a.hasTag() ? a.getTag().getBoolean("active") ? 1 : 0 : 0);
 
-        registerBlockingProperty(ModItems.UMBRELLA);
-        registerBlockingProperty(ModItems.GENTLEMAN_UMBRELLA);
-        registerBlockingProperty(ModItems.CLEAR_UMBRELLA);
+        registerBlockingProperty(ModItems.RED_UMBRELLA);
 
     }
 

@@ -30,9 +30,7 @@ public class ModLangProvider extends LanguageProvider {
         addBlock(() -> ModBlocks.REINFORCED_CAULDRON,"Reinforced Cauldron");
         addBlock(() -> ModBlocks.POTION_INJECTOR,"Potion Injector");
         addItem(() -> ModItems.POTIONEER_GAUNTLET,getNameFromItem(ModItems.POTIONEER_GAUNTLET));
-        addItem(() -> ModItems.UMBRELLA,"Umbrella");
-        addItem(() -> ModItems.GENTLEMAN_UMBRELLA,"Gentleman Umbrella");
-        addItem(() -> ModItems.CLEAR_UMBRELLA,"Clear Umbrella");
+        addItem(() -> ModItems.RED_UMBRELLA,"Red Umbrella");
         addItem(() -> ModItems.RUDIMENTARY_GAUNTLET,getNameFromItem(ModItems.RUDIMENTARY_GAUNTLET));
         addItem(() -> ModItems.NETHERITE_GAUNTLET,getNameFromItem(ModItems.NETHERITE_GAUNTLET));
 

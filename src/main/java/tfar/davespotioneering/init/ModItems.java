@@ -6,6 +6,7 @@ import net.minecraft.item.*;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import tfar.davespotioneering.DavesPotioneering;
+import tfar.davespotioneering.client.model.gecko.DoubleGeoItemStackRenderer;
 import tfar.davespotioneering.client.model.gecko.GeoItemStackRenderer;
 import tfar.davespotioneering.item.GauntletItem;
 import tfar.davespotioneering.item.SimpleGauntletItem;
@@ -14,7 +15,6 @@ import tfar.davespotioneering.item.UmbrellaItem;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.Supplier;
 
 public class ModItems {
 
@@ -36,13 +36,30 @@ public class ModItems {
     public static final Item MAGIC_LECTERN = new BlockItem(ModBlocks.MAGIC_LECTERN,new Item.Properties());
     public static final Item POTION_INJECTOR = new BlockItem(ModBlocks.POTION_INJECTOR,new Item.Properties().group(tab));
 
-    public static final Item UMBRELLA = new UmbrellaItem(new Item.Properties().group(tab).maxDamage(300)
-            .setISTER(() -> () -> HideISTERsFromServer.createGeoItemStackRenderer(new ResourceLocation(DavesPotioneering.MODID,"umbrella"),() -> ModItems.GENTLEMAN_UMBRELLA)));
-    public static final Item GENTLEMAN_UMBRELLA = new UmbrellaItem(new Item.Properties().group(tab).maxDamage(300)
-            .setISTER(() -> () -> HideISTERsFromServer.createGeoItemStackRenderer(new ResourceLocation(DavesPotioneering.MODID,"gentleman_umbrella"),() -> ModItems.GENTLEMAN_UMBRELLA)));
+    public static final Item WHITE_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.WHITE));
+    public static final Item ORANGE_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.ORANGE));
+    public static final Item MAGENTA_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.MAGENTA));
+    public static final Item LIGHT_BLUE_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.LIGHT_BLUE));
+    public static final Item YELLOW_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.YELLOW));
+    public static final Item LIME_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.LIME));
+    public static final Item PINK_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.PINK));
+    public static final Item GRAY_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.GRAY));
+    public static final Item LIGHT_GRAY_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.LIGHT_GRAY));
+    public static final Item CYAN_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.CYAN));
+    public static final Item PURPLE_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.PURPLE));
+    public static final Item BLUE_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.BLUE));
+    public static final Item BROWN_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.BROWN));
+    public static final Item GREEN_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.GREEN));
+    public static final Item RED_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.RED));
+    public static final Item BLACK_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.BLACK));
 
-    public static final Item CLEAR_UMBRELLA = new UmbrellaItem(new Item.Properties().group(tab).maxDamage(300)
-            .setISTER(() -> () -> HideISTERsFromServer.createGeoItemStackRendererTransparent(new ResourceLocation(DavesPotioneering.MODID,"clear_umbrella"),() -> ModItems.GENTLEMAN_UMBRELLA)));
+
+
+    public static Item.Properties classicUmbrella(DyeColor dyeColor) {
+       return new Item.Properties().group(tab).maxDamage(300)
+                .setISTER(() -> () -> HideISTERsFromServer.createGeoUmbrellaItemStackRenderer(
+                        new ResourceLocation(DavesPotioneering.MODID,dyeColor.name().toLowerCase(Locale.ROOT)+"_umbrella")));
+    }
 
     public static void register(RegistryEvent.Register<Item> e) {
         for (Field field : ModItems.class.getFields()) {
@@ -59,12 +76,13 @@ public class ModItems {
 
     private static class HideISTERsFromServer {
 
-        private static ItemStackTileEntityRenderer createGeoItemStackRenderer(ResourceLocation itemName, Supplier<Item> supplier) {
-            return new GeoItemStackRenderer<>(new GeoItemStackRenderer.GeoItemModel<>(itemName),new GeoItemStackRenderer.DummyAnimations(supplier));
+        private static ItemStackTileEntityRenderer createGeoUmbrellaItemStackRenderer(ResourceLocation itemName) {
+            return new DoubleGeoItemStackRenderer<>(new GeoItemStackRenderer.GeoItemModel<>(new ResourceLocation(itemName.getNamespace(),"closed_"+ itemName.getPath())),
+                    new GeoItemStackRenderer.GeoItemModel<>(new ResourceLocation(itemName.getNamespace(),"open_"+ itemName.getPath())),new GeoItemStackRenderer.DummyAnimations());
         }
 
-        private static ItemStackTileEntityRenderer createGeoItemStackRendererTransparent(ResourceLocation itemName, Supplier<Item> supplier) {
-            return new GeoItemStackRenderer<>(new GeoItemStackRenderer.GeoItemModel<>(itemName), RenderType::getEntityTranslucent,new GeoItemStackRenderer.DummyAnimations(supplier));
+        private static ItemStackTileEntityRenderer createGeoItemStackRendererTransparent(ResourceLocation itemName) {
+            return new GeoItemStackRenderer<>(new GeoItemStackRenderer.GeoItemModel<>(itemName), RenderType::getEntityTranslucent,new GeoItemStackRenderer.DummyAnimations());
         }
     }
 }

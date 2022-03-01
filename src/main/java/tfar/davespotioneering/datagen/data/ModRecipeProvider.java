@@ -17,22 +17,8 @@ public class ModRecipeProvider extends RecipeProvider {
 
     @Override
     public void registerRecipes(Consumer<IFinishedRecipe> consumer) {
-        ShapedRecipeBuilder.shapedRecipe(ModItems.UMBRELLA)
+        ShapedRecipeBuilder.shapedRecipe(ModItems.RED_UMBRELLA)
                 .key('a', Blocks.RED_WOOL)
-                .key('b', Items.SHIELD)
-                .key('c', Items.IRON_INGOT)
-                .patternLine("aba").patternLine(" c ").patternLine(" c ")
-                .addCriterion("has_shield", hasItem(Items.SHIELD)).build(consumer);
-
-        ShapedRecipeBuilder.shapedRecipe(ModItems.GENTLEMAN_UMBRELLA)
-                .key('a', Blocks.BLACK_WOOL)
-                .key('b', Items.SHIELD)
-                .key('c', Items.IRON_INGOT)
-                .patternLine("aba").patternLine(" c ").patternLine(" c ")
-                .addCriterion("has_shield", hasItem(Items.SHIELD)).build(consumer);
-
-        ShapedRecipeBuilder.shapedRecipe(ModItems.CLEAR_UMBRELLA)
-                .key('a', Items.GLASS)
                 .key('b', Items.SHIELD)
                 .key('c', Items.IRON_INGOT)
                 .patternLine("aba").patternLine(" c ").patternLine(" c ")
