@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -28,6 +29,7 @@ import tfar.davespotioneering.DavesPotioneering;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -128,15 +130,43 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends ItemStackTileEn
 
         private static final ResourceLocation DUMMY = new ResourceLocation(DavesPotioneering.MODID, "animations/animation.dummy.json");
 
+        public static GeoItemModel<IAnimatable> makeClosedUmbrella(DyeColor color) {
+            return new GeoItemModel<>(new ResourceLocation("closed_umbrella"),
+                    new ResourceLocation(DavesPotioneering.MODID,"closed_"+color.name().toLowerCase(Locale.ROOT)+"_umbrella"),DUMMY);
+        }
+
+        public static GeoItemModel<IAnimatable> makeOpenUmbrella(DyeColor color) {
+            return new GeoItemModel<>(new ResourceLocation("open_umbrella"),
+                    new ResourceLocation(DavesPotioneering.MODID,"open_"+color.name().toLowerCase(Locale.ROOT)+"_umbrella"),DUMMY);
+        }
+
+        public static GeoItemModel<IAnimatable> makeClosedUmbrella(String color) {
+            return new GeoItemModel<>(new ResourceLocation("closed_umbrella"),
+                    new ResourceLocation(DavesPotioneering.MODID,"closed_"+color+"_umbrella"),DUMMY);
+        }
+
+        public static GeoItemModel<IAnimatable> makeOpenUmbrella(String color) {
+            return new GeoItemModel<>(new ResourceLocation("open_umbrella"),
+                    new ResourceLocation(DavesPotioneering.MODID,"open_"+color+"_umbrella"),DUMMY);
+        }
+
+        public static GeoItemModel<IAnimatable> makeOpenAgedUmbrella() {
+            return new GeoItemModel<>(new ResourceLocation("open_aged_umbrella"),
+                    new ResourceLocation(DavesPotioneering.MODID,"open_aged_umbrella"),DUMMY);
+        }
+
         public GeoItemModel(ResourceLocation item) {
             this(item, DUMMY);
         }
 
         public GeoItemModel(ResourceLocation item, ResourceLocation animation) {
+            this(item,item,animation);
+        }
+
+        public GeoItemModel(ResourceLocation model, ResourceLocation texture,ResourceLocation animation) {
             this.animation = animation;
-            String name = item.getPath();
-            modelLoc = new ResourceLocation(DavesPotioneering.MODID, "geo/item/" + name + ".geo.json");
-            textureLoc = new ResourceLocation(DavesPotioneering.MODID, "textures/item/" + name + ".png");
+            modelLoc = new ResourceLocation(DavesPotioneering.MODID, "geo/item/" + model.getPath() + ".geo.json");
+            textureLoc = new ResourceLocation(DavesPotioneering.MODID, "textures/item/" + texture.getPath() + ".png");
         }
 
         @Override
@@ -161,7 +191,7 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends ItemStackTileEn
 
         AnimationFactory factory = new AnimationFactory(this);
 
-        public DummyAnimations() {
+        private DummyAnimations() {
         }
 
         @Override

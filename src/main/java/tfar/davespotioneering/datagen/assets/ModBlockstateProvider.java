@@ -72,7 +72,5 @@ public class ModBlockstateProvider extends BlockStateProvider {
                 .part().modelFile(models().getExistingFile(modLoc("block/advanced_brewing_stand_empty1"))).addModel().condition(AdvancedBrewingStandBlock.HAS_BOTTLE[1], false).end()
                 .part().modelFile(models().getExistingFile(modLoc("block/advanced_brewing_stand_empty2"))).addModel().condition(AdvancedBrewingStandBlock.HAS_BOTTLE[2], false).end()
         ;
-
-
     }
 }

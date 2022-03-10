@@ -6,7 +6,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraftforge.event.RegistryEvent;
 import tfar.davespotioneering.block.AdvancedBrewingStandBlock;
-import tfar.davespotioneering.block.GauntletWorkstationBlock;
+import tfar.davespotioneering.block.PotionInjectorBlock;
 import tfar.davespotioneering.block.MagicLecternBlock;
 import tfar.davespotioneering.block.ReinforcedCauldronBlock;
 
@@ -26,7 +26,7 @@ public class ModBlocks {
 
     public static final Block MAGIC_LECTERN = new MagicLecternBlock(AbstractBlock.Properties.from(Blocks.LECTERN));
 
-    public static final Block POTION_INJECTOR = new GauntletWorkstationBlock(AbstractBlock.Properties.from(Blocks.FLETCHING_TABLE).notSolid());
+    public static final Block POTION_INJECTOR = new PotionInjectorBlock(AbstractBlock.Properties.from(Blocks.FLETCHING_TABLE).notSolid());
 
 
     public static void register(RegistryEvent.Register<Block> e) {

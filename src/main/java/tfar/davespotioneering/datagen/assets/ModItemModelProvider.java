@@ -33,13 +33,20 @@ public class ModItemModelProvider extends ItemModelProvider {
         alchemicalGauntlet();
 
         for (DyeColor dyeColor : DyeColor.values()) {
-            umbrella(dyeColor);
+           classicUmbrella(dyeColor);
         }
+
+        umbrella("aged");
+        umbrella("gilded");
     }
 
-    private void umbrella(DyeColor color) {
+    private void classicUmbrella(DyeColor color) {
 
         String s = color.name().toLowerCase(Locale.ROOT);
+        umbrella(s);
+    }
+
+    private void umbrella(String s) {
 
         ItemModelBuilder openRed = getBuilder("open_"+s+"_umbrella")
                 .parent(getExistingFile(new ResourceLocation(DavesPotioneering.MODID, "item/open_umbrella")));

@@ -130,8 +130,25 @@ public class ClientEvents {
         ItemModelsProperties.registerProperty(ModItems.POTIONEER_GAUNTLET, new ResourceLocation("active"),
                 (ItemStack a, ClientWorld b, LivingEntity c) -> a.hasTag() ? a.getTag().getBoolean("active") ? 1 : 0 : 0);
 
+        registerBlockingProperty(ModItems.WHITE_UMBRELLA);
+        registerBlockingProperty(ModItems.ORANGE_UMBRELLA);
+        registerBlockingProperty(ModItems.MAGENTA_UMBRELLA);
+        registerBlockingProperty(ModItems.LIGHT_BLUE_UMBRELLA);
+        registerBlockingProperty(ModItems.YELLOW_UMBRELLA);
+        registerBlockingProperty(ModItems.LIME_UMBRELLA);
+        registerBlockingProperty(ModItems.PINK_UMBRELLA);
+        registerBlockingProperty(ModItems.GRAY_UMBRELLA);
+        registerBlockingProperty(ModItems.LIGHT_GRAY_UMBRELLA);
+        registerBlockingProperty(ModItems.CYAN_UMBRELLA);
+        registerBlockingProperty(ModItems.PURPLE_UMBRELLA);
+        registerBlockingProperty(ModItems.BLUE_UMBRELLA);
+        registerBlockingProperty(ModItems.BROWN_UMBRELLA);
+        registerBlockingProperty(ModItems.GREEN_UMBRELLA);
         registerBlockingProperty(ModItems.RED_UMBRELLA);
+        registerBlockingProperty(ModItems.BLACK_UMBRELLA);
 
+        registerBlockingProperty(ModItems.AGED_UMBRELLA);
+        registerBlockingProperty(ModItems.GILDED_UMBRELLA);
     }
 
     private static void registerBlockingProperty(Item item) {

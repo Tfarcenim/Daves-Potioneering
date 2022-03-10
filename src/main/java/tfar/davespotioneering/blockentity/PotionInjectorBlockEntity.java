@@ -11,7 +11,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.items.ItemStackHandler;
-import tfar.davespotioneering.block.GauntletWorkstationBlock;
+import tfar.davespotioneering.block.PotionInjectorBlock;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
 import tfar.davespotioneering.inv.PotionInjectorHandler;
 import tfar.davespotioneering.menu.PotionInjectorMenu;
@@ -26,7 +26,7 @@ public class PotionInjectorBlockEntity extends TileEntity implements INamedConta
             super.onContentsChanged(slot);
             if (slot == PotionInjectorHandler.GAUNTLET) {
                 ItemStack stack = getStackInSlot(slot);
-                GauntletWorkstationBlock.setHasGauntlet(world,pos,getBlockState(),!stack.isEmpty());
+                PotionInjectorBlock.setHasGauntlet(world,pos,getBlockState(),!stack.isEmpty());
             }
         }
     };
@@ -41,7 +41,7 @@ public class PotionInjectorBlockEntity extends TileEntity implements INamedConta
 
     @Override
     public ITextComponent getDisplayName() {
-        return GauntletWorkstationBlock.CONTAINER_NAME;
+        return PotionInjectorBlock.CONTAINER_NAME;
     }
 
     @Nullable

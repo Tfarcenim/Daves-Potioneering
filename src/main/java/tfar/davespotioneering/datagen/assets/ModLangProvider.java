@@ -7,13 +7,14 @@ import net.minecraft.item.Items;
 import net.minecraftforge.common.data.LanguageProvider;
 import org.codehaus.plexus.util.StringUtils;
 import tfar.davespotioneering.DavesPotioneering;
-import tfar.davespotioneering.block.GauntletWorkstationBlock;
+import tfar.davespotioneering.block.PotionInjectorBlock;
 import tfar.davespotioneering.client.GauntletHUD;
 import tfar.davespotioneering.client.GauntletHUDMovementGui;
 import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.init.ModEffects;
 import tfar.davespotioneering.init.ModItems;
 import tfar.davespotioneering.init.ModPotions;
+import tfar.davespotioneering.item.UmbrellaItem;
 
 public class ModLangProvider extends LanguageProvider {
     public ModLangProvider(DataGenerator gen) {
@@ -25,12 +26,11 @@ public class ModLangProvider extends LanguageProvider {
         addEffect(() -> ModEffects.MILK,"Milk");
         addPotions();
         add("container.davespotioneering.compound_brewing","Compound Brewing Stand");
-        add(GauntletWorkstationBlock.TRANS_KEY,"Potion Injector");
+        add(PotionInjectorBlock.TRANS_KEY,"Potion Injector");
         addBlock(() -> ModBlocks.COMPOUND_BREWING_STAND,"Compound Brewing Stand");
         addBlock(() -> ModBlocks.REINFORCED_CAULDRON,"Reinforced Cauldron");
         addBlock(() -> ModBlocks.POTION_INJECTOR,"Potion Injector");
         addItem(() -> ModItems.POTIONEER_GAUNTLET,getNameFromItem(ModItems.POTIONEER_GAUNTLET));
-        addItem(() -> ModItems.RED_UMBRELLA,"Red Umbrella");
         addItem(() -> ModItems.RUDIMENTARY_GAUNTLET,getNameFromItem(ModItems.RUDIMENTARY_GAUNTLET));
         addItem(() -> ModItems.NETHERITE_GAUNTLET,getNameFromItem(ModItems.NETHERITE_GAUNTLET));
 
@@ -43,6 +43,12 @@ public class ModLangProvider extends LanguageProvider {
         add("davespotioneering.tooltip.gauntlet", "%s %s");
         add("davespotioneering.tooltip.gauntlet.withDuration", "%s %s (%s)");
         addGroup(ModItems.tab,"Dave's Potioneering");
+
+        ModItems.getAllItems().stream().filter(UmbrellaItem.class::isInstance)
+                .forEach(item -> {
+                    addItem(() -> item, "Umbrella");
+                    add(item.getTranslationKey()+".desc","keeps you from getting wet");
+                });
     }
 
     protected void addGroup(ItemGroup group,String name) {

@@ -2,9 +2,12 @@ package tfar.davespotioneering.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
@@ -20,7 +23,9 @@ import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -28,9 +33,10 @@ import net.minecraftforge.items.ItemStackHandler;
 import tfar.davespotioneering.blockentity.PotionInjectorBlockEntity;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
-public class GauntletWorkstationBlock extends Block {
-    public GauntletWorkstationBlock(Properties properties) {
+public class PotionInjectorBlock extends Block {
+    public PotionInjectorBlock(Properties properties) {
         super(properties);
         setDefaultState(stateContainer.getBaseState().with(FACING, Direction.NORTH).with(HAS_GAUNTLET,false));
     }
@@ -116,4 +122,25 @@ public class GauntletWorkstationBlock extends Block {
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         return new PotionInjectorBlockEntity();
     }
+
+    @Override
+    public void addInformation(ItemStack stack, @Nullable IBlockReader worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+
+        tooltip.add(new TranslationTextComponent(getTranslationKey()+".hold_shift.desc"));
+        if (Screen.hasShiftDown())
+            tooltip.add(this.getShiftDescription().mergeStyle(TextFormatting.GRAY));
+
+        tooltip.add(new TranslationTextComponent(getTranslationKey()+".hold_ctrl.desc"));
+        if (Screen.hasControlDown())
+            tooltip.add(this.getCtrlDescription().mergeStyle(TextFormatting.GRAY));
+    }
+
+    public IFormattableTextComponent getCtrlDescription() {
+        return new TranslationTextComponent(this.getTranslationKey() + ".ctrl.desc");
+    }
+
+    public IFormattableTextComponent getShiftDescription() {
+        return new TranslationTextComponent(this.getTranslationKey() + ".shift.desc");
+    }
+
 }

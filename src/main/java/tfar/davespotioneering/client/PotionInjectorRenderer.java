@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.vector.Vector3f;
-import tfar.davespotioneering.block.GauntletWorkstationBlock;
+import tfar.davespotioneering.block.PotionInjectorBlock;
 import tfar.davespotioneering.blockentity.PotionInjectorBlockEntity;
 import tfar.davespotioneering.init.ModItems;
 
@@ -21,10 +21,10 @@ public class PotionInjectorRenderer extends TileEntityRenderer<PotionInjectorBlo
     @Override
     public void render(PotionInjectorBlockEntity tileEntityIn, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
         BlockState blockstate = tileEntityIn.getBlockState();
-        if (blockstate.get(GauntletWorkstationBlock.HAS_GAUNTLET)) {
+        if (blockstate.get(PotionInjectorBlock.HAS_GAUNTLET)) {
             matrixStackIn.push();
 
-            Direction facing = blockstate.get(GauntletWorkstationBlock.FACING);
+            Direction facing = blockstate.get(PotionInjectorBlock.FACING);
 
             matrixStackIn.translate(0.5D, 1.0625D, 0.5D);
             float f = facing.getHorizontalAngle();
