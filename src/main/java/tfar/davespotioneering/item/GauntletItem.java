@@ -1,5 +1,6 @@
 package tfar.davespotioneering.item;
 
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -13,10 +14,7 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.EffectUtils;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.*;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -129,9 +127,13 @@ public class GauntletItem extends SwordItem {
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
 
-        CompoundNBT info = stack.getOrCreateTag().getCompound("info");
-        double blaze = info.getInt("blaze");
-        tooltip.add(new StringTextComponent("Blaze: " + blaze));
+        tooltip.add(new TranslationTextComponent(getTranslationKey()+".hold_shift.desc"));
+        if (Screen.hasShiftDown())
+            tooltip.add(this.getShiftDescription().mergeStyle(TextFormatting.GRAY));
+
+        tooltip.add(new TranslationTextComponent(getTranslationKey()+".hold_ctrl.desc"));
+        if (Screen.hasControlDown())
+            tooltip.add(this.getCtrlDescription().mergeStyle(TextFormatting.GRAY));
 
         Tuple<List<EffectInstance>, List<Potion>> tuple = getEffectsFromGauntlet(stack);
         if (tuple == null) return;
@@ -155,7 +157,10 @@ public class GauntletItem extends SwordItem {
             }
 
             tooltip.add(product);
-        }
+
+            }
+
+
     }
 
     @Override
@@ -174,6 +179,14 @@ public class GauntletItem extends SwordItem {
                 }
             }
         }
+    }
+
+    public IFormattableTextComponent getShiftDescription() {
+        return new TranslationTextComponent(this.getTranslationKey() + ".shift.desc");
+    }
+
+    public IFormattableTextComponent getCtrlDescription() {
+        return new TranslationTextComponent(this.getTranslationKey() + ".ctrl.desc");
     }
 
     @Nullable

@@ -29,7 +29,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.items.ItemStackHandler;
 import tfar.davespotioneering.blockentity.PotionInjectorBlockEntity;
 
 import javax.annotation.Nullable;
@@ -107,11 +106,6 @@ public class PotionInjectorBlock extends Block {
         builder.add(HAS_GAUNTLET,FACING);
     }
 
-    public static ItemStackHandler loadFromGauntlet(PlayerEntity player) {
-        ItemStackHandler handler =  new ItemStackHandler(7);
-        return handler;
-    }
-
     @Override
     public boolean hasTileEntity(BlockState state) {
         return true;
@@ -135,12 +129,12 @@ public class PotionInjectorBlock extends Block {
             tooltip.add(this.getCtrlDescription().mergeStyle(TextFormatting.GRAY));
     }
 
-    public IFormattableTextComponent getCtrlDescription() {
-        return new TranslationTextComponent(this.getTranslationKey() + ".ctrl.desc");
-    }
-
     public IFormattableTextComponent getShiftDescription() {
         return new TranslationTextComponent(this.getTranslationKey() + ".shift.desc");
+    }
+
+    public IFormattableTextComponent getCtrlDescription() {
+        return new TranslationTextComponent(this.getTranslationKey() + ".ctrl.desc");
     }
 
 }

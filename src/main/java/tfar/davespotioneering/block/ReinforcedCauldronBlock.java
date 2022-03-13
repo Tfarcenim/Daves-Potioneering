@@ -3,6 +3,8 @@ package tfar.davespotioneering.block;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CauldronBlock;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -27,6 +29,10 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.text.IFormattableTextComponent;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -309,5 +315,33 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
                 boom(world,pos,state);
             }
         }
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, @Nullable IBlockReader worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+
+        tooltip.add(new TranslationTextComponent(getTranslationKey()+".hold_shift.desc"));
+        if (Screen.hasShiftDown())
+            tooltip.add(this.getShiftDescription().mergeStyle(TextFormatting.GRAY));
+
+        tooltip.add(new TranslationTextComponent(getTranslationKey()+".hold_ctrl.desc"));
+        if (Screen.hasControlDown())
+            tooltip.add(this.getCtrlDescription().mergeStyle(TextFormatting.GRAY));
+
+        if (Screen.hasAltDown()) {
+            tooltip.add(this.getAltDescription().mergeStyle(TextFormatting.GRAY));
+        }
+    }
+
+    public IFormattableTextComponent getShiftDescription() {
+        return new TranslationTextComponent(this.getTranslationKey() + ".shift.desc");
+    }
+
+    public IFormattableTextComponent getCtrlDescription() {
+        return new TranslationTextComponent(this.getTranslationKey() + ".ctrl.desc");
+    }
+
+    public IFormattableTextComponent getAltDescription() {
+        return new TranslationTextComponent(this.getTranslationKey() + ".alt.desc");
     }
 }
