@@ -52,22 +52,22 @@ public class ModLangProvider extends LanguageProvider {
                 });
         addShiftDesc(ModBlocks.COMPOUND_BREWING_STAND,"An upgraded stand that eases the tedium of brewing.");
         addHoldSDesc(ModBlocks.COMPOUND_BREWING_STAND,"Summary: Hold [Shift]");
-        addCtrlDesc(ModBlocks.COMPOUND_BREWING_STAND,"Potions brew at 2x speed\n" +
-                "More ingredient slots\n" +
-                "Double potion output (6 potions)\n");
+        addCtrlDescs(ModBlocks.COMPOUND_BREWING_STAND,"Potions brew at 2x speed",
+                "More ingredient slots",
+                "Double potion output (6 potions)");
         addHoldCDesc(ModBlocks.COMPOUND_BREWING_STAND,"Features: Hold [CTRL]");
 
 
         addHoldSDesc(ModBlocks.REINFORCED_CAULDRON,"Summary: Hold [Shift]");
-        addShiftDesc(ModBlocks.REINFORCED_CAULDRON,"An upgraded cauldron that enables the coating of melee weapons in potion effects.\n" +
+        addShiftDescs(ModBlocks.REINFORCED_CAULDRON,"An upgraded cauldron that enables the coating of melee weapons in potion effects.",
                 "It also has some small benefits.");
 
         addHoldCDesc(ModBlocks.REINFORCED_CAULDRON,"Features: Hold [CTRL]");
-        addCtrlDesc(ModBlocks.REINFORCED_CAULDRON,"Water is not depleted when filling empty bottles\n" +
+        addCtrlDescs(ModBlocks.REINFORCED_CAULDRON,"Water is not depleted when filling empty bottles",
                 "Can be filled with potions and Milk");
 
-        addHoldADesc(ModBlocks.REINFORCED_CAULDRON,"Coating: Hold [Left Alt]");
-        addAltDesc(ModBlocks.REINFORCED_CAULDRON,"Fill the cauldron with any potion and Dragon’s Breath.\n" +
+        addHoldADesc(ModBlocks.REINFORCED_CAULDRON,"Coating: Hold [Alt]");
+        addAltDescs(ModBlocks.REINFORCED_CAULDRON,"Fill the cauldron with any potion and Dragon's Breath.",
                         "Then, toss your weapon of choice into the concoction.");
 
 
@@ -92,12 +92,33 @@ public class ModLangProvider extends LanguageProvider {
         add(item.asItem().getTranslationKey()+".shift.desc",desc);
     }
 
+    protected void addShiftDescs(IItemProvider item, String... descs) {
+        for (int i = 0; i < descs.length; i++) {
+            String desc = descs[i];
+            add(item.asItem().getTranslationKey() + i+".shift.desc", desc);
+        }
+    }
+
     protected void addCtrlDesc(IItemProvider item, String desc) {
         add(item.asItem().getTranslationKey()+".ctrl.desc",desc);
     }
 
+    protected void addCtrlDescs(IItemProvider item, String... descs) {
+        for (int i = 0; i < descs.length; i++) {
+            String desc = descs[i];
+            add(item.asItem().getTranslationKey() + i+".ctrl.desc", desc);
+        }
+    }
+
     protected void addAltDesc(IItemProvider item, String desc) {
         add(item.asItem().getTranslationKey()+".alt.desc",desc);
+    }
+
+    protected void addAltDescs(IItemProvider item, String... descs) {
+        for (int i = 0; i < descs.length; i++) {
+            String desc = descs[i];
+            add(item.asItem().getTranslationKey() + i+".alt.desc", desc);
+        }
     }
 
     protected void addHoldSDesc(IItemProvider item, String desc) {

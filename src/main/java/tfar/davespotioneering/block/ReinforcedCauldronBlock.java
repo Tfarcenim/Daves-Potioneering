@@ -117,7 +117,6 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
     }
 
     private void handleDragonBreath(BlockState state, World world, BlockPos pos, PlayerEntity player, ItemStack stack) {
-        ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) world.getTileEntity(pos);
         if (!world.isRemote) {
             if (!player.abilities.isCreativeMode) {
                 player.addStat(Stats.USE_CAULDRON);
@@ -215,9 +214,13 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
     @Override
     public void setWaterLevel(World world, BlockPos pos, BlockState state, int level) {
         super.setWaterLevel(world, pos, state, level);
+        ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) world.getTileEntity(pos);
         if (level == 0) {
-            ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) world.getTileEntity(pos);
             reinforcedCauldronBlockEntity.setPotion(Potions.EMPTY);
+        } else {
+            if (reinforcedCauldronBlockEntity.getPotion() == Potions.EMPTY) {
+                reinforcedCauldronBlockEntity.setPotion(Potions.WATER);
+            }
         }
     }
 
@@ -271,7 +274,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
 
     /**
      * Called periodically clientside on blocks near the player to show effects (like furnace fire particles). Note that
-     * this method is unrelated to {@link randomTick} and {@link #needsRandomTick}, and will always be called regardless
+     * this method is unrelated to {@link #randomTick} and {@link #ticksRandomly(BlockState)}, and will always be called regardless
      * of whether the block can receive random update ticks
      */
     @OnlyIn(Dist.CLIENT)
@@ -317,19 +320,31 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
         }
     }
 
+    public static final int S_LINES = 2;
+    public static final int C_LINES = 2;
+    public static final int A_LINES = 2;
+
     @Override
     public void addInformation(ItemStack stack, @Nullable IBlockReader worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
 
         tooltip.add(new TranslationTextComponent(getTranslationKey()+".hold_shift.desc"));
         if (Screen.hasShiftDown())
-            tooltip.add(this.getShiftDescription().mergeStyle(TextFormatting.GRAY));
+            for (int i = 0; i < S_LINES;i++) {
+
+                tooltip.add(this.getShiftDescriptions(i).mergeStyle(TextFormatting.GRAY));
+            }
 
         tooltip.add(new TranslationTextComponent(getTranslationKey()+".hold_ctrl.desc"));
         if (Screen.hasControlDown())
-            tooltip.add(this.getCtrlDescription().mergeStyle(TextFormatting.GRAY));
+            for (int i = 0; i < C_LINES;i++) {
+                tooltip.add(this.getCtrlDescriptions(i).mergeStyle(TextFormatting.GRAY));
+            }
 
+        tooltip.add(new TranslationTextComponent(getTranslationKey()+".hold_alt.desc"));
         if (Screen.hasAltDown()) {
-            tooltip.add(this.getAltDescription().mergeStyle(TextFormatting.GRAY));
+            for (int i = 0; i < A_LINES;i++) {
+                tooltip.add(this.getAltDescriptions(i).mergeStyle(TextFormatting.GRAY));
+            }
         }
     }
 
@@ -337,11 +352,23 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
         return new TranslationTextComponent(this.getTranslationKey() + ".shift.desc");
     }
 
+    public IFormattableTextComponent getShiftDescriptions(int i) {
+        return new TranslationTextComponent(this.getTranslationKey() + i +".ctrl.desc");
+    }
+
     public IFormattableTextComponent getCtrlDescription() {
         return new TranslationTextComponent(this.getTranslationKey() + ".ctrl.desc");
     }
 
+    public IFormattableTextComponent getCtrlDescriptions(int i) {
+        return new TranslationTextComponent(this.getTranslationKey() + i +".ctrl.desc");
+    }
+
     public IFormattableTextComponent getAltDescription() {
         return new TranslationTextComponent(this.getTranslationKey() + ".alt.desc");
+    }
+
+    public IFormattableTextComponent getAltDescriptions(int i) {
+        return new TranslationTextComponent(this.getTranslationKey() + i+".alt.desc");
     }
 }

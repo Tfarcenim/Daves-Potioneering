@@ -41,6 +41,8 @@ public class AdvancedBrewingStandBlock extends BrewingStandBlock {
         }
     }
 
+    public static final int C_LINES = 3;
+
     @Override
     public void addInformation(ItemStack stack, @Nullable IBlockReader worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
 
@@ -50,7 +52,9 @@ public class AdvancedBrewingStandBlock extends BrewingStandBlock {
 
         tooltip.add(new TranslationTextComponent(getTranslationKey()+".hold_ctrl.desc"));
         if (Screen.hasControlDown())
-            tooltip.add(this.getCtrlDescription().mergeStyle(TextFormatting.GRAY));
+            for (int i = 0; i < C_LINES;i++) {
+                tooltip.add(this.getCtrlDescriptions(i).mergeStyle(TextFormatting.GRAY));
+            }
     }
 
     public IFormattableTextComponent getShiftDescription() {
@@ -59,6 +63,10 @@ public class AdvancedBrewingStandBlock extends BrewingStandBlock {
 
     public IFormattableTextComponent getCtrlDescription() {
         return new TranslationTextComponent(this.getTranslationKey() + ".ctrl.desc");
+    }
+
+    public IFormattableTextComponent getCtrlDescriptions(int i) {
+        return new TranslationTextComponent(this.getTranslationKey() + i +".ctrl.desc");
     }
 
     @Override

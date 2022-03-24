@@ -17,10 +17,8 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.BiomeColors;
-import net.minecraftforge.items.ItemStackHandler;
 import tfar.davespotioneering.block.ReinforcedCauldronBlock;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
 import tfar.davespotioneering.init.ModPotions;
@@ -29,7 +27,7 @@ import javax.annotation.Nonnull;
 
 public class ReinforcedCauldronBlockEntity extends TileEntity {
 
-    protected Potion potion = Potions.EMPTY;
+    @Nonnull protected Potion potion = Potions.EMPTY;
 
     public ReinforcedCauldronBlockEntity() {
         this(ModBlockEntityTypes.REINFORCED_CAULDRON);
@@ -39,11 +37,12 @@ public class ReinforcedCauldronBlockEntity extends TileEntity {
         super(tileEntityTypeIn);
     }
 
+    @Nonnull
     public Potion getPotion() {
         return potion;
     }
 
-    public void setPotion(Potion potion) {
+    public void setPotion(@Nonnull Potion potion) {
         this.potion = potion;
         markDirty();
     }
@@ -61,6 +60,7 @@ public class ReinforcedCauldronBlockEntity extends TileEntity {
         super.read(state, nbt);
     }
 
+    @Nonnull
     @Override
     public CompoundNBT write(CompoundNBT compound) {
         compound.putString("potion", potion.getRegistryName().toString());
