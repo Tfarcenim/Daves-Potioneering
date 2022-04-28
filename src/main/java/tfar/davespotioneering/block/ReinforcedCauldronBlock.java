@@ -353,7 +353,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
     }
 
     public IFormattableTextComponent getShiftDescriptions(int i) {
-        return new TranslationTextComponent(this.getTranslationKey() + i +".ctrl.desc");
+        return new TranslationTextComponent(this.getTranslationKey() + i +".shift.desc");
     }
 
     public IFormattableTextComponent getCtrlDescription() {

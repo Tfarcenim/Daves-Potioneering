@@ -48,13 +48,13 @@ public class ModLangProvider extends LanguageProvider {
         ModItems.getAllItems().stream().filter(UmbrellaItem.class::isInstance)
                 .forEach(item -> {
                     addItem(() -> item, "Umbrella");
-                    addDesc(item,"Keeps you from getting wet");
+                    addDesc(item,"Keeps you from getting wet!");
                 });
         addShiftDesc(ModBlocks.COMPOUND_BREWING_STAND,"An upgraded stand that eases the tedium of brewing.");
         addHoldSDesc(ModBlocks.COMPOUND_BREWING_STAND,"Summary: Hold [Shift]");
-        addCtrlDescs(ModBlocks.COMPOUND_BREWING_STAND,"Potions brew at 2x speed",
-                "More ingredient slots",
-                "Double potion output (6 potions)");
+        addCtrlDescs(ModBlocks.COMPOUND_BREWING_STAND,"- Potions brew at 2x speed",
+                "- More ingredient slots",
+                "- Double potion output (6 potions)");
         addHoldCDesc(ModBlocks.COMPOUND_BREWING_STAND,"Features: Hold [CTRL]");
 
 
@@ -63,8 +63,8 @@ public class ModLangProvider extends LanguageProvider {
                 "It also has some small benefits.");
 
         addHoldCDesc(ModBlocks.REINFORCED_CAULDRON,"Features: Hold [CTRL]");
-        addCtrlDescs(ModBlocks.REINFORCED_CAULDRON,"Water is not depleted when filling empty bottles",
-                "Can be filled with potions and Milk");
+        addCtrlDescs(ModBlocks.REINFORCED_CAULDRON,"- Water is not depleted when filling empty bottles",
+                "- Can be filled with potions and Milk");
 
         addHoldADesc(ModBlocks.REINFORCED_CAULDRON,"Coating: Hold [Alt]");
         addAltDescs(ModBlocks.REINFORCED_CAULDRON,"Fill the cauldron with any potion and Dragon's Breath.",

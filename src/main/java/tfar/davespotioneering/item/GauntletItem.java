@@ -31,7 +31,7 @@ import java.util.function.Function;
 public class GauntletItem extends SwordItem {
 
     public GauntletItem(Properties properties) {
-        super(ItemTier.NETHERITE, 3, -2.8f, properties);
+        super(ItemTier.NETHERITE, 4, -2.8f, properties);
     }
 
     @Override
@@ -69,6 +69,11 @@ public class GauntletItem extends SwordItem {
     @Override
     public boolean isDamageable() {
         return false;
+    }
+
+    @Override
+    public boolean isEnchantable(ItemStack stack) {
+        return stack.getCount() == 1;
     }
 
     @Override
