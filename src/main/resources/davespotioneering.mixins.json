@@ -2,7 +2,6 @@
   "required": true,
   "package": "tfar.davespotioneering.mixin",
   "compatibilityLevel": "JAVA_8",
-  "refmap": "davespotioneering.refmap.json",
   "mixins": [
     "BlockEntityTypeAcces",
     "BrewingRecipeRegistryMixin",

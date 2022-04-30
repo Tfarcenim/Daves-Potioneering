@@ -38,7 +38,6 @@ import tfar.davespotioneering.block.ReinforcedCauldronBlock;
 import tfar.davespotioneering.client.GauntletHUD;
 import tfar.davespotioneering.client.GauntletHUDMovementGui;
 import tfar.davespotioneering.duck.BrewingStandDuck;
-import tfar.davespotioneering.init.ModItems;
 import tfar.davespotioneering.init.ModPotions;
 import tfar.davespotioneering.item.UmbrellaItem;
 import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
@@ -127,7 +126,7 @@ public class Events {
             AbstractContainerMenu container = player.containerMenu;
             BlockEntity entity = null;
             if (container instanceof BrewingStandMenu) {
-                entity = (BrewingStandBlockEntity)((BrewingStandContainerAccess)container).getTileBrewingStand();
+                entity = (BrewingStandBlockEntity)((BrewingStandContainerAccess)container).getBrewingStand();
             } else if (container instanceof AdvancedBrewingStandContainer) {
                 entity = ((AdvancedBrewingStandContainer)container).blockEntity;
             }
