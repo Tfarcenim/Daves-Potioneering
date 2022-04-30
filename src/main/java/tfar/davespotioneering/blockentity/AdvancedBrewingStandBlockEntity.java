@@ -89,7 +89,7 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
 
         }
 
-        public int size() {
+        public int getCount() {
             return 2;
         }
     };
@@ -111,7 +111,7 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
         if (this.fuel <= 0 && fuelStack.getItem() == Items.BLAZE_POWDER) {
             this.fuel = 20;
             fuelStack.shrink(1);
-            this.markDirty();
+            this.setChanged();
         }
 
         boolean canBrew = this.canBrew();
@@ -122,22 +122,22 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
             boolean done = this.brewTime == 0;
             if (done && canBrew) {
                 this.brewPotions();
-                this.markDirty();
+                this.setChanged();
             } else if (!canBrew) {
                 this.brewTime = 0;
-                this.markDirty();
+                this.setChanged();
             } else if (this.ingredientID != ing.getItem()) {
                 this.brewTime = 0;
-                this.markDirty();
+                this.setChanged();
             }
         } else if (canBrew && this.fuel > 0) {
             --this.fuel;
             this.brewTime = TIME;
             this.ingredientID = ing.getItem();
-            this.markDirty();
+            this.setChanged();
         }
 
-        if (!this.world.isRemote) {
+        if (!this.level.isClientSide) {
             setBottleBlockStates();
         }
     }
@@ -146,16 +146,16 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
         boolean[] aboolean = this.createFilledSlotsArray();
         if (!Arrays.equals(aboolean, this.filledSlots)) {
             this.filledSlots = aboolean;
-            BlockState blockstate = this.world.getBlockState(this.getPos());
+            BlockState blockstate = this.level.getBlockState(this.getBlockPos());
             if (!(blockstate.getBlock() instanceof BrewingStandBlock)) {
                 return;
             }
 
             for(int i = 0; i < BrewingStandBlock.HAS_BOTTLE.length; ++i) {
-                blockstate = blockstate.with(BrewingStandBlock.HAS_BOTTLE[i], aboolean[i]);
+                blockstate = blockstate.setValue(BrewingStandBlock.HAS_BOTTLE[i], aboolean[i]);
             }
 
-            this.world.setBlockState(this.pos, blockstate, 2);
+            this.level.setBlock(this.worldPosition, blockstate, 2);
         }
     }
 
@@ -178,12 +178,12 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
         }
         if (ingredient.isEmpty()) {
             return false;
-        } else if (!PotionBrewing.isReagent(ingredient)) {
+        } else if (!PotionBrewing.isIngredient(ingredient)) {
             return false;
         } else {
             for(int i = 0; i < 3; ++i) {
                 ItemStack itemstack1 = this.brewingHandler.getStackInSlot(i);
-                if (!itemstack1.isEmpty() && PotionBrewing.hasConversions(itemstack1, ingredient)) {
+                if (!itemstack1.isEmpty() && PotionBrewing.hasMix(itemstack1, ingredient)) {
                     return true;
                 }
             }
@@ -222,12 +222,12 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
         }
         if (itemstack.isEmpty()) {
             return false;
-        } else if (!PotionBrewing.isReagent(itemstack)) {
+        } else if (!PotionBrewing.isIngredient(itemstack)) {
             return false;
         } else {
             for(int i = 0; i < 3; ++i) {
                 ItemStack itemstack1 = this.brewingHandler.getStackInSlot(i);
-                if (!itemstack1.isEmpty() && PotionBrewing.hasConversions(itemstack1, itemstack)) {
+                if (!itemstack1.isEmpty() && PotionBrewing.hasMix(itemstack1, itemstack)) {
                     return true;
                 }
             }
@@ -255,14 +255,14 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
             }
         }
 
-        BlockPos blockpos = this.getPos();
+        BlockPos blockpos = this.getBlockPos();
         if (ingredient.hasContainerItem()) {
             ItemStack ingredientContainerItem = ingredient.getContainerItem();
             ingredient.shrink(1);
             if (ingredient.isEmpty()) {
                 ingredient = ingredientContainerItem;
-            } else if (!this.world.isRemote) {
-                InventoryHelper.spawnItemStack(this.world, blockpos.getX(), blockpos.getY(), blockpos.getZ(), ingredientContainerItem);
+            } else if (!this.level.isClientSide) {
+                InventoryHelper.dropItemStack(this.level, blockpos.getX(), blockpos.getY(), blockpos.getZ(), ingredientContainerItem);
             }
         }
         //todo
@@ -270,14 +270,14 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
 
         this.brewingHandler.setStackInSlot(pair.getLeft(), ingredient);
         //plays brewing stand block brewing finished sound
-        this.world.playEvent(1035, blockpos, 0);
+        this.level.levelEvent(1035, blockpos, 0);
     }
 
     private boolean canMilkify() {
         for (int i : POTIONS) {
             ItemStack potionStack = brewingHandler.getStackInSlot(i);
             if (potionStack.getItem() instanceof PotionItem) {
-                Potion potion = PotionUtils.getPotionFromItem(potionStack);
+                Potion potion = PotionUtils.getPotion(potionStack);
                 String name = potion.getRegistryName().toString();
                 if (name.contains("long") || name.contains("strong")) {
                     continue;
@@ -289,8 +289,8 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt) {
-        super.read(state, nbt);
+    public void load(BlockState state, CompoundNBT nbt) {
+        super.load(state, nbt);
         CompoundNBT items = nbt.getCompound("Items");
         brewingHandler.deserializeNBT(items);
         this.brewTime = nbt.getShort("BrewTime");
@@ -299,8 +299,8 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
-        super.write(compound);
+    public CompoundNBT save(CompoundNBT compound) {
+        super.save(compound);
         compound.putShort("BrewTime", (short)this.brewTime);
         compound.put("Items",brewingHandler.serializeNBT());
         compound.putInt("Fuel", this.fuel);
@@ -327,9 +327,9 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
     @Override
     public void dump(PlayerEntity player) {
         if(xp > 0) {
-            Util.splitAndSpawnExperience(world, player.getPositionVec(), xp);
+            Util.splitAndSpawnExperience(level, player.position(), xp);
             xp = 0;
-            markDirty();
+            setChanged();
         }
     }
 
@@ -337,7 +337,7 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-        if (!this.removed && facing != null && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (!this.remove && facing != null && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return handlers.get(facing).cast();
         }
         return super.getCapability(capability, facing);

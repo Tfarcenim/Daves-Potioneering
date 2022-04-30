@@ -61,7 +61,7 @@ public class PotionInjectorMenu extends Container {
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity playerIn) {
+    public boolean stillValid(PlayerEntity playerIn) {
         return true;
     }
 
@@ -70,24 +70,24 @@ public class PotionInjectorMenu extends Container {
      * inventory and the other inventory(s).
      */
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
+    public ItemStack quickMoveStack(PlayerEntity playerIn, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = this.inventorySlots.get(index);
-        if (slot != null && slot.getHasStack()) {
-            ItemStack itemstack1 = slot.getStack();
+        Slot slot = this.slots.get(index);
+        if (slot != null && slot.hasItem()) {
+            ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
             if (index < this.inventory.getSlots()) {
-                if (!this.mergeItemStack(itemstack1, this.inventory.getSlots(), this.inventorySlots.size(), true)) {
+                if (!this.moveItemStackTo(itemstack1, this.inventory.getSlots(), this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (!this.mergeItemStack(itemstack1, 0, this.inventory.getSlots(), false)) {
+            } else if (!this.moveItemStackTo(itemstack1, 0, this.inventory.getSlots(), false)) {
                 return ItemStack.EMPTY;
             }
 
             if (itemstack1.isEmpty()) {
-                slot.putStack(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             } else {
-                slot.onSlotChanged();
+                slot.setChanged();
             }
         }
 
@@ -119,11 +119,11 @@ public class PotionInjectorMenu extends Container {
 
             for (int i = 0; i < PotionInjectorHandler.GAUNTLET; i++) {
 
-                Potion oldPotion = oldList.isEmpty() ? Potions.EMPTY : Registry.POTION.getOrDefault(new ResourceLocation(oldList.get(i).getString()));
+                Potion oldPotion = oldList.isEmpty() ? Potions.EMPTY : Registry.POTION.get(new ResourceLocation(oldList.get(i).getAsString()));
 
                 if (oldPotion == Potions.EMPTY) {
                     ItemStack potionStack = inventory.getStackInSlot(i);
-                    nbt1.add(StringNBT.valueOf(PotionUtils.getPotionFromItem(potionStack).getRegistryName().toString()));
+                    nbt1.add(StringNBT.valueOf(PotionUtils.getPotion(potionStack).getRegistryName().toString()));
                     inventory.extractItem(i, 1, false);
                     //copy old potion over
                 } else {
@@ -154,12 +154,12 @@ public class PotionInjectorMenu extends Container {
             for (int i = 0; i < listNBT.size(); i++) {
                 INBT inbt = listNBT.get(i);
 
-                Potion potion = Registry.POTION.getOrDefault(new ResourceLocation(inbt.getString()));
+                Potion potion = Registry.POTION.get(new ResourceLocation(inbt.getAsString()));
                 if (potion != Potions.EMPTY) {
                     ItemStack present = inventory.getStackInSlot(i);
                     if (present.getCount() < inventory.getSlotLimit(i)) {
                         ItemStack stack = new ItemStack(Items.LINGERING_POTION);
-                        PotionUtils.addPotionToItemStack(stack, potion);
+                        PotionUtils.setPotion(stack, potion);
                         inventory.insertItem(i, stack, false);
                         listNBT.set(i,StringNBT.valueOf(Potions.EMPTY.getRegistryName().toString()));
                     } else {
@@ -208,7 +208,7 @@ public class PotionInjectorMenu extends Container {
                 ListNBT listNBT = info.getList("potions", Constants.NBT.TAG_STRING);
                 if (!listNBT.isEmpty()) {
                     for (INBT nb : listNBT) {
-                        Potion potion = Registry.POTION.getOrDefault(new ResourceLocation(nb.getString()));
+                        Potion potion = Registry.POTION.get(new ResourceLocation(nb.getAsString()));
                         if (potion != Potions.EMPTY) {
                             return SoundTy.BOTH;
                         }

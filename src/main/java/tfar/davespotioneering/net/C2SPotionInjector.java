@@ -30,7 +30,7 @@ public class C2SPotionInjector {
       PlayerEntity player = ctx.get().getSender();
       if (player == null) return;
       ctx.get().enqueueWork(  ()->  {
-        Container container = player.openContainer;
+        Container container = player.containerMenu;
         if (container instanceof PotionInjectorMenu) {
           PotionInjectorMenu potionInjectorMenu = (PotionInjectorMenu) container;
           potionInjectorMenu.handleButton(button);

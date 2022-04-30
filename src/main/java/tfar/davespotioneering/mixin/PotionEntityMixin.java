@@ -25,11 +25,11 @@ abstract class PotionEntityMixin extends ProjectileItemEntity {
         super(type, worldIn);
     }
 
-    @Inject(method = "func_213888_a", at = @At(value = "INVOKE", target = "Ljava/lang/Math;sqrt(D)D"),locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "applySplash", at = @At(value = "INVOKE", target = "Ljava/lang/Math;sqrt(D)D"),locals = LocalCapture.CAPTURE_FAILHARD)
     private void milkify(List<EffectInstance> arg0, Entity directHit, CallbackInfo ci, AxisAlignedBB axisalignedbb, List<LivingEntity> list,
                          Iterator<LivingEntity> var5, LivingEntity livingentity, double d0) {
         if (Util.isMilkified(getItem())) {
-            livingentity.clearActivePotions();
+            livingentity.removeAllEffects();
         }
     }
 }

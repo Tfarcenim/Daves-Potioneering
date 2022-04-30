@@ -19,7 +19,7 @@ public class ModelLoader implements IModelLoader<FullBrightModel.UnbakedFullBrig
     //makes unbakedmodels
     @Override
     public FullBrightModel.UnbakedFullBrightModel read(JsonDeserializationContext deserializationContext, JsonObject modelContents) {
-        BlockModel baseModel = deserializationContext.deserialize(JSONUtils.getJsonObject(modelContents,"base"), BlockModel.class);
+        BlockModel baseModel = deserializationContext.deserialize(JSONUtils.getAsJsonObject(modelContents,"base"), BlockModel.class);
 
         return new FullBrightModel.UnbakedFullBrightModel(baseModel);
     }

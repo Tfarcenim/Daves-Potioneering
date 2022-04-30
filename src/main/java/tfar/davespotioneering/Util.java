@@ -33,7 +33,7 @@ public class Util {
     }
 
     public static void splitAndSpawnExperience(World world, Vector3d pos, double experience) {
-        world.addEntity(new ExperienceOrbEntity(world, pos.x, pos.y, pos.z, (int) experience));
+        world.addFreshEntity(new ExperienceOrbEntity(world, pos.x, pos.y, pos.z, (int) experience));
     }
 
     public static void brewPotions(NonNullList<ItemStack> inputs, ItemStack ingredient, int[] inputIndexes) {

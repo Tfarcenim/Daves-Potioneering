@@ -44,65 +44,65 @@ public class ReinforcedCauldronBlockEntity extends TileEntity {
 
     public void setPotion(@Nonnull Potion potion) {
         this.potion = potion;
-        markDirty();
+        setChanged();
     }
 
     public int getColor() {
         if (!potion.getEffects().isEmpty()) {
-            return PotionUtils.getPotionColor(potion);
+            return PotionUtils.getColor(potion);
         }
-        return BiomeColors.getWaterColor(world, pos);
+        return BiomeColors.getAverageWaterColor(level, worldPosition);
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt) {
-        potion = Registry.POTION.getOrDefault(new ResourceLocation(nbt.getString("potion")));
-        super.read(state, nbt);
+    public void load(BlockState state, CompoundNBT nbt) {
+        potion = Registry.POTION.get(new ResourceLocation(nbt.getString("potion")));
+        super.load(state, nbt);
     }
 
     @Nonnull
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
+    public CompoundNBT save(CompoundNBT compound) {
         compound.putString("potion", potion.getRegistryName().toString());
-        return super.write(compound);
+        return super.save(compound);
     }
 
     @Nonnull
     @Override
     public CompoundNBT getUpdateTag() {
-        return write(new CompoundNBT());    // okay to send entire inventory on chunk load
+        return save(new CompoundNBT());    // okay to send entire inventory on chunk load
     }
 
     @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(getPos(), 1, getUpdateTag());
+        return new SUpdateTileEntityPacket(getBlockPos(), 1, getUpdateTag());
     }
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
-        this.read(null, packet.getNbtCompound());
-        world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 3);
+        this.load(null, packet.getTag());
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
     }
 
     public void onEntityCollision(Entity entity) {
         if (entity instanceof ItemEntity) {
             ItemStack stack =  ((ItemEntity) entity).getItem();
             BlockState blockState = getBlockState();
-            int level = blockState.get(CauldronBlock.LEVEL);
-            if (potion == ModPotions.MILK && PotionUtils.getPotionFromItem(stack) != Potions.EMPTY) {
-                ReinforcedCauldronBlock.removeCoating(blockState,world,pos,null,stack);
+            int level = blockState.getValue(CauldronBlock.LEVEL);
+            if (potion == ModPotions.MILK && PotionUtils.getPotion(stack) != Potions.EMPTY) {
+                ReinforcedCauldronBlock.removeCoating(blockState,level,worldPosition,null,stack);
             } else if (stack.getItem() == Items.ARROW && level > 0) {
-              ReinforcedCauldronBlock.handleArrowCoating(blockState,world,pos,null,stack,level);
+              ReinforcedCauldronBlock.handleArrowCoating(blockState,level,worldPosition,null,stack,level);
             } else if (level == 3) {
                 //burn off a layer, then schedule the rest of the ticks
-                world.playSound(null,pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.8F, 1);
-                ((CauldronBlock)blockState.getBlock()).setWaterLevel(world,pos,blockState,2);
+                level.playSound(null,worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.8F, 1);
+                ((CauldronBlock)blockState.getBlock()).setWaterLevel(level,worldPosition,blockState,2);
                 scheduleTick();
             }
         }
     }
 
     private void scheduleTick() {
-        this.world.getPendingBlockTicks().scheduleTick(this.getPos(), this.getBlockState().getBlock(), ReinforcedCauldronBlock.brew_speed);
+        this.level.getBlockTicks().scheduleTick(this.getBlockPos(), this.getBlockState().getBlock(), ReinforcedCauldronBlock.brew_speed);
     }
 }

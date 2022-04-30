@@ -114,7 +114,7 @@ public class FullBrightModel extends BakedModelWrapper<IBakedModel> {
     }
 
     private static BakedQuad transformQuad(BakedQuad quad) {
-        int[] vertexData = quad.getVertexData().clone();
+        int[] vertexData = quad.getVertices().clone();
         int step = vertexData.length / 4;
 
         // Set lighting to fullbright on all vertices
@@ -126,9 +126,9 @@ public class FullBrightModel extends BakedModelWrapper<IBakedModel> {
         return new BakedQuad(
                 vertexData,
                 quad.getTintIndex(),
-                quad.getFace(),
+                quad.getDirection(),
                 quad.getSprite(),
-                quad.applyDiffuseLighting()
+                quad.isShade()
         );
     }
 
@@ -184,12 +184,12 @@ public class FullBrightModel extends BakedModelWrapper<IBakedModel> {
         @Override
         public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<RenderMaterial,
                 TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {
-            return new FullBrightModel(baseModel.bakeModel(bakery, baseModel, spriteGetter, modelTransform, modelLocation, true),false,new ResourceLocation("davespotioneering:item/lit_potioneer_gauntlet_bright"));
+            return new FullBrightModel(baseModel.bake(bakery, baseModel, spriteGetter, modelTransform, modelLocation, true),false,new ResourceLocation("davespotioneering:item/lit_potioneer_gauntlet_bright"));
         }
 
         @Override
         public Collection<RenderMaterial> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-            return baseModel.getTextures(modelGetter, missingTextureErrors);
+            return baseModel.getMaterials(modelGetter, missingTextureErrors);
         }
     }
 }

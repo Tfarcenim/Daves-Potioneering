@@ -5,12 +5,12 @@ buildscript {
         maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
 plugins {
-    id "com.wynprice.cursemaven" version "2.1.5"
+  //  id "com.wynprice.cursemaven" version "2.1.5"
 }
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
@@ -100,12 +100,12 @@ dependencies {
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}" //21
-    compile fg.deobf('curse.maven:neat-238372:3182258') // v1.7-27
+   // compile fg.deobf('curse.maven:neat-238372:3182258') // v1.7-27
 
     // You may put jars on which you depend on in ./libs or you may define them like so..
     // compile "some.group:artifact:version:classifier"
     // compile "some.group:artifact:version"
-    compile fg.deobf("software.bernie.geckolib:geckolib-forge-1.16.5:${geckolib}")
+    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-1.16.5:${geckolib}")
 
     // Real examples
     // compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
@@ -146,7 +146,7 @@ jar {
 // Example configuration to allow publishing using the maven-publish task
 // we define a custom artifact that is sourced from the reobfJar output task
 // and then declare that to be published
-// Note you'll need to add a repository here
+// Note you'll need to add a repository here.\..
 def reobfFile = file("$buildDir/reobfJar/output.jar")
 def reobfArtifact = artifacts.add('default', reobfFile) {
     type 'jar'

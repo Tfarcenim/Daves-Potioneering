@@ -55,10 +55,10 @@ public class GauntletHUD extends AbstractGui {
     public void render(MatrixStack matrixStack) {
         RenderSystem.pushMatrix();
         RenderSystem.color4f(1, 1, 1, 1);
-        mc.getTextureManager().bindTexture(hud);
+        mc.getTextureManager().bind(hud);
 
-        int windowW = mc.getMainWindow().getScaledWidth();
-        int windowH = mc.getMainWindow().getScaledHeight();
+        int windowW = mc.getWindow().getGuiScaledWidth();
+        int windowH = mc.getWindow().getGuiScaledHeight();
 
         int xFixed = MathHelper.clamp((windowW + x)/2, 0, windowW-120);
         int yFixed = MathHelper.clamp(windowH+y, 0, windowH-41);
@@ -67,7 +67,7 @@ public class GauntletHUD extends AbstractGui {
             cooldown--;
             blit(matrixStack, xFixed, yFixed, getBlitOffset(), 0, 87, 120, 41, 128, 128);
             if (cooldown <= 0) {
-               mc.getSoundHandler().play(SimpleSound.master(ModSoundEvents.GAUNTLET_SCROLL, 1.0F));
+               mc.getSoundManager().play(SimpleSound.forUI(ModSoundEvents.GAUNTLET_SCROLL, 1.0F));
                 forwardCycle = false;
                 cooldown = maxCooldown;
             }
@@ -75,7 +75,7 @@ public class GauntletHUD extends AbstractGui {
             cooldown--;
             blit(matrixStack, xFixed, yFixed, getBlitOffset(), 0, 44, 120, 41, 128, 128);
             if (cooldown <= 0) {
-                mc.getSoundHandler().play(SimpleSound.master(ModSoundEvents.GAUNTLET_SCROLL, 1.0F));
+                mc.getSoundManager().play(SimpleSound.forUI(ModSoundEvents.GAUNTLET_SCROLL, 1.0F));
                 backwardCycle = false;
                 cooldown = maxCooldown;
             }
@@ -85,7 +85,7 @@ public class GauntletHUD extends AbstractGui {
 
         PlayerEntity player = Minecraft.getInstance().player;
         if (player == null) return;
-        ItemStack g = player.getHeldItemMainhand();
+        ItemStack g = player.getMainHandItem();
 
         CompoundNBT info = g.getOrCreateTag().getCompound("info");
         renderPotion(prePotion, matrixStack, xFixed + 3, yFixed + 21, GauntletItem.getCooldownFromPotionByIndex(info.getInt("activePotionIndex")-1, g), false);
@@ -103,17 +103,17 @@ public class GauntletHUD extends AbstractGui {
 
         if (potion.getEffects().size() > 1) {
             if (potion.getRegistryName().toString().contains("turtle_master")) {
-                mc.getTextureManager().bindTexture(getGauntletIconLoc("turtle_master"));
+                mc.getTextureManager().bind(getGauntletIconLoc("turtle_master"));
             } else if (mc.getResourceManager().hasResource(getGauntletIconLoc(potion.getRegistryName().toString()))) {
-                mc.getTextureManager().bindTexture(getGauntletIconLoc(potion.getRegistryName().toString()));
+                mc.getTextureManager().bind(getGauntletIconLoc(potion.getRegistryName().toString()));
             } else {
-                mc.getTextureManager().bindTexture(getGauntletIconLoc("unknown"));
+                mc.getTextureManager().bind(getGauntletIconLoc("unknown"));
             }
             blit(matrixStack, x, y, getBlitOffset(), 0, 0, 18, 18, 18, 18);
         } else {
-            Effect effect = potion.getEffects().get(0).getPotion();
-            TextureAtlasSprite sprite = mc.getPotionSpriteUploader().getSprite(effect);
-            mc.getTextureManager().bindTexture(sprite.getAtlasTexture().getTextureLocation());
+            Effect effect = potion.getEffects().get(0).getEffect();
+            TextureAtlasSprite sprite = mc.getMobEffectTextures().get(effect);
+            mc.getTextureManager().bind(sprite.atlas().location());
             blit(matrixStack, x, y, 0, 18, 18, sprite);
         }
 
@@ -126,7 +126,7 @@ public class GauntletHUD extends AbstractGui {
             RenderSystem.defaultBlendFunc();
             RenderSystem.translatef(1, 1, getBlitOffset()+1);
             Tessellator tessellator1 = Tessellator.getInstance();
-            BufferBuilder bufferbuilder1 = tessellator1.getBuffer();
+            BufferBuilder bufferbuilder1 = tessellator1.getBuilder();
             if (isActivePotion) {
                 int scale = getScaledCooldown(18, cooldown);
                 this.draw(bufferbuilder1, x, y + scale, 18, 18-scale, 255, 255, 255, 127);
@@ -157,11 +157,11 @@ public class GauntletHUD extends AbstractGui {
     // copy-pasted from ItemRenderer class
     private void draw(BufferBuilder renderer, int x, int y, int width, int height, int red, int green, int blue, int alpha) {
         renderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        renderer.pos(x, y, 0.0D).color(red, green, blue, alpha).endVertex();
-        renderer.pos(x, y + height, 0.0D).color(red, green, blue, alpha).endVertex();
-        renderer.pos(x + width, y + height, 0.0D).color(red, green, blue, alpha).endVertex();
-        renderer.pos(x + width, y, 0.0D).color(red, green, blue, alpha).endVertex();
-        Tessellator.getInstance().draw();
+        renderer.vertex(x, y, 0.0D).color(red, green, blue, alpha).endVertex();
+        renderer.vertex(x, y + height, 0.0D).color(red, green, blue, alpha).endVertex();
+        renderer.vertex(x + width, y + height, 0.0D).color(red, green, blue, alpha).endVertex();
+        renderer.vertex(x + width, y, 0.0D).color(red, green, blue, alpha).endVertex();
+        Tessellator.getInstance().end();
     }
 
     public void refreshPosition() {

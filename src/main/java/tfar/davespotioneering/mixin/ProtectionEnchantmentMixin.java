@@ -14,8 +14,8 @@ public class ProtectionEnchantmentMixin {
 
     @Inject(method = "calcModifierDamage",at = @At("HEAD"),cancellable = true)
     private void modifyDamageCalc(int level, DamageSource source, CallbackInfoReturnable<Integer> cir) {
-        if (ModConfig.Server.magic_protection.get() && (Object)this == Enchantments.PROTECTION) {
-            if (source.isMagicDamage()) {
+        if (ModConfig.Server.magic_protection.get() && (Object)this == Enchantments.ALL_DAMAGE_PROTECTION) {
+            if (source.isMagic()) {
                 cir.setReturnValue(0);
             }
         }

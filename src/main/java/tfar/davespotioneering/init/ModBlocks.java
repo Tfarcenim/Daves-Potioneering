@@ -18,15 +18,15 @@ public class ModBlocks {
 
     private static List<Block> MOD_BLOCKS;
 
-    public static final Block COMPOUND_BREWING_STAND = new AdvancedBrewingStandBlock(AbstractBlock.Properties.create(Material.IRON)
-            .setRequiresTool().hardnessAndResistance(0.5F).setLightLevel(state -> 1).notSolid());
+    public static final Block COMPOUND_BREWING_STAND = new AdvancedBrewingStandBlock(AbstractBlock.Properties.of(Material.METAL)
+            .requiresCorrectToolForDrops().strength(0.5F).lightLevel(state -> 1).noOcclusion());
 
-    public static final Block REINFORCED_CAULDRON = new ReinforcedCauldronBlock(AbstractBlock.Properties.create(Material.IRON)
-            .setRequiresTool().hardnessAndResistance(0.5F).setLightLevel(state -> 1).notSolid());
+    public static final Block REINFORCED_CAULDRON = new ReinforcedCauldronBlock(AbstractBlock.Properties.of(Material.METAL)
+            .requiresCorrectToolForDrops().strength(0.5F).lightLevel(state -> 1).noOcclusion());
 
-    public static final Block MAGIC_LECTERN = new MagicLecternBlock(AbstractBlock.Properties.from(Blocks.LECTERN));
+    public static final Block MAGIC_LECTERN = new MagicLecternBlock(AbstractBlock.Properties.copy(Blocks.LECTERN));
 
-    public static final Block POTION_INJECTOR = new PotionInjectorBlock(AbstractBlock.Properties.from(Blocks.FLETCHING_TABLE).notSolid());
+    public static final Block POTION_INJECTOR = new PotionInjectorBlock(AbstractBlock.Properties.copy(Blocks.FLETCHING_TABLE).noOcclusion());
 
 
     public static void register(RegistryEvent.Register<Block> e) {

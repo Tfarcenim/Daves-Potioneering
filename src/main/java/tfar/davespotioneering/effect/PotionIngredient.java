@@ -43,7 +43,7 @@ public class PotionIngredient extends Ingredient {
     }
 
     @Override
-    public JsonElement serialize() {
+    public JsonElement toJson() {
         JsonObject json = new JsonObject();
         json.addProperty("type", CraftingHelper.getID(Serializer.INSTANCE).toString());
         json.addProperty("item", stack.getItem().getRegistryName().toString());
@@ -58,7 +58,7 @@ public class PotionIngredient extends Ingredient {
 
         @Override
         public PotionIngredient parse(PacketBuffer buffer) {
-            return new PotionIngredient(buffer.readItemStack());
+            return new PotionIngredient(buffer.readItem());
         }
 
         @Override
@@ -68,7 +68,7 @@ public class PotionIngredient extends Ingredient {
 
         @Override
         public void write(PacketBuffer buffer, PotionIngredient ingredient) {
-            buffer.writeItemStack(ingredient.stack);
+            buffer.writeItem(ingredient.stack);
         }
     }
 }

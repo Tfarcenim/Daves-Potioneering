@@ -14,9 +14,9 @@ public class ModBlockEntityTypes {
 
     private static List<TileEntityType<?>> MOD_BLOCK_ENTITY_TYPES;
 
-    public static final TileEntityType<AdvancedBrewingStandBlockEntity> COMPOUND_BREWING_STAND = TileEntityType.Builder.create(AdvancedBrewingStandBlockEntity::new,ModBlocks.COMPOUND_BREWING_STAND).build(null);
-    public static final TileEntityType<ReinforcedCauldronBlockEntity> REINFORCED_CAULDRON = TileEntityType.Builder.create(ReinforcedCauldronBlockEntity::new,ModBlocks.REINFORCED_CAULDRON).build(null);
-    public static final TileEntityType<PotionInjectorBlockEntity> POTION_INJECTOR = TileEntityType.Builder.create(PotionInjectorBlockEntity::new,ModBlocks.POTION_INJECTOR).build(null);
+    public static final TileEntityType<AdvancedBrewingStandBlockEntity> COMPOUND_BREWING_STAND = TileEntityType.Builder.of(AdvancedBrewingStandBlockEntity::new,ModBlocks.COMPOUND_BREWING_STAND).build(null);
+    public static final TileEntityType<ReinforcedCauldronBlockEntity> REINFORCED_CAULDRON = TileEntityType.Builder.of(ReinforcedCauldronBlockEntity::new,ModBlocks.REINFORCED_CAULDRON).build(null);
+    public static final TileEntityType<PotionInjectorBlockEntity> POTION_INJECTOR = TileEntityType.Builder.of(PotionInjectorBlockEntity::new,ModBlocks.POTION_INJECTOR).build(null);
 
     public static void register(RegistryEvent.Register<TileEntityType<?>> e) {
         for (Field field : ModBlockEntityTypes.class.getFields()) {

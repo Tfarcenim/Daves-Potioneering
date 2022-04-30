@@ -25,14 +25,14 @@ public class ModBlockstateProvider extends BlockStateProvider {
         brewingStand();
 
         getVariantBuilder(ModBlocks.REINFORCED_CAULDRON).forAllStates(state -> {
-            ModelFile modelFile = models().getExistingFile(modLoc("block/reinforced_cauldron_level" + state.get(CauldronBlock.LEVEL)));
+            ModelFile modelFile = models().getExistingFile(modLoc("block/reinforced_cauldron_level" + state.getValue(CauldronBlock.LEVEL)));
             return ConfiguredModel.builder().modelFile(modelFile).build();
         });
 
         getVariantBuilder(ModBlocks.MAGIC_LECTERN).forAllStatesExcept(state -> {
-            Direction facing = state.get(LecternBlock.FACING);
+            Direction facing = state.getValue(LecternBlock.FACING);
             ModelFile modelFile = models().getExistingFile(modLoc("block/magic_lectern"));
-            return ConfiguredModel.builder().modelFile(modelFile).rotationY((facing.getHorizontalIndex() + 3) % 4 * 90).build();
+            return ConfiguredModel.builder().modelFile(modelFile).rotationY((facing.get2DDataValue() + 3) % 4 * 90).build();
         }, LecternBlock.HAS_BOOK, LecternBlock.POWERED);
         blockstateFromExistingModel(ModBlocks.POTION_INJECTOR);
     }
@@ -41,8 +41,8 @@ public class ModBlockstateProvider extends BlockStateProvider {
         ModelFile modelFile = models().getExistingFile(new ResourceLocation(DavesPotioneering.MODID, "block/" + block.getRegistryName().getPath()));
         getVariantBuilder(block).forAllStates(state -> {
             ConfiguredModel.Builder<?> builder = ConfiguredModel.builder().modelFile(modelFile);
-            if (state.hasProperty(HorizontalBlock.HORIZONTAL_FACING)) {
-                switch(state.get(HorizontalBlock.HORIZONTAL_FACING)) {
+            if (state.hasProperty(HorizontalBlock.FACING)) {
+                switch(state.getValue(HorizontalBlock.FACING)) {
                     case EAST:
                         builder.rotationY(90);
                         break;

@@ -30,48 +30,48 @@ abstract class BrewingStandContainerMixin extends Container {
      *
      */
     @Overwrite
-    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
+    public ItemStack quickMoveStack(PlayerEntity playerIn, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = this.inventorySlots.get(index);
-        if (slot != null && slot.getHasStack()) {
-            ItemStack itemstack1 = slot.getStack();
+        Slot slot = this.slots.get(index);
+        if (slot != null && slot.hasItem()) {
+            ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
             if (index > 2 && index != 3 && index != 4) {
-                if (BrewingStandContainer.FuelSlot.isValidBrewingFuel(itemstack)) {
-                    if (this.mergeItemStack(itemstack1, 4, 5, false) || this.slot.isItemValid(itemstack1) && !this.mergeItemStack(itemstack1, 3, 4, false)) {
+                if (BrewingStandContainer.FuelSlot.mayPlaceItem(itemstack)) {
+                    if (this.moveItemStackTo(itemstack1, 4, 5, false) || this.slot.mayPlace(itemstack1) && !this.moveItemStackTo(itemstack1, 3, 4, false)) {
                         return ItemStack.EMPTY;
                     }
-                } else if (this.slot.isItemValid(itemstack1)) {
-                    if (!this.mergeItemStack(itemstack1, 3, 4, false)) {
+                } else if (this.slot.mayPlace(itemstack1)) {
+                    if (!this.moveItemStackTo(itemstack1, 3, 4, false)) {
                         return ItemStack.EMPTY;
                     }
-                } else if (BrewingStandContainer.PotionSlot.canHoldPotion(itemstack) /*&& itemstack.getCount() == 1*/) { //<--- The change is here
-                    if (!this.mergeItemStack(itemstack1, 0, 3, false)) {
+                } else if (BrewingStandContainer.PotionSlot.mayPlaceItem(itemstack) /*&& itemstack.getCount() == 1*/) { //<--- The change is here
+                    if (!this.moveItemStackTo(itemstack1, 0, 3, false)) {
                         return ItemStack.EMPTY;
                     }
                 } else if (index < 32) {
-                    if (!this.mergeItemStack(itemstack1, 32, 41, false)) {
+                    if (!this.moveItemStackTo(itemstack1, 32, 41, false)) {
                         return ItemStack.EMPTY;
                     }
                 } else if (index < 41) {
-                    if (!this.mergeItemStack(itemstack1, 5, 32, false)) {
+                    if (!this.moveItemStackTo(itemstack1, 5, 32, false)) {
                         return ItemStack.EMPTY;
                     }
-                } else if (!this.mergeItemStack(itemstack1, 5, 41, false)) {
+                } else if (!this.moveItemStackTo(itemstack1, 5, 41, false)) {
                     return ItemStack.EMPTY;
                 }
             } else {
-                if (!this.mergeItemStack(itemstack1, 5, 41, true)) {
+                if (!this.moveItemStackTo(itemstack1, 5, 41, true)) {
                     return ItemStack.EMPTY;
                 }
 
-                slot.onSlotChange(itemstack1, itemstack);
+                slot.onQuickCraft(itemstack1, itemstack);
             }
 
             if (itemstack1.isEmpty()) {
-                slot.putStack(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             } else {
-                slot.onSlotChanged();
+                slot.setChanged();
             }
 
             if (itemstack1.getCount() == itemstack.getCount()) {

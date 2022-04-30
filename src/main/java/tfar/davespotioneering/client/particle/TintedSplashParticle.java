@@ -12,11 +12,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class TintedSplashParticle extends RainParticle {
     private TintedSplashParticle(ClientWorld world, double x, double y, double z, double motionX, double motionY, double motionZ) {
         super(world, x, y, z);
-        this.particleGravity = 0.04F;
+        this.gravity = 0.04F;
         if (motionY == 0.0D && (motionX != 0.0D || motionZ != 0.0D)) {
-            this.motionX = motionX;
-            this.motionY = 0.1D;
-            this.motionZ = motionZ;
+            this.xd = motionX;
+            this.yd = 0.1D;
+            this.zd = motionZ;
         }
 
     }
@@ -29,9 +29,9 @@ public class TintedSplashParticle extends RainParticle {
             this.spriteSet = spriteSet;
         }
 
-        public Particle makeParticle(BasicParticleType typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(BasicParticleType typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             TintedSplashParticle splashparticle = new TintedSplashParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
-            splashparticle.selectSpriteRandomly(this.spriteSet);
+            splashparticle.pickSprite(this.spriteSet);
             return splashparticle;
         }
     }

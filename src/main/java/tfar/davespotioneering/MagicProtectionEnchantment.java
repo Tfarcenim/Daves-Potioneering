@@ -8,6 +8,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 
 //can't use protection class because of the enum
+import net.minecraft.enchantment.Enchantment.Rarity;
+
 public class MagicProtectionEnchantment extends Enchantment {
 
     public MagicProtectionEnchantment(Rarity rarityIn, EnchantmentType typeIn, EquipmentSlotType[] slots) {
@@ -15,15 +17,15 @@ public class MagicProtectionEnchantment extends Enchantment {
     }
 
     @Override
-    public int calcModifierDamage(int level, DamageSource source) {
-        if (source.isMagicDamage()) {
+    public int getDamageProtection(int level, DamageSource source) {
+        if (source.isMagic()) {
             return level * 2;
         }
-        return super.calcModifierDamage(level, source);
+        return super.getDamageProtection(level, source);
     }
 
     @Override
-    public boolean canApply(ItemStack stack) {
-        return ModConfig.Server.magic_protection.get() && super.canApply(stack);
+    public boolean canEnchant(ItemStack stack) {
+        return ModConfig.Server.magic_protection.get() && super.canEnchant(stack);
     }
 }

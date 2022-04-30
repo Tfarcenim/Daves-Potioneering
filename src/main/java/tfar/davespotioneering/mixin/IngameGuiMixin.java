@@ -23,7 +23,7 @@ public class IngameGuiMixin {
         PlayerEntity player = minecraft.player;
         if (player != null) {
             if (GauntletHUD.hudInstance.preset == GauntletHUD.HudPresets.ABOVE_HOTBAR &&
-                    this.mc.player.getHeldItemMainhand().getItem() instanceof GauntletItem) {
+                    this.mc.player.getMainHandItem().getItem() instanceof GauntletItem) {
                 ci.cancel();
             }
         }

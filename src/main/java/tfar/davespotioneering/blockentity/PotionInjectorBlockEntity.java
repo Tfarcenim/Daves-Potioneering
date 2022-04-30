@@ -26,7 +26,7 @@ public class PotionInjectorBlockEntity extends TileEntity implements INamedConta
             super.onContentsChanged(slot);
             if (slot == PotionInjectorHandler.GAUNTLET) {
                 ItemStack stack = getStackInSlot(slot);
-                PotionInjectorBlock.setHasGauntlet(world,pos,getBlockState(),!stack.isEmpty());
+                PotionInjectorBlock.setHasGauntlet(level,worldPosition,getBlockState(),!stack.isEmpty());
             }
         }
     };
@@ -51,14 +51,14 @@ public class PotionInjectorBlockEntity extends TileEntity implements INamedConta
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
+    public CompoundNBT save(CompoundNBT compound) {
         compound.put("inv",handler.serializeNBT());
-        return super.write(compound);
+        return super.save(compound);
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt) {
+    public void load(BlockState state, CompoundNBT nbt) {
         handler.deserializeNBT(nbt.getCompound("inv"));
-        super.read(state, nbt);
+        super.load(state, nbt);
     }
 }

@@ -13,6 +13,8 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import net.minecraft.item.Item.Properties;
+
 public class TooltipItem extends Item {
 
     public TooltipItem(Properties properties) {
@@ -20,22 +22,22 @@ public class TooltipItem extends Item {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
 
-        tooltip.add(new TranslationTextComponent(getTranslationKey()+".hold_shift.desc"));
+        tooltip.add(new TranslationTextComponent(getDescriptionId()+".hold_shift.desc"));
         if (Screen.hasShiftDown())
-        tooltip.add(this.getShiftDescription().mergeStyle(TextFormatting.GRAY));
+        tooltip.add(this.getShiftDescription().withStyle(TextFormatting.GRAY));
 
-        tooltip.add(new TranslationTextComponent(getTranslationKey()+".hold_ctrl.desc"));
+        tooltip.add(new TranslationTextComponent(getDescriptionId()+".hold_ctrl.desc"));
         if (Screen.hasControlDown())
-            tooltip.add(this.getCtrlDescription().mergeStyle(TextFormatting.GRAY));
+            tooltip.add(this.getCtrlDescription().withStyle(TextFormatting.GRAY));
     }
 
     public IFormattableTextComponent getCtrlDescription() {
-        return new TranslationTextComponent(this.getTranslationKey() + ".ctrl.desc");
+        return new TranslationTextComponent(this.getDescriptionId() + ".ctrl.desc");
     }
 
     public IFormattableTextComponent getShiftDescription() {
-        return new TranslationTextComponent(this.getTranslationKey() + ".shift.desc");
+        return new TranslationTextComponent(this.getDescriptionId() + ".shift.desc");
     }
 }

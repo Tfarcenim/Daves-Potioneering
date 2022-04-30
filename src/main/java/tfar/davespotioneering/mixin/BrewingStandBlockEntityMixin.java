@@ -34,8 +34,8 @@ public class BrewingStandBlockEntityMixin extends TileEntity implements BrewingS
     public void dump(PlayerEntity player) {
         if (xp > 0) {
             xp = 0;
-            Util.splitAndSpawnExperience(world, player.getPositionVec(), xp);
-            this.markDirty();
+            Util.splitAndSpawnExperience(level, player.position(), xp);
+            this.setChanged();
         }
     }
 

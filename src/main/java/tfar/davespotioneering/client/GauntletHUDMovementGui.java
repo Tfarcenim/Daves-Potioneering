@@ -21,7 +21,7 @@ public class GauntletHUDMovementGui extends Screen {
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
-        minecraft.fontRenderer.drawTextWithShadow(matrixStack, new TranslationTextComponent("davespotioneering.gui.moveGauntletHUD"), 6, 5, TextFormatting.WHITE.getColor());
+        minecraft.font.drawShadow(matrixStack, new TranslationTextComponent("davespotioneering.gui.moveGauntletHUD"), 6, 5, TextFormatting.WHITE.getColor());
         hud.render(matrixStack);
     }
 
@@ -63,7 +63,7 @@ public class GauntletHUDMovementGui extends Screen {
     }
 
     public static int getFixedPositionValue(int value, boolean isWidth) {
-        return isWidth ? value*2-Minecraft.getInstance().getMainWindow().getScaledWidth() : value-Minecraft.getInstance().getMainWindow().getScaledHeight();
+        return isWidth ? value*2-Minecraft.getInstance().getWindow().getGuiScaledWidth() : value-Minecraft.getInstance().getWindow().getGuiScaledHeight();
     }
 
     @Override
@@ -89,7 +89,7 @@ public class GauntletHUDMovementGui extends Screen {
     }
 
     public static void open() {
-        Minecraft.getInstance().displayGuiScreen(null);
-        Minecraft.getInstance().displayGuiScreen(new GauntletHUDMovementGui());
+        Minecraft.getInstance().setScreen(null);
+        Minecraft.getInstance().setScreen(new GauntletHUDMovementGui());
     }
 }

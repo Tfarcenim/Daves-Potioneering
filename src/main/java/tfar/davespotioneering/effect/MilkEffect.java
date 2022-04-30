@@ -11,7 +11,7 @@ public class MilkEffect extends InstantEffect {
 
 
     @Override
-    public void performEffect(LivingEntity entityLivingBaseIn, int amplifier) {
-        entityLivingBaseIn.clearActivePotions();
+    public void applyEffectTick(LivingEntity entityLivingBaseIn, int amplifier) {
+        entityLivingBaseIn.removeAllEffects();
     }
 }

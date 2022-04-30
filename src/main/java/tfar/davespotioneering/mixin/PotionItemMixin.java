@@ -38,7 +38,7 @@ public class PotionItemMixin {
 
     @Inject(method = "hasEffect",at = @At("HEAD"),cancellable = true)
     private void removeGlintFromMilk(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
-        if (PotionUtils.getEffectsFromStack(stack).stream().anyMatch(effectInstance -> effectInstance.getPotion() == ModEffects.MILK)) {
+        if (PotionUtils.getMobEffects(stack).stream().anyMatch(effectInstance -> effectInstance.getEffect() == ModEffects.MILK)) {
             cir.setReturnValue(false);
         }
     }
@@ -52,31 +52,31 @@ public class PotionItemMixin {
     @Overwrite
     public ItemStack onItemUseFinish(ItemStack potion, World worldIn, LivingEntity entityLiving) {
         if (Util.isMilkified(potion)) {
-            entityLiving.clearActivePotions();
+            entityLiving.removeAllEffects();
         }
         PlayerEntity playerentity = entityLiving instanceof PlayerEntity ? (PlayerEntity)entityLiving : null;
         if (playerentity instanceof ServerPlayerEntity) {
             CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayerEntity)playerentity, potion);
         }
 
-        if (!worldIn.isRemote) {
-            for(EffectInstance effectinstance : PotionUtils.getEffectsFromStack(potion)) {
-                if (effectinstance.getPotion().isInstant()) {
-                    effectinstance.getPotion().affectEntity(playerentity, playerentity, entityLiving, effectinstance.getAmplifier(), 1.0D);
+        if (!worldIn.isClientSide) {
+            for(EffectInstance effectinstance : PotionUtils.getMobEffects(potion)) {
+                if (effectinstance.getEffect().isInstantenous()) {
+                    effectinstance.getEffect().applyInstantenousEffect(playerentity, playerentity, entityLiving, effectinstance.getAmplifier(), 1.0D);
                 } else {
-                    entityLiving.addPotionEffect(new EffectInstance(effectinstance));
+                    entityLiving.addEffect(new EffectInstance(effectinstance));
                 }
             }
         }
 
         if (playerentity != null) {
-            playerentity.addStat(Stats.ITEM_USED.get((Item)(Object)this));
-            if (!playerentity.abilities.isCreativeMode) {
+            playerentity.awardStat(Stats.ITEM_USED.get((Item)(Object)this));
+            if (!playerentity.abilities.instabuild) {
                 potion.shrink(1);
             }
         }
 
-        if (playerentity == null || !playerentity.abilities.isCreativeMode) {
+        if (playerentity == null || !playerentity.abilities.instabuild) {
             if (potion.isEmpty()) {
                 return new ItemStack(Items.GLASS_BOTTLE);
             }
@@ -85,9 +85,9 @@ public class PotionItemMixin {
                 //the actual change
                 if (ModConfig.Server.return_empty_bottles.get()) {
                     //playerentity.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
-                    playerentity.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
+                    playerentity.inventory.add(new ItemStack(Items.GLASS_BOTTLE));
                 } else {
-                    playerentity.dropItem(new ItemStack(Items.GLASS_BOTTLE),false);
+                    playerentity.drop(new ItemStack(Items.GLASS_BOTTLE),false);
                 }
             }
         }

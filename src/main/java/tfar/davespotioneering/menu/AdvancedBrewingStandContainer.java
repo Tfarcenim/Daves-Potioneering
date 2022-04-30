@@ -60,7 +60,7 @@ public class AdvancedBrewingStandContainer extends Container {
 
         this.addSlot(new FuelSlot(inventory, AdvancedBrewingStandBlockEntity.FUEL, 17, ing1));
 
-        this.trackIntArray(data);
+        this.addDataSlots(data);
 
         int invX = 8;
         int invY = 110;
@@ -79,7 +79,7 @@ public class AdvancedBrewingStandContainer extends Container {
     /**
      * Determines whether supplied player can use this container
      */
-    public boolean canInteractWith(PlayerEntity playerIn) {
+    public boolean stillValid(PlayerEntity playerIn) {
         return true;//this.tileBrewingStand.isUsableByPlayer(playerIn);
     }
 
@@ -87,27 +87,27 @@ public class AdvancedBrewingStandContainer extends Container {
      * Handle when the stack in slot {@code index} is shift-clicked. Normally this moves the stack between the player
      * inventory and the other inventory(s).
      */
-    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
+    public ItemStack quickMoveStack(PlayerEntity playerIn, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = this.inventorySlots.get(index);
-        if (slot != null && slot.getHasStack()) {
-            ItemStack slotStack = slot.getStack();
+        Slot slot = this.slots.get(index);
+        if (slot != null && slot.hasItem()) {
+            ItemStack slotStack = slot.getItem();
             itemstack = slotStack.copy();
             if (index < AdvancedBrewingStandBlockEntity.SLOTS) {
-                if (!this.mergeItemStack(slotStack, AdvancedBrewingStandBlockEntity.SLOTS, 41, false)) {
+                if (!this.moveItemStackTo(slotStack, AdvancedBrewingStandBlockEntity.SLOTS, 41, false)) {
                     return ItemStack.EMPTY;
                 }
             } else {
-                if (!this.mergeItemStack(slotStack, 0, AdvancedBrewingStandBlockEntity.SLOTS, true)) {
+                if (!this.moveItemStackTo(slotStack, 0, AdvancedBrewingStandBlockEntity.SLOTS, true)) {
                     return ItemStack.EMPTY;
                 }
-                slot.onSlotChange(slotStack, itemstack);
+                slot.onQuickCraft(slotStack, itemstack);
             }
 
             if (slotStack.isEmpty()) {
-                slot.putStack(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             } else {
-                slot.onSlotChanged();
+                slot.setChanged();
             }
 
             if (slotStack.getCount() == itemstack.getCount()) {
@@ -136,7 +136,7 @@ public class AdvancedBrewingStandContainer extends Container {
         /**
          * Check if the stack is allowed to be placed in this slot, used for armor slots as well as furnace fuel.
          */
-        public boolean isItemValid(ItemStack stack) {
+        public boolean mayPlace(ItemStack stack) {
             return isValidBrewingFuel(stack);
         }
 
@@ -151,7 +151,7 @@ public class AdvancedBrewingStandContainer extends Container {
          * Returns the maximum stack size for a given slot (usually the same as getInventoryStackLimit(), but 1 in the
          * case of armor slots)
          */
-        public int getSlotStackLimit() {
+        public int getMaxStackSize() {
             return 64;
         }
     }
@@ -164,7 +164,7 @@ public class AdvancedBrewingStandContainer extends Container {
         /**
          * Check if the stack is allowed to be placed in this slot, used for armor slots as well as furnace fuel.
          */
-        public boolean isItemValid(ItemStack stack) {
+        public boolean mayPlace(ItemStack stack) {
             return stack.getItem() == Items.MILK_BUCKET || BrewingRecipeRegistry.isValidIngredient(stack);
         }
     }
@@ -177,7 +177,7 @@ public class AdvancedBrewingStandContainer extends Container {
         /**
          * Check if the stack is allowed to be placed in this slot, used for armor slots as well as furnace fuel.
          */
-        public boolean isItemValid(ItemStack stack) {
+        public boolean mayPlace(ItemStack stack) {
             return Util.isValidInputCountInsensitive(stack);
         }
 
@@ -185,12 +185,12 @@ public class AdvancedBrewingStandContainer extends Container {
          * Returns the maximum stack size for a given slot (usually the same as getInventoryStackLimit(), but 1 in the
          * case of armor slots)
          */
-        public int getSlotStackLimit() {
+        public int getMaxStackSize() {
             return 2;
         }
 
         public ItemStack onTake(PlayerEntity thePlayer, ItemStack stack) {
-            Potion potion = PotionUtils.getPotionFromItem(stack);
+            Potion potion = PotionUtils.getPotion(stack);
             if (thePlayer instanceof ServerPlayerEntity) {
                 ForgeEventFactory.onPlayerBrewedPotion(thePlayer, stack);
                 CriteriaTriggers.BREWED_POTION.trigger((ServerPlayerEntity)thePlayer, potion);

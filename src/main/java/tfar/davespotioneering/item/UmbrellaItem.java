@@ -11,6 +11,8 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import net.minecraft.item.Item.Properties;
+
 public class UmbrellaItem extends ShieldItem {
     private final String style;
 
@@ -21,9 +23,9 @@ public class UmbrellaItem extends ShieldItem {
 
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         tooltip.add(new StringTextComponent(style));
 
-        tooltip.add(new TranslationTextComponent(getTranslationKey()+".desc"));
+        tooltip.add(new TranslationTextComponent(getDescriptionId()+".desc"));
     }
 }

@@ -34,10 +34,12 @@ import tfar.davespotioneering.blockentity.PotionInjectorBlockEntity;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class PotionInjectorBlock extends Block {
     public PotionInjectorBlock(Properties properties) {
         super(properties);
-        setDefaultState(stateContainer.getBaseState().with(FACING, Direction.NORTH).with(HAS_GAUNTLET,false));
+        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(HAS_GAUNTLET,false));
     }
 
     public static final String TRANS_KEY = "davespotioneering.container.potion_injector";
@@ -47,33 +49,33 @@ public class PotionInjectorBlock extends Block {
     public static final BooleanProperty HAS_GAUNTLET = BooleanProperty.create("has_gauntlet");
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (worldIn.isRemote) {
+    public ActionResultType use(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+        if (worldIn.isClientSide) {
             return ActionResultType.SUCCESS;
         } else {
-            player.openContainer((INamedContainerProvider) worldIn.getTileEntity(pos));
-            player.addStat(Stats.INTERACT_WITH_CRAFTING_TABLE);
+            player.openMenu((INamedContainerProvider) worldIn.getBlockEntity(pos));
+            player.awardStat(Stats.INTERACT_WITH_CRAFTING_TABLE);
             return ActionResultType.CONSUME;
         }
     }
 
-    protected static final VoxelShape BOTTOM_SHAPE = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D);
+    protected static final VoxelShape BOTTOM_SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D);
 
-    protected static final VoxelShape NORTH_SHAPE = Block.makeCuboidShape(0.0D, 8.0D, 0.0D, 8.0D, 16.0D, 16.0D);
-    protected static final VoxelShape SOUTH_SHAPE = Block.makeCuboidShape(8.0D, 8.0D, 0.0D, 16.0D, 16.0D, 16.0D);
-    protected static final VoxelShape EAST_SHAPE = Block.makeCuboidShape(0.0D, 8.0D, 0.0D, 16.0D, 16.0D, 8.0D);
-    protected static final VoxelShape WEST_SHAPE = Block.makeCuboidShape(0.0D, 8.0D, 8.0D, 16.0D, 16.0D, 16.0D);
+    protected static final VoxelShape NORTH_SHAPE = Block.box(0.0D, 8.0D, 0.0D, 8.0D, 16.0D, 16.0D);
+    protected static final VoxelShape SOUTH_SHAPE = Block.box(8.0D, 8.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+    protected static final VoxelShape EAST_SHAPE = Block.box(0.0D, 8.0D, 0.0D, 16.0D, 16.0D, 8.0D);
+    protected static final VoxelShape WEST_SHAPE = Block.box(0.0D, 8.0D, 8.0D, 16.0D, 16.0D, 16.0D);
 
     public static final VoxelShape[] SHAPES =
-            new VoxelShape[]{VoxelShapes.combineAndSimplify(BOTTOM_SHAPE,EAST_SHAPE, IBooleanFunction.OR),
-                    VoxelShapes.combineAndSimplify(BOTTOM_SHAPE,SOUTH_SHAPE, IBooleanFunction.OR),
-                    VoxelShapes.combineAndSimplify(BOTTOM_SHAPE,WEST_SHAPE, IBooleanFunction.OR),
-                    VoxelShapes.combineAndSimplify(BOTTOM_SHAPE,NORTH_SHAPE, IBooleanFunction.OR),
+            new VoxelShape[]{VoxelShapes.join(BOTTOM_SHAPE,EAST_SHAPE, IBooleanFunction.OR),
+                    VoxelShapes.join(BOTTOM_SHAPE,SOUTH_SHAPE, IBooleanFunction.OR),
+                    VoxelShapes.join(BOTTOM_SHAPE,WEST_SHAPE, IBooleanFunction.OR),
+                    VoxelShapes.join(BOTTOM_SHAPE,NORTH_SHAPE, IBooleanFunction.OR),
             };
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        return SHAPES[state.get(FACING).getHorizontalIndex()];
+        return SHAPES[state.getValue(FACING).get2DDataValue()];
     }
 
     /*@Override
@@ -92,17 +94,17 @@ public class PotionInjectorBlock extends Block {
     }*/
 
     public static void setHasGauntlet(World worldIn, BlockPos pos, BlockState state, boolean hasBook) {
-        worldIn.setBlockState(pos, state.with(HAS_GAUNTLET, hasBook), 3);
+        worldIn.setBlock(pos, state.setValue(HAS_GAUNTLET, hasBook), 3);
         //notifyNeighbors(worldIn, pos, state);
     }
 
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());
+        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(HAS_GAUNTLET,FACING);
     }
 
@@ -118,23 +120,23 @@ public class PotionInjectorBlock extends Block {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable IBlockReader worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable IBlockReader worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
 
-        tooltip.add(new TranslationTextComponent(getTranslationKey()+".hold_shift.desc"));
+        tooltip.add(new TranslationTextComponent(getDescriptionId()+".hold_shift.desc"));
         if (Screen.hasShiftDown())
-            tooltip.add(this.getShiftDescription().mergeStyle(TextFormatting.GRAY));
+            tooltip.add(this.getShiftDescription().withStyle(TextFormatting.GRAY));
 
-        tooltip.add(new TranslationTextComponent(getTranslationKey()+".hold_ctrl.desc"));
+        tooltip.add(new TranslationTextComponent(getDescriptionId()+".hold_ctrl.desc"));
         if (Screen.hasControlDown())
-            tooltip.add(this.getCtrlDescription().mergeStyle(TextFormatting.GRAY));
+            tooltip.add(this.getCtrlDescription().withStyle(TextFormatting.GRAY));
     }
 
     public IFormattableTextComponent getShiftDescription() {
-        return new TranslationTextComponent(this.getTranslationKey() + ".shift.desc");
+        return new TranslationTextComponent(this.getDescriptionId() + ".shift.desc");
     }
 
     public IFormattableTextComponent getCtrlDescription() {
-        return new TranslationTextComponent(this.getTranslationKey() + ".ctrl.desc");
+        return new TranslationTextComponent(this.getDescriptionId() + ".ctrl.desc");
     }
 
 }

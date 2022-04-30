@@ -48,18 +48,18 @@ public class Events {
 
     public static void switchGameMode(PlayerEvent.PlayerChangeGameModeEvent event) {
         if (event.getNewGameMode() == GameType.SURVIVAL && event.getCurrentGameMode() == GameType.CREATIVE && GauntletHUD.hudInstance.preset == GauntletHUD.HudPresets.ABOVE_HOTBAR) {
-            GauntletHUD.hudInstance.y = GauntletHUDMovementGui.getFixedPositionValue(Minecraft.getInstance().getMainWindow().getScaledHeight() - 42 - 40, false);
+            GauntletHUD.hudInstance.y = GauntletHUDMovementGui.getFixedPositionValue(Minecraft.getInstance().getWindow().getGuiScaledHeight() - 42 - 40, false);
         }
         if (event.getNewGameMode() == GameType.CREATIVE && event.getCurrentGameMode() == GameType.SURVIVAL && GauntletHUD.hudInstance.preset == GauntletHUD.HudPresets.ABOVE_HOTBAR) {
-            GauntletHUD.hudInstance.y = GauntletHUDMovementGui.getFixedPositionValue(Minecraft.getInstance().getMainWindow().getScaledHeight() - 42 - 25, false);
+            GauntletHUD.hudInstance.y = GauntletHUDMovementGui.getFixedPositionValue(Minecraft.getInstance().getWindow().getGuiScaledHeight() - 42 - 25, false);
         }
     }
 
     public static void potionCooldown(PlayerInteractEvent.RightClickItem e) {
         ItemStack stack = e.getItemStack();
         PlayerEntity player = e.getPlayer();
-        if (!player.world.isRemote && stack.getItem() instanceof ThrowablePotionItem) {
-            player.getCooldownTracker().setCooldown(stack.getItem(), ModConfig.Server.potion_cooldown);
+        if (!player.level.isClientSide && stack.getItem() instanceof ThrowablePotionItem) {
+            player.getCooldowns().addCooldown(stack.getItem(), ModConfig.Server.potion_cooldown);
         }
     }
 
@@ -68,13 +68,13 @@ public class Events {
         PlayerEntity player = e.getPlayer();
         if (clicked instanceof CowEntity) {
             CowEntity cowEntity = (CowEntity)clicked;
-            ItemStack itemstack = player.getHeldItem(e.getHand());
-            if (itemstack.getItem() == Items.GLASS_BOTTLE && !cowEntity.isChild()) {
-                player.playSound(SoundEvents.ENTITY_COW_MILK, 1.0F, 1.0F);
+            ItemStack itemstack = player.getItemInHand(e.getHand());
+            if (itemstack.getItem() == Items.GLASS_BOTTLE && !cowEntity.isBaby()) {
+                player.playSound(SoundEvents.COW_MILK, 1.0F, 1.0F);
                 itemstack.shrink(1);
                 ItemStack milkBottle = new ItemStack(Items.POTION);
-                PotionUtils.addPotionToItemStack(milkBottle, ModPotions.MILK);
-                player.addItemStackToInventory(milkBottle);
+                PotionUtils.setPotion(milkBottle, ModPotions.MILK);
+                player.addItem(milkBottle);
             }
         }
     }
@@ -84,18 +84,18 @@ public class Events {
 
         DamageSource source = e.getSource();
 
-        Entity trueSource = source.getTrueSource();
+        Entity trueSource = source.getEntity();
 
         if (trueSource instanceof LivingEntity) {
             LivingEntity attacker = (LivingEntity)trueSource;
 
-            ItemStack weapon = attacker.getHeldItemMainhand();
+            ItemStack weapon = attacker.getMainHandItem();
 
             if (weapon.getItem() instanceof TieredItem) {
-                Potion potion = PotionUtils.getPotionFromItem(weapon);
+                Potion potion = PotionUtils.getPotion(weapon);
                 if (potion != Potions.EMPTY) {
                     for(EffectInstance effectinstance : potion.getEffects()) {
-                        victim.addPotionEffect(new EffectInstance(effectinstance.getPotion(), Math.max(effectinstance.getDuration() / 8, 1), effectinstance.getAmplifier(), effectinstance.isAmbient(), effectinstance.doesShowParticles()));
+                        victim.addEffect(new EffectInstance(effectinstance.getEffect(), Math.max(effectinstance.getDuration() / 8, 1), effectinstance.getAmplifier(), effectinstance.isAmbient(), effectinstance.isVisible()));
                     }
                     ReinforcedCauldronBlock.useCharge(weapon);
                 }
@@ -110,18 +110,18 @@ public class Events {
     }
 
     public static void heldItemChangeEvent(PlayerEntity player) {
-        ItemStack stack = player.getHeldItemMainhand();
+        ItemStack stack = player.getMainHandItem();
         if ((stack.getItem() instanceof LingeringPotionItem || stack.getItem() instanceof SplashPotionItem)) {
-            player.getCooldownTracker().setCooldown(Items.SPLASH_POTION, ModConfig.Server.potion_cooldown);
-            player.getCooldownTracker().setCooldown(Items.LINGERING_POTION, ModConfig.Server.potion_cooldown);
+            player.getCooldowns().addCooldown(Items.SPLASH_POTION, ModConfig.Server.potion_cooldown);
+            player.getCooldowns().addCooldown(Items.LINGERING_POTION, ModConfig.Server.potion_cooldown);
         }
     }
 
     //this is called when the player takes a potion from the brewing stand
     public static void playerBrew(PlayerBrewedPotionEvent e) {
         PlayerEntity player = e.getPlayer();
-        if (!player.world.isRemote) {
-            Container container = player.openContainer;
+        if (!player.level.isClientSide) {
+            Container container = player.containerMenu;
             TileEntity entity = null;
             if (container instanceof BrewingStandContainer) {
                 entity = (BrewingStandTileEntity)((BrewingStandContainerAccess)container).getTileBrewingStand();
@@ -139,7 +139,7 @@ public class Events {
         LivingEntity entity = e.getEntityLiving();
         if (entity instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity)entity;
-            if (player.getActiveItemStack().getItem() instanceof UmbrellaItem) {
+            if (player.getUseItem().getItem() instanceof UmbrellaItem) {
                 e.setResult(Event.Result.DENY);
             }
         }

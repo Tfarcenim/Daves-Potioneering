@@ -98,17 +98,17 @@ public class DavesPotioneering {
         MinecraftForge.EVENT_BUS.addListener(Events::canApplyEffect);
 
         ItemStack milkPot = new ItemStack(Items.POTION);
-        PotionUtils.addPotionToItemStack(milkPot,ModPotions.MILK);
+        PotionUtils.setPotion(milkPot,ModPotions.MILK);
 
         ItemStack splashMilkPot = new ItemStack(Items.SPLASH_POTION);
-        PotionUtils.addPotionToItemStack(splashMilkPot,ModPotions.MILK);
+        PotionUtils.setPotion(splashMilkPot,ModPotions.MILK);
 
         ItemStack lingerMilkPot = new ItemStack(Items.LINGERING_POTION);
-        PotionUtils.addPotionToItemStack(lingerMilkPot,ModPotions.MILK);
+        PotionUtils.setPotion(lingerMilkPot,ModPotions.MILK);
 
-        BrewingRecipeRegistry.addRecipe(PotionIngredient.create(milkPot),Ingredient.fromItems(Items.GUNPOWDER),splashMilkPot);
+        BrewingRecipeRegistry.addRecipe(PotionIngredient.create(milkPot),Ingredient.of(Items.GUNPOWDER),splashMilkPot);
 
-        BrewingRecipeRegistry.addRecipe(PotionIngredient.create(milkPot),Ingredient.fromItems(Items.DRAGON_BREATH),lingerMilkPot);
+        BrewingRecipeRegistry.addRecipe(PotionIngredient.create(milkPot),Ingredient.of(Items.DRAGON_BREATH),lingerMilkPot);
 
         strongRecipe(Potions.INVISIBILITY,ModPotions.STRONG_INVISIBILITY);
 
@@ -122,8 +122,8 @@ public class DavesPotioneering {
 
     protected static void strongRecipe(Potion potion,Potion strong) {
         BrewingRecipeRegistry.addRecipe(PotionIngredient.create(
-                        PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION),potion)),
-                        Ingredient.fromItems(Items.GLOWSTONE_DUST),
-                        PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), strong));
+                        PotionUtils.setPotion(new ItemStack(Items.POTION),potion)),
+                        Ingredient.of(Items.GLOWSTONE_DUST),
+                        PotionUtils.setPotion(new ItemStack(Items.POTION), strong));
     }
 }

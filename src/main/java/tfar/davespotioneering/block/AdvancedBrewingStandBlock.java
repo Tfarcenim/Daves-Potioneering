@@ -23,19 +23,21 @@ import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class AdvancedBrewingStandBlock extends BrewingStandBlock {
     public AdvancedBrewingStandBlock(Properties properties) {
         super(properties);
     }
 
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (worldIn.isRemote) {
+    public ActionResultType use(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+        if (worldIn.isClientSide) {
             return ActionResultType.SUCCESS;
         } else {
-            TileEntity tileentity = worldIn.getTileEntity(pos);
+            TileEntity tileentity = worldIn.getBlockEntity(pos);
             if (tileentity instanceof AdvancedBrewingStandBlockEntity) {
-                player.openContainer((AdvancedBrewingStandBlockEntity)tileentity);
-                player.addStat(Stats.INTERACT_WITH_BREWINGSTAND);
+                player.openMenu((AdvancedBrewingStandBlockEntity)tileentity);
+                player.awardStat(Stats.INTERACT_WITH_BREWINGSTAND);
             }
             return ActionResultType.CONSUME;
         }
@@ -44,33 +46,33 @@ public class AdvancedBrewingStandBlock extends BrewingStandBlock {
     public static final int C_LINES = 3;
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable IBlockReader worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable IBlockReader worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
 
-        tooltip.add(new TranslationTextComponent(getTranslationKey()+".hold_shift.desc"));
+        tooltip.add(new TranslationTextComponent(getDescriptionId()+".hold_shift.desc"));
         if (Screen.hasShiftDown())
-            tooltip.add(this.getShiftDescription().mergeStyle(TextFormatting.GRAY));
+            tooltip.add(this.getShiftDescription().withStyle(TextFormatting.GRAY));
 
-        tooltip.add(new TranslationTextComponent(getTranslationKey()+".hold_ctrl.desc"));
+        tooltip.add(new TranslationTextComponent(getDescriptionId()+".hold_ctrl.desc"));
         if (Screen.hasControlDown())
             for (int i = 0; i < C_LINES;i++) {
-                tooltip.add(this.getCtrlDescriptions(i).mergeStyle(TextFormatting.GRAY));
+                tooltip.add(this.getCtrlDescriptions(i).withStyle(TextFormatting.GRAY));
             }
     }
 
     public IFormattableTextComponent getShiftDescription() {
-        return new TranslationTextComponent(this.getTranslationKey() + ".shift.desc");
+        return new TranslationTextComponent(this.getDescriptionId() + ".shift.desc");
     }
 
     public IFormattableTextComponent getCtrlDescription() {
-        return new TranslationTextComponent(this.getTranslationKey() + ".ctrl.desc");
+        return new TranslationTextComponent(this.getDescriptionId() + ".ctrl.desc");
     }
 
     public IFormattableTextComponent getCtrlDescriptions(int i) {
-        return new TranslationTextComponent(this.getTranslationKey() + i +".ctrl.desc");
+        return new TranslationTextComponent(this.getDescriptionId() + i +".ctrl.desc");
     }
 
     @Override
-    public TileEntity createNewTileEntity(IBlockReader worldIn) {
+    public TileEntity newBlockEntity(IBlockReader worldIn) {
         return new AdvancedBrewingStandBlockEntity();
     }
 }
