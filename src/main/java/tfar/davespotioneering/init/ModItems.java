@@ -2,6 +2,7 @@ package tfar.davespotioneering.init;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.core.Registry;
 import net.minecraft.item.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
@@ -29,7 +30,7 @@ public class ModItems {
 
     private static List<Item> MOD_ITEMS;
 
-    public static final CreativeModeTab tab = new CreativeModeTab(DavesPotioneering.MODID) {
+    public static final CreativeModeTab tab = new CreativeModeTab(8,DavesPotioneering.MODID) {
         @Override
         public ItemStack makeIcon() {
             return new ItemStack(ModItems.COMPOUND_BREWING_STAND);
@@ -82,12 +83,12 @@ public class ModItems {
                 .setISTER(() -> () -> HideISTERsFromServer.createGeoClassicUmbrellaItemStackRenderer(dyeColor));
     }
 
-    public static void register(RegistryEvent.Register<Item> e) {
+    public static void register() {
         for (Field field : ModItems.class.getFields()) {
             try {
                 Object o = field.get(null);
                 if (o instanceof Item) {
-                    e.getRegistry().register(((Item) o).setRegistryName(field.getName().toLowerCase(Locale.ROOT)));
+                    Registry.register(Registry.ITEM,new ResourceLocation(DavesPotioneering.MODID,field.getName().toLowerCase(Locale.ROOT)),(Item)o);
                 }
             } catch (IllegalAccessException illegalAccessException) {
                 illegalAccessException.printStackTrace();

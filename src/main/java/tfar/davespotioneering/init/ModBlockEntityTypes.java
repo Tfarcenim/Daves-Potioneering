@@ -1,7 +1,9 @@
 package tfar.davespotioneering.init;
 
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.event.RegistryEvent;
+import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
 import tfar.davespotioneering.blockentity.PotionInjectorBlockEntity;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
@@ -18,12 +20,12 @@ public class ModBlockEntityTypes {
     public static final BlockEntityType<ReinforcedCauldronBlockEntity> REINFORCED_CAULDRON = BlockEntityType.Builder.of(ReinforcedCauldronBlockEntity::new,ModBlocks.REINFORCED_CAULDRON).build(null);
     public static final BlockEntityType<PotionInjectorBlockEntity> POTION_INJECTOR = BlockEntityType.Builder.of(PotionInjectorBlockEntity::new,ModBlocks.POTION_INJECTOR).build(null);
 
-    public static void register(RegistryEvent.Register<BlockEntityType<?>> e) {
+    public static void register() {
         for (Field field : ModBlockEntityTypes.class.getFields()) {
             try {
                 Object o = field.get(null);
                 if (o instanceof BlockEntityType) {
-                       e.getRegistry().register(((BlockEntityType<?>) o).setRegistryName(field.getName().toLowerCase(Locale.ROOT)));
+                    Registry.register(Registry.BLOCK_ENTITY_TYPE,new ResourceLocation(DavesPotioneering.MODID,field.getName().toLowerCase(Locale.ROOT)),(BlockEntityType<?>) o);
                 }
             } catch (IllegalAccessException illegalAccessException) {
                 illegalAccessException.printStackTrace();

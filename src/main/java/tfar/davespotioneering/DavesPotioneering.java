@@ -43,18 +43,16 @@ public class DavesPotioneering {
     public static final String MODID = "davespotioneering";
 
     public DavesPotioneering() {
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        bus.addListener(ModDatagen::start);
 
-        bus.addGenericListener(Block.class, ModBlocks::register);
-        bus.addGenericListener(Item.class, ModItems::register);
-        bus.addGenericListener(MobEffect.class,ModEffects::register);
-        bus.addGenericListener(Potion.class,ModPotions::register);
-        bus.addGenericListener(BlockEntityType.class, ModBlockEntityTypes::register);
-        bus.addGenericListener(MenuType.class, ModContainerTypes::register);
-        bus.addGenericListener(SoundEvent.class, ModSoundEvents::register);
-        bus.addGenericListener(ParticleType.class,ModParticleTypes::register);
+        ModBlocks.register();
+        ModItems.register();
+        ModEffects.register();
+        ModPotions.register();
+        ModBlockEntityTypes.register();
+        ModContainerTypes.register();
+        ModSoundEvents.register();
+        ModParticleTypes.register();
 
         ModLoadingContext.get().registerConfig(Type.CLIENT, CLIENT_SPEC);
         ModLoadingContext.get().registerConfig(Type.SERVER, SERVER_SPEC);

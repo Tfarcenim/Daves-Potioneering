@@ -15,7 +15,7 @@ public class ModContainerTypes {
     public static final MenuType<AdvancedBrewingStandContainer> ADVANCED_BREWING_STAND = new MenuType<>(AdvancedBrewingStandContainer::new);
     public static final MenuType<PotionInjectorMenu> ALCHEMICAL_GAUNTLET = new MenuType<>(PotionInjectorMenu::new);
 
-    public static void register(RegistryEvent.Register<MenuType<?>> e) {
+    public static void register() {
         for (Field field : ModContainerTypes.class.getFields()) {
             try {
                 Object o = field.get(null);

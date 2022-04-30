@@ -18,7 +18,7 @@ import javax.annotation.Nullable;
 @Mixin(ItemOverrides.class)
 public class ItemOverrideListMixin {
 
-    @Inject(method = "getOverrideModel",at = @At(value = "RETURN",ordinal = 1),locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "resolve",at = @At(value = "RETURN",ordinal = 1),locals = LocalCapture.CAPTURE_FAILHARD)
     private void validModel(BakedModel model, ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity livingEntity,
                             CallbackInfoReturnable<BakedModel> cir, int i, ItemOverride itemoverride, BakedModel ibakedmodel) {
         DoubleGeoItemStackRenderer.override.set(i);

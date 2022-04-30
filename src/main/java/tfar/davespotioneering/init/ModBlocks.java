@@ -1,13 +1,15 @@
 package tfar.davespotioneering.init;
 
-import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.event.RegistryEvent;
+import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.block.AdvancedBrewingStandBlock;
-import tfar.davespotioneering.block.PotionInjectorBlock;
 import tfar.davespotioneering.block.MagicLecternBlock;
+import tfar.davespotioneering.block.PotionInjectorBlock;
 import tfar.davespotioneering.block.ReinforcedCauldronBlock;
 
 import java.lang.reflect.Field;
@@ -29,12 +31,12 @@ public class ModBlocks {
     public static final Block POTION_INJECTOR = new PotionInjectorBlock(BlockBehaviour.Properties.copy(Blocks.FLETCHING_TABLE).noOcclusion());
 
 
-    public static void register(RegistryEvent.Register<Block> e) {
+    public static void register() {
         for (Field field : ModBlocks.class.getFields()) {
             try {
                 Object o = field.get(null);
                 if (o instanceof Block) {
-                       e.getRegistry().register(((Block) o).setRegistryName(field.getName().toLowerCase(Locale.ROOT)));
+                    Registry.register(Registry.BLOCK,new ResourceLocation(DavesPotioneering.MODID,field.getName().toLowerCase(Locale.ROOT)),(Block)o);
                 }
             } catch (IllegalAccessException illegalAccessException) {
                 illegalAccessException.printStackTrace();

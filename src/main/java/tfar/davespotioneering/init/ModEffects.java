@@ -1,8 +1,10 @@
 package tfar.davespotioneering.init;
 
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
-import net.minecraftforge.event.RegistryEvent;
+import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.effect.MilkEffect;
 
 import java.lang.reflect.Field;
@@ -15,13 +17,12 @@ public class ModEffects {
 
     public static final MobEffect MILK = new MilkEffect(MobEffectCategory.NEUTRAL,0xffffff);
 
-    public static void register(RegistryEvent.Register<MobEffect> e) {
+    public static void register() {
         for (Field field : ModEffects.class.getFields()) {
             try {
                 if (field.get(null) instanceof MobEffect) {
                     MobEffect effect = (MobEffect)field.get(null);
-                    effect.setRegistryName(field.getName().toLowerCase(Locale.ROOT));
-                       e.getRegistry().register(effect);
+                    Registry.register(Registry.MOB_EFFECT,new ResourceLocation(DavesPotioneering.MODID,field.getName().toLowerCase(Locale.ROOT)),effect);
                 }
             } catch (IllegalAccessException illegalAccessException) {
                 illegalAccessException.printStackTrace();

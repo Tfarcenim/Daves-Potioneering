@@ -1,8 +1,8 @@
 package tfar.davespotioneering.init;
 
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraftforge.event.RegistryEvent;
 import tfar.davespotioneering.DavesPotioneering;
 
 import java.lang.reflect.Field;
@@ -20,12 +20,12 @@ public class ModSoundEvents {
         return new SoundEvent(new ResourceLocation(DavesPotioneering.MODID, name));
     }
 
-    public static void register(RegistryEvent.Register<SoundEvent> e) {
+    public static void register() {
         for (Field field : ModSoundEvents.class.getFields()) {
             try {
                 Object o = field.get(null);
                 if (o instanceof SoundEvent) {
-                    e.getRegistry().register(((SoundEvent) o).setRegistryName(field.getName().toLowerCase(Locale.ROOT)));
+                    Registry.register(Registry.SOUND_EVENT,new ResourceLocation(DavesPotioneering.MODID,field.getName().toLowerCase(Locale.ROOT)),(SoundEvent)o);
                 }
             } catch (IllegalAccessException illegalAccessException) {
                 illegalAccessException.printStackTrace();

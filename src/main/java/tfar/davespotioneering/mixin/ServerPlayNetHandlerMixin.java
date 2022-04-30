@@ -15,7 +15,7 @@ public class ServerPlayNetHandlerMixin {
 
     @Shadow public ServerPlayer player;
 
-    @Inject(method = "processHeldItemChange",at = @At(value = "INVOKE",target = "Lnet/minecraft/entity/player/ServerPlayerEntity;markPlayerActive()V"))
+    @Inject(method = "processHeldItemChange",at = @At(value = "INVOKE",target = "Lnet/minecraft/entity/player/ServerPlayer;markPlayerActive()V"))
     private void heldItemChange(ServerboundSetCarriedItemPacket itemChangePacket, CallbackInfo ci) {
         Events.heldItemChangeEvent(this.player);
     }
