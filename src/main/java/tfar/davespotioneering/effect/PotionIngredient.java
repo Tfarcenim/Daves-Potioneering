@@ -2,9 +2,9 @@ package tfar.davespotioneering.effect;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
 
@@ -16,7 +16,7 @@ public class PotionIngredient extends Ingredient {
     private final ItemStack stack;
 
     protected PotionIngredient(ItemStack stack) {
-        super(Stream.of(new Ingredient.SingleItemList(stack)));
+        super(Stream.of(new Ingredient.ItemValue(stack)));
         this.stack = stack;
     }
 
@@ -57,7 +57,7 @@ public class PotionIngredient extends Ingredient {
         public static final Serializer INSTANCE = new Serializer();
 
         @Override
-        public PotionIngredient parse(PacketBuffer buffer) {
+        public PotionIngredient parse(FriendlyByteBuf buffer) {
             return new PotionIngredient(buffer.readItem());
         }
 
@@ -67,7 +67,7 @@ public class PotionIngredient extends Ingredient {
         }
 
         @Override
-        public void write(PacketBuffer buffer, PotionIngredient ingredient) {
+        public void write(FriendlyByteBuf buffer, PotionIngredient ingredient) {
             buffer.writeItem(ingredient.stack);
         }
     }

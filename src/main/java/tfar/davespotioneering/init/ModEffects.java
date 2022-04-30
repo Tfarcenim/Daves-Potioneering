@@ -1,7 +1,7 @@
 package tfar.davespotioneering.init;
 
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.EffectType;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraftforge.event.RegistryEvent;
 import tfar.davespotioneering.effect.MilkEffect;
 
@@ -11,15 +11,15 @@ import java.util.Locale;
 
 public class ModEffects {
 
-    private static List<Effect> MOD_EFFECTS;
+    private static List<MobEffect> MOD_EFFECTS;
 
-    public static final Effect MILK = new MilkEffect(EffectType.NEUTRAL,0xffffff);
+    public static final MobEffect MILK = new MilkEffect(MobEffectCategory.NEUTRAL,0xffffff);
 
-    public static void register(RegistryEvent.Register<Effect> e) {
+    public static void register(RegistryEvent.Register<MobEffect> e) {
         for (Field field : ModEffects.class.getFields()) {
             try {
-                if (field.get(null) instanceof Effect) {
-                    Effect effect = (Effect)field.get(null);
+                if (field.get(null) instanceof MobEffect) {
+                    MobEffect effect = (MobEffect)field.get(null);
                     effect.setRegistryName(field.getName().toLowerCase(Locale.ROOT));
                        e.getRegistry().register(effect);
                 }

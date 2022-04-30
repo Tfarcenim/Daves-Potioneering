@@ -1,9 +1,9 @@
 package tfar.davespotioneering.init;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.material.Material;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.event.RegistryEvent;
 import tfar.davespotioneering.block.AdvancedBrewingStandBlock;
 import tfar.davespotioneering.block.PotionInjectorBlock;
@@ -18,15 +18,15 @@ public class ModBlocks {
 
     private static List<Block> MOD_BLOCKS;
 
-    public static final Block COMPOUND_BREWING_STAND = new AdvancedBrewingStandBlock(AbstractBlock.Properties.of(Material.METAL)
+    public static final Block COMPOUND_BREWING_STAND = new AdvancedBrewingStandBlock(BlockBehaviour.Properties.of(Material.METAL)
             .requiresCorrectToolForDrops().strength(0.5F).lightLevel(state -> 1).noOcclusion());
 
-    public static final Block REINFORCED_CAULDRON = new ReinforcedCauldronBlock(AbstractBlock.Properties.of(Material.METAL)
+    public static final Block REINFORCED_CAULDRON = new ReinforcedCauldronBlock(BlockBehaviour.Properties.of(Material.METAL)
             .requiresCorrectToolForDrops().strength(0.5F).lightLevel(state -> 1).noOcclusion());
 
-    public static final Block MAGIC_LECTERN = new MagicLecternBlock(AbstractBlock.Properties.copy(Blocks.LECTERN));
+    public static final Block MAGIC_LECTERN = new MagicLecternBlock(BlockBehaviour.Properties.copy(Blocks.LECTERN));
 
-    public static final Block POTION_INJECTOR = new PotionInjectorBlock(AbstractBlock.Properties.copy(Blocks.FLETCHING_TABLE).noOcclusion());
+    public static final Block POTION_INJECTOR = new PotionInjectorBlock(BlockBehaviour.Properties.copy(Blocks.FLETCHING_TABLE).noOcclusion());
 
 
     public static void register(RegistryEvent.Register<Block> e) {

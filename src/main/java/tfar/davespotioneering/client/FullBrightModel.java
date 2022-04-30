@@ -3,13 +3,13 @@ package tfar.davespotioneering.client;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.BakedModelWrapper;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.data.EmptyModelData;
@@ -22,7 +22,17 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public class FullBrightModel extends BakedModelWrapper<IBakedModel> {
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.UnbakedModel;
+
+public class FullBrightModel extends BakedModelWrapper<BakedModel> {
 
     private static final LoadingCache<CacheKey, List<BakedQuad>> CACHE = CacheBuilder.newBuilder().build(new CacheLoader<CacheKey, List<BakedQuad>>() {
         @Override
@@ -39,14 +49,14 @@ public class FullBrightModel extends BakedModelWrapper<IBakedModel> {
     private final boolean doCaching;
     private Predicate<BlockState> state = null;
 
-    public FullBrightModel(IBakedModel base, boolean doCaching, ResourceLocation... textures) {
+    public FullBrightModel(BakedModel base, boolean doCaching, ResourceLocation... textures) {
         super(base);
 
         this.textures = new HashSet<>(Arrays.asList(textures));
         this.doCaching = doCaching;
     }
 
-    public FullBrightModel(IBakedModel base, boolean doCaching, Predicate<BlockState> state, ResourceLocation... textures) {
+    public FullBrightModel(BakedModel base, boolean doCaching, Predicate<BlockState> state, ResourceLocation... textures) {
         super(base);
 
         this.textures = new HashSet<>(Arrays.asList(textures));
@@ -60,7 +70,7 @@ public class FullBrightModel extends BakedModelWrapper<IBakedModel> {
     }
 
     @Override
-    public IBakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
+    public BakedModel handlePerspective(ItemTransforms.TransformType cameraTransformType, PoseStack mat) {
         return net.minecraftforge.client.ForgeHooksClient.handlePerspective(getBakedModel(), cameraTransformType, mat);
     }
 
@@ -133,13 +143,13 @@ public class FullBrightModel extends BakedModelWrapper<IBakedModel> {
     }
 
     private static class CacheKey {
-        private final IBakedModel base;
+        private final BakedModel base;
         private final Set<ResourceLocation> textures;
         private final Random random;
         private final BlockState state;
         private final Direction side;
 
-        public CacheKey(IBakedModel base, Set<ResourceLocation> textures, Random random, BlockState state, Direction side) {
+        public CacheKey(BakedModel base, Set<ResourceLocation> textures, Random random, BlockState state, Direction side) {
             this.base = base;
             this.textures = textures;
             this.random = random;
@@ -182,13 +192,13 @@ public class FullBrightModel extends BakedModelWrapper<IBakedModel> {
         }
 
         @Override
-        public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<RenderMaterial,
-                TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {
+        public BakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material,
+                TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation) {
             return new FullBrightModel(baseModel.bake(bakery, baseModel, spriteGetter, modelTransform, modelLocation, true),false,new ResourceLocation("davespotioneering:item/lit_potioneer_gauntlet_bright"));
         }
 
         @Override
-        public Collection<RenderMaterial> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+        public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
             return baseModel.getMaterials(modelGetter, missingTextureErrors);
         }
     }

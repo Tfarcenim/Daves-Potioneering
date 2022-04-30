@@ -1,17 +1,17 @@
 package tfar.davespotioneering.menu;
 
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.util.IIntArray;
-import net.minecraft.util.IntArray;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.items.IItemHandler;
@@ -22,19 +22,19 @@ import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
 import tfar.davespotioneering.init.ModContainerTypes;
 import tfar.davespotioneering.inv.BrewingHandler;
 
-public class AdvancedBrewingStandContainer extends Container {
+public class AdvancedBrewingStandContainer extends AbstractContainerMenu {
     private final ItemStackHandler tileBrewingStand;
-    private final IIntArray data;
+    private final ContainerData data;
 
     public AdvancedBrewingStandBlockEntity blockEntity;
 
     //client
-    public AdvancedBrewingStandContainer(int id, PlayerInventory playerInventory) {
-        this(id, playerInventory, new BrewingHandler(AdvancedBrewingStandBlockEntity.SLOTS), new IntArray(2),null);
+    public AdvancedBrewingStandContainer(int id, Inventory playerInventory) {
+        this(id, playerInventory, new BrewingHandler(AdvancedBrewingStandBlockEntity.SLOTS), new SimpleContainerData(2),null);
     }
 
     //common
-    public AdvancedBrewingStandContainer(int id, PlayerInventory playerInventory, ItemStackHandler inventory, IIntArray data, AdvancedBrewingStandBlockEntity advancedBrewingStandBlockEntity) {
+    public AdvancedBrewingStandContainer(int id, Inventory playerInventory, ItemStackHandler inventory, ContainerData data, AdvancedBrewingStandBlockEntity advancedBrewingStandBlockEntity) {
         super(ModContainerTypes.ADVANCED_BREWING_STAND, id);
        // assertInventorySize(inventory, 5);
        // assertIntArraySize(data, 2);
@@ -79,7 +79,7 @@ public class AdvancedBrewingStandContainer extends Container {
     /**
      * Determines whether supplied player can use this container
      */
-    public boolean stillValid(PlayerEntity playerIn) {
+    public boolean stillValid(Player playerIn) {
         return true;//this.tileBrewingStand.isUsableByPlayer(playerIn);
     }
 
@@ -87,7 +87,7 @@ public class AdvancedBrewingStandContainer extends Container {
      * Handle when the stack in slot {@code index} is shift-clicked. Normally this moves the stack between the player
      * inventory and the other inventory(s).
      */
-    public ItemStack quickMoveStack(PlayerEntity playerIn, int index) {
+    public ItemStack quickMoveStack(Player playerIn, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
         if (slot != null && slot.hasItem()) {
@@ -189,11 +189,11 @@ public class AdvancedBrewingStandContainer extends Container {
             return 2;
         }
 
-        public ItemStack onTake(PlayerEntity thePlayer, ItemStack stack) {
+        public ItemStack onTake(Player thePlayer, ItemStack stack) {
             Potion potion = PotionUtils.getPotion(stack);
-            if (thePlayer instanceof ServerPlayerEntity) {
+            if (thePlayer instanceof ServerPlayer) {
                 ForgeEventFactory.onPlayerBrewedPotion(thePlayer, stack);
-                CriteriaTriggers.BREWED_POTION.trigger((ServerPlayerEntity)thePlayer, potion);
+                CriteriaTriggers.BREWED_POTION.trigger((ServerPlayer)thePlayer, potion);
             }
 
             super.onTake(thePlayer, stack);

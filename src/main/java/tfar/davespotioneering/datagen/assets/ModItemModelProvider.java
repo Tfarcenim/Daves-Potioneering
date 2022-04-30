@@ -1,12 +1,12 @@
 package tfar.davespotioneering.datagen.assets;
 
-import net.minecraft.client.renderer.model.BlockModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.Item;
-import net.minecraft.resources.ResourcePackType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -77,10 +77,10 @@ public class ModItemModelProvider extends ItemModelProvider {
 
         getBuilder(name).guiLight(BlockModel.GuiLight.FRONT)
                 .customLoader(SeparatePerspectiveModelBuilder::begin).base(rSpriteFile)
-                .perspective(ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, r3dFile)
-                .perspective(ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND, r3dFile)
-                .perspective(ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND, r3dFile)
-                .perspective(ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND, r3dFile)
+                .perspective(ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, r3dFile)
+                .perspective(ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND, r3dFile)
+                .perspective(ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND, r3dFile)
+                .perspective(ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND, r3dFile)
                 .end();
     }
 
@@ -110,7 +110,7 @@ public class ModItemModelProvider extends ItemModelProvider {
     protected void makeOneLayerItem(Item item, ResourceLocation texture) {
         String path = item.getRegistryName().getPath();
         if (existingFileHelper.exists(new ResourceLocation(texture.getNamespace(), "item/" + texture.getPath())
-                , ResourcePackType.CLIENT_RESOURCES, ".png", "textures")) {
+                , PackType.CLIENT_RESOURCES, ".png", "textures")) {
             getBuilder(path).parent(getExistingFile(mcLoc("item/generated")))
                     .texture("layer0", new ResourceLocation(texture.getNamespace(), "item/" + texture.getPath()));
         } else {

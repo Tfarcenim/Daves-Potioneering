@@ -1,31 +1,31 @@
 package tfar.davespotioneering.blockentity;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.CauldronBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.CauldronBlock;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.BiomeColors;
+import net.minecraft.core.Registry;
+import net.minecraft.client.renderer.BiomeColors;
 import tfar.davespotioneering.block.ReinforcedCauldronBlock;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
 import tfar.davespotioneering.init.ModPotions;
 
 import javax.annotation.Nonnull;
 
-public class ReinforcedCauldronBlockEntity extends TileEntity {
+public class ReinforcedCauldronBlockEntity extends BlockEntity {
 
     @Nonnull protected Potion potion = Potions.EMPTY;
 
@@ -33,7 +33,7 @@ public class ReinforcedCauldronBlockEntity extends TileEntity {
         this(ModBlockEntityTypes.REINFORCED_CAULDRON);
     }
 
-    public ReinforcedCauldronBlockEntity(TileEntityType<?> tileEntityTypeIn) {
+    public ReinforcedCauldronBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -55,31 +55,31 @@ public class ReinforcedCauldronBlockEntity extends TileEntity {
     }
 
     @Override
-    public void load(BlockState state, CompoundNBT nbt) {
+    public void load(BlockState state, CompoundTag nbt) {
         potion = Registry.POTION.get(new ResourceLocation(nbt.getString("potion")));
         super.load(state, nbt);
     }
 
     @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT compound) {
+    public CompoundTag save(CompoundTag compound) {
         compound.putString("potion", potion.getRegistryName().toString());
         return super.save(compound);
     }
 
     @Nonnull
     @Override
-    public CompoundNBT getUpdateTag() {
-        return save(new CompoundNBT());    // okay to send entire inventory on chunk load
+    public CompoundTag getUpdateTag() {
+        return save(new CompoundTag());    // okay to send entire inventory on chunk load
     }
 
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(getBlockPos(), 1, getUpdateTag());
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return new ClientboundBlockEntityDataPacket(getBlockPos(), 1, getUpdateTag());
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
         this.load(null, packet.getTag());
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
     }

@@ -1,18 +1,18 @@
 package tfar.davespotioneering;
 
-import net.minecraft.block.Block;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.particles.ParticleType;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.brewing.BrewingRecipe;
@@ -49,10 +49,10 @@ public class DavesPotioneering {
 
         bus.addGenericListener(Block.class, ModBlocks::register);
         bus.addGenericListener(Item.class, ModItems::register);
-        bus.addGenericListener(Effect.class,ModEffects::register);
+        bus.addGenericListener(MobEffect.class,ModEffects::register);
         bus.addGenericListener(Potion.class,ModPotions::register);
-        bus.addGenericListener(TileEntityType.class, ModBlockEntityTypes::register);
-        bus.addGenericListener(ContainerType.class, ModContainerTypes::register);
+        bus.addGenericListener(BlockEntityType.class, ModBlockEntityTypes::register);
+        bus.addGenericListener(MenuType.class, ModContainerTypes::register);
         bus.addGenericListener(SoundEvent.class, ModSoundEvents::register);
         bus.addGenericListener(ParticleType.class,ModParticleTypes::register);
 
@@ -112,9 +112,9 @@ public class DavesPotioneering {
 
         strongRecipe(Potions.INVISIBILITY,ModPotions.STRONG_INVISIBILITY);
 
-        Set<Block> newSet = new HashSet<>(((BlockEntityTypeAcces)TileEntityType.LECTERN).getValidBlocks());
+        Set<Block> newSet = new HashSet<>(((BlockEntityTypeAcces)BlockEntityType.LECTERN).getValidBlocks());
         newSet.add(ModBlocks.MAGIC_LECTERN);
-        ((BlockEntityTypeAcces)TileEntityType.LECTERN).setValidBlocks(newSet);
+        ((BlockEntityTypeAcces)BlockEntityType.LECTERN).setValidBlocks(newSet);
 
         PacketHandler.registerMessages();
 

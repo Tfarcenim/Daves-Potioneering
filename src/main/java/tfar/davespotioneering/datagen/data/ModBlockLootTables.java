@@ -1,14 +1,14 @@
 package tfar.davespotioneering.datagen.data;
 
-import net.minecraft.block.Block;
-import net.minecraft.data.loot.BlockLootTables;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.data.loot.BlockLoot;
 import net.minecraftforge.registries.ForgeRegistries;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.init.ModBlocks;
 
 import java.util.stream.Collectors;
 
-public class ModBlockLootTables extends BlockLootTables {
+public class ModBlockLootTables extends BlockLoot {
 
     @Override
     protected void addTables() {

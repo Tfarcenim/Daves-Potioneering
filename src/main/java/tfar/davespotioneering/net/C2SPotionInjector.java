@@ -1,8 +1,8 @@
 package tfar.davespotioneering.net;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.network.NetworkEvent;
 import tfar.davespotioneering.menu.PotionInjectorMenu;
 
@@ -18,19 +18,19 @@ public class C2SPotionInjector {
   public C2SPotionInjector(int button){ this.button = button;}
 
   //decode
-  public C2SPotionInjector(PacketBuffer buf) {
+  public C2SPotionInjector(FriendlyByteBuf buf) {
     this.button = buf.readInt();
   }
 
-  public void encode(PacketBuffer buf) {
+  public void encode(FriendlyByteBuf buf) {
     buf.writeInt(button);
   }
 
     public void handle(Supplier<NetworkEvent.Context> ctx) {
-      PlayerEntity player = ctx.get().getSender();
+      Player player = ctx.get().getSender();
       if (player == null) return;
       ctx.get().enqueueWork(  ()->  {
-        Container container = player.containerMenu;
+        AbstractContainerMenu container = player.containerMenu;
         if (container instanceof PotionInjectorMenu) {
           PotionInjectorMenu potionInjectorMenu = (PotionInjectorMenu) container;
           potionInjectorMenu.handleButton(button);

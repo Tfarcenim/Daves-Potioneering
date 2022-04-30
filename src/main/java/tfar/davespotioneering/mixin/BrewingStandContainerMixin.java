@@ -1,11 +1,11 @@
 package tfar.davespotioneering.mixin;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.BrewingStandContainer;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.BrewingStandMenu;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -13,12 +13,12 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import javax.annotation.Nullable;
 
-@Mixin(BrewingStandContainer.class)
-abstract class BrewingStandContainerMixin extends Container {
+@Mixin(BrewingStandMenu.class)
+abstract class BrewingStandContainerMixin extends AbstractContainerMenu {
 
     @Shadow @Final private Slot slot;
 
-    protected BrewingStandContainerMixin(@Nullable ContainerType<?> type, int id) {
+    protected BrewingStandContainerMixin(@Nullable MenuType<?> type, int id) {
         super(type, id);
     }
 
@@ -30,14 +30,14 @@ abstract class BrewingStandContainerMixin extends Container {
      *
      */
     @Overwrite
-    public ItemStack quickMoveStack(PlayerEntity playerIn, int index) {
+    public ItemStack quickMoveStack(Player playerIn, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
         if (slot != null && slot.hasItem()) {
             ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
             if (index > 2 && index != 3 && index != 4) {
-                if (BrewingStandContainer.FuelSlot.mayPlaceItem(itemstack)) {
+                if (BrewingStandMenu.FuelSlot.mayPlaceItem(itemstack)) {
                     if (this.moveItemStackTo(itemstack1, 4, 5, false) || this.slot.mayPlace(itemstack1) && !this.moveItemStackTo(itemstack1, 3, 4, false)) {
                         return ItemStack.EMPTY;
                     }
@@ -45,7 +45,7 @@ abstract class BrewingStandContainerMixin extends Container {
                     if (!this.moveItemStackTo(itemstack1, 3, 4, false)) {
                         return ItemStack.EMPTY;
                     }
-                } else if (BrewingStandContainer.PotionSlot.mayPlaceItem(itemstack) /*&& itemstack.getCount() == 1*/) { //<--- The change is here
+                } else if (BrewingStandMenu.PotionSlot.mayPlaceItem(itemstack) /*&& itemstack.getCount() == 1*/) { //<--- The change is here
                     if (!this.moveItemStackTo(itemstack1, 0, 3, false)) {
                         return ItemStack.EMPTY;
                     }

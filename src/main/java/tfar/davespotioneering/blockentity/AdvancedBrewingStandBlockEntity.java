@@ -1,28 +1,28 @@
 package tfar.davespotioneering.blockentity;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BrewingStandBlock;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.PotionItem;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionBrewing;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.IIntArray;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.BrewingStandBlock;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.Containers;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.PotionItem;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionBrewing;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -42,7 +42,7 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
 
-public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITickableTileEntity, INamedContainerProvider, BrewingStandDuck {
+public class AdvancedBrewingStandBlockEntity extends BlockEntity implements TickableBlockEntity, MenuProvider, BrewingStandDuck {
     /** an array of the output slot indices */
 
     //potions are 0,1,2
@@ -66,7 +66,7 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
     /** used to check if the current ingredient has been removed from the brewing stand during brewing */
     private Item ingredientID;
     private int fuel;
-    protected final IIntArray data = new IIntArray() {
+    protected final ContainerData data = new ContainerData() {
         public int get(int index) {
             switch(index) {
                 case 0:
@@ -98,12 +98,12 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
         super(ModBlockEntityTypes.COMPOUND_BREWING_STAND);
     }
 
-    protected AdvancedBrewingStandBlockEntity(TileEntityType<?> typeIn) {
+    protected AdvancedBrewingStandBlockEntity(BlockEntityType<?> typeIn) {
         super(typeIn);
     }
 
-    protected ITextComponent getDefaultName() {
-        return new TranslationTextComponent("container.davespotioneering.compound_brewing");
+    protected Component getDefaultName() {
+        return new TranslatableComponent("container.davespotioneering.compound_brewing");
     }
 
     public void tick() {
@@ -262,7 +262,7 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
             if (ingredient.isEmpty()) {
                 ingredient = ingredientContainerItem;
             } else if (!this.level.isClientSide) {
-                InventoryHelper.dropItemStack(this.level, blockpos.getX(), blockpos.getY(), blockpos.getZ(), ingredientContainerItem);
+                Containers.dropItemStack(this.level, blockpos.getX(), blockpos.getY(), blockpos.getZ(), ingredientContainerItem);
             }
         }
         //todo
@@ -289,9 +289,9 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
     }
 
     @Override
-    public void load(BlockState state, CompoundNBT nbt) {
+    public void load(BlockState state, CompoundTag nbt) {
         super.load(state, nbt);
-        CompoundNBT items = nbt.getCompound("Items");
+        CompoundTag items = nbt.getCompound("Items");
         brewingHandler.deserializeNBT(items);
         this.brewTime = nbt.getShort("BrewTime");
         this.fuel = nbt.getInt("Fuel");
@@ -299,7 +299,7 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT compound) {
+    public CompoundTag save(CompoundTag compound) {
         super.save(compound);
         compound.putShort("BrewTime", (short)this.brewTime);
         compound.put("Items",brewingHandler.serializeNBT());
@@ -309,13 +309,13 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
     }
 
     @Override
-    public ITextComponent getDisplayName() {
+    public Component getDisplayName() {
         return getDefaultName();
     }
 
     @Nullable
     @Override
-    public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
+    public AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player player) {
         return new AdvancedBrewingStandContainer(id, playerInventory, brewingHandler, this.data,this);
     }
 
@@ -325,7 +325,7 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
     }
 
     @Override
-    public void dump(PlayerEntity player) {
+    public void dump(Player player) {
         if(xp > 0) {
             Util.splitAndSpawnExperience(level, player.position(), xp);
             xp = 0;

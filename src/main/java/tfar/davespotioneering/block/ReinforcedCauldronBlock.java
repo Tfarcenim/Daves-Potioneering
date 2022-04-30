@@ -1,42 +1,42 @@
 package tfar.davespotioneering.block;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.CauldronBlock;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.PotionItem;
-import net.minecraft.item.TieredItem;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.CauldronBlock;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.item.TieredItem;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.stats.Stats;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
@@ -46,7 +46,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.block.AbstractBlock.Properties;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class ReinforcedCauldronBlock extends CauldronBlock {
 
@@ -61,15 +61,15 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
     }
 
     @Override
-    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         ItemStack stack = player.getItemInHand(hand);
         int level = state.getValue(LEVEL);
         if (stack.getItem() instanceof PotionItem) {
             handlePotionBottle(state, world, pos, player, stack, level);
-            return ActionResultType.sidedSuccess(world.isClientSide);
+            return InteractionResult.sidedSuccess(world.isClientSide);
         } else if (stack.getItem() == Items.GLASS_BOTTLE) {
             handleEmptyBottle(state, world, pos, player, hand, stack, level);
-            return ActionResultType.sidedSuccess(world.isClientSide);
+            return InteractionResult.sidedSuccess(world.isClientSide);
         } else if (stack.getItem() == Items.DRAGON_BREATH && level == 3) {
             handleDragonBreath(state,world, pos, player, stack);
         } else if (stack.getItem() instanceof TieredItem && level == 3 ) {
@@ -82,7 +82,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
         return super.use(state, world, pos, player, hand, hit);
     }
 
-    private void handlePotionBottle(BlockState state, World world, BlockPos pos, PlayerEntity player, ItemStack stack, int level) {
+    private void handlePotionBottle(BlockState state, Level world, BlockPos pos, Player player, ItemStack stack, int level) {
         Potion potion = PotionUtils.getPotion(stack);
         ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) world.getBlockEntity(pos);
         Potion storedPotion = reinforcedCauldronBlockEntity.getPotion();
@@ -97,11 +97,11 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
                     if (!player.inventory.add(itemstack4)) {
                         player.drop(itemstack4, false);
                     } else {
-                        ((ServerPlayerEntity) player).refreshContainer(player.inventoryMenu);
+                        ((ServerPlayer) player).refreshContainer(player.inventoryMenu);
                     }
                 }
 
-                world.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                world.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
 
                 if (level > 0 && storedPotion != potion) {
                     boom(world, pos, state);
@@ -113,12 +113,12 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
         }
     }
 
-    public void boom(World world,BlockPos pos,BlockState state) {
+    public void boom(Level world,BlockPos pos,BlockState state) {
         this.setWaterLevel(world, pos, state, 0);
-        world.explode(null, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, 1, false, Explosion.Mode.NONE);
+        world.explode(null, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, 1, false, Explosion.BlockInteraction.NONE);
     }
 
-    private void handleDragonBreath(BlockState state, World world, BlockPos pos, PlayerEntity player, ItemStack stack) {
+    private void handleDragonBreath(BlockState state, Level world, BlockPos pos, Player player, ItemStack stack) {
         if (!world.isClientSide) {
             if (!player.abilities.instabuild) {
                 player.awardStat(Stats.USE_CAULDRON);
@@ -129,15 +129,15 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
                 if (!player.inventory.add(itemstack4)) {
                     player.drop(itemstack4, false);
                 } else {
-                    ((ServerPlayerEntity) player).refreshContainer(player.inventoryMenu);
+                    ((ServerPlayer) player).refreshContainer(player.inventoryMenu);
                 }
             }
-            world.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            world.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
             world.setBlockAndUpdate(pos,state.setValue(DRAGONS_BREATH,true));
         }
     }
 
-    private void handleEmptyBottle(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, ItemStack stack, int level) {
+    private void handleEmptyBottle(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, ItemStack stack, int level) {
         if (level > 0 && !world.isClientSide) {
             ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) world.getBlockEntity(pos);
             Potion potion = reinforcedCauldronBlockEntity.getPotion();
@@ -149,17 +149,17 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
                     player.setItemInHand(hand, itemstack4);
                 } else if (!player.inventory.add(itemstack4)) {
                     player.drop(itemstack4, false);
-                } else if (player instanceof ServerPlayerEntity) {
-                    ((ServerPlayerEntity) player).refreshContainer(player.inventoryMenu);
+                } else if (player instanceof ServerPlayer) {
+                    ((ServerPlayer) player).refreshContainer(player.inventoryMenu);
                 }
             }
-            world.playSound(null, pos, SoundEvents.BOTTLE_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            world.playSound(null, pos, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
             if (potion != Potions.WATER)
                 this.setWaterLevel(world, pos, state, level - 1);
         }
     }
 
-    public static void handleWeaponCoating(BlockState state, World world, BlockPos pos, @Nullable PlayerEntity player, ItemStack stack) {
+    public static void handleWeaponCoating(BlockState state, Level world, BlockPos pos, @Nullable Player player, ItemStack stack) {
         if (state.getValue(DRAGONS_BREATH)) {
             ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) world.getBlockEntity(pos);
             Potion potion = reinforcedCauldronBlockEntity.getPotion();
@@ -168,14 +168,14 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
                     player.awardStat(Stats.USE_CAULDRON);
                 }
                 addCoating(stack,potion);
-                world.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                world.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
                 state = state.setValue(DRAGONS_BREATH, false);
                 ((CauldronBlock)state.getBlock()).setWaterLevel(world,pos,state,0);
             }
         }
     }
 
-    public static void handleArrowCoating(BlockState state, World world, BlockPos pos,@Nullable PlayerEntity player, ItemStack stack,int level) {
+    public static void handleArrowCoating(BlockState state, Level world, BlockPos pos,@Nullable Player player, ItemStack stack,int level) {
         if (state.getValue(DRAGONS_BREATH)) {
             //can't tip arrows if there's less than 8
             if (stack.getCount() < 8) {
@@ -190,7 +190,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
                 ItemStack tippedArrows = new ItemStack(Items.TIPPED_ARROW,8);
                 addCoating(tippedArrows,potion);
                 stack.shrink(8);
-                world.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                world.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
 
                 world.addFreshEntity(new ItemEntity(world,pos.getX(),pos.getY()+1,pos.getZ(),tippedArrows));
                 if (level <= 1)
@@ -200,7 +200,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
         }
     }
 
-    public static void removeCoating(BlockState state, World world, BlockPos pos,@Nullable PlayerEntity player, ItemStack stack) {
+    public static void removeCoating(BlockState state, Level world, BlockPos pos,@Nullable Player player, ItemStack stack) {
         ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) world.getBlockEntity(pos);
         Potion potion = reinforcedCauldronBlockEntity.getPotion();
         if (potion == ModPotions.MILK && !world.isClientSide) {
@@ -208,13 +208,13 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
                 player.awardStat(Stats.USE_CAULDRON);
             }
             removeCoating(stack);
-            world.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            world.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
             ((CauldronBlock)state.getBlock()).setWaterLevel(world,pos,state,state.getValue(LEVEL) - 1);
         }
     }
 
     @Override
-    public void setWaterLevel(World world, BlockPos pos, BlockState state, int level) {
+    public void setWaterLevel(Level world, BlockPos pos, BlockState state, int level) {
         super.setWaterLevel(world, pos, state, level);
         ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) world.getBlockEntity(pos);
         if (level == 0) {
@@ -227,14 +227,14 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
     }
 
     public static void removeCoating(ItemStack stack) {
-        CompoundNBT nbt = stack.getTag();
+        CompoundTag nbt = stack.getTag();
         nbt.remove("uses");
         nbt.remove("Potion");
     }
 
     public static void addCoating(ItemStack stack,Potion potion) {
         if (stack.getItem() instanceof TieredItem) {
-            CompoundNBT nbt = stack.getOrCreateTag();
+            CompoundTag nbt = stack.getOrCreateTag();
             nbt.putInt("uses", 25);
             nbt.putString("Potion", potion.getRegistryName().toString());
         } else if (stack.getItem() == Items.TIPPED_ARROW) {
@@ -243,7 +243,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
     }
 
     public static void useCharge(ItemStack stack) {
-        CompoundNBT nbt = stack.getTag();
+        CompoundTag nbt = stack.getTag();
         if (nbt != null) {
 
             int uses = nbt.getInt("uses");
@@ -257,7 +257,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(DRAGONS_BREATH);
     }
@@ -269,7 +269,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+    public BlockEntity createTileEntity(BlockState state, BlockGetter world) {
         return new ReinforcedCauldronBlockEntity();
     }
 
@@ -280,7 +280,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
      * of whether the block can receive random update ticks
      */
     @OnlyIn(Dist.CLIENT)
-    public void animateTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand) {
+    public void animateTick(BlockState stateIn, Level worldIn, BlockPos pos, Random rand) {
         if (stateIn.getValue(DRAGONS_BREATH)) {
             double d0 = pos.getX();
             double d1 = (double) pos.getY() + 1D;
@@ -291,8 +291,8 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
         }
     }
 
-    public void entityInside(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
-        TileEntity tileentity = worldIn.getBlockEntity(pos);
+    public void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity entityIn) {
+        BlockEntity tileentity = worldIn.getBlockEntity(pos);
         if (tileentity instanceof ReinforcedCauldronBlockEntity) {
             ((ReinforcedCauldronBlockEntity) tileentity).onEntityCollision(entityIn);
         }
@@ -302,17 +302,17 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
 
     //this is used for the coating
     @Override
-    public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
+    public void tick(BlockState state, ServerLevel world, BlockPos pos, Random rand) {
         int level = state.getValue(LEVEL);
 
-        world.playSound(null,pos, SoundEvents.LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.8F, 1);
+        world.playSound(null,pos, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.8F, 1);
 
         if (state.getValue(LEVEL) > 1) {
             setWaterLevel(world,pos,state,level - 1);
             world.getBlockTicks().scheduleTick(pos, this, brew_speed);
         } else {
             List<ItemEntity> items = world.getEntitiesOfClass(ItemEntity.class,
-                    new AxisAlignedBB(pos));
+                    new AABB(pos));
 
             if (items.size() == 1) {
                 handleWeaponCoating(state, world, pos, null, items.get(0).getItem());
@@ -327,50 +327,50 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
     public static final int A_LINES = 2;
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable IBlockReader worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable BlockGetter worldIn, List<Component> tooltip, TooltipFlag flagIn) {
 
-        tooltip.add(new TranslationTextComponent(getDescriptionId()+".hold_shift.desc"));
+        tooltip.add(new TranslatableComponent(getDescriptionId()+".hold_shift.desc"));
         if (Screen.hasShiftDown())
             for (int i = 0; i < S_LINES;i++) {
 
-                tooltip.add(this.getShiftDescriptions(i).withStyle(TextFormatting.GRAY));
+                tooltip.add(this.getShiftDescriptions(i).withStyle(ChatFormatting.GRAY));
             }
 
-        tooltip.add(new TranslationTextComponent(getDescriptionId()+".hold_ctrl.desc"));
+        tooltip.add(new TranslatableComponent(getDescriptionId()+".hold_ctrl.desc"));
         if (Screen.hasControlDown())
             for (int i = 0; i < C_LINES;i++) {
-                tooltip.add(this.getCtrlDescriptions(i).withStyle(TextFormatting.GRAY));
+                tooltip.add(this.getCtrlDescriptions(i).withStyle(ChatFormatting.GRAY));
             }
 
-        tooltip.add(new TranslationTextComponent(getDescriptionId()+".hold_alt.desc"));
+        tooltip.add(new TranslatableComponent(getDescriptionId()+".hold_alt.desc"));
         if (Screen.hasAltDown()) {
             for (int i = 0; i < A_LINES;i++) {
-                tooltip.add(this.getAltDescriptions(i).withStyle(TextFormatting.GRAY));
+                tooltip.add(this.getAltDescriptions(i).withStyle(ChatFormatting.GRAY));
             }
         }
     }
 
-    public IFormattableTextComponent getShiftDescription() {
-        return new TranslationTextComponent(this.getDescriptionId() + ".shift.desc");
+    public MutableComponent getShiftDescription() {
+        return new TranslatableComponent(this.getDescriptionId() + ".shift.desc");
     }
 
-    public IFormattableTextComponent getShiftDescriptions(int i) {
-        return new TranslationTextComponent(this.getDescriptionId() + i +".shift.desc");
+    public MutableComponent getShiftDescriptions(int i) {
+        return new TranslatableComponent(this.getDescriptionId() + i +".shift.desc");
     }
 
-    public IFormattableTextComponent getCtrlDescription() {
-        return new TranslationTextComponent(this.getDescriptionId() + ".ctrl.desc");
+    public MutableComponent getCtrlDescription() {
+        return new TranslatableComponent(this.getDescriptionId() + ".ctrl.desc");
     }
 
-    public IFormattableTextComponent getCtrlDescriptions(int i) {
-        return new TranslationTextComponent(this.getDescriptionId() + i +".ctrl.desc");
+    public MutableComponent getCtrlDescriptions(int i) {
+        return new TranslatableComponent(this.getDescriptionId() + i +".ctrl.desc");
     }
 
-    public IFormattableTextComponent getAltDescription() {
-        return new TranslationTextComponent(this.getDescriptionId() + ".alt.desc");
+    public MutableComponent getAltDescription() {
+        return new TranslatableComponent(this.getDescriptionId() + ".alt.desc");
     }
 
-    public IFormattableTextComponent getAltDescriptions(int i) {
-        return new TranslationTextComponent(this.getDescriptionId() + i+".alt.desc");
+    public MutableComponent getAltDescriptions(int i) {
+        return new TranslatableComponent(this.getDescriptionId() + i+".alt.desc");
     }
 }

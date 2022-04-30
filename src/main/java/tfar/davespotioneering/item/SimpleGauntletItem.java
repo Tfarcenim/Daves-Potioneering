@@ -1,13 +1,13 @@
 package tfar.davespotioneering.item;
 
-import net.minecraft.item.IItemTier;
-import net.minecraft.item.SwordItem;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.SwordItem;
 
-import net.minecraft.item.Item.Properties;
+import net.minecraft.world.item.Item.Properties;
 
 public class SimpleGauntletItem extends SwordItem {
 
-    public SimpleGauntletItem(IItemTier tier, int damage, float attackSpeed, Properties properties) {
+    public SimpleGauntletItem(Tier tier, int damage, float attackSpeed, Properties properties) {
         super(tier, damage, attackSpeed, properties);
     }
 }

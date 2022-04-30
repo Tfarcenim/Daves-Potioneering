@@ -1,12 +1,12 @@
 package tfar.davespotioneering.datagen.assets;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.CauldronBlock;
-import net.minecraft.block.HorizontalBlock;
-import net.minecraft.block.LecternBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.CauldronBlock;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.LecternBlock;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -41,8 +41,8 @@ public class ModBlockstateProvider extends BlockStateProvider {
         ModelFile modelFile = models().getExistingFile(new ResourceLocation(DavesPotioneering.MODID, "block/" + block.getRegistryName().getPath()));
         getVariantBuilder(block).forAllStates(state -> {
             ConfiguredModel.Builder<?> builder = ConfiguredModel.builder().modelFile(modelFile);
-            if (state.hasProperty(HorizontalBlock.FACING)) {
-                switch(state.getValue(HorizontalBlock.FACING)) {
+            if (state.hasProperty(HorizontalDirectionalBlock.FACING)) {
+                switch(state.getValue(HorizontalDirectionalBlock.FACING)) {
                     case EAST:
                         builder.rotationY(90);
                         break;

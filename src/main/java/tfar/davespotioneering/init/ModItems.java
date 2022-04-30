@@ -1,9 +1,9 @@
 package tfar.davespotioneering.init;
 
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.item.*;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.client.model.gecko.DoubleGeoItemStackRenderer;
@@ -18,11 +18,18 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tiers;
+
 public class ModItems {
 
     private static List<Item> MOD_ITEMS;
 
-    public static final ItemGroup tab = new ItemGroup(DavesPotioneering.MODID) {
+    public static final CreativeModeTab tab = new CreativeModeTab(DavesPotioneering.MODID) {
         @Override
         public ItemStack makeIcon() {
             return new ItemStack(ModItems.COMPOUND_BREWING_STAND);
@@ -32,8 +39,8 @@ public class ModItems {
     public static final Item COMPOUND_BREWING_STAND = new BlockItem(ModBlocks.COMPOUND_BREWING_STAND,new Item.Properties().tab(tab));
     public static final Item REINFORCED_CAULDRON = new BlockItem(ModBlocks.REINFORCED_CAULDRON,new Item.Properties().tab(tab));
     public static final Item POTIONEER_GAUNTLET = new GauntletItem(new Item.Properties().tab(tab).durability(32));
-    public static final Item NETHERITE_GAUNTLET = new SimpleGauntletItem(ItemTier.NETHERITE,4,-2.8f,new Item.Properties().tab(tab));
-    public static final Item RUDIMENTARY_GAUNTLET = new SimpleGauntletItem(ItemTier.IRON,3,-2.8f,new Item.Properties().tab(tab));
+    public static final Item NETHERITE_GAUNTLET = new SimpleGauntletItem(Tiers.NETHERITE,4,-2.8f,new Item.Properties().tab(tab));
+    public static final Item RUDIMENTARY_GAUNTLET = new SimpleGauntletItem(Tiers.IRON,3,-2.8f,new Item.Properties().tab(tab));
 
     public static final Item MAGIC_LECTERN = new BlockItem(ModBlocks.MAGIC_LECTERN,new Item.Properties());
     public static final Item POTION_INJECTOR = new BlockItem(ModBlocks.POTION_INJECTOR,new Item.Properties().tab(tab));
@@ -90,25 +97,25 @@ public class ModItems {
 
     private static class HideISTERsFromServer {
 
-        private static ItemStackTileEntityRenderer createGeoClassicUmbrellaItemStackRenderer(DyeColor color) {
+        private static BlockEntityWithoutLevelRenderer createGeoClassicUmbrellaItemStackRenderer(DyeColor color) {
             return createGeoClassicUmbrellaItemStackRenderer(color.name().toLowerCase(Locale.ROOT));
         }
 
-        private static ItemStackTileEntityRenderer createGeoClassicUmbrellaItemStackRenderer(String itemName) {
+        private static BlockEntityWithoutLevelRenderer createGeoClassicUmbrellaItemStackRenderer(String itemName) {
             return new DoubleGeoItemStackRenderer<>(
                     GeoItemStackRenderer.GeoItemModel.makeClosedUmbrella(itemName),
                     GeoItemStackRenderer.GeoItemModel.makeOpenUmbrella(itemName)
                     ,GeoItemStackRenderer.NOTHING);
         }
 
-        private static ItemStackTileEntityRenderer createAgedUmbrellaItemStackRenderer() {
+        private static BlockEntityWithoutLevelRenderer createAgedUmbrellaItemStackRenderer() {
             return new DoubleGeoItemStackRenderer<>(
                     GeoItemStackRenderer.GeoItemModel.makeClosedUmbrella("aged"),
                     GeoItemStackRenderer.GeoItemModel.makeOpenAgedUmbrella()
                     ,GeoItemStackRenderer.NOTHING);
         }
 
-        private static ItemStackTileEntityRenderer createGeoItemStackRendererTransparent(ResourceLocation itemName) {
+        private static BlockEntityWithoutLevelRenderer createGeoItemStackRendererTransparent(ResourceLocation itemName) {
             return new GeoItemStackRenderer<>(new GeoItemStackRenderer.GeoItemModel<>(itemName), RenderType::entityTranslucent,GeoItemStackRenderer.NOTHING);
         }
     }

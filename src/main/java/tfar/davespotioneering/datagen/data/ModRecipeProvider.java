@@ -1,11 +1,11 @@
 package tfar.davespotioneering.datagen.data;
 
-import net.minecraft.block.Blocks;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.data.RecipeProvider;
-import net.minecraft.data.ShapedRecipeBuilder;
-import net.minecraft.item.Items;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.world.item.Items;
 import tfar.davespotioneering.init.ModItems;
 
 import java.util.function.Consumer;
@@ -16,7 +16,7 @@ public class ModRecipeProvider extends RecipeProvider {
     }
 
     @Override
-    public void buildShapelessRecipes(Consumer<IFinishedRecipe> consumer) {
+    public void buildShapelessRecipes(Consumer<FinishedRecipe> consumer) {
         ShapedRecipeBuilder.shaped(ModItems.WHITE_UMBRELLA)
                 .define('a', Blocks.WHITE_WOOL)
                 .define('b', Items.SHIELD)

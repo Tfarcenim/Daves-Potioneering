@@ -1,18 +1,18 @@
 package tfar.davespotioneering.mixin;
 
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.PotionItem;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.PotionUtils;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.stats.Stats;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
@@ -50,21 +50,21 @@ public class PotionItemMixin {
      * @author Tfar
      */
     @Overwrite
-    public ItemStack onItemUseFinish(ItemStack potion, World worldIn, LivingEntity entityLiving) {
+    public ItemStack onItemUseFinish(ItemStack potion, Level worldIn, LivingEntity entityLiving) {
         if (Util.isMilkified(potion)) {
             entityLiving.removeAllEffects();
         }
-        PlayerEntity playerentity = entityLiving instanceof PlayerEntity ? (PlayerEntity)entityLiving : null;
-        if (playerentity instanceof ServerPlayerEntity) {
-            CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayerEntity)playerentity, potion);
+        Player playerentity = entityLiving instanceof Player ? (Player)entityLiving : null;
+        if (playerentity instanceof ServerPlayer) {
+            CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayer)playerentity, potion);
         }
 
         if (!worldIn.isClientSide) {
-            for(EffectInstance effectinstance : PotionUtils.getMobEffects(potion)) {
+            for(MobEffectInstance effectinstance : PotionUtils.getMobEffects(potion)) {
                 if (effectinstance.getEffect().isInstantenous()) {
                     effectinstance.getEffect().applyInstantenousEffect(playerentity, playerentity, entityLiving, effectinstance.getAmplifier(), 1.0D);
                 } else {
-                    entityLiving.addEffect(new EffectInstance(effectinstance));
+                    entityLiving.addEffect(new MobEffectInstance(effectinstance));
                 }
             }
         }

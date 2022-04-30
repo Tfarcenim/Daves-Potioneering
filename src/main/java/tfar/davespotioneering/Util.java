@@ -1,12 +1,12 @@
 package tfar.davespotioneering;
 
-import net.minecraft.entity.item.ExperienceOrbEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.brewing.IBrewingRecipe;
 import tfar.davespotioneering.mixin.ItemAccess;
@@ -32,8 +32,8 @@ public class Util {
         return stack.getRarity() == Rarity.RARE ? 10 : 7;
     }
 
-    public static void splitAndSpawnExperience(World world, Vector3d pos, double experience) {
-        world.addFreshEntity(new ExperienceOrbEntity(world, pos.x, pos.y, pos.z, (int) experience));
+    public static void splitAndSpawnExperience(Level world, Vec3 pos, double experience) {
+        world.addFreshEntity(new ExperienceOrb(world, pos.x, pos.y, pos.z, (int) experience));
     }
 
     public static void brewPotions(NonNullList<ItemStack> inputs, ItemStack ingredient, int[] inputIndexes) {
