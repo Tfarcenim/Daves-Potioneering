@@ -1,7 +1,7 @@
 package tfar.davespotioneering.init;
 
-import net.minecraft.particles.BasicParticleType;
-import net.minecraft.particles.ParticleType;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraftforge.event.RegistryEvent;
 
 import java.lang.reflect.Field;
@@ -11,9 +11,9 @@ import java.util.Locale;
 public class ModParticleTypes {
     private static List<ParticleType<?>> MOD_PARTICLE_TYPES;
 
-    public static final BasicParticleType FAST_DRIPPING_WATER = new BasicParticleType(false);
-    public static final BasicParticleType FAST_FALLING_WATER = new BasicParticleType(false);
-    public static final BasicParticleType TINTED_SPLASH = new BasicParticleType(false);
+    public static final SimpleParticleType FAST_DRIPPING_WATER = new SimpleParticleType(false);
+    public static final SimpleParticleType FAST_FALLING_WATER = new SimpleParticleType(false);
+    public static final SimpleParticleType TINTED_SPLASH = new SimpleParticleType(false);
 
     public static void register(RegistryEvent.Register<ParticleType<?>> e) {
         for (Field field : ModParticleTypes.class.getFields()) {

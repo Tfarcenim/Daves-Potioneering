@@ -1,37 +1,37 @@
 package tfar.davespotioneering.client.particle;
 
-import net.minecraft.client.particle.IAnimatedSprite;
-import net.minecraft.client.particle.IParticleFactory;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.RainParticle;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particles.BasicParticleType;
+import net.minecraft.client.particle.WaterDropParticle;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class TintedSplashParticle extends RainParticle {
-    private TintedSplashParticle(ClientWorld world, double x, double y, double z, double motionX, double motionY, double motionZ) {
+public class TintedSplashParticle extends WaterDropParticle {
+    private TintedSplashParticle(ClientLevel world, double x, double y, double z, double motionX, double motionY, double motionZ) {
         super(world, x, y, z);
-        this.particleGravity = 0.04F;
+        this.gravity = 0.04F;
         if (motionY == 0.0D && (motionX != 0.0D || motionZ != 0.0D)) {
-            this.motionX = motionX;
-            this.motionY = 0.1D;
-            this.motionZ = motionZ;
+            this.xd = motionX;
+            this.yd = 0.1D;
+            this.zd = motionZ;
         }
 
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static class Factory implements IParticleFactory<BasicParticleType> {
-        private final IAnimatedSprite spriteSet;
+    public static class Factory implements ParticleProvider<SimpleParticleType> {
+        private final SpriteSet spriteSet;
 
-        public Factory(IAnimatedSprite spriteSet) {
+        public Factory(SpriteSet spriteSet) {
             this.spriteSet = spriteSet;
         }
 
-        public Particle makeParticle(BasicParticleType typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             TintedSplashParticle splashparticle = new TintedSplashParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
-            splashparticle.selectSpriteRandomly(this.spriteSet);
+            splashparticle.pickSprite(this.spriteSet);
             return splashparticle;
         }
     }

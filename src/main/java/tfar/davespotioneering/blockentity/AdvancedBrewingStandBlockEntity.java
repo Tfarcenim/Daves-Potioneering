@@ -1,28 +1,28 @@
 package tfar.davespotioneering.blockentity;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BrewingStandBlock;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.PotionItem;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionBrewing;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.IIntArray;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.BrewingStandBlock;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.Containers;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.PotionItem;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionBrewing;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -42,7 +42,7 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Map;
 
-public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITickableTileEntity, INamedContainerProvider, BrewingStandDuck {
+public class AdvancedBrewingStandBlockEntity extends BlockEntity implements TickableBlockEntity, MenuProvider, BrewingStandDuck {
     /** an array of the output slot indices */
 
     //potions are 0,1,2
@@ -66,7 +66,7 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
     /** used to check if the current ingredient has been removed from the brewing stand during brewing */
     private Item ingredientID;
     private int fuel;
-    protected final IIntArray data = new IIntArray() {
+    protected final ContainerData data = new ContainerData() {
         public int get(int index) {
             switch(index) {
                 case 0:
@@ -89,7 +89,7 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
 
         }
 
-        public int size() {
+        public int getCount() {
             return 2;
         }
     };
@@ -98,12 +98,12 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
         super(ModBlockEntityTypes.COMPOUND_BREWING_STAND);
     }
 
-    protected AdvancedBrewingStandBlockEntity(TileEntityType<?> typeIn) {
+    protected AdvancedBrewingStandBlockEntity(BlockEntityType<?> typeIn) {
         super(typeIn);
     }
 
-    protected ITextComponent getDefaultName() {
-        return new TranslationTextComponent("container.davespotioneering.compound_brewing");
+    protected Component getDefaultName() {
+        return new TranslatableComponent("container.davespotioneering.compound_brewing");
     }
 
     public void tick() {
@@ -111,7 +111,7 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
         if (this.fuel <= 0 && fuelStack.getItem() == Items.BLAZE_POWDER) {
             this.fuel = 20;
             fuelStack.shrink(1);
-            this.markDirty();
+            this.setChanged();
         }
 
         boolean canBrew = this.canBrew();
@@ -122,22 +122,22 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
             boolean done = this.brewTime == 0;
             if (done && canBrew) {
                 this.brewPotions();
-                this.markDirty();
+                this.setChanged();
             } else if (!canBrew) {
                 this.brewTime = 0;
-                this.markDirty();
+                this.setChanged();
             } else if (this.ingredientID != ing.getItem()) {
                 this.brewTime = 0;
-                this.markDirty();
+                this.setChanged();
             }
         } else if (canBrew && this.fuel > 0) {
             --this.fuel;
             this.brewTime = TIME;
             this.ingredientID = ing.getItem();
-            this.markDirty();
+            this.setChanged();
         }
 
-        if (!this.world.isRemote) {
+        if (!this.level.isClientSide) {
             setBottleBlockStates();
         }
     }
@@ -146,16 +146,16 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
         boolean[] aboolean = this.createFilledSlotsArray();
         if (!Arrays.equals(aboolean, this.filledSlots)) {
             this.filledSlots = aboolean;
-            BlockState blockstate = this.world.getBlockState(this.getPos());
+            BlockState blockstate = this.level.getBlockState(this.getBlockPos());
             if (!(blockstate.getBlock() instanceof BrewingStandBlock)) {
                 return;
             }
 
             for(int i = 0; i < BrewingStandBlock.HAS_BOTTLE.length; ++i) {
-                blockstate = blockstate.with(BrewingStandBlock.HAS_BOTTLE[i], aboolean[i]);
+                blockstate = blockstate.setValue(BrewingStandBlock.HAS_BOTTLE[i], aboolean[i]);
             }
 
-            this.world.setBlockState(this.pos, blockstate, 2);
+            this.level.setBlock(this.worldPosition, blockstate, 2);
         }
     }
 
@@ -178,12 +178,12 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
         }
         if (ingredient.isEmpty()) {
             return false;
-        } else if (!PotionBrewing.isReagent(ingredient)) {
+        } else if (!PotionBrewing.isIngredient(ingredient)) {
             return false;
         } else {
             for(int i = 0; i < 3; ++i) {
                 ItemStack itemstack1 = this.brewingHandler.getStackInSlot(i);
-                if (!itemstack1.isEmpty() && PotionBrewing.hasConversions(itemstack1, ingredient)) {
+                if (!itemstack1.isEmpty() && PotionBrewing.hasMix(itemstack1, ingredient)) {
                     return true;
                 }
             }
@@ -222,12 +222,12 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
         }
         if (itemstack.isEmpty()) {
             return false;
-        } else if (!PotionBrewing.isReagent(itemstack)) {
+        } else if (!PotionBrewing.isIngredient(itemstack)) {
             return false;
         } else {
             for(int i = 0; i < 3; ++i) {
                 ItemStack itemstack1 = this.brewingHandler.getStackInSlot(i);
-                if (!itemstack1.isEmpty() && PotionBrewing.hasConversions(itemstack1, itemstack)) {
+                if (!itemstack1.isEmpty() && PotionBrewing.hasMix(itemstack1, itemstack)) {
                     return true;
                 }
             }
@@ -255,14 +255,14 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
             }
         }
 
-        BlockPos blockpos = this.getPos();
+        BlockPos blockpos = this.getBlockPos();
         if (ingredient.hasContainerItem()) {
             ItemStack ingredientContainerItem = ingredient.getContainerItem();
             ingredient.shrink(1);
             if (ingredient.isEmpty()) {
                 ingredient = ingredientContainerItem;
-            } else if (!this.world.isRemote) {
-                InventoryHelper.spawnItemStack(this.world, blockpos.getX(), blockpos.getY(), blockpos.getZ(), ingredientContainerItem);
+            } else if (!this.level.isClientSide) {
+                Containers.dropItemStack(this.level, blockpos.getX(), blockpos.getY(), blockpos.getZ(), ingredientContainerItem);
             }
         }
         //todo
@@ -270,14 +270,14 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
 
         this.brewingHandler.setStackInSlot(pair.getLeft(), ingredient);
         //plays brewing stand block brewing finished sound
-        this.world.playEvent(1035, blockpos, 0);
+        this.level.levelEvent(1035, blockpos, 0);
     }
 
     private boolean canMilkify() {
         for (int i : POTIONS) {
             ItemStack potionStack = brewingHandler.getStackInSlot(i);
             if (potionStack.getItem() instanceof PotionItem) {
-                Potion potion = PotionUtils.getPotionFromItem(potionStack);
+                Potion potion = PotionUtils.getPotion(potionStack);
                 String name = potion.getRegistryName().toString();
                 if (name.contains("long") || name.contains("strong")) {
                     continue;
@@ -289,9 +289,9 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt) {
-        super.read(state, nbt);
-        CompoundNBT items = nbt.getCompound("Items");
+    public void load(BlockState state, CompoundTag nbt) {
+        super.load(state, nbt);
+        CompoundTag items = nbt.getCompound("Items");
         brewingHandler.deserializeNBT(items);
         this.brewTime = nbt.getShort("BrewTime");
         this.fuel = nbt.getInt("Fuel");
@@ -299,8 +299,8 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
-        super.write(compound);
+    public CompoundTag save(CompoundTag compound) {
+        super.save(compound);
         compound.putShort("BrewTime", (short)this.brewTime);
         compound.put("Items",brewingHandler.serializeNBT());
         compound.putInt("Fuel", this.fuel);
@@ -309,13 +309,13 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
     }
 
     @Override
-    public ITextComponent getDisplayName() {
+    public Component getDisplayName() {
         return getDefaultName();
     }
 
     @Nullable
     @Override
-    public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
+    public AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player player) {
         return new AdvancedBrewingStandContainer(id, playerInventory, brewingHandler, this.data,this);
     }
 
@@ -325,11 +325,11 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
     }
 
     @Override
-    public void dump(PlayerEntity player) {
+    public void dump(Player player) {
         if(xp > 0) {
-            Util.splitAndSpawnExperience(world, player.getPositionVec(), xp);
+            Util.splitAndSpawnExperience(level, player.position(), xp);
             xp = 0;
-            markDirty();
+            setChanged();
         }
     }
 
@@ -337,7 +337,7 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-        if (!this.removed && facing != null && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (!this.remove && facing != null && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return handlers.get(facing).cast();
         }
         return super.getCapability(capability, facing);

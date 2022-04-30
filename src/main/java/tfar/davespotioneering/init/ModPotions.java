@@ -1,8 +1,8 @@
 package tfar.davespotioneering.init;
 
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.potion.Potion;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.item.alchemy.Potion;
 import net.minecraftforge.event.RegistryEvent;
 
 import java.lang.reflect.Field;
@@ -13,9 +13,9 @@ public class ModPotions {
 
     private static List<Potion> MOD_POTIONS;
 
-    public static final Potion MILK = new Potion(new EffectInstance(ModEffects.MILK));
+    public static final Potion MILK = new Potion(new MobEffectInstance(ModEffects.MILK));
 
-    public static final EffectInstance INVIS_2 =  new EffectInstance(Effects.INVISIBILITY, 1800,1,false,false);
+    public static final MobEffectInstance INVIS_2 =  new MobEffectInstance(MobEffects.INVISIBILITY, 1800,1,false,false);
 
     public static final Potion STRONG_INVISIBILITY = new Potion("invisibility",INVIS_2);
 

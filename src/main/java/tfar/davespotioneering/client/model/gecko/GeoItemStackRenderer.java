@@ -1,20 +1,20 @@
 package tfar.davespotioneering.client.model.gecko;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import com.mojang.blaze3d.platform.Lighting;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -34,7 +34,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
-public class GeoItemStackRenderer<T extends IAnimatable> extends ItemStackTileEntityRenderer implements IGeoRenderer<T> {
+public class GeoItemStackRenderer<T extends IAnimatable> extends BlockEntityWithoutLevelRenderer implements IGeoRenderer<T> {
 
     private final AnimatedGeoModel<T> modelProvider;
     protected ItemStack currentItemStack;
@@ -44,7 +44,7 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends ItemStackTileEn
     private static final Map<Item, GeoItemStackRenderer<?>> animatedRenderers = new ConcurrentHashMap<>();
 
     public GeoItemStackRenderer(AnimatedGeoModel<T> modelProvider, T ianimatable) {
-        this(modelProvider, RenderType::getEntityCutout, ianimatable);
+        this(modelProvider, RenderType::entityCutout, ianimatable);
     }
 
     public GeoItemStackRenderer(AnimatedGeoModel<T> modelProvider, Function<ResourceLocation, RenderType> renderTypeGetter, T ianimatable) {
@@ -58,37 +58,37 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends ItemStackTileEn
     }
 
     //render
-    public void func_239207_a_(ItemStack stack, ItemCameraTransforms.TransformType transformType, MatrixStack matrices, IRenderTypeBuffer bufferIn,
+    public void renderByItem(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack matrices, MultiBufferSource bufferIn,
             int combinedLightIn,
             int p_239207_6_
     ) {
-        if (transformType == ItemCameraTransforms.TransformType.GUI) {
-            matrices.push();
+        if (transformType == ItemTransforms.TransformType.GUI) {
+            matrices.pushPose();
             Minecraft mc = Minecraft.getInstance();
-            IRenderTypeBuffer.Impl buffer = mc.getRenderTypeBuffers().getBufferSource();
-            RenderHelper.setupGuiFlatDiffuseLighting();
+            MultiBufferSource.BufferSource buffer = mc.renderBuffers().bufferSource();
+            Lighting.setupForFlatItems();
             this.render(matrices, bufferIn, combinedLightIn, stack);
-            buffer.finish();
+            buffer.endBatch();
             RenderSystem.enableDepthTest();
-            RenderHelper.setupGui3DDiffuseLighting();
-            matrices.pop();
+            Lighting.setupFor3DItems();
+            matrices.popPose();
         } else {
             this.render(matrices, bufferIn, combinedLightIn, stack);
         }
     }
 
-    public void render(MatrixStack matrices, IRenderTypeBuffer bufferIn, int packedLightIn, ItemStack itemStack) {
+    public void render(PoseStack matrices, MultiBufferSource bufferIn, int packedLightIn, ItemStack itemStack) {
         this.currentItemStack = itemStack;
         GeoModel model = modelProvider.getModel(modelProvider.getModelLocation(ianimatable));
         Minecraft mc = Minecraft.getInstance();
-        AnimationEvent<T> itemEvent = new AnimationEvent<>(ianimatable, 0, 0, mc.getRenderPartialTicks(),
+        AnimationEvent<T> itemEvent = new AnimationEvent<>(ianimatable, 0, 0, mc.getFrameTime(),
                 false, Collections.singletonList(itemStack));
         modelProvider.setLivingAnimations(ianimatable, this.getUniqueID(ianimatable), itemEvent);
-        matrices.push();
+        matrices.pushPose();
         matrices.translate(0, 0.01f, 0);
         matrices.translate(0.5, 0.5, 0.5);
 
-        mc.textureManager.bindTexture(getTextureLocation(ianimatable));
+        mc.textureManager.bind(getTextureLocation(ianimatable));
         Color renderColor = getRenderColor(ianimatable, 0, matrices, bufferIn, null, packedLightIn);
         RenderType renderType = getRenderType(ianimatable, 0, matrices, bufferIn, null, packedLightIn,
                 getTextureLocation(ianimatable));
@@ -97,16 +97,16 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends ItemStackTileEn
         RenderSystem.disableCull();
 
         // Get the Glint buffer if this item is enchanted
-        IVertexBuilder ivertexbuilder = ItemRenderer.getEntityGlintVertexBuilder(bufferIn, renderType, true, currentItemStack.hasEffect());
+        VertexConsumer ivertexbuilder = ItemRenderer.getFoilBufferDirect(bufferIn, renderType, true, currentItemStack.hasFoil());
 
         render(model, ianimatable, 0, renderType, matrices, null, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY,
                 (float) renderColor.getRed() / 255f, (float) renderColor.getGreen() / 255f,
                 (float) renderColor.getBlue() / 255f, (float) renderColor.getAlpha() / 255);
-        matrices.pop();
+        matrices.popPose();
     }
 
     @Override
-    public RenderType getRenderType(T animatable, float partialTicks, MatrixStack stack, @Nullable IRenderTypeBuffer renderTypeBuffer, @Nullable IVertexBuilder vertexBuilder, int packedLightIn, ResourceLocation textureLocation) {
+    public RenderType getRenderType(T animatable, float partialTicks, PoseStack stack, @Nullable MultiBufferSource renderTypeBuffer, @Nullable VertexConsumer vertexBuilder, int packedLightIn, ResourceLocation textureLocation) {
         return renderTypeGetter.apply(textureLocation);
     }
 

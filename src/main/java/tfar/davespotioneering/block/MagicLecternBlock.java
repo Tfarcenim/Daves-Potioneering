@@ -1,8 +1,10 @@
 package tfar.davespotioneering.block;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.LecternBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LecternBlock;
+
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class MagicLecternBlock extends LecternBlock {
     public MagicLecternBlock(Properties properties) {
@@ -10,7 +12,7 @@ public class MagicLecternBlock extends LecternBlock {
     }
 
     @Override
-    public boolean matchesBlock(Block block) {
-        return block.matchesBlock(Blocks.LECTERN) || super.matchesBlock(block);
+    public boolean is(Block block) {
+        return block.is(Blocks.LECTERN) || super.is(block);
     }
 }

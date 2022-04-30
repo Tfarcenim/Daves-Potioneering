@@ -1,31 +1,31 @@
 package tfar.davespotioneering.blockentity;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.CauldronBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.CauldronBlock;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.BiomeColors;
+import net.minecraft.core.Registry;
+import net.minecraft.client.renderer.BiomeColors;
 import tfar.davespotioneering.block.ReinforcedCauldronBlock;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
 import tfar.davespotioneering.init.ModPotions;
 
 import javax.annotation.Nonnull;
 
-public class ReinforcedCauldronBlockEntity extends TileEntity {
+public class ReinforcedCauldronBlockEntity extends BlockEntity {
 
     @Nonnull protected Potion potion = Potions.EMPTY;
 
@@ -33,7 +33,7 @@ public class ReinforcedCauldronBlockEntity extends TileEntity {
         this(ModBlockEntityTypes.REINFORCED_CAULDRON);
     }
 
-    public ReinforcedCauldronBlockEntity(TileEntityType<?> tileEntityTypeIn) {
+    public ReinforcedCauldronBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -44,65 +44,65 @@ public class ReinforcedCauldronBlockEntity extends TileEntity {
 
     public void setPotion(@Nonnull Potion potion) {
         this.potion = potion;
-        markDirty();
+        setChanged();
     }
 
     public int getColor() {
         if (!potion.getEffects().isEmpty()) {
-            return PotionUtils.getPotionColor(potion);
+            return PotionUtils.getColor(potion);
         }
-        return BiomeColors.getWaterColor(world, pos);
+        return BiomeColors.getAverageWaterColor(level, worldPosition);
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt) {
-        potion = Registry.POTION.getOrDefault(new ResourceLocation(nbt.getString("potion")));
-        super.read(state, nbt);
+    public void load(BlockState state, CompoundTag nbt) {
+        potion = Registry.POTION.get(new ResourceLocation(nbt.getString("potion")));
+        super.load(state, nbt);
     }
 
     @Nonnull
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
+    public CompoundTag save(CompoundTag compound) {
         compound.putString("potion", potion.getRegistryName().toString());
-        return super.write(compound);
+        return super.save(compound);
     }
 
     @Nonnull
     @Override
-    public CompoundNBT getUpdateTag() {
-        return write(new CompoundNBT());    // okay to send entire inventory on chunk load
+    public CompoundTag getUpdateTag() {
+        return save(new CompoundTag());    // okay to send entire inventory on chunk load
     }
 
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(getPos(), 1, getUpdateTag());
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return new ClientboundBlockEntityDataPacket(getBlockPos(), 1, getUpdateTag());
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
-        this.read(null, packet.getNbtCompound());
-        world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 3);
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
+        this.load(null, packet.getTag());
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
     }
 
     public void onEntityCollision(Entity entity) {
         if (entity instanceof ItemEntity) {
             ItemStack stack =  ((ItemEntity) entity).getItem();
             BlockState blockState = getBlockState();
-            int level = blockState.get(CauldronBlock.LEVEL);
-            if (potion == ModPotions.MILK && PotionUtils.getPotionFromItem(stack) != Potions.EMPTY) {
-                ReinforcedCauldronBlock.removeCoating(blockState,world,pos,null,stack);
+            int level = blockState.getValue(CauldronBlock.LEVEL);
+            if (potion == ModPotions.MILK && PotionUtils.getPotion(stack) != Potions.EMPTY) {
+                ReinforcedCauldronBlock.removeCoating(blockState,level,worldPosition,null,stack);
             } else if (stack.getItem() == Items.ARROW && level > 0) {
-              ReinforcedCauldronBlock.handleArrowCoating(blockState,world,pos,null,stack,level);
+              ReinforcedCauldronBlock.handleArrowCoating(blockState,level,worldPosition,null,stack,level);
             } else if (level == 3) {
                 //burn off a layer, then schedule the rest of the ticks
-                world.playSound(null,pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.8F, 1);
-                ((CauldronBlock)blockState.getBlock()).setWaterLevel(world,pos,blockState,2);
+                level.playSound(null,worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.8F, 1);
+                ((CauldronBlock)blockState.getBlock()).setWaterLevel(level,worldPosition,blockState,2);
                 scheduleTick();
             }
         }
     }
 
     private void scheduleTick() {
-        this.world.getPendingBlockTicks().scheduleTick(this.getPos(), this.getBlockState().getBlock(), ReinforcedCauldronBlock.brew_speed);
+        this.level.getBlockTicks().scheduleTick(this.getBlockPos(), this.getBlockState().getBlock(), ReinforcedCauldronBlock.brew_speed);
     }
 }

@@ -1,21 +1,21 @@
 package tfar.davespotioneering.datagen.data;
 
-import net.minecraft.block.Block;
-import net.minecraft.data.loot.BlockLootTables;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.data.loot.BlockLoot;
 import net.minecraftforge.registries.ForgeRegistries;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.init.ModBlocks;
 
 import java.util.stream.Collectors;
 
-public class ModBlockLootTables extends BlockLootTables {
+public class ModBlockLootTables extends BlockLoot {
 
     @Override
     protected void addTables() {
-        registerDropSelfLootTable(ModBlocks.REINFORCED_CAULDRON);
-        registerDropSelfLootTable(ModBlocks.COMPOUND_BREWING_STAND);
-        registerDropSelfLootTable(ModBlocks.MAGIC_LECTERN);
-        registerDropSelfLootTable(ModBlocks.POTION_INJECTOR);
+        dropSelf(ModBlocks.REINFORCED_CAULDRON);
+        dropSelf(ModBlocks.COMPOUND_BREWING_STAND);
+        dropSelf(ModBlocks.MAGIC_LECTERN);
+        dropSelf(ModBlocks.POTION_INJECTOR);
     }
 
     @Override

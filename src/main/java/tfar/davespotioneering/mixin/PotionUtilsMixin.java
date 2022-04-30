@@ -1,7 +1,7 @@
 package tfar.davespotioneering.mixin;
 
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.PotionUtils;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -14,12 +14,12 @@ import java.util.Collection;
 public class PotionUtilsMixin {
 
     @Inject(method = "getPotionColorFromEffectList",at = @At("RETURN"),cancellable = true)
-    private static void modifyColor(Collection<EffectInstance> instances, CallbackInfoReturnable<Integer> cir) {
+    private static void modifyColor(Collection<MobEffectInstance> instances, CallbackInfoReturnable<Integer> cir) {
         int old = cir.getReturnValue();
         if (old == 0) {
-            for(EffectInstance effectinstance : instances) {
+            for(MobEffectInstance effectinstance : instances) {
                 if (effectinstance.equals(ModPotions.INVIS_2)) {
-                    int k = effectinstance.getPotion().getLiquidColor();
+                    int k = effectinstance.getEffect().getColor();
                     int l = 1;
                     float r = (float)(l * (k >> 16 & 255)) / 255.0F;
                     float g = (float)(l * (k >> 8 & 255)) / 255.0F;

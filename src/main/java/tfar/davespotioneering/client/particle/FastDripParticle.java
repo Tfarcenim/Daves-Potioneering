@@ -2,53 +2,53 @@ package tfar.davespotioneering.client.particle;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.particles.BasicParticleType;
-import net.minecraft.particles.IParticleData;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 import tfar.davespotioneering.init.ModParticleTypes;
 import tfar.davespotioneering.mixin.ParticleManagerAccess;
 
-public class FastDripParticle extends SpriteTexturedParticle {
+public class FastDripParticle extends TextureSheetParticle {
         private final Fluid fluid;
         protected boolean fullbright;
 
-        private FastDripParticle(ClientWorld world, double x, double y, double z, Fluid fluid) {
+        private FastDripParticle(ClientLevel world, double x, double y, double z, Fluid fluid) {
             super(world, x, y, z);
             this.setSize(0.01F, 0.01F);
-            this.particleGravity = 0.10F;
+            this.gravity = 0.10F;
             this.fluid = fluid;
         }
 
-        public IParticleRenderType getRenderType() {
-            return IParticleRenderType.PARTICLE_SHEET_OPAQUE;
+        public ParticleRenderType getRenderType() {
+            return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
         }
 
-        public int getBrightnessForRender(float partialTick) {
-            return this.fullbright ? 240 : super.getBrightnessForRender(partialTick);
+        public int getLightColor(float partialTick) {
+            return this.fullbright ? 240 : super.getLightColor(partialTick);
         }
 
         public void tick() {
-            this.prevPosX = this.posX;
-            this.prevPosY = this.posY;
-            this.prevPosZ = this.posZ;
+            this.xo = this.x;
+            this.yo = this.y;
+            this.zo = this.z;
             this.ageParticle();
-            if (!this.isExpired) {
-                this.motionY -= this.particleGravity;
-                this.move(this.motionX, this.motionY, this.motionZ);
+            if (!this.removed) {
+                this.yd -= this.gravity;
+                this.move(this.xd, this.yd, this.zd);
                 this.updateMotion();
-                if (!this.isExpired) {
-                    this.motionX *= 0.98F;
-                    this.motionY *= 0.98F;
-                    this.motionZ *= 0.98F;
-                    BlockPos blockpos = new BlockPos(this.posX, this.posY, this.posZ);
-                    FluidState fluidstate = this.world.getFluidState(blockpos);
-                    if (fluidstate.getFluid() == this.fluid && this.posY < (double)((float)blockpos.getY() + fluidstate.getActualHeight(this.world, blockpos))) {
-                        this.setExpired();
+                if (!this.removed) {
+                    this.xd *= 0.98F;
+                    this.yd *= 0.98F;
+                    this.zd *= 0.98F;
+                    BlockPos blockpos = new BlockPos(this.x, this.y, this.z);
+                    FluidState fluidstate = this.level.getFluidState(blockpos);
+                    if (fluidstate.getType() == this.fluid && this.y < (double)((float)blockpos.getY() + fluidstate.getHeight(this.level, blockpos))) {
+                        this.remove();
                     }
 
                 }
@@ -56,8 +56,8 @@ public class FastDripParticle extends SpriteTexturedParticle {
         }
 
         protected void ageParticle() {
-            if (this.maxAge-- <= 0) {
-                this.setExpired();
+            if (this.lifetime-- <= 0) {
+                this.remove();
             }
 
         }
@@ -66,27 +66,27 @@ public class FastDripParticle extends SpriteTexturedParticle {
         }
 
         public static class Dripping extends FastDripParticle {
-            private final IParticleData particleData;
+            private final ParticleOptions particleData;
 
-            Dripping(ClientWorld world, double x, double y, double z, Fluid fluid, IParticleData particleData) {
+            Dripping(ClientLevel world, double x, double y, double z, Fluid fluid, ParticleOptions particleData) {
                 super(world, x, y, z, fluid);
                 this.particleData = particleData;
                 //this.particleGravity *= 0.02F;
-                this.maxAge = 10;
+                this.lifetime = 10;
             }
 
             protected void ageParticle() {
-                if (this.maxAge-- <= 0) {
-                    this.setExpired();
+                if (this.lifetime-- <= 0) {
+                    this.remove();
 
 
                     //turns into fast_falling_water
-                    Particle particle = ((ParticleManagerAccess) Minecraft.getInstance().particles).$makeParticle(this.particleData, this.posX, this.posY, this.posZ, this.motionX, this.motionY, this.motionZ);
+                    Particle particle = ((ParticleManagerAccess) Minecraft.getInstance().particleEngine).$makeParticle(this.particleData, this.x, this.y, this.z, this.xd, this.yd, this.zd);
 
-                    particle.setColor(particleRed,particleGreen,particleBlue);
+                    particle.setColor(rCol,gCol,bCol);
 
 
-                    Minecraft.getInstance().particles.addEffect(particle);
+                    Minecraft.getInstance().particleEngine.add(particle);
 
                     //this.world.addParticle(this.particleData, this.posX, this.posY, this.posZ, this.motionX, this.motionY, this.motionZ);
                 }
@@ -94,46 +94,46 @@ public class FastDripParticle extends SpriteTexturedParticle {
             }
 
             protected void updateMotion() {
-                this.motionX *= 0.02D;
-                this.motionY *= 0.02D;
-                this.motionZ *= 0.02D;
+                this.xd *= 0.02D;
+                this.yd *= 0.02D;
+                this.zd *= 0.02D;
             }
         }
 
 
-    public static class DrippingWaterFactory implements IParticleFactory<BasicParticleType> {
-        protected final IAnimatedSprite spriteSet;
+    public static class DrippingWaterFactory implements ParticleProvider<SimpleParticleType> {
+        protected final SpriteSet spriteSet;
 
-        public DrippingWaterFactory(IAnimatedSprite spriteSet) {
+        public DrippingWaterFactory(SpriteSet spriteSet) {
             this.spriteSet = spriteSet;
         }
 
-        public Particle makeParticle(BasicParticleType typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             FastDripParticle dripparticle = new Dripping(worldIn, x, y, z, Fluids.WATER, ModParticleTypes.FAST_FALLING_WATER);
-            dripparticle.selectSpriteRandomly(this.spriteSet);
+            dripparticle.pickSprite(this.spriteSet);
             return dripparticle;
         }
     }
 
     static class FallingLiquidParticle extends FastDripParticle.FallingNectarParticle {
-        protected final IParticleData particleData;
+        protected final ParticleOptions particleData;
 
-        private FallingLiquidParticle(ClientWorld world, double x, double y, double z, Fluid fluid, IParticleData particleData) {
+        private FallingLiquidParticle(ClientLevel world, double x, double y, double z, Fluid fluid, ParticleOptions particleData) {
             super(world, x, y, z, fluid);
             this.particleData = particleData;
         }
 
         protected void updateMotion() {
             if (this.onGround) {
-                this.setExpired();
+                this.remove();
 
                 //turns into splash
-                Particle particle = ((ParticleManagerAccess) Minecraft.getInstance().particles).$makeParticle(this.particleData, this.posX, this.posY, this.posZ, this.motionX, this.motionY, this.motionZ);
+                Particle particle = ((ParticleManagerAccess) Minecraft.getInstance().particleEngine).$makeParticle(this.particleData, this.x, this.y, this.z, this.xd, this.yd, this.zd);
 
-                    particle.setColor(particleRed,particleGreen,particleBlue);
+                    particle.setColor(rCol,gCol,bCol);
 
 
-                Minecraft.getInstance().particles.addEffect(particle);
+                Minecraft.getInstance().particleEngine.add(particle);
 
                 //this.world.addParticle(this.particleData, this.posX, this.posY, this.posZ, 0.0D, 0.0D, 0.0D);
             }
@@ -142,30 +142,30 @@ public class FastDripParticle extends SpriteTexturedParticle {
     }
 
     static class FallingNectarParticle extends FastDripParticle {
-        private FallingNectarParticle(ClientWorld world, double x, double y, double z, Fluid fluid) {
+        private FallingNectarParticle(ClientLevel world, double x, double y, double z, Fluid fluid) {
             super(world, x, y, z, fluid);
-            this.maxAge = (int)(64.0D / (Math.random() * 0.8D + 0.2D));
+            this.lifetime = (int)(64.0D / (Math.random() * 0.8D + 0.2D));
         }
 
         protected void updateMotion() {
             if (this.onGround) {
-                this.setExpired();
+                this.remove();
             }
 
         }
     }
 
-    public static class FallingWaterFactory implements IParticleFactory<BasicParticleType> {
-        protected final IAnimatedSprite spriteSet;
+    public static class FallingWaterFactory implements ParticleProvider<SimpleParticleType> {
+        protected final SpriteSet spriteSet;
 
-        public FallingWaterFactory(IAnimatedSprite spriteSet) {
+        public FallingWaterFactory(SpriteSet spriteSet) {
             this.spriteSet = spriteSet;
         }
 
-        public Particle makeParticle(BasicParticleType typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             FastDripParticle dripparticle = new FastDripParticle.FallingLiquidParticle(worldIn, x, y, z, Fluids.WATER, ModParticleTypes.TINTED_SPLASH);
             //dripparticle.setColor(0.2F, 0.3F, 1.0F);
-            dripparticle.selectSpriteRandomly(this.spriteSet);
+            dripparticle.pickSprite(this.spriteSet);
             return dripparticle;
         }
     }

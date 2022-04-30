@@ -1,10 +1,10 @@
 package tfar.davespotioneering.datagen.assets;
 
 import net.minecraft.data.DataGenerator;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.Items;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.data.LanguageProvider;
 import org.codehaus.plexus.util.StringUtils;
 import tfar.davespotioneering.DavesPotioneering;
@@ -84,66 +84,66 @@ public class ModLangProvider extends LanguageProvider {
         addHoldCDesc(ModBlocks.POTION_INJECTOR,"Functionality: Hold [Ctrl]");
     }
 
-    protected void addDesc(IItemProvider item, String desc) {
-        add(item.asItem().getTranslationKey()+".desc",desc);
+    protected void addDesc(ItemLike item, String desc) {
+        add(item.asItem().getDescriptionId()+".desc",desc);
     }
 
-    protected void addShiftDesc(IItemProvider item, String desc) {
-        add(item.asItem().getTranslationKey()+".shift.desc",desc);
+    protected void addShiftDesc(ItemLike item, String desc) {
+        add(item.asItem().getDescriptionId()+".shift.desc",desc);
     }
 
-    protected void addShiftDescs(IItemProvider item, String... descs) {
+    protected void addShiftDescs(ItemLike item, String... descs) {
         for (int i = 0; i < descs.length; i++) {
             String desc = descs[i];
-            add(item.asItem().getTranslationKey() + i+".shift.desc", desc);
+            add(item.asItem().getDescriptionId() + i+".shift.desc", desc);
         }
     }
 
-    protected void addCtrlDesc(IItemProvider item, String desc) {
-        add(item.asItem().getTranslationKey()+".ctrl.desc",desc);
+    protected void addCtrlDesc(ItemLike item, String desc) {
+        add(item.asItem().getDescriptionId()+".ctrl.desc",desc);
     }
 
-    protected void addCtrlDescs(IItemProvider item, String... descs) {
+    protected void addCtrlDescs(ItemLike item, String... descs) {
         for (int i = 0; i < descs.length; i++) {
             String desc = descs[i];
-            add(item.asItem().getTranslationKey() + i+".ctrl.desc", desc);
+            add(item.asItem().getDescriptionId() + i+".ctrl.desc", desc);
         }
     }
 
-    protected void addAltDesc(IItemProvider item, String desc) {
-        add(item.asItem().getTranslationKey()+".alt.desc",desc);
+    protected void addAltDesc(ItemLike item, String desc) {
+        add(item.asItem().getDescriptionId()+".alt.desc",desc);
     }
 
-    protected void addAltDescs(IItemProvider item, String... descs) {
+    protected void addAltDescs(ItemLike item, String... descs) {
         for (int i = 0; i < descs.length; i++) {
             String desc = descs[i];
-            add(item.asItem().getTranslationKey() + i+".alt.desc", desc);
+            add(item.asItem().getDescriptionId() + i+".alt.desc", desc);
         }
     }
 
-    protected void addHoldSDesc(IItemProvider item, String desc) {
-        add(item.asItem().getTranslationKey()+".hold_shift.desc",desc);
+    protected void addHoldSDesc(ItemLike item, String desc) {
+        add(item.asItem().getDescriptionId()+".hold_shift.desc",desc);
     }
 
-    protected void addHoldCDesc(IItemProvider item, String desc) {
-        add(item.asItem().getTranslationKey()+".hold_ctrl.desc",desc);
+    protected void addHoldCDesc(ItemLike item, String desc) {
+        add(item.asItem().getDescriptionId()+".hold_ctrl.desc",desc);
     }
 
-    protected void addHoldADesc(IItemProvider item, String desc) {
-        add(item.asItem().getTranslationKey()+".hold_alt.desc",desc);
+    protected void addHoldADesc(ItemLike item, String desc) {
+        add(item.asItem().getDescriptionId()+".hold_alt.desc",desc);
     }
 
-    protected void addGroup(ItemGroup group,String name) {
-        add(group.getGroupName().getString(),name);
+    protected void addGroup(CreativeModeTab group,String name) {
+        add(group.getDisplayName().getString(),name);
     }
 
     public void addPotions() {
-        add(ModPotions.MILK.getNamePrefixed(Items.POTION.getTranslationKey() + ".effect."),"Milk Bottle");
-        add(ModPotions.MILK.getNamePrefixed(Items.SPLASH_POTION.getTranslationKey() + ".effect."),"Splash Milk Bottle");
-        add(ModPotions.MILK.getNamePrefixed(Items.LINGERING_POTION.getTranslationKey() + ".effect."),"Lingering Milk Bottle");
+        add(ModPotions.MILK.getName(Items.POTION.getDescriptionId() + ".effect."),"Milk Bottle");
+        add(ModPotions.MILK.getName(Items.SPLASH_POTION.getDescriptionId() + ".effect."),"Splash Milk Bottle");
+        add(ModPotions.MILK.getName(Items.LINGERING_POTION.getDescriptionId() + ".effect."),"Lingering Milk Bottle");
     }
 
     public static String getNameFromItem(Item item) {
-        return StringUtils.capitaliseAllWords(item.getTranslationKey().split("\\.")[2].replace("_", " "));
+        return StringUtils.capitaliseAllWords(item.getDescriptionId().split("\\.")[2].replace("_", " "));
     }
 }

@@ -2,9 +2,9 @@ package tfar.davespotioneering.effect;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
 
@@ -16,7 +16,7 @@ public class PotionIngredient extends Ingredient {
     private final ItemStack stack;
 
     protected PotionIngredient(ItemStack stack) {
-        super(Stream.of(new Ingredient.SingleItemList(stack)));
+        super(Stream.of(new Ingredient.ItemValue(stack)));
         this.stack = stack;
     }
 
@@ -43,7 +43,7 @@ public class PotionIngredient extends Ingredient {
     }
 
     @Override
-    public JsonElement serialize() {
+    public JsonElement toJson() {
         JsonObject json = new JsonObject();
         json.addProperty("type", CraftingHelper.getID(Serializer.INSTANCE).toString());
         json.addProperty("item", stack.getItem().getRegistryName().toString());
@@ -57,8 +57,8 @@ public class PotionIngredient extends Ingredient {
         public static final Serializer INSTANCE = new Serializer();
 
         @Override
-        public PotionIngredient parse(PacketBuffer buffer) {
-            return new PotionIngredient(buffer.readItemStack());
+        public PotionIngredient parse(FriendlyByteBuf buffer) {
+            return new PotionIngredient(buffer.readItem());
         }
 
         @Override
@@ -67,8 +67,8 @@ public class PotionIngredient extends Ingredient {
         }
 
         @Override
-        public void write(PacketBuffer buffer, PotionIngredient ingredient) {
-            buffer.writeItemStack(ingredient.stack);
+        public void write(FriendlyByteBuf buffer, PotionIngredient ingredient) {
+            buffer.writeItem(ingredient.stack);
         }
     }
 }

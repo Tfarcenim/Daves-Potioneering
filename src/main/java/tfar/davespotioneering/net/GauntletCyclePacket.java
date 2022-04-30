@@ -1,7 +1,7 @@
 package tfar.davespotioneering.net;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.network.NetworkEvent;
 import tfar.davespotioneering.item.GauntletItem;
 
@@ -14,17 +14,17 @@ public class GauntletCyclePacket {
         this.up = up;
     }
 
-    public GauntletCyclePacket(PacketBuffer buffer) {
+    public GauntletCyclePacket(FriendlyByteBuf buffer) {
         this.up = buffer.readBoolean();
     }
 
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeBoolean(up);
     }
 
     public void handle(Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            ServerPlayerEntity player = ctx.get().getSender();
+            ServerPlayer player = ctx.get().getSender();
             if (up) {
                 GauntletItem.cycleGauntletForward(player);
             } else {
