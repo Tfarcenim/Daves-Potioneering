@@ -1,35 +1,32 @@
 package tfar.davespotioneering.inv;
 
 import com.google.common.collect.Sets;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
-import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
-import net.minecraftforge.items.ItemStackHandler;
+import net.minecraft.world.item.alchemy.PotionBrewing;
 import org.apache.commons.lang3.ArrayUtils;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
+import tfar.davespotioneering.mixin.SimpleContainerAccess;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class BrewingHandler extends ItemStackHandler {
+public class BrewingHandler extends SimpleContainer {
 
     public BrewingHandler(int size) {
         super(size);
     }
 
     public NonNullList<ItemStack> getStacks() {
-        return stacks;
-    }
-
-    @Override
-    public int getSlotLimit(int slot) {
-        return slot < AdvancedBrewingStandBlockEntity.POTIONS.length ? 2 : super.getSlotLimit(slot);
+        return ((SimpleContainerAccess)this).getItems();
     }
 
     public int[] getSlotsForFace(Direction side) {
@@ -45,7 +42,7 @@ public class BrewingHandler extends ItemStackHandler {
 
     public boolean isItemValid(int index, ItemStack stack) {
         if (ArrayUtils.contains(AdvancedBrewingStandBlockEntity.INGREDIENTS,index)) {
-            return BrewingRecipeRegistry.isValidIngredient(stack);
+            return PotionBrewing.isIngredient(stack);
         } else {
             Item item = stack.getItem();
             if (index == AdvancedBrewingStandBlockEntity.FUEL) {
@@ -70,5 +67,9 @@ public class BrewingHandler extends ItemStackHandler {
         Set<Integer> potion_fuel = new HashSet<>(potSet);
         potion_fuel.add(AdvancedBrewingStandBlockEntity.FUEL);
         FUEL_AND_POTIONS = potion_fuel.stream().mapToInt(i -> i).toArray();
+    }
+
+    public Tag serializeNBT() {
+        return null;
     }
 }

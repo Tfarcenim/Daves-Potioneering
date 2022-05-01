@@ -1,13 +1,13 @@
 package tfar.davespotioneering.inv;
 
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.items.ItemStackHandler;
 import tfar.davespotioneering.item.GauntletItem;
 
 import javax.annotation.Nonnull;
 
-public class PotionInjectorHandler extends ItemStackHandler {
+public class PotionInjectorHandler extends SimpleContainer {
 
     public static final int GAUNTLET = 6;
     public static final int BLAZE = 7;
@@ -17,7 +17,7 @@ public class PotionInjectorHandler extends ItemStackHandler {
     }
 
     @Override
-    public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+    public boolean canPlaceItem(int slot, @Nonnull ItemStack stack) {
         switch (slot) {
             case 0:
             case 1:
@@ -31,6 +31,6 @@ public class PotionInjectorHandler extends ItemStackHandler {
             case BLAZE:
                 return stack.getItem() == Items.BLAZE_POWDER;
         }
-        return super.isItemValid(slot, stack);
+        return super.canPlaceItem(slot, stack);
     }
 }

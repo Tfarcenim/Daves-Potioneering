@@ -1,25 +1,31 @@
 package tfar.davespotioneering.client;
 
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.item.*;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
@@ -44,21 +50,18 @@ import tfar.davespotioneering.net.PacketHandler;
 
 import static tfar.davespotioneering.DavesPotioneering.MODID;
 
-import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.PotionItem;
-import net.minecraft.world.item.TieredItem;
-
-public class ClientEvents {
-
-    public static void particle(ParticleFactoryRegisterEvent e) {
-
+public class ClientEvents implements ClientModInitializer {
+    @Override
+    public void onInitializeClient() {
         ParticleEngine manager = Minecraft.getInstance().particleEngine;
 
         manager.register(ModParticleTypes.FAST_DRIPPING_WATER, FastDripParticle.DrippingWaterFactory::new);
         manager.register(ModParticleTypes.FAST_FALLING_WATER, FastDripParticle.FallingWaterFactory::new);
         manager.register(ModParticleTypes.TINTED_SPLASH, TintedSplashParticle.Factory::new);
+    }
+    public static void particle(ParticleFactoryRegisterEvent e) {
+
+
     }
 
     public static void registerLoader(final ModelRegistryEvent event) {
@@ -158,7 +161,7 @@ public class ClientEvents {
     }
 
     private static void registerBlockingProperty(Item item) {
-        ItemProperties.register(item, new ResourceLocation("blocking"),
+        FabricModelPredicateProviderRegistry.register(item, new ResourceLocation("blocking"),
                 (stack, world, entity) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
     }
 
@@ -239,5 +242,6 @@ public class ClientEvents {
 
         //world.addParticle(particleDataIn,blockPosIn.x,blockPosIn.y,blockPosIn.z,0,-.10,0);
     }
+
 
 }

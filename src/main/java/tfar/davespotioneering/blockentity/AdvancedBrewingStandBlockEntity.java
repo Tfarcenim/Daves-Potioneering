@@ -1,46 +1,39 @@
 package tfar.davespotioneering.blockentity;
 
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.BrewingStandBlock;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.Containers;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.block.BrewingStandBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.core.Direction;
-import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import org.apache.commons.lang3.tuple.Pair;
 import tfar.davespotioneering.Events;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.duck.BrewingStandDuck;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
 import tfar.davespotioneering.inv.BrewingHandler;
-import tfar.davespotioneering.inv.SidedItemHandler;
 import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
-import java.util.Map;
 
 public class AdvancedBrewingStandBlockEntity extends BlockEntity implements TickableBlockEntity, MenuProvider, BrewingStandDuck {
     /** an array of the output slot indices */
@@ -107,7 +100,7 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements Tick
     }
 
     public void tick() {
-        ItemStack fuelStack = this.brewingHandler.getStackInSlot(FUEL);
+        ItemStack fuelStack = this.brewingHandler.getItem(FUEL);
         if (this.fuel <= 0 && fuelStack.getItem() == Items.BLAZE_POWDER) {
             this.fuel = 20;
             fuelStack.shrink(1);
@@ -162,7 +155,7 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements Tick
     //searches 7 => 3
     public Pair<Integer,ItemStack> getPriorityIngredient() {
         for (int i = 7; i > 2;i--) {
-            ItemStack stack = brewingHandler.getStackInSlot(i);
+            ItemStack stack = brewingHandler.getItem(i);
             if (!stack.isEmpty() && isThereARecipe(stack)) {
                 return Pair.of(i,stack);
             }
@@ -174,21 +167,9 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements Tick
     public boolean isThereARecipe(ItemStack ingredient) {
 
         if (!ingredient.isEmpty()) {
-            return BrewingRecipeRegistry.canBrew(brewingHandler.getStacks(), ingredient, POTIONS) || ingredient.getItem() == Items.MILK_BUCKET; // divert to VanillaBrewingRegistry
+            return PotionBrewing.hasMix(ingredient,ingredient);
         }
-        if (ingredient.isEmpty()) {
-            return false;
-        } else if (!PotionBrewing.isIngredient(ingredient)) {
-            return false;
-        } else {
-            for(int i = 0; i < 3; ++i) {
-                ItemStack itemstack1 = this.brewingHandler.getStackInSlot(i);
-                if (!itemstack1.isEmpty() && PotionBrewing.hasMix(itemstack1, ingredient)) {
-                    return true;
-                }
-            }
-            return false;
-        }
+        return false;
 
     }
 
@@ -200,7 +181,7 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements Tick
         boolean[] aboolean = new boolean[3];
 
         for(int i = 0; i < 3; ++i) {
-            if (!this.brewingHandler.getStackInSlot(i).isEmpty()) {
+            if (!this.brewingHandler.getItem(i).isEmpty()) {
                 aboolean[i] = true;
             }
         }
@@ -218,26 +199,12 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements Tick
                 }
             }
 
-            return BrewingRecipeRegistry.canBrew(brewingHandler.getStacks(), itemstack, POTIONS); // divert to VanillaBrewingRegistry
+            return PotionBrewing.hasMix(itemstack, itemstack);
         }
-        if (itemstack.isEmpty()) {
-            return false;
-        } else if (!PotionBrewing.isIngredient(itemstack)) {
-            return false;
-        } else {
-            for(int i = 0; i < 3; ++i) {
-                ItemStack itemstack1 = this.brewingHandler.getStackInSlot(i);
-                if (!itemstack1.isEmpty() && PotionBrewing.hasMix(itemstack1, itemstack)) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
+        return false;
     }
 
     private void brewPotions() {
-        if (ForgeEventFactory.onPotionAttemptBrew(brewingHandler.getStacks())) return;
         Pair<Integer,ItemStack> pair = getPriorityIngredient();
         ItemStack ingredient = pair.getRight();
 
@@ -245,19 +212,18 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements Tick
 
         //note: this is changed from the BrewingRecipeRegistry version to allow for >1 potion in a stack
         Util.brewPotions(brewingHandler.getStacks(), ingredient, POTIONS);
-        ForgeEventFactory.onPotionBrewed(brewingHandler.getStacks());
         Events.potionBrew(this,ingredient);
 
         if (canMilkify) {
             for (int i = 0; i < POTIONS.length; i++) {
-                ItemStack potion = brewingHandler.getStackInSlot(i);
+                ItemStack potion = brewingHandler.getItem(i);
                 Util.milkifyPotion(potion);
             }
         }
 
         BlockPos blockpos = this.getBlockPos();
-        if (ingredient.hasContainerItem()) {
-            ItemStack ingredientContainerItem = ingredient.getContainerItem();
+        if (ingredient.getItem().hasCraftingRemainingItem()) {
+            ItemStack ingredientContainerItem = ingredient.getItem().getCraftingRemainingItem().getDefaultInstance();
             ingredient.shrink(1);
             if (ingredient.isEmpty()) {
                 ingredient = ingredientContainerItem;
@@ -268,17 +234,17 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements Tick
         //todo
         else ingredient.shrink(1);
 
-        this.brewingHandler.setStackInSlot(pair.getLeft(), ingredient);
+        this.brewingHandler.setItem(pair.getLeft(), ingredient);
         //plays brewing stand block brewing finished sound
         this.level.levelEvent(1035, blockpos, 0);
     }
 
     private boolean canMilkify() {
         for (int i : POTIONS) {
-            ItemStack potionStack = brewingHandler.getStackInSlot(i);
+            ItemStack potionStack = brewingHandler.getItem(i);
             if (potionStack.getItem() instanceof PotionItem) {
                 Potion potion = PotionUtils.getPotion(potionStack);
-                String name = potion.getRegistryName().toString();
+                String name = Registry.POTION.getKey(potion).toString();
                 if (name.contains("long") || name.contains("strong")) {
                     continue;
                 }
@@ -291,8 +257,8 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements Tick
     @Override
     public void load(BlockState state, CompoundTag nbt) {
         super.load(state, nbt);
-        CompoundTag items = nbt.getCompound("Items");
-        brewingHandler.deserializeNBT(items);
+        ListTag items = nbt.getList("Items",10);
+        brewingHandler.fromTag(items);
         this.brewTime = nbt.getShort("BrewTime");
         this.fuel = nbt.getInt("Fuel");
         xp = nbt.getInt("xp");
@@ -330,24 +296,6 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements Tick
             Util.splitAndSpawnExperience(level, player.position(), xp);
             xp = 0;
             setChanged();
-        }
-    }
-
-    Map<Direction,LazyOptional<? extends IItemHandler>> handlers = SidedItemHandler.create(brewingHandler);
-
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-        if (!this.remove && facing != null && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return handlers.get(facing).cast();
-        }
-        return super.getCapability(capability, facing);
-    }
-
-    @Override
-    protected void invalidateCaps() {
-        super.invalidateCaps();
-        for (Map.Entry<Direction, LazyOptional<? extends IItemHandler>> entry : handlers.entrySet()) {
-            entry.getValue().invalidate();
         }
     }
 }

@@ -15,15 +15,16 @@ import tfar.davespotioneering.item.GauntletItem;
 
 @Mixin(Gui.class)
 public class IngameGuiMixin {
-    @Shadow @Final protected Minecraft mc;
+    @Shadow @Final
+    private Minecraft minecraft;
 
-    @Inject(method = "renderItemName", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "renderSelectedItemName", at = @At("HEAD"), cancellable = true)
     private void cancelItemNameForGauntlet(PoseStack matrixStack, CallbackInfo ci) {
         Minecraft minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
         if (player != null) {
             if (GauntletHUD.hudInstance.preset == GauntletHUD.HudPresets.ABOVE_HOTBAR &&
-                    this.mc.player.getMainHandItem().getItem() instanceof GauntletItem) {
+                    this.minecraft.player.getMainHandItem().getItem() instanceof GauntletItem) {
                 ci.cancel();
             }
         }

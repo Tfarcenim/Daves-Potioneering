@@ -1,16 +1,15 @@
 package tfar.davespotioneering.blockentity;
 
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.network.chat.Component;
-import net.minecraftforge.items.ItemStackHandler;
+import net.minecraft.world.level.block.state.BlockState;
 import tfar.davespotioneering.block.PotionInjectorBlock;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
 import tfar.davespotioneering.inv.PotionInjectorHandler;
@@ -20,14 +19,11 @@ import javax.annotation.Nullable;
 
 public class PotionInjectorBlockEntity extends BlockEntity implements MenuProvider {
 
-    public ItemStackHandler handler = new PotionInjectorHandler(8) {
+    public SimpleContainer handler = new PotionInjectorHandler(8) {
         @Override
-        protected void onContentsChanged(int slot) {
-            super.onContentsChanged(slot);
-            if (slot == PotionInjectorHandler.GAUNTLET) {
-                ItemStack stack = getStackInSlot(slot);
-                PotionInjectorBlock.setHasGauntlet(level,worldPosition,getBlockState(),!stack.isEmpty());
-            }
+        public void setChanged() {
+            super.setChanged();
+            PotionInjectorBlock.setHasGauntlet(level,worldPosition,getBlockState(),!this.getItem(GAUNTLET).isEmpty());
         }
     };
 
@@ -52,13 +48,13 @@ public class PotionInjectorBlockEntity extends BlockEntity implements MenuProvid
 
     @Override
     public CompoundTag save(CompoundTag compound) {
-        compound.put("inv",handler.serializeNBT());
+        compound.put("inv",handler.createTag());
         return super.save(compound);
     }
 
     @Override
     public void load(BlockState state, CompoundTag nbt) {
-        handler.deserializeNBT(nbt.getCompound("inv"));
+        handler.fromTag(nbt.getList("inv",10));
         super.load(state, nbt);
     }
 }

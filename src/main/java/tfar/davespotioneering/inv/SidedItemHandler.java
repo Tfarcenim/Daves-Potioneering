@@ -1,28 +1,16 @@
 package tfar.davespotioneering.inv;
 
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.Direction;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
-import java.util.EnumMap;
-import java.util.Map;
 
-public class SidedItemHandler implements IItemHandlerModifiable {
+public class SidedItemHandler implements Container {
     protected final BrewingHandler inv;
     private final Direction direction;
 
-
-    public static Map<Direction,LazyOptional<? extends IItemHandler>> create(BrewingHandler inv) {
-        Map<Direction,LazyOptional<? extends IItemHandler>> ret = new EnumMap<>(Direction.class);
-        for (Direction direction : Direction.values()) {
-            IItemHandlerModifiable iItemHandler = new SidedItemHandler(inv,direction);
-            ret.put(direction,LazyOptional.of(() -> iItemHandler));
-        }
-        return ret;
-    }
 
     public SidedItemHandler(BrewingHandler inv,Direction direction) {
         this.inv = inv;
@@ -37,42 +25,33 @@ public class SidedItemHandler implements IItemHandlerModifiable {
     }
 
     @Override
-    public int getSlots() {
+    public int getContainerSize() {
         return inv.getSlotsForFace(direction).length;
     }
 
     @Override
     @Nonnull
-    public ItemStack getStackInSlot(int slot) {
+    public ItemStack getItem(int slot) {
         int i = mapSlot(slot);
-        return i == -1 ? ItemStack.EMPTY : inv.getStackInSlot(i);
+        return i == -1 ? ItemStack.EMPTY : inv.getItem(i);
     }
 
     @Override
-    @Nonnull
-    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-        if (stack.isEmpty())
-            return ItemStack.EMPTY;
-
-        int slot1 = mapSlot(slot);
-
-        if (slot1 == -1)
-            return stack;
-
-        return inv.insertItem(slot1,stack,simulate);
+    public ItemStack removeItemNoUpdate(int i) {
+        return ItemStack.EMPTY;
     }
 
     @Override
-    public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+    public void setItem(int slot, @Nonnull ItemStack stack) {
         int slot1 = mapSlot(slot);
 
         if (slot1 != -1)
-            inv.setStackInSlot(slot, stack);
+            inv.setItem(slot, stack);
     }
 
     @Override
     @Nonnull
-    public ItemStack extractItem(int slot, int amount, boolean simulate) {
+    public ItemStack removeItem(int slot, int amount) {
         if (amount == 0)
             return ItemStack.EMPTY;
 
@@ -81,17 +60,32 @@ public class SidedItemHandler implements IItemHandlerModifiable {
         if (slot1 == -1)
             return ItemStack.EMPTY;
 
-        return inv.extractItem(slot1,amount,simulate);
+        return inv.removeItem(slot1,amount);
     }
 
     @Override
-    public int getSlotLimit(int slot) {
-        return inv.getSlotLimit(mapSlot(slot));
-    }
-
-    @Override
-    public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+    public boolean canPlaceItem(int slot, @Nonnull ItemStack stack) {
         int slot1 = mapSlot(slot);
         return slot1 != -1 && inv.isItemValid(slot1, stack);
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
+    @Override
+    public void setChanged() {
+
+    }
+
+    @Override
+    public boolean stillValid(Player player) {
+        return true;
+    }
+
+    @Override
+    public void clearContent() {
+
     }
 }

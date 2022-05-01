@@ -3,6 +3,7 @@ package tfar.davespotioneering.block;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -229,7 +230,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock implements EntityBloc
         if (stack.getItem() instanceof TieredItem) {
             CompoundTag nbt = stack.getOrCreateTag();
             nbt.putInt("uses", 25);
-            nbt.putString("Potion", potion.getRegistryName().toString());
+            nbt.putString("Potion", Registry.POTION.getKey(potion).toString());
         } else if (stack.getItem() == Items.TIPPED_ARROW) {
             PotionUtils.setPotion(stack, potion);
         }
@@ -254,18 +255,6 @@ public class ReinforcedCauldronBlock extends CauldronBlock implements EntityBloc
         super.createBlockStateDefinition(builder);
         builder.add(DRAGONS_BREATH);
     }
-
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
-    @Nullable
-    @Override
-    public BlockEntity createTileEntity(BlockState state, BlockGetter world) {
-        return new ReinforcedCauldronBlockEntity();
-    }
-
 
     /**
      * Called periodically clientside on blocks near the player to show effects (like furnace fire particles). Note that

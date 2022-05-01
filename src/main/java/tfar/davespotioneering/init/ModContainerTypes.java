@@ -1,7 +1,9 @@
 package tfar.davespotioneering.init;
 
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraftforge.event.RegistryEvent;
+import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
 import tfar.davespotioneering.menu.PotionInjectorMenu;
 
@@ -20,7 +22,7 @@ public class ModContainerTypes {
             try {
                 Object o = field.get(null);
                 if (o instanceof MenuType) {
-                    e.getRegistry().register(((MenuType<?>) o).setRegistryName(field.getName().toLowerCase(Locale.ROOT)));
+                    Registry.register(Registry.MENU,new ResourceLocation(DavesPotioneering.MODID,field.getName().toLowerCase(Locale.ROOT)),(MenuType<?>)o);
                 }
             } catch (IllegalAccessException illegalAccessException) {
                 illegalAccessException.printStackTrace();

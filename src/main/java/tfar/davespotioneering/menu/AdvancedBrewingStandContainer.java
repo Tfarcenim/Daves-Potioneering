@@ -1,29 +1,25 @@
 package tfar.davespotioneering.menu;
 
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.inventory.SimpleContainerData;
-import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
-import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.SlotItemHandler;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
 import tfar.davespotioneering.init.ModContainerTypes;
 import tfar.davespotioneering.inv.BrewingHandler;
 
 public class AdvancedBrewingStandContainer extends AbstractContainerMenu {
-    private final ItemStackHandler tileBrewingStand;
     private final ContainerData data;
 
     public AdvancedBrewingStandBlockEntity blockEntity;
@@ -34,11 +30,10 @@ public class AdvancedBrewingStandContainer extends AbstractContainerMenu {
     }
 
     //common
-    public AdvancedBrewingStandContainer(int id, Inventory playerInventory, ItemStackHandler inventory, ContainerData data, AdvancedBrewingStandBlockEntity advancedBrewingStandBlockEntity) {
+    public AdvancedBrewingStandContainer(int id, Inventory playerInventory, Container inventory, ContainerData data, AdvancedBrewingStandBlockEntity advancedBrewingStandBlockEntity) {
         super(ModContainerTypes.ADVANCED_BREWING_STAND, id);
        // assertInventorySize(inventory, 5);
        // assertIntArraySize(data, 2);
-        this.tileBrewingStand = inventory;
         this.data = data;
 
         this.blockEntity = advancedBrewingStandBlockEntity;
@@ -128,8 +123,8 @@ public class AdvancedBrewingStandContainer extends AbstractContainerMenu {
         return this.data.get(0);
     }
 
-    public static class FuelSlot extends SlotItemHandler {
-        public FuelSlot(IItemHandler iInventoryIn, int index, int xPosition, int yPosition) {
+    public static class FuelSlot extends Slot {
+        public FuelSlot(Container iInventoryIn, int index, int xPosition, int yPosition) {
             super(iInventoryIn, index, xPosition, yPosition);
         }
 
@@ -156,8 +151,8 @@ public class AdvancedBrewingStandContainer extends AbstractContainerMenu {
         }
     }
 
-    static class IngredientSlot extends SlotItemHandler {
-        public IngredientSlot(IItemHandler iInventoryIn, int index, int xPosition, int yPosition) {
+    static class IngredientSlot extends Slot {
+        public IngredientSlot(Container iInventoryIn, int index, int xPosition, int yPosition) {
             super(iInventoryIn, index, xPosition, yPosition);
         }
 
@@ -165,12 +160,12 @@ public class AdvancedBrewingStandContainer extends AbstractContainerMenu {
          * Check if the stack is allowed to be placed in this slot, used for armor slots as well as furnace fuel.
          */
         public boolean mayPlace(ItemStack stack) {
-            return stack.getItem() == Items.MILK_BUCKET || BrewingRecipeRegistry.isValidIngredient(stack);
+            return stack.getItem() == Items.MILK_BUCKET || PotionBrewing.isIngredient(stack);
         }
     }
 
-    public static class PotionSlot extends SlotItemHandler {
-        public PotionSlot(IItemHandler iItemHandler, int index, int x, int y) {
+    public static class PotionSlot extends Slot {
+        public PotionSlot(Container iItemHandler, int index, int x, int y) {
             super(iItemHandler, index, x, y);
         }
 
@@ -192,7 +187,6 @@ public class AdvancedBrewingStandContainer extends AbstractContainerMenu {
         public ItemStack onTake(Player thePlayer, ItemStack stack) {
             Potion potion = PotionUtils.getPotion(stack);
             if (thePlayer instanceof ServerPlayer) {
-                ForgeEventFactory.onPlayerBrewedPotion(thePlayer, stack);
                 CriteriaTriggers.BREWED_POTION.trigger((ServerPlayer)thePlayer, potion);
             }
 
