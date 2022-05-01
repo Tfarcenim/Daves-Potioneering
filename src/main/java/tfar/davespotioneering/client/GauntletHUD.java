@@ -34,7 +34,7 @@ public class GauntletHUD extends GuiComponent {
     private Potion postPotion = null;
     private final ResourceLocation hud = getGauntletIconLoc("hud");
 
-    public int x = ModConfig.Client.gauntlet_hud_x.get();
+    public int x = ModConfig.Client.client.get();
     public int y = ModConfig.Client.gauntlet_hud_y.get();
     public HudPresets preset = ModConfig.Client.gauntlet_hud_preset.get();
 
@@ -165,7 +165,7 @@ public class GauntletHUD extends GuiComponent {
     }
 
     public void refreshPosition() {
-        x = ModConfig.Client.gauntlet_hud_x.get();
+        x = ModConfig.Client.client.get();
         y = ModConfig.Client.gauntlet_hud_y.get();
         preset = ModConfig.Client.gauntlet_hud_preset.get();
     }

@@ -1,0 +1,21 @@
+{
+  "parent": "minecraft:builtin/entity",
+  "gui_light": "front",
+  "textures": {
+    "particle": "minecraft:block/dark_oak_planks"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "minecraft:blocking": 0.0
+      },
+      "model": "davespotioneering:item/open_pink_umbrella"
+    },
+    {
+      "predicate": {
+        "minecraft:blocking": 1.0
+      },
+      "model": "davespotioneering:item/closed_pink_umbrella"
+    }
+  ]
+}

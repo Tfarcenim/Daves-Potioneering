@@ -7,7 +7,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.TranslatableComponent;
-import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Min;
 import tfar.davespotioneering.ModConfig;
 
 public class GauntletHUDMovementGui extends Screen {
@@ -79,7 +78,7 @@ public class GauntletHUDMovementGui extends Screen {
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int mouseButton) {
         if (mouseButton == 0) {
-            ModConfig.Client.gauntlet_hud_x.set(hud.x);
+            ModConfig.Client.client.set(hud.x);
             ModConfig.Client.gauntlet_hud_y.set(hud.y);
             ModConfig.Client.gauntlet_hud_preset.set(hud.preset);
             hud.refreshPosition();

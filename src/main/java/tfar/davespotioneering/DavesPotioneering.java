@@ -9,15 +9,7 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.config.ModConfig.Type;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import org.apache.commons.lang3.tuple.Pair;
-import tfar.davespotioneering.client.ClientEvents;
 import tfar.davespotioneering.effect.PotionIngredient;
 import tfar.davespotioneering.init.*;
 import tfar.davespotioneering.mixin.BlockEntityTypeAcces;
@@ -45,13 +37,6 @@ public class DavesPotioneering implements ModInitializer {
         Util.setStackSize(Items.POTION,16);
         Util.setStackSize(Items.SPLASH_POTION,4);
         Util.setStackSize(Items.LINGERING_POTION,4);
-        MinecraftForge.EVENT_BUS.addListener(Events::potionCooldown);
-        MinecraftForge.EVENT_BUS.addListener(Events::milkCow);
-        MinecraftForge.EVENT_BUS.addListener(Events::afterHit);
-        MinecraftForge.EVENT_BUS.addListener(Events::switchGameMode);
-
-        MinecraftForge.EVENT_BUS.addListener(Events::playerBrew);
-        MinecraftForge.EVENT_BUS.addListener(Events::canApplyEffect);
 
         ItemStack milkPot = new ItemStack(Items.POTION);
         PotionUtils.setPotion(milkPot,ModPotions.MILK);

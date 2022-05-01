@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "davespotioneering:item/compound_brewing_stand"
+  }
+}

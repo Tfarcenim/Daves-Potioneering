@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "davespotioneering:block/magic_lectern",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "davespotioneering:block/magic_lectern",
+      "y": 270
+    },
+    "facing=west": {
+      "model": "davespotioneering:block/magic_lectern"
+    },
+    "facing=east": {
+      "model": "davespotioneering:block/magic_lectern",
+      "y": 180
+    }
+  }
+}
