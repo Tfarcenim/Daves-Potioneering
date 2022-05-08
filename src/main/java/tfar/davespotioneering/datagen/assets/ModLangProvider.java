@@ -82,6 +82,14 @@ public class ModLangProvider extends LanguageProvider {
         addHoldSDesc(ModBlocks.POTION_INJECTOR,"Summary: Hold [Shift]");
         addCtrlDesc(ModBlocks.POTION_INJECTOR,"Use this block to inject Blaze Powder and Lingering Potions into the Potioneer Gauntlet.");
         addHoldCDesc(ModBlocks.POTION_INJECTOR,"Functionality: Hold [Ctrl]");
+
+        addConfig("gauntlet_hud_x","The X Position of the gauntlet hud (left top). You should be using the in-game gui to change this though");
+        addConfig("gauntlet_hud_y","The y Position of the gauntlet hud (left top). You should be using the in-game gui to change this though");
+        addConfig("gauntlet_hud_preset","You shouldn't change this. Just don't");
+    }
+
+    protected void addConfig(String value,String trans) {
+        add("config."+value,trans);
     }
 
     protected void addDesc(IItemProvider item, String desc) {

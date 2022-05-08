@@ -18,9 +18,9 @@ public class ModConfig {
         public Client(ForgeConfigSpec.Builder builder) {
             builder.push("general");
          //   play_block_brewing_stand_brew = builder.define("play_block_brewing_stand_brew",true);
-            gauntlet_hud_x = builder.comment("The X Position of the gauntlet hud (left top). You should be using the in-game gui to change this though").defineInRange("gauntlet_hud_x", -120, Integer.MIN_VALUE, Integer.MAX_VALUE);
-            gauntlet_hud_y = builder.comment("The y Position of the gauntlet hud (left top). You should be using the in-game gui to change this though").defineInRange("gauntlet_hud_y", -92, Integer.MIN_VALUE, Integer.MAX_VALUE);
-            gauntlet_hud_preset = builder.comment("You shouldn't change this. Just don't").defineEnum("gauntlet_hud_preset", GauntletHUD.HudPresets.FREE_MOVE);
+            gauntlet_hud_x = builder.translation("config.gauntlet_hud_x").defineInRange("gauntlet_hud_x", -120, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            gauntlet_hud_y = builder.translation("config.gauntlet_hud_y").defineInRange("gauntlet_hud_y", -92, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            gauntlet_hud_preset = builder.translation("config.gauntlet_hud_preset").defineEnum("gauntlet_hud_preset", GauntletHUD.HudPresets.FREE_MOVE);
             particle_drip_rate = builder.defineInRange("particle_drip_rate",10,1,Integer.MAX_VALUE);
             builder.pop();
         }
