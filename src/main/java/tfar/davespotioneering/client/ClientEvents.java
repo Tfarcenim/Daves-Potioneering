@@ -1,130 +1,71 @@
 package tfar.davespotioneering.client;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleEngine;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.PotionItem;
-import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import org.lwjgl.glfw.GLFW;
+import software.bernie.geckolib3.renderer.geo.GeoItemRenderer;
 import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
+import tfar.davespotioneering.client.model.gecko.DoubleGeoItemStackRenderer;
+import tfar.davespotioneering.client.model.gecko.GeoItemStackRenderer;
 import tfar.davespotioneering.client.particle.FastDripParticle;
 import tfar.davespotioneering.client.particle.TintedSplashParticle;
 import tfar.davespotioneering.init.*;
 import tfar.davespotioneering.item.GauntletItem;
 import tfar.davespotioneering.mixin.ParticleManagerAccess;
-import tfar.davespotioneering.net.GauntletCyclePacket;
+import tfar.davespotioneering.net.C2SGauntletCyclePacket;
 import tfar.davespotioneering.net.PacketHandler;
 
-import static tfar.davespotioneering.DavesPotioneering.MODID;
+import java.util.List;
+import java.util.Locale;
 
 public class ClientEvents implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        ParticleEngine manager = Minecraft.getInstance().particleEngine;
 
-        manager.register(ModParticleTypes.FAST_DRIPPING_WATER, FastDripParticle.DrippingWaterFactory::new);
-        manager.register(ModParticleTypes.FAST_FALLING_WATER, FastDripParticle.FallingWaterFactory::new);
-        manager.register(ModParticleTypes.TINTED_SPLASH, TintedSplashParticle.Factory::new);
-    }
-    public static void particle(ParticleFactoryRegisterEvent e) {
+        ParticleFactoryRegistry.getInstance().register(ModParticleTypes.FAST_DRIPPING_WATER,FastDripParticle.DrippingWaterFactory::new);
+        ParticleFactoryRegistry.getInstance().register(ModParticleTypes.FAST_FALLING_WATER,FastDripParticle.FallingWaterFactory::new);
+        ParticleFactoryRegistry.getInstance().register(ModParticleTypes.TINTED_SPLASH,TintedSplashParticle.Factory::new);
+
+        ItemTooltipCallback.EVENT.register(ClientEvents::tooltips);
+        HudRenderCallback.EVENT.register(ClientEvents::gauntletHud);
+        ClientTickEvents.START_CLIENT_TICK.register(ClientEvents::playerTick);
 
 
-    }
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.COMPOUND_BREWING_STAND, RenderType.cutoutMipped());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.POTION_INJECTOR,RenderType.translucent());
+        ScreenRegistry.register(ModContainerTypes.ADVANCED_BREWING_STAND, AdvancedBrewingStandScreen::new);
+        ScreenRegistry.register(ModContainerTypes.ALCHEMICAL_GAUNTLET, GauntletWorkstationScreen::new);
 
-    public static void registerLoader(final ModelRegistryEvent event) {
-        ModelLoaderRegistry.registerLoader(new ResourceLocation(MODID, "fullbright"), ModelLoader.INSTANCE);
-    }
-
-    public static void onMouseInput(InputEvent.MouseInputEvent e) {
-        Player player = Minecraft.getInstance().player;
-        if (player == null) return;
-        ItemStack held = player.getMainHandItem();
-        if (held.isEmpty()) return;
-        if (held.getItem() instanceof GauntletItem && player.isShiftKeyDown()) {
-            if (e.getButton() == 2) {
-                GauntletHUDMovementGui.open();
-            }
-        }
-    }
-
-    public static void onMouseScroll(InputEvent.MouseScrollEvent event) {
-        Player player = Minecraft.getInstance().player;
-        if (player == null) return;
-        ItemStack held = player.getMainHandItem();
-        if (held.isEmpty()) return;
-        if (held.getItem() instanceof GauntletItem && player.isShiftKeyDown()) {
-            if (event.getScrollDelta() == 1.f) {
-                PacketHandler.sendToServer(new GauntletCyclePacket(true));
-                GauntletHUD.backwardCycle();
-            } else {
-                PacketHandler.sendToServer(new GauntletCyclePacket(false));
-                GauntletHUD.forwardCycle();
-            }
-            event.setCanceled(true);
-        }
-    }
-
-    public static void tooltips(ItemTooltipEvent e) {
-        ItemStack stack = e.getItemStack();
-        if (stack.getItem() instanceof PotionItem) {
-            if (Util.isMilkified(stack)) {
-                e.getToolTip().add(new TextComponent("Milkified"));
-            }
-        }
-
-        if (stack.getItem() instanceof TieredItem && PotionUtils.getPotion(stack) != Potions.EMPTY) {
-            e.getToolTip().add(new TextComponent("Coated with"));
-            PotionUtils.addPotionTooltip(stack, e.getToolTip(), 0.125F);
-            e.getToolTip().add(new TextComponent("Uses: " + stack.getTag().getInt("uses")));
-        }
-    }
-
-    public static void doClientStuff(final FMLClientSetupEvent event) {
-        MinecraftForge.EVENT_BUS.addListener(ClientEvents::tooltips);
-        MinecraftForge.EVENT_BUS.addListener(ClientEvents::onMouseInput);
-        MinecraftForge.EVENT_BUS.addListener(ClientEvents::onMouseScroll);
-        MinecraftForge.EVENT_BUS.addListener(ClientEvents::gauntletHud);
-        MinecraftForge.EVENT_BUS.addListener(ClientEvents::gaun);
-        MinecraftForge.EVENT_BUS.addListener(ClientEvents::playerTick);
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.COMPOUND_BREWING_STAND, RenderType.cutoutMipped());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.POTION_INJECTOR,RenderType.translucent());
-        MenuScreens.register(ModContainerTypes.ADVANCED_BREWING_STAND, AdvancedBrewingStandScreen::new);
-        MenuScreens.register(ModContainerTypes.ALCHEMICAL_GAUNTLET, GauntletWorkstationScreen::new);
-
-        ClientRegistry.bindTileEntityRenderer(ModBlockEntityTypes.POTION_INJECTOR, PotionInjectorRenderer::new);
+        BlockEntityRendererRegistry.INSTANCE.register(ModBlockEntityTypes.POTION_INJECTOR, PotionInjectorRenderer::new);
 
         Minecraft.getInstance().getBlockColors().register((state, reader, pos, index) -> {
             if (pos != null) {
@@ -136,7 +77,7 @@ public class ClientEvents implements ClientModInitializer {
             return 0xffffff;
         }, ModBlocks.REINFORCED_CAULDRON);
 
-        ItemProperties.register(ModItems.POTIONEER_GAUNTLET, new ResourceLocation("active"),
+        FabricModelPredicateProviderRegistry.register(ModItems.POTIONEER_GAUNTLET, new ResourceLocation("active"),
                 (ItemStack a, ClientLevel b, LivingEntity c) -> a.hasTag() ? a.getTag().getBoolean("active") ? 1 : 0 : 0);
 
         registerBlockingProperty(ModItems.WHITE_UMBRELLA);
@@ -158,6 +99,79 @@ public class ClientEvents implements ClientModInitializer {
 
         registerBlockingProperty(ModItems.AGED_UMBRELLA);
         registerBlockingProperty(ModItems.GILDED_UMBRELLA);
+
+        GeoItemRenderer.registerItemRenderer(ModItems.AGED_UMBRELLA,createAgedUmbrellaItemStackRenderer());
+
+    }
+
+    private static BlockEntityWithoutLevelRenderer createGeoClassicUmbrellaItemStackRenderer(DyeColor color) {
+        return createGeoClassicUmbrellaItemStackRenderer(color.name().toLowerCase(Locale.ROOT));
+    }
+
+    private static BlockEntityWithoutLevelRenderer createGeoClassicUmbrellaItemStackRenderer(String itemName) {
+        return new DoubleGeoItemStackRenderer<>(
+                GeoItemStackRenderer.GeoItemModel.makeClosedUmbrella(itemName),
+                GeoItemStackRenderer.GeoItemModel.makeOpenUmbrella(itemName)
+                ,GeoItemStackRenderer.NOTHING);
+    }
+
+    private static GeoItemRenderer createAgedUmbrellaItemStackRenderer() {
+        return new DoubleGeoItemStackRenderer(
+                GeoItemStackRenderer.GeoItemModel.makeClosedUmbrella("aged"),
+                GeoItemStackRenderer.GeoItemModel.makeOpenAgedUmbrella()
+                ,GeoItemStackRenderer.NOTHING);
+    }
+
+    private static BlockEntityWithoutLevelRenderer createGeoItemStackRendererTransparent(ResourceLocation itemName) {
+        return new GeoItemStackRenderer<>(new GeoItemStackRenderer.GeoItemModel<>(itemName), RenderType::entityTranslucent,GeoItemStackRenderer.NOTHING);
+    }
+
+  //  public static void registerLoader(final ModelRegistryEvent event) {
+  //      ModelLoaderRegistry.registerLoader(new ResourceLocation(MODID, "fullbright"), ModelLoader.INSTANCE);
+ //   }
+
+    public static void onMouseInput(long handle, int button, int action, int mods) {
+        Player player = Minecraft.getInstance().player;
+        if (player == null) return;
+        ItemStack held = player.getMainHandItem();
+        if (held.isEmpty()) return;
+        if (held.getItem() instanceof GauntletItem && player.isShiftKeyDown()) {
+            if (button == GLFW.GLFW_MOUSE_BUTTON_3) {
+                GauntletHUDMovementGui.open();
+            }
+        }
+    }
+
+    public static boolean onMouseScroll(double scrollDelta) {
+        Player player = Minecraft.getInstance().player;
+        if (player == null) return false;
+        ItemStack held = player.getMainHandItem();
+        if (held.isEmpty()) return false;
+        if (held.getItem() instanceof GauntletItem && player.isShiftKeyDown()) {
+            if (scrollDelta == 1.f) {
+                C2SGauntletCyclePacket.encode(true);
+                GauntletHUD.backwardCycle();
+            } else {
+                C2SGauntletCyclePacket.encode(false);
+                GauntletHUD.forwardCycle();
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public static void tooltips(ItemStack stack, TooltipFlag e2, List<Component> tooltip) {
+        if (stack.getItem() instanceof PotionItem) {
+            if (Util.isMilkified(stack)) {
+                tooltip.add(new TextComponent("Milkified"));
+            }
+        }
+
+        if (stack.getItem() instanceof TieredItem && PotionUtils.getPotion(stack) != Potions.EMPTY) {
+            tooltip.add(new TextComponent("Coated with"));
+            PotionUtils.addPotionTooltip(stack, tooltip, 0.125F);
+            tooltip.add(new TextComponent("Uses: " + stack.getTag().getInt("uses")));
+        }
     }
 
     private static void registerBlockingProperty(Item item) {
@@ -165,38 +179,32 @@ public class ClientEvents implements ClientModInitializer {
                 (stack, world, entity) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
     }
 
-    public static void gauntletHud(RenderGameOverlayEvent.Post e) {
+    public static void gauntletHud(PoseStack matrixStack, float tickDelta) {
         // only renders when the hotbar renders
-        if (e.getType() == RenderGameOverlayEvent.ElementType.HOTBAR) {
-//            if (Minecraft.getInstance().currentScreen != null) return;
-            // get player from client
-            Player player = Minecraft.getInstance().player;
-            if (player == null) return;
-            ItemStack g = player.getMainHandItem();
-            // check if holding gauntlet
-            if (g.getItem() instanceof GauntletItem) {
-                // get nbt
-                CompoundTag info = player.getMainHandItem().getOrCreateTag().getCompound("info");
-                Potion[] potions = GauntletItem.getPotionsFromNBT(info);
-                if (Minecraft.getInstance().screen instanceof GauntletHUDMovementGui) return;
-                GauntletHUD.hudInstance.render(e.getMatrixStack());
-                if (potions == null) {
-                    // reset
-                    GauntletHUD.hudInstance.init(null, null, null);
-                    return;
-                }
-                GauntletHUD.hudInstance.init(potions[0], potions[1], potions[2]);
+        //            if (Minecraft.getInstance().currentScreen != null) return;
+        // get player from client
+        Player player = Minecraft.getInstance().player;
+        if (player == null) return;
+        ItemStack g = player.getMainHandItem();
+        // check if holding gauntlet
+        if (g.getItem() instanceof GauntletItem) {
+            // get nbt
+            CompoundTag info = player.getMainHandItem().getOrCreateTag().getCompound("info");
+            Potion[] potions = GauntletItem.getPotionsFromNBT(info);
+            if (Minecraft.getInstance().screen instanceof GauntletHUDMovementGui) return;
+            GauntletHUD.hudInstance.render(matrixStack);
+            if (potions == null) {
+                // reset
+                GauntletHUD.hudInstance.init(null, null, null);
+                return;
             }
+            GauntletHUD.hudInstance.init(potions[0], potions[1], potions[2]);
         }
     }
 
-    public static void gaun(RenderGameOverlayEvent.Pre e) {
-
-    }
-
-    public static void playerTick(TickEvent.PlayerTickEvent e) {
+    public static void playerTick(Minecraft e) {
         Player player = e.player;
-        if (e.phase == TickEvent.Phase.END && e.side == LogicalSide.CLIENT && player.level.getGameTime() % ModConfig.Client.particle_drip_rate.get() == 0) {
+        if (player.level.getGameTime() % ModConfig.Client.particle_drip_rate == 0) {
 
             ItemStack stack = player.getMainHandItem();
 

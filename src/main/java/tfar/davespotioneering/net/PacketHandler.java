@@ -1,41 +1,20 @@
 package tfar.davespotioneering.net;
 
-import net.minecraft.server.level.ServerPlayer;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
 import tfar.davespotioneering.DavesPotioneering;
 
 public class PacketHandler {
-    public static SimpleChannel INSTANCE;
+    public static final ResourceLocation potion_injector = new ResourceLocation(DavesPotioneering.MODID, "potion_injector");
+    public static final ResourceLocation gauntlet_cycle = new ResourceLocation(DavesPotioneering.MODID, "gauntlet_cycle");
+    public static final ResourceLocation gauntlet_hud = new ResourceLocation(DavesPotioneering.MODID, "gauntlet_hud");
 
     public static void registerMessages() {
         int id = 0;
 
-        INSTANCE = NetworkRegistry.newSimpleChannel(new ResourceLocation(DavesPotioneering.MODID, DavesPotioneering.MODID), () -> "1.0", s -> true, s -> true);
+        ServerPlayNetworking.registerGlobalReceiver(potion_injector, new C2SPotionInjector());
+        ServerPlayNetworking.registerGlobalReceiver(gauntlet_cycle, new C2SGauntletCyclePacket());
+        ServerPlayNetworking.registerGlobalReceiver(gauntlet_hud, new C2SGauntletHUDMovementGuiPacket());
 
-        INSTANCE.registerMessage(id++, C2SPotionInjector.class,
-                C2SPotionInjector::encode,
-                C2SPotionInjector::new,
-                C2SPotionInjector::handle);
-
-        INSTANCE.registerMessage(id++, GauntletCyclePacket.class,
-                GauntletCyclePacket::encode,
-                GauntletCyclePacket::new,
-                GauntletCyclePacket::handle);
-
-        INSTANCE.registerMessage(id++, GauntletHUDMovementGuiPacket.class,
-                (packetOpenGui, packetBuffer) -> {},
-                buf -> new GauntletHUDMovementGuiPacket(),
-                GauntletHUDMovementGuiPacket::handle);
-    }
-
-    public static void sendToClient(Object packet, ServerPlayer player) {
-        INSTANCE.sendTo(packet, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
-    }
-
-    public static void sendToServer(Object packet) {
-        INSTANCE.sendToServer(packet);
     }
 }

@@ -1,15 +1,14 @@
 package tfar.davespotioneering.client.particle;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.*;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.*;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.core.BlockPos;
 import tfar.davespotioneering.init.ModParticleTypes;
 import tfar.davespotioneering.mixin.ParticleManagerAccess;
 

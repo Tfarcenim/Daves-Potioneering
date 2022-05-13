@@ -12,9 +12,9 @@ import tfar.davespotioneering.ModConfig;
 @Mixin(ProtectionEnchantment.class)
 public class ProtectionEnchantmentMixin {
 
-    @Inject(method = "calcModifierDamage",at = @At("HEAD"),cancellable = true)
+    @Inject(method = "getDamageProtection",at = @At("HEAD"),cancellable = true)
     private void modifyDamageCalc(int level, DamageSource source, CallbackInfoReturnable<Integer> cir) {
-        if (ModConfig.Server.magic_protection.get() && (Object)this == Enchantments.ALL_DAMAGE_PROTECTION) {
+        if (ModConfig.Server.magic_protection && (Object)this == Enchantments.ALL_DAMAGE_PROTECTION) {
             if (source.isMagic()) {
                 cir.setReturnValue(0);
             }

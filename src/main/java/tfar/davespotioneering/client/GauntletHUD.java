@@ -9,6 +9,7 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import net.minecraft.core.Registry;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -34,9 +35,9 @@ public class GauntletHUD extends GuiComponent {
     private Potion postPotion = null;
     private final ResourceLocation hud = getGauntletIconLoc("hud");
 
-    public int x = ModConfig.Client.client.get();
-    public int y = ModConfig.Client.gauntlet_hud_y.get();
-    public HudPresets preset = ModConfig.Client.gauntlet_hud_preset.get();
+    public int x = ModConfig.Client.gauntlet_hud_x;
+    public int y = ModConfig.Client.gauntlet_hud_y;
+    public HudPresets preset = ModConfig.Client.gauntlet_hud_preset;
 
     public static final Minecraft mc = Minecraft.getInstance();
 
@@ -95,17 +96,20 @@ public class GauntletHUD extends GuiComponent {
     }
 
     private void renderPotion(Potion potion, PoseStack matrixStack, int x, int y, int cooldown, boolean isActivePotion) {
-        if (potion == null || potion.getRegistryName() == null) return;
+        if (potion == null) return;
+
+        ResourceLocation name = Registry.POTION.getKey(potion);
+
         if (potion.getEffects().isEmpty()) return;
 
         RenderSystem.pushMatrix();
         RenderSystem.color4f(1, 1, 1, 1);
 
         if (potion.getEffects().size() > 1) {
-            if (potion.getRegistryName().toString().contains("turtle_master")) {
+            if (name.toString().contains("turtle_master")) {
                 mc.getTextureManager().bind(getGauntletIconLoc("turtle_master"));
-            } else if (mc.getResourceManager().hasResource(getGauntletIconLoc(potion.getRegistryName().toString()))) {
-                mc.getTextureManager().bind(getGauntletIconLoc(potion.getRegistryName().toString()));
+            } else if (mc.getResourceManager().hasResource(getGauntletIconLoc(name.toString()))) {
+                mc.getTextureManager().bind(getGauntletIconLoc(name.toString()));
             } else {
                 mc.getTextureManager().bind(getGauntletIconLoc("unknown"));
             }
@@ -143,7 +147,7 @@ public class GauntletHUD extends GuiComponent {
     }
 
     private int getScaledCooldown(float pixels, float cooldown) {
-        float totalCooldown = ModConfig.Server.gauntlet_cooldown.get();
+        float totalCooldown = ModConfig.Server.gauntlet_cooldown;
         float progress = totalCooldown - cooldown;
 
         if (totalCooldown != 0) {
@@ -165,9 +169,9 @@ public class GauntletHUD extends GuiComponent {
     }
 
     public void refreshPosition() {
-        x = ModConfig.Client.client.get();
-        y = ModConfig.Client.gauntlet_hud_y.get();
-        preset = ModConfig.Client.gauntlet_hud_preset.get();
+    //    x = ModConfig.Client.client.get();
+    //    y = ModConfig.Client.gauntlet_hud_y.get();
+    //    preset = ModConfig.Client.gauntlet_hud_preset.get();
     }
 
     public static void forwardCycle() {

@@ -1,21 +1,20 @@
 package tfar.davespotioneering.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.entity.player.Inventory;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.menu.PotionInjectorMenu;
 import tfar.davespotioneering.net.C2SPotionInjector;
-import tfar.davespotioneering.net.PacketHandler;
 
 public class GauntletWorkstationScreen extends AbstractContainerScreen<PotionInjectorMenu> {
     public GauntletWorkstationScreen(PotionInjectorMenu screenContainer, Inventory inv, Component titleIn) {
@@ -76,11 +75,11 @@ public class GauntletWorkstationScreen extends AbstractContainerScreen<PotionInj
     }
 
     private void inject(Button b) {
-        PacketHandler.INSTANCE.sendToServer(new C2SPotionInjector(0));
+        C2SPotionInjector.encode(0);
     }
 
     private void strip(Button b) {
-        PacketHandler.INSTANCE.sendToServer(new C2SPotionInjector(1));
+        C2SPotionInjector.encode(1);
     }
 
     @Override

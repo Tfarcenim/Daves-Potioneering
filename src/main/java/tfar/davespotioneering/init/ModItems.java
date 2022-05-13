@@ -1,14 +1,9 @@
 package tfar.davespotioneering.init;
 
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.Registry;
-import net.minecraft.item.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.event.RegistryEvent;
+import net.minecraft.world.item.*;
 import tfar.davespotioneering.DavesPotioneering;
-import tfar.davespotioneering.client.model.gecko.DoubleGeoItemStackRenderer;
-import tfar.davespotioneering.client.model.gecko.GeoItemStackRenderer;
 import tfar.davespotioneering.item.GauntletItem;
 import tfar.davespotioneering.item.SimpleGauntletItem;
 import tfar.davespotioneering.item.UmbrellaItem;
@@ -18,13 +13,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
-
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tiers;
 
 public class ModItems {
 
@@ -73,6 +61,7 @@ public class ModItems {
         return new Item.Properties().tab(tab).durability(300);
     }
 
+
     public static Item.Properties umbrella(String s) {
         return baseUmbrella()
                 .setISTER(() -> () -> HideISTERsFromServer.createGeoClassicUmbrellaItemStackRenderer(s));
@@ -93,31 +82,6 @@ public class ModItems {
             } catch (IllegalAccessException illegalAccessException) {
                 illegalAccessException.printStackTrace();
             }
-        }
-    }
-
-    private static class HideISTERsFromServer {
-
-        private static BlockEntityWithoutLevelRenderer createGeoClassicUmbrellaItemStackRenderer(DyeColor color) {
-            return createGeoClassicUmbrellaItemStackRenderer(color.name().toLowerCase(Locale.ROOT));
-        }
-
-        private static BlockEntityWithoutLevelRenderer createGeoClassicUmbrellaItemStackRenderer(String itemName) {
-            return new DoubleGeoItemStackRenderer<>(
-                    GeoItemStackRenderer.GeoItemModel.makeClosedUmbrella(itemName),
-                    GeoItemStackRenderer.GeoItemModel.makeOpenUmbrella(itemName)
-                    ,GeoItemStackRenderer.NOTHING);
-        }
-
-        private static BlockEntityWithoutLevelRenderer createAgedUmbrellaItemStackRenderer() {
-            return new DoubleGeoItemStackRenderer<>(
-                    GeoItemStackRenderer.GeoItemModel.makeClosedUmbrella("aged"),
-                    GeoItemStackRenderer.GeoItemModel.makeOpenAgedUmbrella()
-                    ,GeoItemStackRenderer.NOTHING);
-        }
-
-        private static BlockEntityWithoutLevelRenderer createGeoItemStackRendererTransparent(ResourceLocation itemName) {
-            return new GeoItemStackRenderer<>(new GeoItemStackRenderer.GeoItemModel<>(itemName), RenderType::entityTranslucent,GeoItemStackRenderer.NOTHING);
         }
     }
 

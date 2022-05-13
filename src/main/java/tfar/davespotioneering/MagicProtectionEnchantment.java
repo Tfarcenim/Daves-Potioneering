@@ -1,14 +1,10 @@
 package tfar.davespotioneering;
 
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentCategory;
-import net.minecraft.enchantment.ProtectionEnchantment;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.damagesource.DamageSource;
-
-//can't use protection class because of the enum
-import net.minecraft.world.item.enchantment.Enchantment.Rarity;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 public class MagicProtectionEnchantment extends Enchantment {
 
@@ -26,6 +22,6 @@ public class MagicProtectionEnchantment extends Enchantment {
 
     @Override
     public boolean canEnchant(ItemStack stack) {
-        return ModConfig.Server.magic_protection.get() && super.canEnchant(stack);
+        return ModConfig.Server.magic_protection && super.canEnchant(stack);
     }
 }

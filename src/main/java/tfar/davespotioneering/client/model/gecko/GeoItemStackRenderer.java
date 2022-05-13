@@ -88,7 +88,7 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends BlockEntityWith
         matrices.translate(0, 0.01f, 0);
         matrices.translate(0.5, 0.5, 0.5);
 
-        mc.textureManager.bind(getTextureLocation(ianimatable));
+      //  mc.textureManager.bind(getTextureLocation(ianimatable));
         Color renderColor = getRenderColor(ianimatable, 0, matrices, bufferIn, null, packedLightIn);
         RenderType renderType = getRenderType(ianimatable, 0, matrices, bufferIn, null, packedLightIn,
                 getTextureLocation(ianimatable));

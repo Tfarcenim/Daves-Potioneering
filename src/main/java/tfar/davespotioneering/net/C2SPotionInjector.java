@@ -1,35 +1,28 @@
 package tfar.davespotioneering.net;
 
-import net.minecraft.world.entity.player.Player;
+import io.netty.buffer.Unpooled;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.fml.network.NetworkEvent;
 import tfar.davespotioneering.menu.PotionInjectorMenu;
 
-import java.util.function.Supplier;
 
+public class C2SPotionInjector implements ServerPlayNetworking.PlayChannelHandler {
 
-public class C2SPotionInjector {
-
-  int button;
-
-  public C2SPotionInjector(){}
-
-  public C2SPotionInjector(int button){ this.button = button;}
-
-  //decode
-  public C2SPotionInjector(FriendlyByteBuf buf) {
-    this.button = buf.readInt();
-  }
-
-  public void encode(FriendlyByteBuf buf) {
+  public static void encode(int button) {
+    FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
     buf.writeInt(button);
+    ClientPlayNetworking.send(PacketHandler.potion_injector, buf);
   }
 
-    public void handle(Supplier<NetworkEvent.Context> ctx) {
-      Player player = ctx.get().getSender();
+    public static void handle(ServerPlayer player, int button) {
       if (player == null) return;
-      ctx.get().enqueueWork(  ()->  {
+      player.getServer().execute(  ()->  {
         AbstractContainerMenu container = player.containerMenu;
         if (container instanceof PotionInjectorMenu) {
           PotionInjectorMenu potionInjectorMenu = (PotionInjectorMenu) container;
@@ -37,7 +30,12 @@ public class C2SPotionInjector {
 
         }
       });
-      ctx.get().setPacketHandled(true);
     }
+
+  @Override
+  public void receive(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender) {
+    int button = buf.readInt();
+    handle(player,button);
+  }
 }
 

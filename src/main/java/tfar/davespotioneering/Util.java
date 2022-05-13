@@ -1,14 +1,14 @@
 package tfar.davespotioneering;
 
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.inventory.BrewingStandMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.core.NonNullList;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
-import net.minecraftforge.common.brewing.IBrewingRecipe;
+import net.minecraft.world.phys.Vec3;
 import tfar.davespotioneering.mixin.ItemAccess;
 
 public class Util {
@@ -38,7 +38,7 @@ public class Util {
 
     public static void brewPotions(NonNullList<ItemStack> inputs, ItemStack ingredient, int[] inputIndexes) {
         for (int i : inputIndexes) {
-            ItemStack output = BrewingRecipeRegistry.getOutput(inputs.get(i), ingredient);
+            ItemStack output = PotionBrewing.mix(inputs.get(i), ingredient);
             output.setCount(inputs.get(i).getCount());//the change from the forge version
             if (!output.isEmpty()) {
                 inputs.set(i, output);
@@ -48,12 +48,7 @@ public class Util {
 
 
     public static boolean isValidInputCountInsensitive(ItemStack stack) {
-        for (IBrewingRecipe recipe : BrewingRecipeRegistry.getRecipes()) {
-            if (recipe.isInput(stack)) {
-                return true;
-            }
-        }
-        return false;
+       return BrewingStandMenu.PotionSlot.mayPlaceItem(stack);
     }
 
 }

@@ -82,7 +82,7 @@ public class PotionItemMixin {
 
             if (playerentity != null) {
                 //the actual change
-                if (ModConfig.Server.return_empty_bottles.get()) {
+                if (ModConfig.Server.return_empty_bottles) {
                     //playerentity.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
                     playerentity.inventory.add(new ItemStack(Items.GLASS_BOTTLE));
                 } else {

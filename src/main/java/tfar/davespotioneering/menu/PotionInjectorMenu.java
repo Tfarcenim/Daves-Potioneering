@@ -158,7 +158,7 @@ public class PotionInjectorMenu extends AbstractContainerMenu {
                     if (present.getCount() < inventory.getMaxStackSize()) {
                         ItemStack stack = new ItemStack(Items.LINGERING_POTION);
                         PotionUtils.setPotion(stack, potion);
-                        inventory.insertItem(i, stack, false);
+                  //     inventory.insertItem(i, stack, false);
                         listNBT.set(i,StringTag.valueOf(Registry.POTION.getKey(Potions.EMPTY).toString()));
                     } else {
                         allRemoved = false;
@@ -177,7 +177,7 @@ public class PotionInjectorMenu extends AbstractContainerMenu {
 
             int blazeRemove = Math.min(maxBlazeRemove,blaze);
 
-            inventory.insertItem(PotionInjectorHandler.BLAZE,new ItemStack(Items.BLAZE_POWDER,blazeRemove),false);
+        //    inventory.insertItem(PotionInjectorHandler.BLAZE,new ItemStack(Items.BLAZE_POWDER,blazeRemove),false);
 
             if (blaze > blazeRemove) {
                 nbt.putInt("blaze",blaze - blazeRemove);

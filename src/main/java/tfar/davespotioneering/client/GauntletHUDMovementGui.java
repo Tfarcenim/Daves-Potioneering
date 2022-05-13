@@ -1,13 +1,12 @@
 package tfar.davespotioneering.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
-import tfar.davespotioneering.ModConfig;
 
 public class GauntletHUDMovementGui extends Screen {
     private final GauntletHUD hud = new GauntletHUD();
@@ -78,9 +77,9 @@ public class GauntletHUDMovementGui extends Screen {
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int mouseButton) {
         if (mouseButton == 0) {
-            ModConfig.Client.client.set(hud.x);
-            ModConfig.Client.gauntlet_hud_y.set(hud.y);
-            ModConfig.Client.gauntlet_hud_preset.set(hud.preset);
+      //      ModConfig.Client.client.set(hud.x);
+      //      ModConfig.Client.gauntlet_hud_y.set(hud.y);
+      //      ModConfig.Client.gauntlet_hud_preset.set(hud.preset);
             hud.refreshPosition();
             GauntletHUD.hudInstance.refreshPosition();
         }
