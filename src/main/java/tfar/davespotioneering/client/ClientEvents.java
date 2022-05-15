@@ -27,6 +27,7 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import org.lwjgl.glfw.GLFW;
@@ -42,7 +43,6 @@ import tfar.davespotioneering.init.*;
 import tfar.davespotioneering.item.GauntletItem;
 import tfar.davespotioneering.mixin.ParticleManagerAccess;
 import tfar.davespotioneering.net.C2SGauntletCyclePacket;
-import tfar.davespotioneering.net.PacketHandler;
 
 import java.util.List;
 import java.util.Locale;
@@ -124,6 +124,15 @@ public class ClientEvents implements ClientModInitializer {
 
     private static BlockEntityWithoutLevelRenderer createGeoItemStackRendererTransparent(ResourceLocation itemName) {
         return new GeoItemStackRenderer<>(new GeoItemStackRenderer.GeoItemModel<>(itemName), RenderType::entityTranslucent,GeoItemStackRenderer.NOTHING);
+    }
+
+    public static void switchGameMode(GameType oldGameType, GameType newGameType) {
+        if (newGameType == GameType.SURVIVAL && oldGameType == GameType.CREATIVE && GauntletHUD.hudInstance.preset == GauntletHUD.HudPresets.ABOVE_HOTBAR) {
+            GauntletHUD.hudInstance.y = GauntletHUDMovementGui.getFixedPositionValue(Minecraft.getInstance().getWindow().getGuiScaledHeight() - 42 - 40, false);
+        }
+        if (newGameType == GameType.CREATIVE && oldGameType == GameType.SURVIVAL && GauntletHUD.hudInstance.preset == GauntletHUD.HudPresets.ABOVE_HOTBAR) {
+            GauntletHUD.hudInstance.y = GauntletHUDMovementGui.getFixedPositionValue(Minecraft.getInstance().getWindow().getGuiScaledHeight() - 42 - 25, false);
+        }
     }
 
   //  public static void registerLoader(final ModelRegistryEvent event) {

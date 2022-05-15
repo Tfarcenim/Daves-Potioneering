@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 @Mixin(ThrowablePotionItem.class)
 public class ThrowablePotionItemMixin {
 
-    @ModifyConstant(method = "onItemRightClick",constant = @Constant(floatValue = .5f))
+    @ModifyConstant(method = "use",constant = @Constant(floatValue = .5f))
     private float modifyThrowDistance(float old) {
         return 1f;
     }

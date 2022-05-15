@@ -1,6 +1,9 @@
 package tfar.davespotioneering;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
+import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
@@ -40,6 +43,12 @@ public class DavesPotioneering implements ModInitializer {
         Set<Block> newSet = new HashSet<>(((BlockEntityTypeAcces)BlockEntityType.LECTERN).getValidBlocks());
         newSet.add(ModBlocks.MAGIC_LECTERN);
         ((BlockEntityTypeAcces)BlockEntityType.LECTERN).setValidBlocks(newSet);
+
+
+        UseItemCallback.EVENT.register(Events::potionCooldown);
+        UseEntityCallback.EVENT.register(Events::milkCow);
+        AttackEntityCallback.EVENT.register(Events::afterHit);
+
 
         PacketHandler.registerMessages();
     }
