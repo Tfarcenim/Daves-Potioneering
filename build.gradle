@@ -3,10 +3,10 @@ plugins {
 	id 'maven-publish'
 }
 loom {
-	accessWidener = file("src/main/resources/davespotioneering.aw")
+	accessWidenerPath = file("src/main/resources/davespotioneering.aw")
 }
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version
@@ -17,16 +17,21 @@ repositories {
 	maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
 	maven { url "https://maven.shedaniel.me" }
 	maven { url "https://maven.terraformersmc.com/releases" }
+	maven {url "https://maven.parchmentmc.org"}
 }
 
 dependencies {
 	//to change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings(minecraft.officialMojangMappings())
+//	mappings(minecraft.officialMojangMappings())
+
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+	api 'net.fabricmc:mapping-io:0.3.0'
 
 
 	// auto-generate mappings to stop mojmap conflicts with geckolib
-	/*mappings loom.layered() {
+	mappings loom.layered() {
 		officialMojangMappings()
 		parchment("org.parchmentmc.data:${project.parchment_mappings}@zip")
 		// don't convert this to a dynamic instantiation, otherwise java won't see the overridden hashCode
@@ -70,14 +75,12 @@ dependencies {
 				return METHOD_NAME_MAP.hashCode()
 			}
 		})
-	}*/
-
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	}
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	compileOnly "com.google.code.findbugs:jsr305:+"
-	modImplementation 'software.bernie.geckolib:geckolib-fabric-1.16.5:3.0.74:dev'
+	//modImplementation 'software.bernie.geckolib:geckolib-fabric-1.18:3.0.42'
 
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.
@@ -109,21 +112,14 @@ allprojects {
 processResources {
 	inputs.property "version", project.version
 
-	from(sourceSets.main.resources.srcDirs) {
-		include "fabric.mod.json"
+	filesMatching("fabric.mod.json") {
 		expand "version": project.version
-	}
-
-	from(sourceSets.main.resources.srcDirs) {
-		exclude "fabric.mod.json"
 	}
 }
 
-// ensure that the encoding is set to UTF-8, no matter what the system default is
-// this fixes some edge cases with special characters not displaying correctly
-// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-tasks.withType(JavaCompile) {
-	options.encoding = "UTF-8"
+tasks.withType(JavaCompile).configureEach {
+	// Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
+	it.options.release = 17
 }
 
 // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
