@@ -1,20 +1,20 @@
 package tfar.davespotioneering;
 
-import net.minecraft.core.NonNullList;
-import net.minecraft.world.entity.ExperienceOrb;
-import net.minecraft.world.inventory.BrewingStandMenu;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.alchemy.PotionBrewing;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.entity.ExperienceOrbEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.recipe.BrewingRecipeRegistry;
+import net.minecraft.screen.BrewingStandScreenHandler;
+import net.minecraft.util.Rarity;
+import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import tfar.davespotioneering.mixin.ItemAccess;
 
 public class Util {
 
     public static void setStackSize(Item item, int count) {
-        ((ItemAccess) item).setMaxStackSize(count);
+        ((ItemAccess) item).setMaxCount(count);
     }
 
     public static final String MILKIFY = "milkified";
@@ -32,13 +32,13 @@ public class Util {
         return stack.getRarity() == Rarity.RARE ? 10 : 7;
     }
 
-    public static void splitAndSpawnExperience(Level world, Vec3 pos, double experience) {
-        world.addFreshEntity(new ExperienceOrb(world, pos.x, pos.y, pos.z, (int) experience));
+    public static void splitAndSpawnExperience(World world, Vec3d pos, double experience) {
+        world.spawnEntity(new ExperienceOrbEntity(world, pos.x, pos.y, pos.z, (int) experience));
     }
 
-    public static void brewPotions(NonNullList<ItemStack> inputs, ItemStack ingredient, int[] inputIndexes) {
+    public static void brewPotions(DefaultedList<ItemStack> inputs, ItemStack ingredient, int[] inputIndexes) {
         for (int i : inputIndexes) {
-            ItemStack output = PotionBrewing.mix(inputs.get(i), ingredient);
+            ItemStack output = BrewingRecipeRegistry.craft(inputs.get(i), ingredient);
             output.setCount(inputs.get(i).getCount());//the change from the forge version
             if (!output.isEmpty()) {
                 inputs.set(i, output);
@@ -48,7 +48,7 @@ public class Util {
 
 
     public static boolean isValidInputCountInsensitive(ItemStack stack) {
-       return BrewingStandMenu.PotionSlot.mayPlaceItem(stack);
+       return BrewingStandScreenHandler.PotionSlot.matches(stack);
     }
 
 }

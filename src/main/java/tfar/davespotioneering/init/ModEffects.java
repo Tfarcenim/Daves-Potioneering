@@ -1,9 +1,9 @@
 package tfar.davespotioneering.init;
 
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectType;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.effect.MilkEffect;
 
@@ -13,16 +13,16 @@ import java.util.Locale;
 
 public class ModEffects {
 
-    private static List<MobEffect> MOD_EFFECTS;
+    private static List<StatusEffect> MOD_EFFECTS;
 
-    public static final MobEffect MILK = new MilkEffect(MobEffectCategory.NEUTRAL,0xffffff);
+    public static final StatusEffect MILK = new MilkEffect(StatusEffectType.NEUTRAL,0xffffff);
 
     public static void register() {
         for (Field field : ModEffects.class.getFields()) {
             try {
-                if (field.get(null) instanceof MobEffect) {
-                    MobEffect effect = (MobEffect)field.get(null);
-                    Registry.register(Registry.MOB_EFFECT,new ResourceLocation(DavesPotioneering.MODID,field.getName().toLowerCase(Locale.ROOT)),effect);
+                if (field.get(null) instanceof StatusEffect) {
+                    StatusEffect effect = (StatusEffect)field.get(null);
+                    Registry.register(Registry.STATUS_EFFECT,new Identifier(DavesPotioneering.MODID,field.getName().toLowerCase(Locale.ROOT)),effect);
                 }
             } catch (IllegalAccessException illegalAccessException) {
                 illegalAccessException.printStackTrace();

@@ -1,13 +1,13 @@
 package tfar.davespotioneering.mixin;
 
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.ThrownPotion;
-import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.level.Level;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.projectile.thrown.PotionEntity;
+import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
+import net.minecraft.util.math.Box;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -18,18 +18,18 @@ import tfar.davespotioneering.Util;
 import java.util.Iterator;
 import java.util.List;
 
-@Mixin(ThrownPotion.class)
-abstract class PotionEntityMixin extends ThrowableItemProjectile {
+@Mixin(PotionEntity.class)
+abstract class PotionEntityMixin extends ThrownItemEntity {
 
-    public PotionEntityMixin(EntityType<? extends ThrowableItemProjectile> type, Level worldIn) {
+    public PotionEntityMixin(EntityType<? extends ThrownItemEntity> type, World worldIn) {
         super(type, worldIn);
     }
 
-    @Inject(method = "applySplash", at = @At(value = "INVOKE", target = "Ljava/lang/Math;sqrt(D)D"),locals = LocalCapture.CAPTURE_FAILHARD)
-    private void milkify(List<MobEffectInstance> arg0, Entity directHit, CallbackInfo ci, AABB axisalignedbb, List<LivingEntity> list,
+    @Inject(method = "applySplashPotion", at = @At(value = "INVOKE", target = "Ljava/lang/Math;sqrt(D)D"),locals = LocalCapture.CAPTURE_FAILHARD)
+    private void milkify(List<StatusEffectInstance> arg0, Entity directHit, CallbackInfo ci, Box axisalignedbb, List<LivingEntity> list,
                          Iterator<LivingEntity> var5, LivingEntity livingentity, double d0) {
-        if (Util.isMilkified(getItem())) {
-            livingentity.removeAllEffects();
+        if (Util.isMilkified(getStack())) {
+            livingentity.clearStatusEffects();
         }
     }
 }

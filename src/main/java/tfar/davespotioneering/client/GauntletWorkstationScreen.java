@@ -1,93 +1,93 @@
 package tfar.davespotioneering.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.client.sounds.SoundManager;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.sound.PositionedSoundInstance;
+import net.minecraft.client.sound.SoundManager;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.menu.PotionInjectorMenu;
 import tfar.davespotioneering.net.C2SPotionInjector;
 
-public class GauntletWorkstationScreen extends AbstractContainerScreen<PotionInjectorMenu> {
-    public GauntletWorkstationScreen(PotionInjectorMenu screenContainer, Inventory inv, Component titleIn) {
+public class GauntletWorkstationScreen extends HandledScreen<PotionInjectorMenu> {
+    public GauntletWorkstationScreen(PotionInjectorMenu screenContainer, PlayerInventory inv, Text titleIn) {
         super(screenContainer, inv, titleIn);
-        imageHeight+=30;
-        inventoryLabelY += 26;
+        backgroundHeight+=30;
+        playerInventoryTitleY += 26;
     }
 
-    private static final ResourceLocation BREWING_STAND_GUI_TEXTURES = new ResourceLocation(DavesPotioneering.MODID,"textures/gui/gauntlet_workstation.png");
+    private static final Identifier BREWING_STAND_GUI_TEXTURES = new Identifier(DavesPotioneering.MODID,"textures/gui/gauntlet_workstation.png");
 
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.renderTooltip(matrixStack, mouseX, mouseY);
+        this.drawMouseoverTooltip(matrixStack, mouseX, mouseY);
     }
 
     @Override
     protected void init() {
         super.init();
-        int x = leftPos + 47;
-        int y = topPos + 76;
+        int x = this.x + 47;
+        int y = this.y + 76;
         int w = 24;
-        addButton(new Button(x,y,36,20,new TextComponent("Strip"),this::strip){
+        addButton(new ButtonWidget(x,y,36,20,new LiteralText("Strip"),this::strip){
             @Override
             public void playDownSound(SoundManager handler) {
 
-                PotionInjectorMenu.SoundTy soundTy = menu.getSound(false);
+                PotionInjectorMenu.SoundTy soundTy = PotionInjectorMenu.SoundTy.BOTH;//handler.getSound(false);
                 SoundEvent soundEvent;
 
                 switch (soundTy) {
-                    case BOTH:soundEvent = SoundEvents.BOTTLE_FILL;break;
-                    case BLAZE:soundEvent = SoundEvents.BLAZE_SHOOT;break;
+                    case BOTH:soundEvent = SoundEvents.ITEM_BOTTLE_FILL;break;
+                    case BLAZE:soundEvent = SoundEvents.ENTITY_BLAZE_SHOOT;break;
                     case NONE: default:
                         soundEvent = SoundEvents.UI_BUTTON_CLICK;
                 }
 
-                handler.play(SimpleSoundInstance.forUI(soundEvent, 1.0F));
+                handler.play(PositionedSoundInstance.master(soundEvent, 1.0F));
             }
         });
-        addButton(new Button(x + 46,y,36,20,new TextComponent("Inject"),this::inject){
+        addButton(new ButtonWidget(x + 46,y,36,20,new LiteralText("Inject"),this::inject){
             @Override
             public void playDownSound(SoundManager handler) {
 
-                PotionInjectorMenu.SoundTy soundTy = menu.getSound(true);
+                PotionInjectorMenu.SoundTy soundTy = PotionInjectorMenu.SoundTy.BOTH;//handler.getSound(true);
                 SoundEvent soundEvent;
 
                 switch (soundTy) {
-                    case BOTH: soundEvent = SoundEvents.BREWING_STAND_BREW;break;
-                    case BLAZE:soundEvent = SoundEvents.BLAZE_SHOOT;break;
+                    case BOTH: soundEvent = SoundEvents.BLOCK_BREWING_STAND_BREW;break;
+                    case BLAZE:soundEvent = SoundEvents.ENTITY_BLAZE_SHOOT;break;
                     case NONE: default:
                         soundEvent = SoundEvents.UI_BUTTON_CLICK;
                 }
 
-                handler.play(SimpleSoundInstance.forUI(soundEvent, 1.0F));
+                handler.play(PositionedSoundInstance.master(soundEvent, 1.0F));
             }
         });
 
     }
 
-    private void inject(Button b) {
+    private void inject(ButtonWidget b) {
         C2SPotionInjector.encode(0);
     }
 
-    private void strip(Button b) {
+    private void strip(ButtonWidget b) {
         C2SPotionInjector.encode(1);
     }
 
     @Override
-    protected void renderBg(PoseStack matrixStack, float partialTicks, int x, int y) {
+    protected void drawBackground(MatrixStack matrixStack, float partialTicks, int x, int y) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bind(BREWING_STAND_GUI_TEXTURES);
-        int i = (this.width - this.imageWidth) / 2;
-        int j = (this.height - this.imageHeight) / 2;
-        this.blit(matrixStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
+        this.client.getTextureManager().bindTexture(BREWING_STAND_GUI_TEXTURES);
+        int i = (this.width - this.backgroundWidth) / 2;
+        int j = (this.height - this.backgroundHeight) / 2;
+        this.drawTexture(matrixStack, i, j, 0, 0, this.backgroundWidth, this.backgroundHeight);
     }
 }

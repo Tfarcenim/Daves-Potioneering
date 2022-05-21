@@ -22,7 +22,7 @@ repositories {
 dependencies {
 	//to change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings(minecraft.officialMojangMappings())
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 
 
 	// auto-generate mappings to stop mojmap conflicts with geckolib
@@ -77,7 +77,7 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	compileOnly "com.google.code.findbugs:jsr305:+"
-	modImplementation 'software.bernie.geckolib:geckolib-fabric-1.16.5:3.0.74:dev'
+	modImplementation 'software.bernie.geckolib:geckolib-fabric-1.16.5:3.0.40:dev'
 
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.

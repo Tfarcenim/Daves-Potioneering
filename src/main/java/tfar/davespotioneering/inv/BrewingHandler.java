@@ -1,14 +1,14 @@
 package tfar.davespotioneering.inv;
 
 import com.google.common.collect.Sets;
-import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
+import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.Tag;
-import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.PotionBrewing;
+import net.minecraft.recipe.BrewingRecipeRegistry;
+import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.Direction;
 import org.apache.commons.lang3.ArrayUtils;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
@@ -19,14 +19,14 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class BrewingHandler extends SimpleContainer {
+public class BrewingHandler extends SimpleInventory {
 
     public BrewingHandler(int size) {
         super(size);
     }
 
-    public NonNullList<ItemStack> getStacks() {
-        return ((SimpleContainerAccess)this).getItems();
+    public DefaultedList<ItemStack> getStacks() {
+        return ((SimpleContainerAccess)this).getStacks();
     }
 
     public int[] getSlotsForFace(Direction side) {
@@ -42,7 +42,7 @@ public class BrewingHandler extends SimpleContainer {
 
     public boolean isItemValid(int index, ItemStack stack) {
         if (ArrayUtils.contains(AdvancedBrewingStandBlockEntity.INGREDIENTS,index)) {
-            return PotionBrewing.isIngredient(stack);
+            return BrewingRecipeRegistry.isValidIngredient(stack);
         } else {
             Item item = stack.getItem();
             if (index == AdvancedBrewingStandBlockEntity.FUEL) {

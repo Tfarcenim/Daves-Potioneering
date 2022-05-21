@@ -3,8 +3,8 @@ package tfar.davespotioneering;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.text.TranslatableText;
 import tfar.davespotioneering.client.GauntletHUD;
 
 public class ModConfig {
@@ -17,35 +17,35 @@ public class ModConfig {
 
         public static int gauntlet_hud_y;
         public static GauntletHUD.HudPresets gauntlet_hud_preset;
-        public static int particle_drip_rate;
+        public static int particle_drip_rate = 10;
 
         public static void client() {
 
             ConfigBuilder builder = ConfigBuilder.create()
-                    .setParentScreen(Minecraft.getInstance().screen)
-                    .setTitle(new TranslatableComponent("title.examplemod.config"));
+                    .setParentScreen(MinecraftClient.getInstance().currentScreen)
+                    .setTitle(new TranslatableText("title.examplemod.config"));
 
-            ConfigCategory general = builder.getOrCreateCategory(new TranslatableComponent("category.examplemod.general"));
+            ConfigCategory general = builder.getOrCreateCategory(new TranslatableText("category.examplemod.general"));
 
             ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
-            Client.client = general.addEntry(entryBuilder.startIntField(new TranslatableComponent("config.gauntlet_hud_x"), gauntlet_hud_x)
+            Client.client = general.addEntry(entryBuilder.startIntField(new TranslatableText("config.gauntlet_hud_x"), gauntlet_hud_x)
                             .setDefaultValue(-120) // Recommended: Used when user click "Reset"
                            // .setTooltip(new TranslatableComponent("This option is awesome!")) // Optional: Shown when the user hover over this option
                             .setSaveConsumer(newValue -> gauntlet_hud_x = newValue) // Recommended: Called when user save the config
                             .build()) // Builds the option entry for cloth config
-                    .addEntry(entryBuilder.startIntField(new TranslatableComponent("config.gauntlet_hud_y"), gauntlet_hud_y)
+                    .addEntry(entryBuilder.startIntField(new TranslatableText("config.gauntlet_hud_y"), gauntlet_hud_y)
                             .setDefaultValue(-92)
-                            .setTooltip(new TranslatableComponent("This option is awesome!"))
+                            .setTooltip(new TranslatableText("This option is awesome!"))
                             .setSaveConsumer(newValue -> gauntlet_hud_y = newValue)
                             .build())
-                    .addEntry(entryBuilder.startEnumSelector(new TranslatableComponent("config.gauntlet_hud_preset"),
+                    .addEntry(entryBuilder.startEnumSelector(new TranslatableText("config.gauntlet_hud_preset"),
                                     GauntletHUD.HudPresets.class, gauntlet_hud_preset)
                             .setDefaultValue(GauntletHUD.HudPresets.FREE_MOVE)
                        //     .setTooltip(new TranslatableComponent("This option is awesome!"))
                             .setSaveConsumer(newValue -> gauntlet_hud_preset = newValue)
                             .build())
-                    .addEntry(entryBuilder.startIntField(new TranslatableComponent("config.particle_drip_rate"), particle_drip_rate)
+                    .addEntry(entryBuilder.startIntField(new TranslatableText("config.particle_drip_rate"), particle_drip_rate)
                             .setDefaultValue(10)
                        //     .setTooltip(new TranslatableComponent("This option is awesome!"))
                             .setSaveConsumer(newValue -> particle_drip_rate = newValue)
@@ -66,10 +66,10 @@ public class ModConfig {
         public static void server() {
 
             ConfigBuilder builder = ConfigBuilder.create()
-                    .setParentScreen(Minecraft.getInstance().screen)
-                    .setTitle(new TranslatableComponent("title.examplemod.config"));
+                    .setParentScreen(MinecraftClient.getInstance().currentScreen)
+                    .setTitle(new TranslatableText("title.examplemod.config"));
 
-            ConfigCategory general = builder.getOrCreateCategory(new TranslatableComponent("category.examplemod.general"));
+            ConfigCategory general = builder.getOrCreateCategory(new TranslatableText("category.examplemod.general"));
 
 
           //  return_empty_bottles = builder.define("return_empty_bottles", true);

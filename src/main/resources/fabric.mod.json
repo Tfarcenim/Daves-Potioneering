@@ -20,10 +20,14 @@
   "entrypoints": {
     "main": [
       "tfar.davespotioneering.DavesPotioneering"
+    ],
+    "client": [
+      "tfar.davespotioneering.client.ClientEvents"
+
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "davespotioneering.mixins.json"
   ],
 
   "depends": {

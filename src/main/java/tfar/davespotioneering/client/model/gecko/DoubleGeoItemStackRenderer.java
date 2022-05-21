@@ -1,18 +1,15 @@
 package tfar.davespotioneering.client.model.gecko;
 
-import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
+import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.*;
+import net.minecraft.client.render.item.BuiltinModelItemRenderer;
+import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Identifier;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.geo.render.built.GeoModel;
@@ -24,19 +21,19 @@ import java.awt.*;
 import java.util.Collections;
 import java.util.function.Function;
 
-public class DoubleGeoItemStackRenderer<T extends IAnimatable> extends BlockEntityWithoutLevelRenderer implements IGeoRenderer<T> {
+public class DoubleGeoItemStackRenderer<T extends IAnimatable> extends BuiltinModelItemRenderer implements IGeoRenderer<T> , BuiltinItemRendererRegistry.DynamicItemRenderer {
 
     private final AnimatedGeoModel<T> modelProvider1;
     private final AnimatedGeoModel<T> modelProvider2;
 
-    protected final Function<ResourceLocation, RenderType> renderTypeGetter;
+    protected final Function<Identifier, RenderLayer> renderTypeGetter;
     private final T ianimatable;
 
     public DoubleGeoItemStackRenderer(AnimatedGeoModel<T> modelProvider1,AnimatedGeoModel<T> modelProvider2, T ianimatable) {
-        this(modelProvider1,modelProvider2, RenderType::entityCutout, ianimatable);
+        this(modelProvider1,modelProvider2, RenderLayer::getEntityCutout, ianimatable);
     }
 
-    public DoubleGeoItemStackRenderer(AnimatedGeoModel<T> modelProvider1,AnimatedGeoModel<T> modelProvider2, Function<ResourceLocation, RenderType> renderTypeGetter, T ianimatable) {
+    public DoubleGeoItemStackRenderer(AnimatedGeoModel<T> modelProvider1,AnimatedGeoModel<T> modelProvider2, Function<Identifier, RenderLayer> renderTypeGetter, T ianimatable) {
         this.modelProvider1 = modelProvider1;
         this.modelProvider2 = modelProvider2;
         this.renderTypeGetter = renderTypeGetter;
@@ -44,57 +41,57 @@ public class DoubleGeoItemStackRenderer<T extends IAnimatable> extends BlockEnti
     }
 
     //render
-    public void renderByItem(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack matrices, MultiBufferSource bufferIn,
+    public void render(ItemStack stack, ModelTransformation.Mode transformType, MatrixStack matrices, VertexConsumerProvider bufferIn,
             int combinedLightIn,
             int p_239207_6_
     ) {
-        if (transformType == ItemTransforms.TransformType.GUI) {
-            matrices.pushPose();
-            Minecraft mc = Minecraft.getInstance();
-            MultiBufferSource.BufferSource buffer = mc.renderBuffers().bufferSource();
-            Lighting.setupForFlatItems();
+        if (transformType == ModelTransformation.Mode.GUI) {
+            matrices.push();
+            MinecraftClient mc = MinecraftClient.getInstance();
+            VertexConsumerProvider.Immediate buffer = mc.getBufferBuilders().getEntityVertexConsumers();
+            DiffuseLighting.disableGuiDepthLighting();
             this.render(matrices, bufferIn, combinedLightIn, stack);
-            buffer.endBatch();
+            buffer.draw();
             RenderSystem.enableDepthTest();
-            Lighting.setupFor3DItems();
-            matrices.popPose();
+            DiffuseLighting.enableGuiDepthLighting();
+            matrices.pop();
         } else {
             this.render(matrices, bufferIn, combinedLightIn, stack);
         }
     }
 
-    public void render(PoseStack matrices, MultiBufferSource bufferIn, int packedLightIn, ItemStack itemStack) {
+    public void render(MatrixStack matrices, VertexConsumerProvider bufferIn, int packedLightIn, ItemStack itemStack) {
         GeoModel model = getGeoModelProvider().getModel(getGeoModelProvider().getModelLocation(ianimatable));
-        Minecraft mc = Minecraft.getInstance();
-        AnimationEvent<T> itemEvent = new AnimationEvent<>(ianimatable, 0, 0, mc.getFrameTime(),
+        MinecraftClient mc = MinecraftClient.getInstance();
+        AnimationEvent<T> itemEvent = new AnimationEvent<>(ianimatable, 0, 0, mc.getTickDelta(),
                 false, Collections.singletonList(itemStack));
 
         getGeoModelProvider().setLivingAnimations(ianimatable, this.getUniqueID(ianimatable), itemEvent);
-        matrices.pushPose();
+        matrices.push();
         matrices.translate(0, 0.01f, 0);
         matrices.translate(0.5, 0.5, 0.5);
 
-        mc.textureManager.bind(getTextureLocation(ianimatable));
+        mc.getTextureManager().bindTexture(getTextureLocation(ianimatable));
         Color renderColor = getRenderColor(ianimatable, 0, matrices, bufferIn, null, packedLightIn);
-        RenderType renderType = getRenderType(ianimatable, 0, matrices, bufferIn, null, packedLightIn,
+        RenderLayer renderType = getRenderType(ianimatable, 0, matrices, bufferIn, null, packedLightIn,
                 getTextureLocation(ianimatable));
 
         // Our models often use single sided planes for fine detail
         RenderSystem.disableCull();
 
         // Get the Glint buffer if this item is enchanted
-        VertexConsumer ivertexbuilder = ItemRenderer.getFoilBufferDirect(bufferIn, renderType, true, itemStack.hasFoil());
+        VertexConsumer ivertexbuilder = ItemRenderer.getDirectItemGlintConsumer(bufferIn, renderType, true, itemStack.hasGlint());
 
-        render(model, ianimatable, 0, renderType, matrices, null, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY,
+        render(model, ianimatable, 0, renderType, matrices, null, ivertexbuilder, packedLightIn, OverlayTexture.DEFAULT_UV,
                 (float) renderColor.getRed() / 255f, (float) renderColor.getGreen() / 255f,
                 (float) renderColor.getBlue() / 255f, (float) renderColor.getAlpha() / 255);
-        matrices.popPose();
+        matrices.pop();
     }
 
     public static final ThreadLocal<Integer> override = ThreadLocal.withInitial(() -> 0);
 
     @Override
-    public RenderType getRenderType(T animatable, float partialTicks, PoseStack stack, @Nullable MultiBufferSource renderTypeBuffer, @Nullable VertexConsumer vertexBuilder, int packedLightIn, ResourceLocation textureLocation) {
+    public RenderLayer getRenderType(T animatable, float partialTicks, MatrixStack stack, @Nullable VertexConsumerProvider renderTypeBuffer, @Nullable VertexConsumer vertexBuilder, int packedLightIn, Identifier textureLocation) {
         return renderTypeGetter.apply(textureLocation);
     }
 
@@ -104,7 +101,7 @@ public class DoubleGeoItemStackRenderer<T extends IAnimatable> extends BlockEnti
     }
 
     @Override
-    public ResourceLocation getTextureLocation(T instance) {
+    public Identifier getTextureLocation(T instance) {
         return this.getGeoModelProvider().getTextureLocation(instance);
     }
 
