@@ -1,5 +1,7 @@
 package tfar.davespotioneering;
 
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
@@ -11,6 +13,7 @@ import net.minecraft.item.Items;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
+import tfar.davespotioneering.config.ClothConfig;
 import tfar.davespotioneering.init.*;
 import tfar.davespotioneering.mixin.BlockEntityTypeAcces;
 import tfar.davespotioneering.mixin.PotionBrewingAccess;
@@ -23,6 +26,7 @@ public class DavesPotioneering implements ModInitializer {
     // Directly reference a log4j logger.
 
     public static final String MODID = "davespotioneering";
+    public static ClothConfig CONFIG;
 
     @Override
     public void onInitialize() {
@@ -48,6 +52,9 @@ public class DavesPotioneering implements ModInitializer {
         UseItemCallback.EVENT.register(Events::potionCooldown);
         UseEntityCallback.EVENT.register(Events::milkCow);
         AttackEntityCallback.EVENT.register(Events::afterHit);
+
+        AutoConfig.register(ClothConfig.class, JanksonConfigSerializer::new);
+        CONFIG = AutoConfig.getConfigHolder(ClothConfig.class).getConfig();
 
 
         PacketHandler.registerMessages();

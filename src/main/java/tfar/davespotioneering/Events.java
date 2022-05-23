@@ -21,6 +21,7 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import tfar.davespotioneering.block.ReinforcedCauldronBlock;
+import tfar.davespotioneering.config.ClothConfig;
 import tfar.davespotioneering.duck.BrewingStandDuck;
 import tfar.davespotioneering.init.ModPotions;
 import tfar.davespotioneering.item.UmbrellaItem;
@@ -33,7 +34,7 @@ public class Events {
         ItemStack stack = player.getStackInHand(interactionHand);
 
         if (!player.world.isClient && stack.getItem() instanceof ThrowablePotionItem) {
-            player.getItemCooldownManager().set(stack.getItem(), ModConfig.Server.potion_cooldown);
+            player.getItemCooldownManager().set(stack.getItem(), ClothConfig.potion_cooldown);
         }
 
         return TypedActionResult.pass(stack);
@@ -81,8 +82,8 @@ public class Events {
     public static void heldItemChangeEvent(PlayerEntity player) {
         ItemStack stack = player.getMainHandStack();
         if ((stack.getItem() instanceof LingeringPotionItem || stack.getItem() instanceof SplashPotionItem)) {
-            player.getItemCooldownManager().set(Items.SPLASH_POTION, ModConfig.Server.potion_cooldown);
-            player.getItemCooldownManager().set(Items.LINGERING_POTION, ModConfig.Server.potion_cooldown);
+            player.getItemCooldownManager().set(Items.SPLASH_POTION, ClothConfig.potion_cooldown);
+            player.getItemCooldownManager().set(Items.LINGERING_POTION, ClothConfig.potion_cooldown);
         }
     }
 

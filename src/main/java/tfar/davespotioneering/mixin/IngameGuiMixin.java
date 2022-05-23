@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tfar.davespotioneering.client.GauntletHUD;
+import tfar.davespotioneering.config.ClothConfig;
 import tfar.davespotioneering.item.GauntletItem;
 
 @Mixin(InGameHud.class)
@@ -23,7 +24,7 @@ public class IngameGuiMixin {
         MinecraftClient minecraft = MinecraftClient.getInstance();
         PlayerEntity player = minecraft.player;
         if (player != null) {
-            if (GauntletHUD.hudInstance.preset == GauntletHUD.HudPresets.ABOVE_HOTBAR &&
+            if (ClothConfig.gauntlet_hud_preset == GauntletHUD.HudPreset.ABOVE_HOTBAR &&
                     this.client.player.getMainHandStack().getItem() instanceof GauntletItem) {
                 ci.cancel();
             }

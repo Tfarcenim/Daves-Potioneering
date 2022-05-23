@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import tfar.davespotioneering.ModConfig;
+import tfar.davespotioneering.config.ClothConfig;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.init.ModEffects;
 
@@ -83,7 +83,7 @@ public class PotionItemMixin {
 
             if (playerentity != null) {
                 //the actual change
-                if (ModConfig.Server.return_empty_bottles) {
+                if (ClothConfig.return_empty_bottles) {
                     //playerentity.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
                     playerentity.inventory.insertStack(new ItemStack(Items.GLASS_BOTTLE));
                 } else {

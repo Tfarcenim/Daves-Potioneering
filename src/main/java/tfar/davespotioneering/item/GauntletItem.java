@@ -25,7 +25,7 @@ import net.minecraft.util.Pair;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
-import tfar.davespotioneering.ModConfig;
+import tfar.davespotioneering.config.ClothConfig;
 import tfar.davespotioneering.init.ModItems;
 import tfar.davespotioneering.init.ModSoundEvents;
 import tfar.davespotioneering.menu.PotionInjectorMenu;
@@ -128,7 +128,7 @@ public class GauntletItem extends SwordItem {
                         cooldownMap.add(0, new IntArrayTag(new ArrayList<>()));
                         cooldownMap.add(1, new IntArrayTag(new ArrayList<>()));
                     }
-                    addPotionCooldownByIndex(info.getInt("activePotionIndex"), ModConfig.Server.gauntlet_cooldown, stack, cooldownMap);
+                    addPotionCooldownByIndex(info.getInt("activePotionIndex"), ClothConfig.gauntlet_cooldown, stack, cooldownMap);
                 }
             }
         }

@@ -5,6 +5,7 @@ import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.item.ItemStack;
+import tfar.davespotioneering.config.ClothConfig;
 
 public class MagicProtectionEnchantment extends Enchantment {
 
@@ -22,6 +23,6 @@ public class MagicProtectionEnchantment extends Enchantment {
 
     @Override
     public boolean isAcceptableItem(ItemStack stack) {
-        return ModConfig.Server.magic_protection && super.isAcceptableItem(stack);
+        return ClothConfig.magic_protection && super.isAcceptableItem(stack);
     }
 }

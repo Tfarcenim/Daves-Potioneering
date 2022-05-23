@@ -4,6 +4,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
+import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
@@ -38,13 +39,14 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import org.lwjgl.glfw.GLFW;
-import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
+import tfar.davespotioneering.client.model.custom.FullBrightModelProvider;
 import tfar.davespotioneering.client.model.gecko.DoubleGeoItemStackRenderer;
 import tfar.davespotioneering.client.model.gecko.GeoItemStackRenderer;
 import tfar.davespotioneering.client.particle.FastDripParticle;
 import tfar.davespotioneering.client.particle.TintedSplashParticle;
+import tfar.davespotioneering.config.ClothConfig;
 import tfar.davespotioneering.init.*;
 import tfar.davespotioneering.item.GauntletItem;
 import tfar.davespotioneering.mixin.ParticleManagerAccess;
@@ -106,6 +108,8 @@ public class ClientEvents implements ClientModInitializer {
         registerBlockingProperty(ModItems.AGED_UMBRELLA);
         registerBlockingProperty(ModItems.GILDED_UMBRELLA);
 
+        ModelLoadingRegistry.INSTANCE.registerResourceProvider(manager -> new FullBrightModelProvider());
+
         BuiltinItemRendererRegistry.INSTANCE.register(ModItems.AGED_UMBRELLA,createAgedUmbrellaItemStackRenderer());
         BuiltinItemRendererRegistry.INSTANCE.register(ModItems.GILDED_UMBRELLA,createAgedUmbrellaItemStackRenderer());
 
@@ -143,11 +147,11 @@ public class ClientEvents implements ClientModInitializer {
     }
 
     public static void switchGameMode(GameMode oldGameType, GameMode newGameType) {
-        if (newGameType == GameMode.SURVIVAL && oldGameType == GameMode.CREATIVE && GauntletHUD.hudInstance.preset == GauntletHUD.HudPresets.ABOVE_HOTBAR) {
-            GauntletHUD.hudInstance.y = GauntletHUDMovementGui.getFixedPositionValue(MinecraftClient.getInstance().getWindow().getScaledHeight() - 42 - 40, false);
+        if (newGameType == GameMode.SURVIVAL && oldGameType == GameMode.CREATIVE && ClothConfig.gauntlet_hud_preset == GauntletHUD.HudPreset.ABOVE_HOTBAR) {
+            ClothConfig.gauntlet_hud_x = GauntletHUDMovementScreen.getFixedPositionValue(MinecraftClient.getInstance().getWindow().getScaledHeight() - 42 - 40, false);
         }
-        if (newGameType == GameMode.CREATIVE && oldGameType == GameMode.SURVIVAL && GauntletHUD.hudInstance.preset == GauntletHUD.HudPresets.ABOVE_HOTBAR) {
-            GauntletHUD.hudInstance.y = GauntletHUDMovementGui.getFixedPositionValue(MinecraftClient.getInstance().getWindow().getScaledHeight() - 42 - 25, false);
+        if (newGameType == GameMode.CREATIVE && oldGameType == GameMode.SURVIVAL && ClothConfig.gauntlet_hud_preset == GauntletHUD.HudPreset.ABOVE_HOTBAR) {
+            ClothConfig.gauntlet_hud_y = GauntletHUDMovementScreen.getFixedPositionValue(MinecraftClient.getInstance().getWindow().getScaledHeight() - 42 - 25, false);
         }
     }
 
@@ -162,7 +166,7 @@ public class ClientEvents implements ClientModInitializer {
         if (held.isEmpty()) return;
         if (held.getItem() instanceof GauntletItem && player.isSneaking()) {
             if (button == GLFW.GLFW_MOUSE_BUTTON_3) {
-                GauntletHUDMovementGui.open();
+                GauntletHUDMovementScreen.open();
             }
         }
     }
@@ -216,20 +220,20 @@ public class ClientEvents implements ClientModInitializer {
             // get nbt
             CompoundTag info = player.getMainHandStack().getOrCreateTag().getCompound("info");
             Potion[] potions = GauntletItem.getPotionsFromNBT(info);
-            if (MinecraftClient.getInstance().currentScreen instanceof GauntletHUDMovementGui) return;
-            GauntletHUD.hudInstance.render(matrixStack);
+            if (MinecraftClient.getInstance().currentScreen instanceof GauntletHUDMovementScreen) return;
+            GauntletHUD.render(matrixStack);
             if (potions == null) {
                 // reset
-                GauntletHUD.hudInstance.init(null, null, null);
+                GauntletHUD.init(null, null, null);
                 return;
             }
-            GauntletHUD.hudInstance.init(potions[0], potions[1], potions[2]);
+            GauntletHUD.init(potions[0], potions[1], potions[2]);
         }
     }
 
     public static void playerTick(MinecraftClient e) {
         PlayerEntity player = e.player;
-        if (player != null && player.world.getTime() % ModConfig.Client.particle_drip_rate == 0) {
+        if (player != null && player.world.getTime() % ClothConfig.particle_drip_rate == 0) {
 
             ItemStack stack = player.getMainHandStack();
 

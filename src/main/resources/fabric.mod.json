@@ -24,6 +24,10 @@
     "client": [
       "tfar.davespotioneering.client.ClientEvents"
 
+    ],
+
+    "modmenu": [
+      "tfar.davespotioneering.config.ModMenuScren"
     ]
   },
   "mixins": [
