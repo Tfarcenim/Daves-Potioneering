@@ -18,13 +18,10 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Pair;
-import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.*;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.config.ClothConfig;
 import tfar.davespotioneering.init.ModItems;
 import tfar.davespotioneering.init.ModSoundEvents;
@@ -35,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public class GauntletItem extends SwordItem {
+public class GauntletItem extends SwordItem implements Perspective{
 
     public GauntletItem(Settings properties) {
         super(ToolMaterials.NETHERITE, 4, -2.8f, properties);
@@ -50,7 +47,7 @@ public class GauntletItem extends SwordItem {
 
             boolean active = stack.getOrCreateTag().getBoolean("active");
 
-            int blaze = getBlaze(stack);
+            int blaze = stack.getMaxDamage() - stack.getDamage();
 
             if (!world.isClient && (blaze > 0 || active)) {
                 stack.getOrCreateTag().putBoolean("active", !active);
@@ -60,17 +57,6 @@ public class GauntletItem extends SwordItem {
             return TypedActionResult.success(stack);
         }
         return TypedActionResult.pass(stack);
-    }
-
- //   @Override
-    public int getDamage(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
-        double blaze = 0;
-        if (tag != null) {
-            CompoundTag info = tag.getCompound("info");
-            blaze = info.getInt("blaze");
-        }
-        return PotionInjectorMenu.BLAZE_CAP - (int) blaze;
     }
 
     @Override
@@ -88,14 +74,7 @@ public class GauntletItem extends SwordItem {
   //      return oldStack.getItem() != newStack.getItem();
   //  }
 
-  //  @Override
-    public boolean showDurabilityBar(ItemStack stack) {
-        CompoundTag info = stack.getOrCreateTag().getCompound("info");
-        double blaze = info.getInt("blaze");
-        return blaze > 0;
-    }
-
-  //  @Override
+    //  @Override
     public int getRGBDurabilityForDisplay(ItemStack stack) {
         return Formatting.GOLD.getColorValue();
     }
@@ -109,14 +88,15 @@ public class GauntletItem extends SwordItem {
 
                 boolean active = stack.getTag().getBoolean("active");
 
-                if (potions != null && getCooldownFromPotionByIndex(info.getInt("activePotionIndex"), stack) <= 0 && info.getInt("blaze") > 0 && active) {
+                if (potions != null && getCooldownFromPotionByIndex(info.getInt("activePotionIndex"), stack) <= 0 && (stack.getMaxDamage() - stack.getDamage()) > 0 && active) {
                     Potion potion = potions[0];
                     for (StatusEffectInstance effectInstance : potion.getEffects()) {
                         victim.addStatusEffect(new StatusEffectInstance(effectInstance));
                     }
-                    info.putInt("blaze", info.getInt("blaze") - 1);
 
-                    if (info.getInt("blaze") == 0) {
+                    stack.damage(1,attacker,livingEntity -> {});
+
+                    if (stack.getDamage() == stack.getMaxDamage()) {
                         stack.getTag().putBoolean("active",false);
                     }
 
@@ -132,7 +112,7 @@ public class GauntletItem extends SwordItem {
                 }
             }
         }
-        return super.postHit(stack, victim, attacker);
+        return true;
     }
 
     @Override
@@ -204,7 +184,7 @@ public class GauntletItem extends SwordItem {
     @Nullable
     public static Pair<List<StatusEffectInstance>, List<Potion>> getEffectsFromGauntlet(ItemStack stack) {
         if (!stack.hasTag()) return null;
-        ListTag nbts = stack.getTag().getCompound("info").getList("potions", 8);//StringTag?
+        ListTag nbts = stack.getTag().getCompound("info").getList("potions", PotionInjectorMenu.TAG_STRING);//StringTag?
         List<StatusEffectInstance> effects = new ArrayList<>();
         List<Potion> potions = new ArrayList<>();
         for (Tag inbt : nbts) {
@@ -221,7 +201,7 @@ public class GauntletItem extends SwordItem {
     public static void cycleGauntletForward(PlayerEntity player) {
         if (player == null) return;
         CompoundTag info = player.getMainHandStack().getOrCreateTag().getCompound("info");
-        ListTag nbts = info.getList("potions", 8);
+        ListTag nbts = info.getList("potions", PotionInjectorMenu.TAG_STRING);
         if (nbts.isEmpty()) return;
         int index = info.getInt("activePotionIndex");
         index++;
@@ -234,7 +214,7 @@ public class GauntletItem extends SwordItem {
     public static void cycleGauntletBackward(PlayerEntity player) {
         if (player == null) return;
         CompoundTag info = player.getMainHandStack().getOrCreateTag().getCompound("info");
-        ListTag nbts = info.getList("potions", 8);
+        ListTag nbts = info.getList("potions", PotionInjectorMenu.TAG_STRING);
         if (nbts.isEmpty()) return;
         int index = info.getInt("activePotionIndex");
         index--;
@@ -245,7 +225,7 @@ public class GauntletItem extends SwordItem {
     }
 
     public static Potion[] getPotionsFromNBT(CompoundTag info) {
-        ListTag nbts = info.getList("potions", 8);
+        ListTag nbts = info.getList("potions", PotionInjectorMenu.TAG_STRING);
         if (nbts.isEmpty()) return null;
 
         // get active potion
@@ -365,13 +345,11 @@ public class GauntletItem extends SwordItem {
         return list;
     }
 
-    public static int getBlaze(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
-        int blaze = 0;
-        if (tag != null) {
-            CompoundTag info = tag.getCompound("info");
-            blaze = info.getInt("blaze");
-        }
-        return blaze;
+    public static final Identifier ALC_ID = new Identifier(DavesPotioneering.MODID,"item/sprite/potioneer_gauntlet");
+    public static final Identifier LIT_ALC_ID = new Identifier(DavesPotioneering.MODID,"item/sprite/lit_potioneer_gauntlet");
+
+    @Override
+    public Identifier getGuiModel(boolean active) {
+        return active ? LIT_ALC_ID : ALC_ID;
     }
 }

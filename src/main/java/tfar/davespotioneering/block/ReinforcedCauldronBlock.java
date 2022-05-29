@@ -104,8 +104,8 @@ public class ReinforcedCauldronBlock extends CauldronBlock implements BlockEntit
                 if (level > 0 && storedPotion != potion) {
                     boom(world, pos, state);
                 } else {
-                    this.setLevel(world, pos, state, level + 1);
                     reinforcedCauldronBlockEntity.setPotion(potion);
+                    this.setLevel(world, pos, state, level + 1);
                 }
             }
         }

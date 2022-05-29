@@ -5,7 +5,6 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
@@ -19,7 +18,7 @@ import javax.annotation.Nullable;
 
 public class PotionInjectorBlockEntity extends BlockEntity implements NamedScreenHandlerFactory {
 
-    public SimpleInventory handler = new PotionInjectorHandler(8) {
+    public PotionInjectorHandler handler = new PotionInjectorHandler(8) {
         @Override
         public void markDirty() {
             super.markDirty();

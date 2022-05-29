@@ -1,11 +1,14 @@
 package tfar.davespotioneering.inv;
 
-import tfar.davespotioneering.item.GauntletItem;
-
-import javax.annotation.Nonnull;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import tfar.davespotioneering.item.GauntletItem;
+import tfar.davespotioneering.mixin.SimpleContainerAccess;
+
+import javax.annotation.Nonnull;
 
 public class PotionInjectorHandler extends SimpleInventory {
 
@@ -32,5 +35,79 @@ public class PotionInjectorHandler extends SimpleInventory {
                 return stack.getItem() == Items.BLAZE_POWDER;
         }
         return super.isValid(slot, stack);
+    }
+
+    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+        if (stack.isEmpty())
+            return ItemStack.EMPTY;
+
+        if (!isValid(slot, stack))
+            return stack;
+
+        ItemStack existing = getStack(slot);
+
+        int limit = getStackLimit(stack);
+
+        if (!existing.isEmpty())
+        {
+            if (!ItemHandlerHelper.canItemStacksStack(stack, existing))
+                return stack;
+
+            limit -= existing.getCount();
+        }
+
+        if (limit <= 0)
+            return stack;
+
+        boolean reachedLimit = stack.getCount() > limit;
+
+        if (!simulate)
+        {
+            if (existing.isEmpty())
+            {
+                this.setStack(slot, reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, limit) : stack);
+            }
+            else
+            {
+                existing.increment(reachedLimit ? limit : stack.getCount());
+            }
+           // onContentsChanged(slot);
+        }
+
+        return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.getCount()- limit) : ItemStack.EMPTY;
+    }
+
+    protected int getStackLimit(@Nonnull ItemStack stack)
+    {
+        return Math.min(getMaxCountPerStack(), stack.getMaxCount());
+    }
+
+    //needed to prevent markDirty updates when loading from save
+    public void readTags(ListTag tags) {
+        for (int i = 0; i < tags.size(); i++)
+        {
+            CompoundTag itemTags = tags.getCompound(i);
+            int slot = itemTags.getInt("Slot");
+
+            if (slot >= 0 && slot < ((SimpleContainerAccess)this).getStacks().size())
+            {
+                ((SimpleContainerAccess)this).getStacks().set(i,ItemStack.fromTag(itemTags));
+            }
+        }
+    }
+
+    public ListTag getTags() {
+        ListTag nbtTagList = new ListTag();
+        for (int i = 0; i < this.size(); i++)
+        {
+            if (!((SimpleContainerAccess)this).getStacks().get(i).isEmpty())
+            {
+                CompoundTag itemTag = new CompoundTag();
+                itemTag.putInt("Slot", i);
+                ((SimpleContainerAccess)this).getStacks().get(i).toTag(itemTag);
+                nbtTagList.add(itemTag);
+            }
+        }
+        return nbtTagList;
     }
 }

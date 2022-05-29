@@ -4,7 +4,6 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
-import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
@@ -14,6 +13,9 @@ import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.item.ModelPredicateProvider;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.render.RenderLayer;
@@ -32,6 +34,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
@@ -41,7 +44,6 @@ import net.minecraft.world.GameMode;
 import org.lwjgl.glfw.GLFW;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
-import tfar.davespotioneering.client.model.custom.FullBrightModelProvider;
 import tfar.davespotioneering.client.model.gecko.DoubleGeoItemStackRenderer;
 import tfar.davespotioneering.client.model.gecko.GeoItemStackRenderer;
 import tfar.davespotioneering.client.particle.FastDripParticle;
@@ -85,8 +87,8 @@ public class ClientEvents implements ClientModInitializer {
             return 0xffffff;
         }, ModBlocks.REINFORCED_CAULDRON);
 
-        FabricModelPredicateProviderRegistry.register(ModItems.POTIONEER_GAUNTLET, new Identifier("active"),
-                (ItemStack a, ClientWorld b, LivingEntity c) -> a.hasTag() ? a.getTag().getBoolean("active") ? 1 : 0 : 0);
+        FabricModelPredicateProviderRegistry.register(ModItems.POTIONEER_GAUNTLET, new Identifier("active"),GAUNTLET
+                );
 
         registerBlockingProperty(ModItems.WHITE_UMBRELLA);
         registerBlockingProperty(ModItems.ORANGE_UMBRELLA);
@@ -108,12 +110,26 @@ public class ClientEvents implements ClientModInitializer {
         registerBlockingProperty(ModItems.AGED_UMBRELLA);
         registerBlockingProperty(ModItems.GILDED_UMBRELLA);
 
-        ModelLoadingRegistry.INSTANCE.registerResourceProvider(manager -> new FullBrightModelProvider());
-
         BuiltinItemRendererRegistry.INSTANCE.register(ModItems.AGED_UMBRELLA,createAgedUmbrellaItemStackRenderer());
-        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.GILDED_UMBRELLA,createAgedUmbrellaItemStackRenderer());
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.GILDED_UMBRELLA,umbrella("gilded"));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.WHITE_UMBRELLA,classicUmbrella(DyeColor.WHITE));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.ORANGE_UMBRELLA,classicUmbrella(DyeColor.ORANGE));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.MAGENTA_UMBRELLA,classicUmbrella(DyeColor.MAGENTA));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.LIGHT_BLUE_UMBRELLA,classicUmbrella(DyeColor.LIGHT_BLUE));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.YELLOW_UMBRELLA,classicUmbrella(DyeColor.YELLOW));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.GRAY_UMBRELLA,classicUmbrella(DyeColor.GRAY));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.LIGHT_GRAY_UMBRELLA,classicUmbrella(DyeColor.LIGHT_GRAY));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.CYAN_UMBRELLA,classicUmbrella(DyeColor.CYAN));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.PURPLE_UMBRELLA,classicUmbrella(DyeColor.PURPLE));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.BLUE_UMBRELLA,classicUmbrella(DyeColor.BLUE));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.BROWN_UMBRELLA,classicUmbrella(DyeColor.BROWN));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.GREEN_UMBRELLA,classicUmbrella(DyeColor.GREEN));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.RED_UMBRELLA,classicUmbrella(DyeColor.RED));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.BLACK_UMBRELLA,classicUmbrella(DyeColor.BLACK));
 
     }
+
+    public static final ModelPredicateProvider GAUNTLET = (ItemStack stack, ClientWorld b, LivingEntity c) -> stack.hasTag() ? stack.getTag().getBoolean("active") ? 1 : 0 : 0;
 
 
     public static BuiltinItemRendererRegistry.DynamicItemRenderer umbrella(String s) {
@@ -121,11 +137,7 @@ public class ClientEvents implements ClientModInitializer {
     }
 
     public static BuiltinItemRendererRegistry.DynamicItemRenderer classicUmbrella(DyeColor dyeColor) {
-        return createGeoClassicUmbrellaItemStackRenderer(dyeColor);
-    }
-
-    private static BuiltinItemRendererRegistry.DynamicItemRenderer  createGeoClassicUmbrellaItemStackRenderer(DyeColor color) {
-        return createGeoClassicUmbrellaItemStackRenderer(color.name().toLowerCase(Locale.ROOT));
+        return umbrella(dyeColor.name().toLowerCase(Locale.ROOT));
     }
 
     private static BuiltinItemRendererRegistry.DynamicItemRenderer  createGeoClassicUmbrellaItemStackRenderer(String itemName) {
@@ -147,10 +159,10 @@ public class ClientEvents implements ClientModInitializer {
     }
 
     public static void switchGameMode(GameMode oldGameType, GameMode newGameType) {
-        if (newGameType == GameMode.SURVIVAL && oldGameType == GameMode.CREATIVE && ClothConfig.gauntlet_hud_preset == GauntletHUD.HudPreset.ABOVE_HOTBAR) {
+        if (newGameType == GameMode.SURVIVAL && ClothConfig.gauntlet_hud_preset == GauntletHUD.HudPreset.ABOVE_HOTBAR) {
             ClothConfig.gauntlet_hud_x = GauntletHUDMovementScreen.getFixedPositionValue(MinecraftClient.getInstance().getWindow().getScaledHeight() - 42 - 40, false);
         }
-        if (newGameType == GameMode.CREATIVE && oldGameType == GameMode.SURVIVAL && ClothConfig.gauntlet_hud_preset == GauntletHUD.HudPreset.ABOVE_HOTBAR) {
+        if (newGameType == GameMode.CREATIVE && ClothConfig.gauntlet_hud_preset == GauntletHUD.HudPreset.ABOVE_HOTBAR) {
             ClothConfig.gauntlet_hud_y = GauntletHUDMovementScreen.getFixedPositionValue(MinecraftClient.getInstance().getWindow().getScaledHeight() - 42 - 25, false);
         }
     }
@@ -280,5 +292,7 @@ public class ClientEvents implements ClientModInitializer {
         //world.addParticle(particleDataIn,blockPosIn.x,blockPosIn.y,blockPosIn.z,0,-.10,0);
     }
 
-
+    public static void renderWrappedToolTip(Screen screen, ItemStack stack,MatrixStack matrixStack, List<? extends StringVisitable> tooltips, int mouseX, int mouseY, TextRenderer font) {
+        GuiUtils.drawWrappedHoveringText(stack,matrixStack, tooltips, mouseX, mouseY, screen.width, screen.height, -1, font);
+    }
 }

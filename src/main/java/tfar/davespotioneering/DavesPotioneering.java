@@ -88,7 +88,7 @@ public class DavesPotioneering implements ModInitializer {
         ItemStack lingerMilkPot = new ItemStack(Items.LINGERING_POTION);
         PotionUtil.setPotion(lingerMilkPot,ModPotions.MILK);
 
-      //  splashRecipe(ModPotions.MILK,splashMilkPot);
+     //   splashRecipe(ModPotions.MILK,splashMilkPot);
 
       //  lingerRecipe(ModPotions.MILK,lingerMilkPot);
     }

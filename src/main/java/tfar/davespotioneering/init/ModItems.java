@@ -16,6 +16,9 @@ import java.util.stream.Collectors;
 
 public class ModItems {
 
+    public static final Identifier NET_ID = new Identifier(DavesPotioneering.MODID,"item/sprite/netherite_gauntlet");
+    public static final Identifier RUD_ID = new Identifier(DavesPotioneering.MODID,"item/sprite/rudimentary_gauntlet");
+
     private static List<Item> MOD_ITEMS;
 
     public static final ItemGroup tab = new ItemGroup(8,DavesPotioneering.MODID) {
@@ -28,8 +31,8 @@ public class ModItems {
     public static final Item COMPOUND_BREWING_STAND = new BlockItem(ModBlocks.COMPOUND_BREWING_STAND,new Item.Settings().group(tab));
     public static final Item REINFORCED_CAULDRON = new BlockItem(ModBlocks.REINFORCED_CAULDRON,new Item.Settings().group(tab));
     public static final Item POTIONEER_GAUNTLET = new GauntletItem(new Item.Settings().group(tab).maxDamage(32));
-    public static final Item NETHERITE_GAUNTLET = new SimpleGauntletItem(ToolMaterials.NETHERITE,4,-2.8f,new Item.Settings().group(tab));
-    public static final Item RUDIMENTARY_GAUNTLET = new SimpleGauntletItem(ToolMaterials.IRON,3,-2.8f,new Item.Settings().group(tab));
+    public static final Item NETHERITE_GAUNTLET = new SimpleGauntletItem(ToolMaterials.NETHERITE,4,-2.8f,new Item.Settings().group(tab),NET_ID);
+    public static final Item RUDIMENTARY_GAUNTLET = new SimpleGauntletItem(ToolMaterials.IRON,3,-2.8f,new Item.Settings().group(tab),RUD_ID);
 
     public static final Item MAGIC_LECTERN = new BlockItem(ModBlocks.MAGIC_LECTERN,new Item.Settings());
     public static final Item POTION_INJECTOR = new BlockItem(ModBlocks.POTION_INJECTOR,new Item.Settings().group(tab));

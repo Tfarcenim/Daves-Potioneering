@@ -5,7 +5,8 @@ import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.recipe.BrewingRecipeRegistry;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.Direction;
@@ -25,7 +26,7 @@ public class BrewingHandler extends SimpleInventory {
         super(size);
     }
 
-    public DefaultedList<ItemStack> getStacks() {
+    public DefaultedList<ItemStack> getItems() {
         return ((SimpleContainerAccess)this).getStacks();
     }
 
@@ -69,7 +70,32 @@ public class BrewingHandler extends SimpleInventory {
         FUEL_AND_POTIONS = potion_fuel.stream().mapToInt(i -> i).toArray();
     }
 
-    public Tag serializeNBT() {
-        return null;
+    public void readTags(ListTag tags) {
+        for (int i = 0; i < tags.size(); i++)
+        {
+            CompoundTag itemTags = tags.getCompound(i);
+            int slot = itemTags.getInt("Slot");
+
+            if (slot >= 0 && slot < getItems().size())
+            {
+                getItems().set(i,ItemStack.fromTag(itemTags));
+            }
+        }
     }
+
+    public ListTag getTags() {
+        ListTag nbtTagList = new ListTag();
+        for (int i = 0; i < this.size(); i++)
+        {
+            if (!getItems().get(i).isEmpty())
+            {
+                CompoundTag itemTag = new CompoundTag();
+                itemTag.putInt("Slot", i);
+                getItems().get(i).toTag(itemTag);
+                nbtTagList.add(itemTag);
+            }
+        }
+        return nbtTagList;
+    }
+
 }

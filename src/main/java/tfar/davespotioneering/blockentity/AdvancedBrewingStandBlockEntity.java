@@ -211,7 +211,7 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements Tick
         boolean canMilkify = ingredient.getItem() == Items.MILK_BUCKET;
 
         //note: this is changed from the BrewingRecipeRegistry version to allow for >1 potion in a stack
-        Util.brewPotions(brewingHandler.getStacks(), ingredient, POTIONS);
+        Util.brewPotions(brewingHandler.getItems(), ingredient, POTIONS);
         Events.potionBrew(this,ingredient);
 
         if (canMilkify) {
@@ -268,7 +268,7 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements Tick
     public CompoundTag toTag(CompoundTag compound) {
         super.toTag(compound);
         compound.putShort("BrewTime", (short)this.brewTime);
-        compound.put("Items",brewingHandler.serializeNBT());
+        compound.put("Items",brewingHandler.getTags());
         compound.putInt("Fuel", this.fuel);
         compound.putInt("xp",xp);
         return compound;

@@ -1,5 +1,6 @@
 package tfar.davespotioneering.blockentity;
 
+import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CauldronBlock;
 import net.minecraft.block.entity.BlockEntity;
@@ -10,7 +11,6 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
@@ -24,7 +24,7 @@ import tfar.davespotioneering.init.ModPotions;
 
 import javax.annotation.Nonnull;
 
-public class ReinforcedCauldronBlockEntity extends BlockEntity {
+public class ReinforcedCauldronBlockEntity extends BlockEntity implements BlockEntityClientSerializable {
 
     @Nonnull protected Potion potion = Potions.EMPTY;
 
@@ -43,7 +43,6 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity {
 
     public void setPotion(@Nonnull Potion potion) {
         this.potion = potion;
-        markDirty();
     }
 
     public int getColor() {
@@ -69,13 +68,15 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity {
     @Nonnull
     @Override
     public CompoundTag toInitialChunkDataTag() {
-        return toTag(new CompoundTag());    // okay to send entire inventory on chunk load
+        CompoundTag tag = super.toInitialChunkDataTag();
+        return toTag(tag);    // okay to send entire inventory on chunk load
     }
 
-    @Override
-    public BlockEntityUpdateS2CPacket toUpdatePacket() {
-        return new BlockEntityUpdateS2CPacket(getPos(), 1, toInitialChunkDataTag());
-    }
+    //Do not use
+   // @Override
+   // public BlockEntityUpdateS2CPacket toUpdatePacket() {
+   //     return new BlockEntityUpdateS2CPacket(getPos(), 1, toInitialChunkDataTag());
+   // }
 
     //@Override
     //public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
@@ -103,5 +104,22 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity {
 
     private void scheduleTick() {
         this.world.getBlockTickScheduler().schedule(this.getPos(), this.getCachedState().getBlock(), ReinforcedCauldronBlock.brew_speed);
+    }
+
+    @Override
+    public void fromClientTag(CompoundTag tag) {
+        potion = Registry.POTION.get(new Identifier(tag.getString("potion")));
+    }
+
+    @Override
+    public CompoundTag toClientTag(CompoundTag tag) {
+        tag.putString("potion", Registry.POTION.getId(potion).toString());
+        return tag;
+    }
+
+    @Override
+    public void markDirty() {
+        super.markDirty();
+        sync();
     }
 }

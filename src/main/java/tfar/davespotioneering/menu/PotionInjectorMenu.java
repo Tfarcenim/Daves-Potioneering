@@ -2,7 +2,6 @@ package tfar.davespotioneering.menu;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundTag;
@@ -17,11 +16,12 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import tfar.davespotioneering.init.ModContainerTypes;
+import tfar.davespotioneering.inv.InventorySlot;
 import tfar.davespotioneering.inv.PotionInjectorHandler;
 
 public class PotionInjectorMenu extends ScreenHandler {
 
-    private final Inventory inventory;
+    private final PotionInjectorHandler inventory;
 
     //client
     public PotionInjectorMenu(int id, PlayerInventory playerInventory) {
@@ -29,7 +29,7 @@ public class PotionInjectorMenu extends ScreenHandler {
     }
 
     //common
-    public PotionInjectorMenu(int id, PlayerInventory playerInventory, Inventory inventory) {
+    public PotionInjectorMenu(int id, PlayerInventory playerInventory, PotionInjectorHandler inventory) {
         super(ModContainerTypes.ALCHEMICAL_GAUNTLET, id);
         this.inventory = inventory;
         // assertInventorySize(inventory, 5);
@@ -37,12 +37,13 @@ public class PotionInjectorMenu extends ScreenHandler {
 
         int potY = 77;
 
+        //potion slots
         for (int i = 0; i < 6;i++) {
-            this.addSlot(new Slot(inventory, i, 26 + 108 * (i/3), 18 + 18 * (i % 3)));
+            this.addSlot(new InventorySlot(inventory, i, 26 + 108 * (i/3), 18 + 18 * (i % 3)));
         }
 
-        addSlot(new Slot(inventory,6,80, 32));
-        addSlot(new Slot(inventory,7,80,55));
+        addSlot(new InventorySlot(inventory,PotionInjectorHandler.GAUNTLET,80, 32));
+        addSlot(new InventorySlot(inventory,PotionInjectorHandler.BLAZE,80,55));
 
         int invX = 8;
         int invY = 109;
@@ -132,21 +133,23 @@ public class PotionInjectorMenu extends ScreenHandler {
             newNbt.putInt("activePotionIndex", 0);
             newNbt.put("potions", nbt1);
 
-            int presentBlaze = info.getInt("blaze");
+            int presentBlaze = gauntlet.getMaxDamage() - gauntlet.getDamage();
 
             int blazeInsert = Math.min(BLAZE_CAP - presentBlaze,Math.min(BLAZE_CAP,inventory.getStack(PotionInjectorHandler.BLAZE).getCount()));
 
-            newNbt.putInt("blaze",blazeInsert + presentBlaze);
+            gauntlet.setDamage(gauntlet.getMaxDamage() - (blazeInsert + presentBlaze));
             inventory.removeStack(PotionInjectorHandler.BLAZE,blazeInsert);
             gauntlet.getTag().put("info",newNbt);
         }
     }
 
+    public static final byte TAG_STRING = 8;//get this from Tag in 1.18
+
     private void removePotionsAndBlaze() {
         ItemStack gauntlet = inventory.getStack(PotionInjectorHandler.GAUNTLET);
         if (!gauntlet.isEmpty()) {
             CompoundTag nbt = gauntlet.getTag().getCompound("info");
-            ListTag listNBT = nbt.getList("potions", 10);
+            ListTag listNBT = nbt.getList("potions", TAG_STRING);
 
             boolean allRemoved = true;
             for (int i = 0; i < listNBT.size(); i++) {
@@ -158,7 +161,7 @@ public class PotionInjectorMenu extends ScreenHandler {
                     if (present.getCount() < inventory.getMaxCountPerStack()) {
                         ItemStack stack = new ItemStack(Items.LINGERING_POTION);
                         PotionUtil.setPotion(stack, potion);
-                  //     inventory.insertItem(i, stack, false);
+                       inventory.insertItem(i, stack, false);
                         listNBT.set(i,StringTag.of(Registry.POTION.getId(Potions.EMPTY).toString()));
                     } else {
                         allRemoved = false;
@@ -173,16 +176,16 @@ public class PotionInjectorMenu extends ScreenHandler {
 
             int maxBlazeRemove = inventory.getMaxCountPerStack() - presentBlaze;
 
-            int blaze = nbt.getInt("blaze");
+            int blaze = gauntlet.getMaxDamage() - gauntlet.getDamage();
 
             int blazeRemove = Math.min(maxBlazeRemove,blaze);
 
-        //    inventory.insertItem(PotionInjectorHandler.BLAZE,new ItemStack(Items.BLAZE_POWDER,blazeRemove),false);
+            inventory.insertItem(PotionInjectorHandler.BLAZE,new ItemStack(Items.BLAZE_POWDER,blazeRemove),false);
 
             if (blaze > blazeRemove) {
-                nbt.putInt("blaze",blaze - blazeRemove);
+               gauntlet.setDamage(gauntlet.getMaxDamage() - (blaze - blazeRemove));
             } else {
-                nbt.remove("blaze");
+                gauntlet.setDamage(gauntlet.getMaxDamage());
             }
         }
     }
@@ -203,7 +206,7 @@ public class PotionInjectorMenu extends ScreenHandler {
             CompoundTag nbt = stack.getTag();
             if (nbt != null) {
                 CompoundTag info = nbt.getCompound("info");
-                ListTag listNBT = info.getList("potions", 10);
+                ListTag listNBT = info.getList("potions", TAG_STRING);
                 if (!listNBT.isEmpty()) {
                     for (Tag nb : listNBT) {
                         Potion potion = Registry.POTION.get(new Identifier(nb.asString()));
