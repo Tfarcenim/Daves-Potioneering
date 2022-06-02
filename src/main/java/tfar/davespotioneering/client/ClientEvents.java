@@ -2,24 +2,29 @@ package tfar.davespotioneering.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.item.*;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
@@ -29,7 +34,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.Util;
@@ -43,12 +47,6 @@ import tfar.davespotioneering.net.GauntletCyclePacket;
 import tfar.davespotioneering.net.PacketHandler;
 
 import static tfar.davespotioneering.DavesPotioneering.MODID;
-
-import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.PotionItem;
-import net.minecraft.world.item.TieredItem;
 
 public class ClientEvents {
 
@@ -121,7 +119,7 @@ public class ClientEvents {
         MenuScreens.register(ModContainerTypes.ADVANCED_BREWING_STAND, AdvancedBrewingStandScreen::new);
         MenuScreens.register(ModContainerTypes.ALCHEMICAL_GAUNTLET, GauntletWorkstationScreen::new);
 
-        ClientRegistry.bindTileEntityRenderer(ModBlockEntityTypes.POTION_INJECTOR, PotionInjectorRenderer::new);
+        BlockEntityRenderers.register(ModBlockEntityTypes.POTION_INJECTOR, PotionInjectorRenderer::new);
 
         Minecraft.getInstance().getBlockColors().register((state, reader, pos, index) -> {
             if (pos != null) {
@@ -134,7 +132,7 @@ public class ClientEvents {
         }, ModBlocks.REINFORCED_CAULDRON);
 
         ItemProperties.register(ModItems.POTIONEER_GAUNTLET, new ResourceLocation("active"),
-                (ItemStack a, ClientLevel b, LivingEntity c) -> a.hasTag() ? a.getTag().getBoolean("active") ? 1 : 0 : 0);
+                (ItemStack a, ClientLevel b, LivingEntity c,int i) -> a.hasTag() ? a.getTag().getBoolean("active") ? 1 : 0 : 0);
 
         registerBlockingProperty(ModItems.WHITE_UMBRELLA);
         registerBlockingProperty(ModItems.ORANGE_UMBRELLA);
@@ -159,12 +157,12 @@ public class ClientEvents {
 
     private static void registerBlockingProperty(Item item) {
         ItemProperties.register(item, new ResourceLocation("blocking"),
-                (stack, world, entity) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
+                (stack, world, entity,i) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
     }
 
     public static void gauntletHud(RenderGameOverlayEvent.Post e) {
         // only renders when the hotbar renders
-        if (e.getType() == RenderGameOverlayEvent.ElementType.HOTBAR) {
+        if (e.getType() == RenderGameOverlayEvent.ElementType.TEXT) {
 //            if (Minecraft.getInstance().currentScreen != null) return;
             // get player from client
             Player player = Minecraft.getInstance().player;
@@ -204,7 +202,7 @@ public class ClientEvents {
 
                 Vec3 vec = player.position().add(0, +player.getBbHeight() / 2, 0);
 
-                double yaw = -Mth.wrapDegrees(player.yRot);
+                double yaw = -Mth.wrapDegrees(player.getYRot());
 
                 double of1 = Math.random() * .60 + .15;
                 double of2 = .40 + Math.random() * .10;

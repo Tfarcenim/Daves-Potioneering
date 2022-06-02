@@ -13,7 +13,7 @@ import java.util.Collection;
 @Mixin(PotionUtils.class)
 public class PotionUtilsMixin {
 
-    @Inject(method = "getPotionColorFromEffectList",at = @At("RETURN"),cancellable = true)
+    @Inject(method = "getColor(Ljava/util/Collection;)I",at = @At("RETURN"),cancellable = true)
     private static void modifyColor(Collection<MobEffectInstance> instances, CallbackInfoReturnable<Integer> cir) {
         int old = cir.getReturnValue();
         if (old == 0) {

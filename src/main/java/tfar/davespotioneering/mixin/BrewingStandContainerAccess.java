@@ -8,6 +8,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(BrewingStandMenu.class)
 public interface BrewingStandContainerAccess {
 
-    @Accessor Container getTileBrewingStand();
+    @Accessor Container getBrewingStand();
 
 }

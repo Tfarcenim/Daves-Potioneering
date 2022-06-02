@@ -1,17 +1,16 @@
 package tfar.davespotioneering.mixin;
 
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraft.stats.Stats;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -36,7 +35,7 @@ public class PotionItemMixin {
         return 20;//half of 32
     }
 
-    @Inject(method = "hasEffect",at = @At("HEAD"),cancellable = true)
+    @Inject(method = "isFoil",at = @At("HEAD"),cancellable = true)
     private void removeGlintFromMilk(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
         if (PotionUtils.getMobEffects(stack).stream().anyMatch(effectInstance -> effectInstance.getEffect() == ModEffects.MILK)) {
             cir.setReturnValue(false);
@@ -50,7 +49,7 @@ public class PotionItemMixin {
      * @author Tfar
      */
     @Overwrite
-    public ItemStack onItemUseFinish(ItemStack potion, Level worldIn, LivingEntity entityLiving) {
+    public ItemStack finishUsingItem(ItemStack potion, Level worldIn, LivingEntity entityLiving) {
         if (Util.isMilkified(potion)) {
             entityLiving.removeAllEffects();
         }
@@ -71,12 +70,12 @@ public class PotionItemMixin {
 
         if (playerentity != null) {
             playerentity.awardStat(Stats.ITEM_USED.get((Item)(Object)this));
-            if (!playerentity.abilities.instabuild) {
+            if (!playerentity.getAbilities().instabuild) {
                 potion.shrink(1);
             }
         }
 
-        if (playerentity == null || !playerentity.abilities.instabuild) {
+        if (playerentity == null || !playerentity.getAbilities().instabuild) {
             if (potion.isEmpty()) {
                 return new ItemStack(Items.GLASS_BOTTLE);
             }
@@ -85,7 +84,7 @@ public class PotionItemMixin {
                 //the actual change
                 if (ModConfig.Server.return_empty_bottles.get()) {
                     //playerentity.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
-                    playerentity.inventory.add(new ItemStack(Items.GLASS_BOTTLE));
+                    playerentity.getInventory().add(new ItemStack(Items.GLASS_BOTTLE));
                 } else {
                     playerentity.drop(new ItemStack(Items.GLASS_BOTTLE),false);
                 }

@@ -1,7 +1,7 @@
 {
   "required": true,
   "package": "tfar.davespotioneering.mixin",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_16",
   "refmap": "davespotioneering.refmap.json",
   "mixins": [
     "BlockEntityTypeAcces",
@@ -13,7 +13,6 @@
     "PotionEntityMixin",
     "PotionItemMixin",
     "PotionUtilsMixin",
-    "ProtectionEnchantmentMixin",
     "ServerPlayNetHandlerMixin",
     "ThrowablePotionItemMixin"
   ],

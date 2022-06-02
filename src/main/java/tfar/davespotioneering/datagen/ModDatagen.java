@@ -2,7 +2,7 @@ package tfar.davespotioneering.datagen;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import tfar.davespotioneering.datagen.assets.ModBlockstateProvider;
 import tfar.davespotioneering.datagen.assets.ModItemModelProvider;
 import tfar.davespotioneering.datagen.assets.ModLangProvider;

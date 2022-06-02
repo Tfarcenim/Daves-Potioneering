@@ -16,7 +16,7 @@ public class ModRecipeProvider extends RecipeProvider {
     }
 
     @Override
-    public void buildShapelessRecipes(Consumer<FinishedRecipe> consumer) {
+    public void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
         ShapedRecipeBuilder.shaped(ModItems.WHITE_UMBRELLA)
                 .define('a', Blocks.WHITE_WOOL)
                 .define('b', Items.SHIELD)

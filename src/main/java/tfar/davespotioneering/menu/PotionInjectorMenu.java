@@ -1,21 +1,20 @@
 package tfar.davespotioneering.menu;
 
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.Registry;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import tfar.davespotioneering.init.ModContainerTypes;
@@ -115,7 +114,7 @@ public class PotionInjectorMenu extends AbstractContainerMenu {
             CompoundTag oldNBT = gauntlet.getOrCreateTag();
 
             CompoundTag info = oldNBT.getCompound("info");
-            ListTag oldList = info.getList("potions", Constants.NBT.TAG_STRING);
+            ListTag oldList = info.getList("potions", Tag.TAG_STRING);
 
             for (int i = 0; i < PotionInjectorHandler.GAUNTLET; i++) {
 
@@ -148,7 +147,7 @@ public class PotionInjectorMenu extends AbstractContainerMenu {
         ItemStack gauntlet = inventory.getStackInSlot(PotionInjectorHandler.GAUNTLET);
         if (!gauntlet.isEmpty()) {
             CompoundTag nbt = gauntlet.getTag().getCompound("info");
-            ListTag listNBT = nbt.getList("potions", Constants.NBT.TAG_STRING);
+            ListTag listNBT = nbt.getList("potions", Tag.TAG_STRING);
 
             boolean allRemoved = true;
             for (int i = 0; i < listNBT.size(); i++) {
@@ -205,7 +204,7 @@ public class PotionInjectorMenu extends AbstractContainerMenu {
             CompoundTag nbt = stack.getTag();
             if (nbt != null) {
                 CompoundTag info = nbt.getCompound("info");
-                ListTag listNBT = info.getList("potions", Constants.NBT.TAG_STRING);
+                ListTag listNBT = info.getList("potions", Tag.TAG_STRING);
                 if (!listNBT.isEmpty()) {
                     for (Tag nb : listNBT) {
                         Potion potion = Registry.POTION.get(new ResourceLocation(nb.getAsString()));

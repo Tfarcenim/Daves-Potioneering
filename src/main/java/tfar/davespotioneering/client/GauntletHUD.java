@@ -1,14 +1,11 @@
 package tfar.davespotioneering.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.*;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.gui.GuiComponent;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -21,7 +18,7 @@ import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.init.ModSoundEvents;
 import tfar.davespotioneering.item.GauntletItem;
 
-public class GauntletHUD extends GuiComponent {
+public class GauntletHUD {
     public static final ResourceLocation GAUNTLET_ICON_LOC = new ResourceLocation(DavesPotioneering.MODID, "textures/gauntlet_icons/");
     public final static GauntletHUD hudInstance = new GauntletHUD();
 
@@ -53,9 +50,9 @@ public class GauntletHUD extends GuiComponent {
     }
 
     public void render(PoseStack matrixStack) {
-        RenderSystem.pushMatrix();
-        RenderSystem.color4f(1, 1, 1, 1);
-        mc.getTextureManager().bind(hud);
+        matrixStack.pushPose();
+        RenderSystem.setShaderColor(1, 1, 1, 1);
+        bind(hud);
 
         int windowW = mc.getWindow().getGuiScaledWidth();
         int windowH = mc.getWindow().getGuiScaledHeight();
@@ -65,7 +62,7 @@ public class GauntletHUD extends GuiComponent {
 
         if (forwardCycle) {
             cooldown--;
-            blit(matrixStack, xFixed, yFixed, getBlitOffset(), 0, 87, 120, 41, 128, 128);
+            GuiComponent.blit(matrixStack, xFixed, yFixed, mc.gui.getBlitOffset(), 0, 87, 120, 41, 128, 128);
             if (cooldown <= 0) {
                mc.getSoundManager().play(SimpleSoundInstance.forUI(ModSoundEvents.GAUNTLET_SCROLL, 1.0F));
                 forwardCycle = false;
@@ -73,14 +70,14 @@ public class GauntletHUD extends GuiComponent {
             }
         } else if (backwardCycle) {
             cooldown--;
-            blit(matrixStack, xFixed, yFixed, getBlitOffset(), 0, 44, 120, 41, 128, 128);
+            GuiComponent.blit(matrixStack, xFixed, yFixed, mc.gui.getBlitOffset(), 0, 44, 120, 41, 128, 128);
             if (cooldown <= 0) {
                 mc.getSoundManager().play(SimpleSoundInstance.forUI(ModSoundEvents.GAUNTLET_SCROLL, 1.0F));
                 backwardCycle = false;
                 cooldown = maxCooldown;
             }
         } else {
-            blit(matrixStack, xFixed, yFixed, getBlitOffset(), 0, 1, 120, 41, 128, 128);
+            GuiComponent.blit(matrixStack, xFixed, yFixed, mc.gui.getBlitOffset(), 0, 1, 120, 41, 128, 128);
         }
 
         Player player = Minecraft.getInstance().player;
@@ -91,40 +88,40 @@ public class GauntletHUD extends GuiComponent {
         renderPotion(prePotion, matrixStack, xFixed + 3, yFixed + 21, GauntletItem.getCooldownFromPotionByIndex(info.getInt("activePotionIndex")-1, g), false);
         renderPotion(activePotion, matrixStack, xFixed + 51, yFixed + 5, GauntletItem.getCooldownFromPotionByIndex(info.getInt("activePotionIndex"), g), true);
         renderPotion(postPotion, matrixStack, xFixed + 99, yFixed + 21, GauntletItem.getCooldownFromPotionByIndex(info.getInt("activePotionIndex")+1, g), false);
-        RenderSystem.popMatrix();
+        matrixStack.popPose();
     }
 
     private void renderPotion(Potion potion, PoseStack matrixStack, int x, int y, int cooldown, boolean isActivePotion) {
         if (potion == null || potion.getRegistryName() == null) return;
         if (potion.getEffects().isEmpty()) return;
 
-        RenderSystem.pushMatrix();
-        RenderSystem.color4f(1, 1, 1, 1);
+        matrixStack.pushPose();
+        RenderSystem.setShaderColor(1, 1, 1, 1);
 
         if (potion.getEffects().size() > 1) {
             if (potion.getRegistryName().toString().contains("turtle_master")) {
-                mc.getTextureManager().bind(getGauntletIconLoc("turtle_master"));
+                bind(getGauntletIconLoc("turtle_master"));
             } else if (mc.getResourceManager().hasResource(getGauntletIconLoc(potion.getRegistryName().toString()))) {
-                mc.getTextureManager().bind(getGauntletIconLoc(potion.getRegistryName().toString()));
+                bind(getGauntletIconLoc(potion.getRegistryName().toString()));
             } else {
-                mc.getTextureManager().bind(getGauntletIconLoc("unknown"));
+                bind(getGauntletIconLoc("unknown"));
             }
-            blit(matrixStack, x, y, getBlitOffset(), 0, 0, 18, 18, 18, 18);
+            GuiComponent.blit(matrixStack, x, y, mc.gui.getBlitOffset(), 0, 0, 18, 18, 18, 18);
         } else {
             MobEffect effect = potion.getEffects().get(0).getEffect();
             TextureAtlasSprite sprite = mc.getMobEffectTextures().get(effect);
-            mc.getTextureManager().bind(sprite.atlas().location());
-            blit(matrixStack, x, y, 0, 18, 18, sprite);
+            bind(sprite.atlas().location());
+            GuiComponent.blit(matrixStack, x, y, 0, 18, 18, sprite);
         }
 
         // render cooldown, modified from ItemRenderer
         if (cooldown > 0.0F) {
-            RenderSystem.pushMatrix();
+            matrixStack.pushPose();
             RenderSystem.disableDepthTest();
             RenderSystem.disableTexture();
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
-            RenderSystem.translatef(1, 1, getBlitOffset()+1);
+            matrixStack.translate(1, 1, mc.gui.getBlitOffset()+1);
             Tesselator tessellator1 = Tesselator.getInstance();
             BufferBuilder bufferbuilder1 = tessellator1.getBuilder();
             if (isActivePotion) {
@@ -136,10 +133,15 @@ public class GauntletHUD extends GuiComponent {
             }
             RenderSystem.enableTexture();
             RenderSystem.enableDepthTest();
-            RenderSystem.popMatrix();
+            matrixStack.popPose();
         }
 
-        RenderSystem.popMatrix();
+        matrixStack.popPose();
+    }
+
+    private void bind(ResourceLocation res)
+    {
+        RenderSystem.setShaderTexture(0, res);
     }
 
     private int getScaledCooldown(float pixels, float cooldown) {
@@ -156,7 +158,7 @@ public class GauntletHUD extends GuiComponent {
 
     // copy-pasted from ItemRenderer class
     private void draw(BufferBuilder renderer, int x, int y, int width, int height, int red, int green, int blue, int alpha) {
-        renderer.begin(7, DefaultVertexFormat.POSITION_COLOR);
+        renderer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         renderer.vertex(x, y, 0.0D).color(red, green, blue, alpha).endVertex();
         renderer.vertex(x, y + height, 0.0D).color(red, green, blue, alpha).endVertex();
         renderer.vertex(x + width, y + height, 0.0D).color(red, green, blue, alpha).endVertex();

@@ -23,7 +23,6 @@ import tfar.davespotioneering.init.ModContainerTypes;
 import tfar.davespotioneering.inv.BrewingHandler;
 
 public class AdvancedBrewingStandContainer extends AbstractContainerMenu {
-    private final ItemStackHandler tileBrewingStand;
     private final ContainerData data;
 
     public AdvancedBrewingStandBlockEntity blockEntity;
@@ -38,7 +37,6 @@ public class AdvancedBrewingStandContainer extends AbstractContainerMenu {
         super(ModContainerTypes.ADVANCED_BREWING_STAND, id);
        // assertInventorySize(inventory, 5);
        // assertIntArraySize(data, 2);
-        this.tileBrewingStand = inventory;
         this.data = data;
 
         this.blockEntity = advancedBrewingStandBlockEntity;
@@ -189,7 +187,7 @@ public class AdvancedBrewingStandContainer extends AbstractContainerMenu {
             return 2;
         }
 
-        public ItemStack onTake(Player thePlayer, ItemStack stack) {
+        public void onTake(Player thePlayer, ItemStack stack) {
             Potion potion = PotionUtils.getPotion(stack);
             if (thePlayer instanceof ServerPlayer) {
                 ForgeEventFactory.onPlayerBrewedPotion(thePlayer, stack);
@@ -197,7 +195,6 @@ public class AdvancedBrewingStandContainer extends AbstractContainerMenu {
             }
 
             super.onTake(thePlayer, stack);
-            return stack;
         }
     }
 }

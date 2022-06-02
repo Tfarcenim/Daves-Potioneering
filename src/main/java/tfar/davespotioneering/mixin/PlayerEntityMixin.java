@@ -15,7 +15,7 @@ abstract class PlayerEntityMixin extends LivingEntity {
         super(type, worldIn);
     }
 
-    @ModifyArg(method = "disableShield",at = @At(value = "INVOKE",target = "Lnet/minecraft/util/CooldownTracker;setCooldown(Lnet/minecraft/item/Item;I)V"))
+    @ModifyArg(method = "disableShield",at = @At(value = "INVOKE",target = "Lnet/minecraft/world/item/ItemCooldowns;addCooldown(Lnet/minecraft/world/item/Item;I)V"))
     private int moreDelay(int old) {
         return this.getUseItem().getItem() instanceof UmbrellaItem ? 200 : old;
     }

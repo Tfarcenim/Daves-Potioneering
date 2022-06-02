@@ -1,9 +1,9 @@
 package tfar.davespotioneering.net;
 
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 import tfar.davespotioneering.menu.PotionInjectorMenu;
 
 import java.util.function.Supplier;

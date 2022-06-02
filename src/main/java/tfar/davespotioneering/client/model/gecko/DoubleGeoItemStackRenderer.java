@@ -1,26 +1,28 @@
 package tfar.davespotioneering.client.model.gecko;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import com.mojang.blaze3d.platform.Lighting;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.core.util.Color;
 import software.bernie.geckolib3.geo.render.built.GeoModel;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 
 import javax.annotation.Nullable;
-import java.awt.*;
 import java.util.Collections;
 import java.util.function.Function;
 
@@ -32,11 +34,12 @@ public class DoubleGeoItemStackRenderer<T extends IAnimatable> extends BlockEnti
     protected final Function<ResourceLocation, RenderType> renderTypeGetter;
     private final T ianimatable;
 
-    public DoubleGeoItemStackRenderer(AnimatedGeoModel<T> modelProvider1,AnimatedGeoModel<T> modelProvider2, T ianimatable) {
-        this(modelProvider1,modelProvider2, RenderType::entityCutout, ianimatable);
+    public DoubleGeoItemStackRenderer(AnimatedGeoModel<T> modelProvider1,AnimatedGeoModel<T> modelProvider2, T ianimatable,BlockEntityRenderDispatcher p_172550_, EntityModelSet p_172551_) {
+        this(modelProvider1,modelProvider2, RenderType::entityCutout, ianimatable,p_172550_,p_172551_);
     }
 
-    public DoubleGeoItemStackRenderer(AnimatedGeoModel<T> modelProvider1,AnimatedGeoModel<T> modelProvider2, Function<ResourceLocation, RenderType> renderTypeGetter, T ianimatable) {
+    public DoubleGeoItemStackRenderer(AnimatedGeoModel<T> modelProvider1, AnimatedGeoModel<T> modelProvider2, Function<ResourceLocation, RenderType> renderTypeGetter, T ianimatable, BlockEntityRenderDispatcher p_172550_, EntityModelSet p_172551_) {
+        super(p_172550_,p_172551_);
         this.modelProvider1 = modelProvider1;
         this.modelProvider2 = modelProvider2;
         this.renderTypeGetter = renderTypeGetter;
@@ -74,7 +77,7 @@ public class DoubleGeoItemStackRenderer<T extends IAnimatable> extends BlockEnti
         matrices.translate(0, 0.01f, 0);
         matrices.translate(0.5, 0.5, 0.5);
 
-        mc.textureManager.bind(getTextureLocation(ianimatable));
+        RenderSystem.setShaderTexture(0,getTextureLocation(ianimatable));
         Color renderColor = getRenderColor(ianimatable, 0, matrices, bufferIn, null, packedLightIn);
         RenderType renderType = getRenderType(ianimatable, 0, matrices, bufferIn, null, packedLightIn,
                 getTextureLocation(ianimatable));

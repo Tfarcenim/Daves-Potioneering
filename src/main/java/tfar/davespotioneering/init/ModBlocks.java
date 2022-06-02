@@ -8,7 +8,7 @@ import net.minecraftforge.event.RegistryEvent;
 import tfar.davespotioneering.block.AdvancedBrewingStandBlock;
 import tfar.davespotioneering.block.PotionInjectorBlock;
 import tfar.davespotioneering.block.MagicLecternBlock;
-import tfar.davespotioneering.block.ReinforcedCauldronBlock;
+import tfar.davespotioneering.block.LayeredReinforcedCauldronBlock;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -21,7 +21,7 @@ public class ModBlocks {
     public static final Block COMPOUND_BREWING_STAND = new AdvancedBrewingStandBlock(BlockBehaviour.Properties.of(Material.METAL)
             .requiresCorrectToolForDrops().strength(0.5F).lightLevel(state -> 1).noOcclusion());
 
-    public static final Block REINFORCED_CAULDRON = new ReinforcedCauldronBlock(BlockBehaviour.Properties.of(Material.METAL)
+    public static final Block REINFORCED_CAULDRON = new LayeredReinforcedCauldronBlock(BlockBehaviour.Properties.of(Material.METAL)
             .requiresCorrectToolForDrops().strength(0.5F).lightLevel(state -> 1).noOcclusion());
 
     public static final Block MAGIC_LECTERN = new MagicLecternBlock(BlockBehaviour.Properties.copy(Blocks.LECTERN));

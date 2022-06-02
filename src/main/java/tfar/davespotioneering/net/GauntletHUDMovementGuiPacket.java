@@ -1,6 +1,6 @@
 package tfar.davespotioneering.net;
 
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 import tfar.davespotioneering.client.GauntletHUDMovementGui;
 
 import java.util.function.Supplier;

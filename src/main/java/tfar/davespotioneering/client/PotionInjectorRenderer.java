@@ -1,21 +1,20 @@
 package tfar.davespotioneering.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.core.Direction;
 import com.mojang.math.Vector3f;
 import tfar.davespotioneering.block.PotionInjectorBlock;
 import tfar.davespotioneering.blockentity.PotionInjectorBlockEntity;
 import tfar.davespotioneering.init.ModItems;
 
-public class PotionInjectorRenderer extends BlockEntityRenderer<PotionInjectorBlockEntity> {
-    public PotionInjectorRenderer(BlockEntityRenderDispatcher rendererDispatcherIn) {
-        super(rendererDispatcherIn);
+public class PotionInjectorRenderer implements BlockEntityRenderer<PotionInjectorBlockEntity> {
+    public PotionInjectorRenderer(BlockEntityRendererProvider.Context rendererDispatcherIn) {
     }
 
     @Override
@@ -31,7 +30,7 @@ public class PotionInjectorRenderer extends BlockEntityRenderer<PotionInjectorBl
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(-f));
             matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(-22.5F));
             matrixStackIn.translate(0.0D, 0.125D, 0.0625D);
-            Minecraft.getInstance().getItemRenderer().renderStatic(ModItems.POTIONEER_GAUNTLET.getDefaultInstance(), ItemTransforms.TransformType.FIXED,combinedLightIn,combinedOverlayIn,matrixStackIn,bufferIn);
+            Minecraft.getInstance().getItemRenderer().renderStatic(ModItems.POTIONEER_GAUNTLET.getDefaultInstance(), ItemTransforms.TransformType.FIXED,combinedLightIn,combinedOverlayIn,matrixStackIn,bufferIn,0);
             matrixStackIn.popPose();
         }
     }

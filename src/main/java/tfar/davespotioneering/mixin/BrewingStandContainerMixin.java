@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
 @Mixin(BrewingStandMenu.class)
 abstract class BrewingStandContainerMixin extends AbstractContainerMenu {
 
-    @Shadow @Final private Slot slot;
+    @Shadow @Final private Slot ingredientSlot;
 
     protected BrewingStandContainerMixin(@Nullable MenuType<?> type, int id) {
         super(type, id);
@@ -38,10 +38,10 @@ abstract class BrewingStandContainerMixin extends AbstractContainerMenu {
             itemstack = itemstack1.copy();
             if (index > 2 && index != 3 && index != 4) {
                 if (BrewingStandMenu.FuelSlot.mayPlaceItem(itemstack)) {
-                    if (this.moveItemStackTo(itemstack1, 4, 5, false) || this.slot.mayPlace(itemstack1) && !this.moveItemStackTo(itemstack1, 3, 4, false)) {
+                    if (this.moveItemStackTo(itemstack1, 4, 5, false) || this.ingredientSlot.mayPlace(itemstack1) && !this.moveItemStackTo(itemstack1, 3, 4, false)) {
                         return ItemStack.EMPTY;
                     }
-                } else if (this.slot.mayPlace(itemstack1)) {
+                } else if (this.ingredientSlot.mayPlace(itemstack1)) {
                     if (!this.moveItemStackTo(itemstack1, 3, 4, false)) {
                         return ItemStack.EMPTY;
                     }

@@ -1,29 +1,23 @@
 package tfar.davespotioneering.init;
 
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.item.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.*;
 import net.minecraftforge.event.RegistryEvent;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.client.model.gecko.DoubleGeoItemStackRenderer;
 import tfar.davespotioneering.client.model.gecko.GeoItemStackRenderer;
+import tfar.davespotioneering.item.AgedUmbrellaItem;
 import tfar.davespotioneering.item.GauntletItem;
 import tfar.davespotioneering.item.SimpleGauntletItem;
 import tfar.davespotioneering.item.UmbrellaItem;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
-
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tiers;
 
 public class ModItems {
 
@@ -45,41 +39,30 @@ public class ModItems {
     public static final Item MAGIC_LECTERN = new BlockItem(ModBlocks.MAGIC_LECTERN,new Item.Properties());
     public static final Item POTION_INJECTOR = new BlockItem(ModBlocks.POTION_INJECTOR,new Item.Properties().tab(tab));
 
-    public static final Item WHITE_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.WHITE),"classic");
-    public static final Item ORANGE_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.ORANGE),"classic");
-    public static final Item MAGENTA_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.MAGENTA),"classic");
-    public static final Item LIGHT_BLUE_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.LIGHT_BLUE),"classic");
-    public static final Item YELLOW_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.YELLOW),"classic");
-    public static final Item LIME_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.LIME),"classic");
-    public static final Item PINK_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.PINK),"classic");
-    public static final Item GRAY_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.GRAY),"classic");
-    public static final Item LIGHT_GRAY_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.LIGHT_GRAY),"classic");
-    public static final Item CYAN_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.CYAN),"classic");
-    public static final Item PURPLE_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.PURPLE),"classic");
-    public static final Item BLUE_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.BLUE),"classic");
-    public static final Item BROWN_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.BROWN),"classic");
-    public static final Item GREEN_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.GREEN),"classic");
-    public static final Item RED_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.RED),"classic");
-    public static final Item BLACK_UMBRELLA = new UmbrellaItem(classicUmbrella(DyeColor.BLACK),"classic");
+    public static final Item WHITE_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.WHITE,"classic");
+    public static final Item ORANGE_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.ORANGE,"classic");
+    public static final Item MAGENTA_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.MAGENTA,"classic");
+    public static final Item LIGHT_BLUE_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.LIGHT_BLUE,"classic");
+    public static final Item YELLOW_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.YELLOW,"classic");
+    public static final Item LIME_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.LIME,"classic");
+    public static final Item PINK_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.PINK,"classic");
+    public static final Item GRAY_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.GRAY,"classic");
+    public static final Item LIGHT_GRAY_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.LIGHT_GRAY,"classic");
+    public static final Item CYAN_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.CYAN,"classic");
+    public static final Item PURPLE_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.PURPLE,"classic");
+    public static final Item BLUE_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.BLUE,"classic");
+    public static final Item BROWN_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.BROWN,"classic");
+    public static final Item GREEN_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.GREEN,"classic");
+    public static final Item RED_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.RED,"classic");
+    public static final Item BLACK_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.BLACK,"classic");
 
-    public static final Item GILDED_UMBRELLA = new UmbrellaItem(umbrella("gilded"),"gilded");
-    public static final Item AGED_UMBRELLA = new UmbrellaItem(
-            baseUmbrella().setISTER(() -> HideISTERsFromServer::createAgedUmbrellaItemStackRenderer),"aged");
+    public static final Item GILDED_UMBRELLA = new UmbrellaItem(baseUmbrella(),"gilded","gilded");
+    public static final Item AGED_UMBRELLA = new AgedUmbrellaItem(baseUmbrella(),"aged");
 
 
 
     public static Item.Properties baseUmbrella() {
         return new Item.Properties().tab(tab).durability(300);
-    }
-
-    public static Item.Properties umbrella(String s) {
-        return baseUmbrella()
-                .setISTER(() -> () -> HideISTERsFromServer.createGeoClassicUmbrellaItemStackRenderer(s));
-    }
-
-    public static Item.Properties classicUmbrella(DyeColor dyeColor) {
-       return baseUmbrella()
-                .setISTER(() -> () -> HideISTERsFromServer.createGeoClassicUmbrellaItemStackRenderer(dyeColor));
     }
 
     public static void register(RegistryEvent.Register<Item> e) {
@@ -95,29 +78,27 @@ public class ModItems {
         }
     }
 
-    private static class HideISTERsFromServer {
+    public static class HideISTERsFromServer {
 
-        private static BlockEntityWithoutLevelRenderer createGeoClassicUmbrellaItemStackRenderer(DyeColor color) {
+        public static BlockEntityWithoutLevelRenderer createGeoClassicUmbrellaItemStackRenderer(DyeColor color) {
             return createGeoClassicUmbrellaItemStackRenderer(color.name().toLowerCase(Locale.ROOT));
         }
 
-        private static BlockEntityWithoutLevelRenderer createGeoClassicUmbrellaItemStackRenderer(String itemName) {
+        public static BlockEntityWithoutLevelRenderer createGeoClassicUmbrellaItemStackRenderer(String itemName) {
             return new DoubleGeoItemStackRenderer<>(
                     GeoItemStackRenderer.GeoItemModel.makeClosedUmbrella(itemName),
                     GeoItemStackRenderer.GeoItemModel.makeOpenUmbrella(itemName)
-                    ,GeoItemStackRenderer.NOTHING);
+                    ,GeoItemStackRenderer.NOTHING,Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
         }
 
-        private static BlockEntityWithoutLevelRenderer createAgedUmbrellaItemStackRenderer() {
+        @Nonnull
+        public static BlockEntityWithoutLevelRenderer createAgedUmbrellaItemStackRenderer() {
             return new DoubleGeoItemStackRenderer<>(
                     GeoItemStackRenderer.GeoItemModel.makeClosedUmbrella("aged"),
                     GeoItemStackRenderer.GeoItemModel.makeOpenAgedUmbrella()
-                    ,GeoItemStackRenderer.NOTHING);
+                    ,GeoItemStackRenderer.NOTHING, Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
         }
 
-        private static BlockEntityWithoutLevelRenderer createGeoItemStackRendererTransparent(ResourceLocation itemName) {
-            return new GeoItemStackRenderer<>(new GeoItemStackRenderer.GeoItemModel<>(itemName), RenderType::entityTranslucent,GeoItemStackRenderer.NOTHING);
-        }
     }
 
     public static List<Item> getAllItems() {

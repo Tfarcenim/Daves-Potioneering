@@ -1,23 +1,30 @@
 package tfar.davespotioneering.item;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tiers;
-import net.minecraft.world.item.SwordItem;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Tuple;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffectUtil;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.util.*;
-import net.minecraft.util.text.*;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.registries.ForgeRegistries;
 import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.init.ModItems;
 import tfar.davespotioneering.init.ModSoundEvents;
@@ -27,18 +34,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-
-import net.minecraft.world.item.Item.Properties;
-
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 
 public class GauntletItem extends SwordItem {
 
@@ -93,14 +88,14 @@ public class GauntletItem extends SwordItem {
         return oldStack.getItem() != newStack.getItem();
     }
 
-    @Override
+    //@Override
     public boolean showDurabilityBar(ItemStack stack) {
         CompoundTag info = stack.getOrCreateTag().getCompound("info");
         double blaze = info.getInt("blaze");
         return blaze > 0;
     }
 
-    @Override
+    //@Override
     public int getRGBDurabilityForDisplay(ItemStack stack) {
         return ChatFormatting.GOLD.getColor();
     }
@@ -186,8 +181,8 @@ public class GauntletItem extends SwordItem {
         if (entity instanceof Player && !entity.getCommandSenderWorld().isClientSide()) {
             Player player = (Player) entity;
             ItemStack gauntletInstance = new ItemStack(ModItems.POTIONEER_GAUNTLET);
-            if (player.inventory.contains(gauntletInstance)) {
-                List<ItemStack> gauntlets = getItemsFromInventory(gauntletInstance, player.inventory);
+            if (player.getInventory().contains(gauntletInstance)) {
+                List<ItemStack> gauntlets = getItemsFromInventory(gauntletInstance, player.getInventory());
                 for (ItemStack gauntlet : gauntlets) {
                     modifyCooldowns(gauntlet, (cd) -> {
                         if (cd > 0) cd -= 1;
@@ -209,13 +204,13 @@ public class GauntletItem extends SwordItem {
     @Nullable
     public static Tuple<List<MobEffectInstance>, List<Potion>> getEffectsFromGauntlet(ItemStack stack) {
         if (!stack.hasTag()) return null;
-        ListTag nbts = stack.getTag().getCompound("info").getList("potions", Constants.NBT.TAG_STRING);
+        ListTag nbts = stack.getTag().getCompound("info").getList("potions", Tag.TAG_STRING);
         List<MobEffectInstance> effects = new ArrayList<>();
         List<Potion> potions = new ArrayList<>();
         for (Tag inbt : nbts) {
             if (inbt instanceof StringTag) {
                 StringTag stringNBT = (StringTag) inbt;
-                Potion potion = ForgeRegistries.POTION_TYPES.getValue(new ResourceLocation(stringNBT.getAsString()));
+                Potion potion = Registry.POTION.get(new ResourceLocation(stringNBT.getAsString()));
                 if (potion != null) {
                     effects.addAll(potion.getEffects());
                     potions.add(potion);
@@ -228,7 +223,7 @@ public class GauntletItem extends SwordItem {
     public static void cycleGauntletForward(Player player) {
         if (player == null) return;
         CompoundTag info = player.getMainHandItem().getOrCreateTag().getCompound("info");
-        ListTag nbts = info.getList("potions", Constants.NBT.TAG_STRING);
+        ListTag nbts = info.getList("potions", Tag.TAG_STRING);
         if (nbts.isEmpty()) return;
         int index = info.getInt("activePotionIndex");
         index++;
@@ -241,7 +236,7 @@ public class GauntletItem extends SwordItem {
     public static void cycleGauntletBackward(Player player) {
         if (player == null) return;
         CompoundTag info = player.getMainHandItem().getOrCreateTag().getCompound("info");
-        ListTag nbts = info.getList("potions", Constants.NBT.TAG_STRING);
+        ListTag nbts = info.getList("potions", Tag.TAG_STRING);
         if (nbts.isEmpty()) return;
         int index = info.getInt("activePotionIndex");
         index--;
@@ -252,7 +247,7 @@ public class GauntletItem extends SwordItem {
     }
 
     public static Potion[] getPotionsFromNBT(CompoundTag info) {
-        ListTag nbts = info.getList("potions", Constants.NBT.TAG_STRING);
+        ListTag nbts = info.getList("potions", Tag.TAG_STRING);
         if (nbts.isEmpty()) return null;
 
         // get active potion
@@ -273,9 +268,9 @@ public class GauntletItem extends SwordItem {
         Tag post = nbts.get(index);
         if (post == null) return null;
 
-        Potion activePotion = ForgeRegistries.POTION_TYPES.getValue(new ResourceLocation(nbts.get(info.getInt("activePotionIndex")).getAsString()));
-        Potion prePotion = ForgeRegistries.POTION_TYPES.getValue(new ResourceLocation(pre.getAsString()));
-        Potion postPotion = ForgeRegistries.POTION_TYPES.getValue(new ResourceLocation(post.getAsString()));
+        Potion activePotion = Registry.POTION.get(new ResourceLocation(nbts.get(info.getInt("activePotionIndex")).getAsString()));
+        Potion prePotion = Registry.POTION.get(new ResourceLocation(pre.getAsString()));
+        Potion postPotion = Registry.POTION.get(new ResourceLocation(post.getAsString()));
 
         return new Potion[]{activePotion, prePotion, postPotion};
     }

@@ -38,7 +38,7 @@ public class GauntletWorkstationScreen extends AbstractContainerScreen<PotionInj
         int x = leftPos + 47;
         int y = topPos + 76;
         int w = 24;
-        addButton(new Button(x,y,36,20,new TextComponent("Strip"),this::strip){
+        addRenderableWidget(new Button(x,y,36,20,new TextComponent("Strip"),this::strip){
             @Override
             public void playDownSound(SoundManager handler) {
 
@@ -55,19 +55,16 @@ public class GauntletWorkstationScreen extends AbstractContainerScreen<PotionInj
                 handler.play(SimpleSoundInstance.forUI(soundEvent, 1.0F));
             }
         });
-        addButton(new Button(x + 46,y,36,20,new TextComponent("Inject"),this::inject){
+        addRenderableWidget(new Button(x + 46,y,36,20,new TextComponent("Inject"),this::inject){
             @Override
             public void playDownSound(SoundManager handler) {
 
                 PotionInjectorMenu.SoundTy soundTy = menu.getSound(true);
-                SoundEvent soundEvent;
-
-                switch (soundTy) {
-                    case BOTH: soundEvent = SoundEvents.BREWING_STAND_BREW;break;
-                    case BLAZE:soundEvent = SoundEvents.BLAZE_SHOOT;break;
-                    case NONE: default:
-                        soundEvent = SoundEvents.UI_BUTTON_CLICK;
-                }
+                SoundEvent soundEvent = switch (soundTy) {
+                    case BOTH -> SoundEvents.BREWING_STAND_BREW;
+                    case BLAZE -> SoundEvents.BLAZE_SHOOT;
+                    case NONE  -> SoundEvents.UI_BUTTON_CLICK;
+                };
 
                 handler.play(SimpleSoundInstance.forUI(soundEvent, 1.0F));
             }
@@ -85,8 +82,8 @@ public class GauntletWorkstationScreen extends AbstractContainerScreen<PotionInj
 
     @Override
     protected void renderBg(PoseStack matrixStack, float partialTicks, int x, int y) {
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bind(BREWING_STAND_GUI_TEXTURES);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, BREWING_STAND_GUI_TEXTURES);
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
         this.blit(matrixStack, i, j, 0, 0, this.imageWidth, this.imageHeight);

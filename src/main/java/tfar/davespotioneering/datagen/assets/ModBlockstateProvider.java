@@ -1,9 +1,6 @@
 package tfar.davespotioneering.datagen.assets;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.CauldronBlock;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.LecternBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -25,7 +22,7 @@ public class ModBlockstateProvider extends BlockStateProvider {
         brewingStand();
 
         getVariantBuilder(ModBlocks.REINFORCED_CAULDRON).forAllStates(state -> {
-            ModelFile modelFile = models().getExistingFile(modLoc("block/reinforced_cauldron_level" + state.getValue(CauldronBlock.LEVEL)));
+            ModelFile modelFile = models().getExistingFile(modLoc("block/reinforced_cauldron_level" + state.getValue(LayeredCauldronBlock.LEVEL)));
             return ConfiguredModel.builder().modelFile(modelFile).build();
         });
 

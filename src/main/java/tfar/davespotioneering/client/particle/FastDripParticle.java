@@ -8,7 +8,6 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.core.BlockPos;
 import tfar.davespotioneering.init.ModParticleTypes;
 import tfar.davespotioneering.mixin.ParticleManagerAccess;
