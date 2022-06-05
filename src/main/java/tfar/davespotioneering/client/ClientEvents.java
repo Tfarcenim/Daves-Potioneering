@@ -124,12 +124,11 @@ public class ClientEvents {
         Minecraft.getInstance().getBlockColors().register((state, reader, pos, index) -> {
             if (pos != null) {
                 BlockEntity blockEntity = reader.getBlockEntity(pos);
-                if (blockEntity instanceof ReinforcedCauldronBlockEntity) {
-                    return ((ReinforcedCauldronBlockEntity) blockEntity).getColor();
-                }
+                if (blockEntity instanceof ReinforcedCauldronBlockEntity reinforced)
+                    return reinforced.getColor();
             }
             return 0xffffff;
-        }, ModBlocks.REINFORCED_CAULDRON);
+        }, ModBlocks.REINFORCED_WATER_CAULDRON);
 
         ItemProperties.register(ModItems.POTIONEER_GAUNTLET, new ResourceLocation("active"),
                 (ItemStack a, ClientLevel b, LivingEntity c,int i) -> a.hasTag() ? a.getTag().getBoolean("active") ? 1 : 0 : 0);

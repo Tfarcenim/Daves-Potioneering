@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "davespotioneering:netherite_gauntlet"
+            "items": [
+              "davespotioneering:netherite_gauntlet"
+            ]
           }
         ]
       }

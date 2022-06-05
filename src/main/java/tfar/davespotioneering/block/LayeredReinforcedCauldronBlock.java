@@ -10,12 +10,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -35,10 +33,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
+import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.init.ModPotions;
 
 import javax.annotation.Nullable;
@@ -55,15 +53,15 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
     public static int brew_speed = 12;
 
     public LayeredReinforcedCauldronBlock(Properties properties) {
-        super(properties, LayeredCauldronBlock.RAIN, CauldronInteraction.WATER);
-        this.registerDefaultState(this.stateDefinition.any().setValue(DRAGONS_BREATH,false));
+        this(properties, LayeredCauldronBlock.RAIN, ModCauldronInteractions.WATER);
     }
 
     public LayeredReinforcedCauldronBlock(Properties p_153522_, Predicate<Biome.Precipitation> p_153523_, Map<Item, CauldronInteraction> p_153524_) {
         super(p_153522_, p_153523_, p_153524_);
+        this.registerDefaultState(this.stateDefinition.any().setValue(DRAGONS_BREATH,false));
     }
 
-    @Override
+   /* @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         ItemStack stack = player.getItemInHand(hand);
         int level = state.getValue(LEVEL);
@@ -83,9 +81,9 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
             removeCoating(state,world, pos, player, stack);
         }
         return super.use(state, world, pos, player, hand, hit);
-    }
+    }*/
 
-    private void handlePotionBottle(BlockState state, Level world, BlockPos pos, Player player, ItemStack stack, int level) {
+    public static void handlePotionBottle(BlockState state, Level world, BlockPos pos, Player player, ItemStack stack, int level) {
         Potion potion = PotionUtils.getPotion(stack);
         ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) world.getBlockEntity(pos);
         Potion storedPotion = reinforcedCauldronBlockEntity.getPotion();
@@ -107,98 +105,64 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
                 world.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
 
                 if (level > 0 && storedPotion != potion) {
-                    boom(world, pos, state);
+                    boom(world, pos);
                 } else {
-                    this.setWaterLevel(world, pos, state, level + 1);
+                    setWaterLevel(world, pos, state, level + 1);
                     reinforcedCauldronBlockEntity.setPotion(potion);
                 }
             }
         }
     }
 
-    public void boom(Level world,BlockPos pos,BlockState state) {
-        this.setWaterLevel(world, pos, state, 0);
-        world.explode(null, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, 1, false, Explosion.BlockInteraction.NONE);
+    public static void lowerFillLevel0(BlockState p_153560_, Level p_153561_, BlockPos pos) {
+        int i = p_153560_.getValue(LEVEL) - 1;
+        p_153561_.setBlockAndUpdate(pos, i == 0 ? ModBlocks.REINFORCED_CAULDRON.defaultBlockState() : p_153560_.setValue(LEVEL, i));
     }
 
-    private void handleDragonBreath(BlockState state, Level world, BlockPos pos, Player player, ItemStack stack) {
-        if (!world.isClientSide) {
-            if (!player.getAbilities().instabuild) {
-                player.awardStat(Stats.USE_CAULDRON);
-                stack.shrink(1);
-
-                ItemStack itemstack4 = new ItemStack(Items.GLASS_BOTTLE);
-
-                if (!player.getInventory().add(itemstack4)) {
-                    player.drop(itemstack4, false);
-                } else {
-               //     ((ServerPlayer) player).refreshContainer(player.inventoryMenu);
-                }
-            }
-            world.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
-            world.setBlockAndUpdate(pos,state.setValue(DRAGONS_BREATH,true));
-        }
+    public static void boom(Level level, BlockPos pos) {
+        level.setBlockAndUpdate(pos,ModBlocks.REINFORCED_CAULDRON.defaultBlockState());
+        level.explode(null, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, 1, false, Explosion.BlockInteraction.NONE);
     }
 
-    private void handleEmptyBottle(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, ItemStack stack, int level) {
-        if (level > 0 && !world.isClientSide) {
-            ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) world.getBlockEntity(pos);
-            Potion potion = reinforcedCauldronBlockEntity.getPotion();
-            if (!player.getAbilities().instabuild) {
-                ItemStack itemstack4 = PotionUtils.setPotion(new ItemStack(Items.POTION), potion);
-                player.awardStat(Stats.USE_CAULDRON);
-                stack.shrink(1);
-                if (stack.isEmpty()) {
-                    player.setItemInHand(hand, itemstack4);
-                } else if (!player.getInventory().add(itemstack4)) {
-                    player.drop(itemstack4, false);
-                } else if (player instanceof ServerPlayer) {
-                   // ((ServerPlayer) player).refreshContainer(player.inventoryMenu);
-                }
-            }
-            world.playSound(null, pos, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
-            if (potion != Potions.WATER)
-                this.setWaterLevel(world, pos, state, level - 1);
-        }
-    }
-
-    public static void handleWeaponCoating(BlockState state, Level world, BlockPos pos, @Nullable Player player, ItemStack stack) {
+    public static void handleWeaponCoating(BlockState state, Level level, BlockPos pos, @Nullable Player player, InteractionHand p_175715_, ItemStack stack) {
         if (state.getValue(DRAGONS_BREATH)) {
-            ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) world.getBlockEntity(pos);
+            ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) level.getBlockEntity(pos);
             Potion potion = reinforcedCauldronBlockEntity.getPotion();
-            if (!world.isClientSide) {
+            if (!level.isClientSide) {
                 if (player != null && !player.getAbilities().instabuild) {
                     player.awardStat(Stats.USE_CAULDRON);
                 }
                 addCoating(stack,potion);
-                world.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
-                state = state.setValue(DRAGONS_BREATH, false);
-                setWaterLevel(world,pos,state,0);
+                level.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
+                level.setBlockAndUpdate(pos,ModBlocks.REINFORCED_CAULDRON.defaultBlockState());
             }
         }
     }
 
-    public static void handleArrowCoating(BlockState state, Level world, BlockPos pos,@Nullable Player player, ItemStack stack,int level) {
+    public static void handleArrowCoating(BlockState state, Level level, BlockPos pos, @Nullable Player player, InteractionHand p_175715_, ItemStack stack) {
+        int wLevel = state.getValue(LEVEL);
         if (state.getValue(DRAGONS_BREATH)) {
             //can't tip arrows if there's less than 8
             if (stack.getCount() < 8) {
                 return;
             }
-            ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) world.getBlockEntity(pos);
+            ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) level.getBlockEntity(pos);
             Potion potion = reinforcedCauldronBlockEntity.getPotion();
-            if (!world.isClientSide) {
+            if (!level.isClientSide) {
                 if (player != null && !player.getAbilities().instabuild) {
                     player.awardStat(Stats.USE_CAULDRON);
                 }
-                ItemStack tippedArrows = new ItemStack(Items.TIPPED_ARROW,8);
-                addCoating(tippedArrows,potion);
+                ItemStack tippedArrows = new ItemStack(Items.TIPPED_ARROW, 8);
+                addCoating(tippedArrows, potion);
                 stack.shrink(8);
-                world.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
+                level.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
 
-                world.addFreshEntity(new ItemEntity(world,pos.getX(),pos.getY()+1,pos.getZ(),tippedArrows));
-                if (level <= 1)
-                state = state.setValue(DRAGONS_BREATH, false);
-                setWaterLevel(world,pos,state,level - 1);
+                level.addFreshEntity(new ItemEntity(level, pos.getX(), pos.getY() + 1, pos.getZ(), tippedArrows));
+                if (wLevel <= 1) {
+                    level.setBlockAndUpdate(pos, ModBlocks.REINFORCED_CAULDRON.defaultBlockState());
+                } else {
+                    level.setBlockAndUpdate(pos,ModBlocks.REINFORCED_WATER_CAULDRON.defaultBlockState().setValue(LEVEL,wLevel - 1));
+                }
             }
         }
     }
@@ -275,7 +239,7 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
             double d1 = (double) pos.getY() + 1D;
             double d2 = pos.getZ();
             for (int i = 0; i < 5; i++) {
-                worldIn.addAlwaysVisibleParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, d0 + (double) rand.nextFloat(), d1 + (double) rand.nextFloat(), d2 + (double) rand.nextFloat(), 0.0D, 0.04D, 0.0D);
+                worldIn.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, d0 + (double) rand.nextFloat(), d1 + (double) rand.nextFloat(), d2 + (double) rand.nextFloat(), 0.0D, 0.04D, 0.0D);
             }
         }
     }
@@ -292,21 +256,20 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
     //this is used for the coating
     @Override
     public void tick(BlockState state, ServerLevel world, BlockPos pos, Random rand) {
-        int level = state.getValue(LEVEL);
+        int wLevel = state.getValue(LEVEL);
 
-        world.playSound(null,pos, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.8F, 1);
-
-        if (state.getValue(LEVEL) > 1) {
-            setWaterLevel(world,pos,state,level - 1);
+        if (wLevel > 1) {
+            world.playSound(null, pos, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.8F, 1);
+            world.setBlockAndUpdate(pos, state.setValue(LEVEL, wLevel - 1));
             world.scheduleTick(pos, this, brew_speed);
         } else {
             List<ItemEntity> items = world.getEntitiesOfClass(ItemEntity.class,
                     new AABB(pos));
 
             if (items.size() == 1) {
-                handleWeaponCoating(state, world, pos, null, items.get(0).getItem());
+                handleWeaponCoating(state, world, pos,null, null, items.get(0).getItem());
             } else {
-                boom(world,pos,state);
+                boom(world,pos);
             }
         }
     }

@@ -94,7 +94,7 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity {
             if (potion == ModPotions.MILK && PotionUtils.getPotion(stack) != Potions.EMPTY) {
                 LayeredReinforcedCauldronBlock.removeCoating(blockState,level,worldPosition,null,stack);
             } else if (stack.getItem() == Items.ARROW && waterLevel > 0) {
-              LayeredReinforcedCauldronBlock.handleArrowCoating(blockState,level,worldPosition,null,stack,waterLevel);
+              LayeredReinforcedCauldronBlock.handleArrowCoating(blockState,level,worldPosition,null,null,stack);
             } else if (waterLevel == 3) {
                 //burn off a layer, then schedule the rest of the ticks
                 entity.level.playSound(null,worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.8F, 1);

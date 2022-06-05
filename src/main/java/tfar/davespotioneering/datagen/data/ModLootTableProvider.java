@@ -21,7 +21,7 @@ public class ModLootTableProvider extends LootTableProvider {
         super(dataGeneratorIn);
     }
 
-    private final List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootContextParamSet>> tablePairs = ImmutableList.of(Pair.of(ModBlockLootTables::new, LootContextParamSets.BLOCK));
+    private final List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootContextParamSet>> tablePairs = ImmutableList.of(Pair.of(ModBlockLoot::new, LootContextParamSets.BLOCK));
 
     @Override
     protected void validate(Map<ResourceLocation, LootTable> map, ValidationContext validationtracker) {

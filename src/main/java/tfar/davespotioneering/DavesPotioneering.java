@@ -24,6 +24,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.apache.commons.lang3.tuple.Pair;
+import tfar.davespotioneering.block.ModCauldronInteractions;
 import tfar.davespotioneering.client.ClientEvents;
 import tfar.davespotioneering.datagen.ModDatagen;
 import tfar.davespotioneering.effect.PotionIngredient;
@@ -116,6 +117,8 @@ public class DavesPotioneering {
         ((BlockEntityTypeAcces)BlockEntityType.LECTERN).setValidBlocks(newSet);
 
         PacketHandler.registerMessages();
+
+        ModCauldronInteractions.bootStrap();
 
     }
 

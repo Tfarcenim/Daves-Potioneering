@@ -88,15 +88,15 @@ public class GauntletItem extends SwordItem {
         return oldStack.getItem() != newStack.getItem();
     }
 
-    //@Override
-    public boolean showDurabilityBar(ItemStack stack) {
+    @Override
+    public boolean isBarVisible(ItemStack stack) {
         CompoundTag info = stack.getOrCreateTag().getCompound("info");
         double blaze = info.getInt("blaze");
         return blaze > 0;
     }
 
-    //@Override
-    public int getRGBDurabilityForDisplay(ItemStack stack) {
+    @Override
+    public int getBarColor(ItemStack stack) {
         return ChatFormatting.GOLD.getColor();
     }
 

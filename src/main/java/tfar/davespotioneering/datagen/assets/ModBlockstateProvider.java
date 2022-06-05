@@ -1,15 +1,19 @@
 package tfar.davespotioneering.datagen.assets;
 
-import net.minecraft.world.level.block.*;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.core.Direction;
+import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.LayeredCauldronBlock;
+import net.minecraft.world.level.block.LecternBlock;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.block.AdvancedBrewingStandBlock;
+import tfar.davespotioneering.block.LayeredReinforcedCauldronBlock;
 import tfar.davespotioneering.init.ModBlocks;
 
 public class ModBlockstateProvider extends BlockStateProvider {
@@ -21,10 +25,13 @@ public class ModBlockstateProvider extends BlockStateProvider {
     protected void registerStatesAndModels() {
         brewingStand();
 
-        getVariantBuilder(ModBlocks.REINFORCED_CAULDRON).forAllStates(state -> {
+
+        simpleBlock(ModBlocks.REINFORCED_CAULDRON,models().getExistingFile(modLoc("block/reinforced_cauldron_level0")));
+
+        getVariantBuilder(ModBlocks.REINFORCED_WATER_CAULDRON).forAllStatesExcept(state -> {
             ModelFile modelFile = models().getExistingFile(modLoc("block/reinforced_cauldron_level" + state.getValue(LayeredCauldronBlock.LEVEL)));
             return ConfiguredModel.builder().modelFile(modelFile).build();
-        });
+        },LayeredReinforcedCauldronBlock.DRAGONS_BREATH);
 
         getVariantBuilder(ModBlocks.MAGIC_LECTERN).forAllStatesExcept(state -> {
             Direction facing = state.getValue(LecternBlock.FACING);
@@ -39,20 +46,11 @@ public class ModBlockstateProvider extends BlockStateProvider {
         getVariantBuilder(block).forAllStates(state -> {
             ConfiguredModel.Builder<?> builder = ConfiguredModel.builder().modelFile(modelFile);
             if (state.hasProperty(HorizontalDirectionalBlock.FACING)) {
-                switch(state.getValue(HorizontalDirectionalBlock.FACING)) {
-                    case EAST:
-                        builder.rotationY(90);
-                        break;
-                    case SOUTH:
-                        builder.rotationY(180);
-                        break;
-                    case WEST:
-                        builder.rotationY(270);
-                        break;
-                    case NORTH:
-                    default:
-                        builder.rotationY(0);
-                        break;
+                switch (state.getValue(HorizontalDirectionalBlock.FACING)) {
+                    case EAST -> builder.rotationY(90);
+                    case SOUTH -> builder.rotationY(180);
+                    case WEST -> builder.rotationY(270);
+                    case NORTH -> builder.rotationY(0);
                 }
             }
             return builder.build();
