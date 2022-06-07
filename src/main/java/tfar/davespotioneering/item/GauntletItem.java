@@ -178,8 +178,7 @@ public class GauntletItem extends SwordItem {
     @Override
     public void inventoryTick(ItemStack stack, Level world, Entity entity, int itemSlot, boolean isSelected) {
         super.inventoryTick(stack, world, entity, itemSlot, isSelected);
-        if (entity instanceof Player && !entity.getCommandSenderWorld().isClientSide()) {
-            Player player = (Player) entity;
+        if (entity instanceof Player player && !entity.getCommandSenderWorld().isClientSide()) {
             ItemStack gauntletInstance = new ItemStack(ModItems.POTIONEER_GAUNTLET);
             if (player.getInventory().contains(gauntletInstance)) {
                 List<ItemStack> gauntlets = getItemsFromInventory(gauntletInstance, player.getInventory());
@@ -208,13 +207,10 @@ public class GauntletItem extends SwordItem {
         List<MobEffectInstance> effects = new ArrayList<>();
         List<Potion> potions = new ArrayList<>();
         for (Tag inbt : nbts) {
-            if (inbt instanceof StringTag) {
-                StringTag stringNBT = (StringTag) inbt;
+            if (inbt instanceof StringTag stringNBT) {
                 Potion potion = Registry.POTION.get(new ResourceLocation(stringNBT.getAsString()));
-                if (potion != null) {
-                    effects.addAll(potion.getEffects());
-                    potions.add(potion);
-                }
+                effects.addAll(potion.getEffects());
+                potions.add(potion);
             }
         }
         return new Tuple<>(effects, potions);
@@ -278,9 +274,8 @@ public class GauntletItem extends SwordItem {
     public static ListTag addPotionCooldownByIndex(int index, int cooldown, ItemStack stack, ListTag cooldownMap) {
         CompoundTag info = stack.getOrCreateTag().getCompound("info");
         if (cooldownMap.get(0) instanceof IntArrayTag) {
-            if (cooldownMap.get(1) instanceof IntArrayTag) {
+            if (cooldownMap.get(1) instanceof IntArrayTag cooldownArray) {
                 IntArrayTag indexArray = (IntArrayTag) cooldownMap.get(0);
-                IntArrayTag cooldownArray = (IntArrayTag) cooldownMap.get(1);
 
                 indexArray.add(IntTag.valueOf(index));
                 cooldownArray.add(IntTag.valueOf(cooldown));
@@ -299,12 +294,10 @@ public class GauntletItem extends SwordItem {
     public static int getCooldownFromPotionByIndex(int indexOfPotion, ItemStack stack) {
         CompoundTag info = stack.getOrCreateTag().getCompound("info");
         Tag inbt = info.get("potionCooldownMap");
-        if (inbt instanceof ListTag) {
-            ListTag cooldownMap = (ListTag) inbt;
+        if (inbt instanceof ListTag cooldownMap) {
             if (cooldownMap.get(0) instanceof IntArrayTag) {
-                if (cooldownMap.get(1) instanceof IntArrayTag) {
+                if (cooldownMap.get(1) instanceof IntArrayTag cooldownArray) {
                     IntArrayTag indexArray = (IntArrayTag) cooldownMap.get(0);
-                    IntArrayTag cooldownArray = (IntArrayTag) cooldownMap.get(1);
                     try {
                         int indexOfPotionIndex = toList(indexArray.getAsIntArray()).indexOf(indexOfPotion);
                         return toList(cooldownArray.getAsIntArray()).get(indexOfPotionIndex);
@@ -320,11 +313,8 @@ public class GauntletItem extends SwordItem {
     public static void modifyCooldowns(ItemStack gauntlet, Function<Integer, Integer> modifier) {
         CompoundTag info = gauntlet.getOrCreateTag().getCompound("info");
         Tag inbt = info.get("potionCooldownMap");
-        if (inbt instanceof ListTag) {
-            ListTag map = (ListTag) inbt;
-            if (map.get(0) instanceof IntArrayTag && map.get(1) instanceof IntArrayTag) {
-                IntArrayTag cooldownArray = (IntArrayTag) map.get(1);
-                IntArrayTag indexArray = (IntArrayTag) map.get(0);
+        if (inbt instanceof ListTag map) {
+            if (map.get(0) instanceof IntArrayTag indexArray && map.get(1) instanceof IntArrayTag cooldownArray) {
                 if (cooldownArray.isEmpty() || indexArray.isEmpty()) return;
                 if (cooldownArray.getAsIntArray().length != indexArray.getAsIntArray().length) return;
                 List<Integer> cooldownList = new ArrayList<>();

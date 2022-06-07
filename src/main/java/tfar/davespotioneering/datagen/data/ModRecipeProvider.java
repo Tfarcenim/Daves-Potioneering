@@ -177,9 +177,8 @@ public class ModRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_netherite_gauntlet", has(ModItems.NETHERITE_GAUNTLET)).save(consumer);
 
         ShapedRecipeBuilder.shaped(ModItems.RUDIMENTARY_GAUNTLET)
-                .define('a', Items.IRON_INGOT)
-                .define('b', Items.GOLD_INGOT)
-                .pattern("abb").pattern("aab")
-                .unlockedBy("has_gold_ingot", has(Items.GOLD_INGOT)).save(consumer);
+                .define('a', Items.COPPER_INGOT)
+                .pattern("aaa").pattern("aaa")
+                .unlockedBy("has_copper_ingot", has(Items.COPPER_INGOT)).save(consumer);
     }
 }
