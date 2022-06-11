@@ -37,15 +37,9 @@ public class ModCauldronInteractions {
      public static final Map<Item, CauldronInteraction> EMPTY = CauldronInteraction.newInteractionMap();
     static final Map<Item, CauldronInteraction> LAVA = CauldronInteraction.newInteractionMap();
     static final Map<Item, CauldronInteraction> POWDER_SNOW = CauldronInteraction.newInteractionMap();
-    static final CauldronInteraction FILL_WATER = (p_175683_, p_175684_, p_175685_, p_175686_, p_175687_, p_175688_) -> {
-        return emptyBucket(p_175684_, p_175685_, p_175686_, p_175687_, p_175688_, ModBlocks.REINFORCED_WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, Integer.valueOf(3)), SoundEvents.BUCKET_EMPTY);
-    };
-    static final CauldronInteraction FILL_LAVA = (p_175676_, p_175677_, p_175678_, p_175679_, p_175680_, p_175681_) -> {
-        return emptyBucket(p_175677_, p_175678_, p_175679_, p_175680_, p_175681_, Blocks.LAVA_CAULDRON.defaultBlockState(), SoundEvents.BUCKET_EMPTY_LAVA);
-    };
-    static final CauldronInteraction FILL_POWDER_SNOW = (p_175669_, p_175670_, p_175671_, p_175672_, p_175673_, p_175674_) -> {
-        return emptyBucket(p_175670_, p_175671_, p_175672_, p_175673_, p_175674_, Blocks.POWDER_SNOW_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, Integer.valueOf(3)), SoundEvents.BUCKET_EMPTY_POWDER_SNOW);
-    };
+    static final CauldronInteraction FILL_WATER = (p_175683_, p_175684_, p_175685_, p_175686_, p_175687_, p_175688_) -> CauldronInteraction.emptyBucket(p_175684_, p_175685_, p_175686_, p_175687_, p_175688_, ModBlocks.REINFORCED_WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3), SoundEvents.BUCKET_EMPTY);
+    static final CauldronInteraction FILL_LAVA = (p_175676_, p_175677_, p_175678_, p_175679_, p_175680_, p_175681_) -> CauldronInteraction.emptyBucket(p_175677_, p_175678_, p_175679_, p_175680_, p_175681_, Blocks.LAVA_CAULDRON.defaultBlockState(), SoundEvents.BUCKET_EMPTY_LAVA);
+    static final CauldronInteraction FILL_POWDER_SNOW = (p_175669_, p_175670_, p_175671_, p_175672_, p_175673_, p_175674_) -> CauldronInteraction.emptyBucket(p_175670_, p_175671_, p_175672_, p_175673_, p_175674_, Blocks.POWDER_SNOW_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3), SoundEvents.BUCKET_EMPTY_POWDER_SNOW);
 
     public static void bootStrap() {
         addDefaultInteractions(EMPTY);
@@ -70,11 +64,7 @@ public class ModCauldronInteractions {
             return InteractionResult.sidedSuccess(level.isClientSide);
         });
         addDefaultInteractions(WATER);
-        WATER.put(Items.BUCKET, (p_175725_, p_175726_, p_175727_, p_175728_, p_175729_, p_175730_) -> {
-            return fillBucket(p_175725_, p_175726_, p_175727_, p_175728_, p_175729_, p_175730_, new ItemStack(Items.WATER_BUCKET), (p_175660_) -> {
-                return p_175660_.getValue(LayeredCauldronBlock.LEVEL) == 3;
-            }, SoundEvents.BUCKET_FILL);
-        });
+        WATER.put(Items.BUCKET, (p_175725_, p_175726_, p_175727_, p_175728_, p_175729_, p_175730_) -> fillBucket(p_175725_, p_175726_, p_175727_, p_175728_, p_175729_, p_175730_, new ItemStack(Items.WATER_BUCKET), (p_175660_) -> p_175660_.getValue(LayeredCauldronBlock.LEVEL) == 3, SoundEvents.BUCKET_FILL));
         WATER.put(Items.GLASS_BOTTLE, (state, level, pos, player, hand, stack) -> {
             if (!level.isClientSide) {
                 Item item = stack.getItem();
@@ -167,17 +157,9 @@ public class ModCauldronInteractions {
         }
         //end//
 
-        LAVA.put(Items.BUCKET, (p_175697_, p_175698_, p_175699_, p_175700_, p_175701_, p_175702_) -> {
-            return fillBucket(p_175697_, p_175698_, p_175699_, p_175700_, p_175701_, p_175702_, new ItemStack(Items.LAVA_BUCKET), (p_175651_) -> {
-                return true;
-            }, SoundEvents.BUCKET_FILL_LAVA);
-        });
+        LAVA.put(Items.BUCKET, (p_175697_, p_175698_, p_175699_, p_175700_, p_175701_, p_175702_) -> fillBucket(p_175697_, p_175698_, p_175699_, p_175700_, p_175701_, p_175702_, new ItemStack(Items.LAVA_BUCKET), (p_175651_) -> true, SoundEvents.BUCKET_FILL_LAVA));
         addDefaultInteractions(LAVA);
-        POWDER_SNOW.put(Items.BUCKET, (p_175690_, p_175691_, p_175692_, p_175693_, p_175694_, p_175695_) -> {
-            return fillBucket(p_175690_, p_175691_, p_175692_, p_175693_, p_175694_, p_175695_, new ItemStack(Items.POWDER_SNOW_BUCKET), (p_175627_) -> {
-                return p_175627_.getValue(LayeredCauldronBlock.LEVEL) == 3;
-            }, SoundEvents.BUCKET_FILL_POWDER_SNOW);
-        });
+        POWDER_SNOW.put(Items.BUCKET, (p_175690_, p_175691_, p_175692_, p_175693_, p_175694_, p_175695_) -> fillBucket(p_175690_, p_175691_, p_175692_, p_175693_, p_175694_, p_175695_, new ItemStack(Items.POWDER_SNOW_BUCKET), (p_175627_) -> p_175627_.getValue(LayeredCauldronBlock.LEVEL) == 3, SoundEvents.BUCKET_FILL_POWDER_SNOW));
         addDefaultInteractions(POWDER_SNOW);
     }
 
@@ -205,20 +187,6 @@ public class ModCauldronInteractions {
         }
     }
 
-    static InteractionResult emptyBucket(Level p_175619_, BlockPos p_175620_, Player p_175621_, InteractionHand p_175622_, ItemStack p_175623_, BlockState p_175624_, SoundEvent p_175625_) {
-        if (!p_175619_.isClientSide) {
-            Item item = p_175623_.getItem();
-            p_175621_.setItemInHand(p_175622_, ItemUtils.createFilledResult(p_175623_, p_175621_, new ItemStack(Items.BUCKET)));
-            p_175621_.awardStat(Stats.FILL_CAULDRON);
-            p_175621_.awardStat(Stats.ITEM_USED.get(item));
-            p_175619_.setBlockAndUpdate(p_175620_, p_175624_);
-            p_175619_.playSound(null, p_175620_, p_175625_, SoundSource.BLOCKS, 1.0F, 1.0F);
-            p_175619_.gameEvent(null, GameEvent.FLUID_PLACE, p_175620_);
-        }
-
-        return InteractionResult.sidedSuccess(p_175619_.isClientSide);
-    }
-
     @Nonnull
     static InteractionResult dragonsBreath(BlockState state, Level level, BlockPos pos, Player player, InteractionHand p_175715_, ItemStack stack) {
         if (!level.isClientSide) {
@@ -226,10 +194,10 @@ public class ModCauldronInteractions {
                 player.awardStat(Stats.USE_CAULDRON);
                 stack.shrink(1);
 
-                ItemStack itemstack4 = new ItemStack(Items.GLASS_BOTTLE);
+                ItemStack stack1 = new ItemStack(Items.GLASS_BOTTLE);
 
-                if (!player.getInventory().add(itemstack4)) {
-                    player.drop(itemstack4, false);
+                if (!player.getInventory().add(stack1)) {
+                    player.drop(stack1, false);
                 } else {
                     //     ((ServerPlayer) player).refreshContainer(player.inventoryMenu);
                 }
