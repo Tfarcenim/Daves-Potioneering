@@ -35,7 +35,7 @@ public class ClientHooks {
         if (stack.getItem() instanceof Perspective) {
             if (renderMode == ModelTransformation.Mode.GUI) {
                 //the other 2 vars are never used
-                boolean active = ClientEvents.GAUNTLET.call(stack, null,null) == 1;
+                boolean active = ClientEvents.GAUNTLET.call(stack, null,null,0) == 1;
 
                 if (!chace) {
                     chace = true;

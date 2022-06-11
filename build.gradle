@@ -1,83 +1,86 @@
 plugins {
-	id 'fabric-loom' version "${loom_version}"
+	id 'fabric-loom' version '0.10-SNAPSHOT'
 	id 'maven-publish'
 }
-loom {
-	accessWidener = file("src/main/resources/davespotioneering.aw")
-}
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 archivesBaseName = project.archives_base_name
-version = "fabric-" +project.minecraft_version +"-"+ project.mod_version
+version = project.minecraft_version + "-" + project.mod_version
 group = project.maven_group
-
+loom {
+	accessWidenerPath = file("src/main/resources/davespotioneering.aw")
+}
 
 repositories {
+
 	maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
-	maven { url "https://maven.shedaniel.me" }
 	maven { url "https://maven.terraformersmc.com/releases" }
+
+	maven {
+		url "https://maven.shedaniel.me"
+		content {
+			includeGroup "me.shedaniel.cloth.api"
+			includeGroup "me.sargunvohra.mcmods"
+			includeGroup "me.shedaniel.cloth"
+			includeGroup "me.shedaniel"
+			includeGroup "dev.architectury"
+		}
+	}
 }
 
 dependencies {
 	//to change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}"
 
 
 	// auto-generate mappings to stop mojmap conflicts with geckolib
-	/*mappings loom.layered() {
-		officialMojangMappings()
-		parchment("org.parchmentmc.data:${project.parchment_mappings}@zip")
-		// don't convert this to a dynamic instantiation, otherwise java won't see the overridden hashCode
-		addLayer(new MappingsSpec<MappingLayer>() {
-			final Map<String, String> METHOD_NAME_MAP = Map.of(
-					"getTextureLocation", "_getTextureLocation"
-			)
+/*mappings loom.layered() {
+    officialMojangMappings()
+    parchment("org.parchmentmc.data:${project.parchment_mappings}@zip")
+    // don't convert this to a dynamic instantiation, otherwise java won't see the overridden hashCode
+    addLayer(new MappingsSpec<MappingLayer>() {
+        final Map<String, String> METHOD_NAME_MAP = Map.of(
+                "getTextureLocation", "_getTextureLocation"
+        )
 
-			@Override
-			MappingLayer createLayer(MappingContext mappingContext) {
-				return new MappingLayer() {
-					@Override
-					void visit(MappingVisitor mappingVisitor) throws IOException {
-						MemoryMappingTree memoryMappingTree = mappingVisitor as MemoryMappingTree
-						memoryMappingTree.getClasses().forEach(classEntry -> {
-							classEntry.methods.forEach(methodEntry -> {
-								String newMethodName = METHOD_NAME_MAP.get(methodEntry.getName(MappingsNamespace.NAMED.toString()))
-								if (newMethodName != null) {
-									//noinspection GroovyAccessibility
-									methodEntry.srcName = newMethodName
-								}
-							})
-						})
-					}
+        @Override
+        MappingLayer createLayer(MappingContext mappingContext) {
+            return new MappingLayer() {
+                @Override
+                void visit(MappingVisitor mappingVisitor) throws IOException {
+                    MemoryMappingTree memoryMappingTree = mappingVisitor as MemoryMappingTree
+                    memoryMappingTree.getClasses().forEach(classEntry -> {
+                        classEntry.methods.forEach(methodEntry -> {
+                            String newMethodName = METHOD_NAME_MAP.get(methodEntry.getName(MappingsNamespace.NAMED.toString()))
+                            if (newMethodName != null) {
+                                //noinspection GroovyAccessibility
+                                methodEntry.srcName = newMethodName
+                            }
+                        })
+                    })
+                }
 
-					@Override
-					MappingsNamespace getSourceNamespace() {
-						return MappingsNamespace.NAMED
-					}
+                @Override
+                MappingsNamespace getSourceNamespace() {
+                    return MappingsNamespace.NAMED
+                }
 
-					@Override
-					List<Class<? extends MappingLayer>> dependsOn() {
-						return List.of(IntermediaryMappingLayer.class)
-					}
-				}
-			}
-
-			@Override
-			int hashCode() {
-				// used to make sure caches stay consistent
-				return METHOD_NAME_MAP.hashCode()
-			}
-		})
-	}*/
+                @Override
+                List<Class<? extends MappingLayer>> dependsOn() {
+                    return List.of(IntermediaryMappingLayer.class)
+                }
+            }
+        }*/
 
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	compileOnly "com.google.code.findbugs:jsr305:+"
-	modImplementation 'software.bernie.geckolib:geckolib-fabric-1.16.5:3.0.40:dev'
+	modImplementation "software.bernie.geckolib:geckolib-fabric-1.18:${geckolib}"
 
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.
@@ -106,55 +109,46 @@ allprojects {
 		}
 	}
 }
+
 processResources {
-	inputs.property "version", project.version
+inputs.property "version", project.version
 
-	from(sourceSets.main.resources.srcDirs) {
-		include "fabric.mod.json"
-		expand "version": project.version
-	}
-
-	from(sourceSets.main.resources.srcDirs) {
-		exclude "fabric.mod.json"
-	}
+filesMatching("fabric.mod.json") {
+    expand "version": project.version
+}
 }
 
-// ensure that the encoding is set to UTF-8, no matter what the system default is
-// this fixes some edge cases with special characters not displaying correctly
-// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-tasks.withType(JavaCompile) {
-	options.encoding = "UTF-8"
+tasks.withType(JavaCompile).configureEach {
+// Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
+it.options.release = 17
 }
 
+java {
 // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
 // if it is present.
-// If you remove this task, sources will not be generated.
-task sourcesJar(type: Jar, dependsOn: classes) {
-	classifier = "sources"
-	from sourceSets.main.allSource
+// If you remove this line, sources will not be generated.
+withSourcesJar()
 }
 
 jar {
-	from "LICENSE"
+from("LICENSE") {
+    rename { "${it}_${project.archivesBaseName}"}
+}
 }
 
 // configure the maven publication
 publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			// add all the jars that should be included when publishing to maven
-			artifact(remapJar) {
-				builtBy remapJar
-			}
-			artifact(sourcesJar) {
-				builtBy remapSourcesJar
-			}
-		}
-	}
+publications {
+    mavenJava(MavenPublication) {
+        from components.java
+    }
+}
 
-	// select the repositories you want to publish to
-	repositories {
-		// uncomment to publish to the local maven
-		// mavenLocal()
-	}
+// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+repositories {
+    // Add repositories to publish to here.
+    // Notice: This block does NOT have the same function as the block in the top level.
+    // The repositories here will be used for publishing your artifact, not for
+    // retrieving dependencies.
+}
 }

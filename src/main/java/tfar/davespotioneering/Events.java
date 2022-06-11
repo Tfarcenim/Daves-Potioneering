@@ -20,7 +20,7 @@ import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import tfar.davespotioneering.block.ReinforcedCauldronBlock;
+import tfar.davespotioneering.block.LayeredReinforcedCauldronBlock;
 import tfar.davespotioneering.config.ClothConfig;
 import tfar.davespotioneering.duck.BrewingStandDuck;
 import tfar.davespotioneering.init.ModPotions;
@@ -66,7 +66,7 @@ public class Events {
                 for(StatusEffectInstance effectinstance : potion.getEffects()) {
                     ((LivingEntity)victim).addStatusEffect(new StatusEffectInstance(effectinstance.getEffectType(), Math.max(effectinstance.getDuration() / 8, 1), effectinstance.getAmplifier(), effectinstance.isAmbient(), effectinstance.shouldShowParticles()));
                 }
-                ReinforcedCauldronBlock.useCharge(weapon);
+                LayeredReinforcedCauldronBlock.useCharge(weapon);
                 return ActionResult.SUCCESS;
             }
         }

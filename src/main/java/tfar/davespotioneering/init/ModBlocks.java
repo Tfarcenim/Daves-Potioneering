@@ -1,20 +1,20 @@
 package tfar.davespotioneering.init;
 
-import tfar.davespotioneering.DavesPotioneering;
-import tfar.davespotioneering.block.AdvancedBrewingStandBlock;
-import tfar.davespotioneering.block.MagicLecternBlock;
-import tfar.davespotioneering.block.PotionInjectorBlock;
-import tfar.davespotioneering.block.ReinforcedCauldronBlock;
-
-import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Locale;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.Material;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import tfar.davespotioneering.DavesPotioneering;
+import tfar.davespotioneering.block.AdvancedBrewingStandBlock;
+import tfar.davespotioneering.block.LayeredReinforcedCauldronBlock;
+import tfar.davespotioneering.block.MagicLecternBlock;
+import tfar.davespotioneering.block.PotionInjectorBlock;
+
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Locale;
 
 public class ModBlocks {
 
@@ -23,7 +23,10 @@ public class ModBlocks {
     public static final Block COMPOUND_BREWING_STAND = new AdvancedBrewingStandBlock(AbstractBlock.Settings.of(Material.METAL)
             .requiresTool().strength(0.5F).luminance(state -> 1).nonOpaque());
 
-    public static final Block REINFORCED_CAULDRON = new ReinforcedCauldronBlock(AbstractBlock.Settings.of(Material.METAL)
+    public static final Block REINFORCED_WATER_CAULDRON = new LayeredReinforcedCauldronBlock(AbstractBlock.Settings.of(Material.METAL)
+            .requiresTool().strength(0.5F).luminance(state -> 1).nonOpaque());
+
+    public static final Block REINFORCED_WATER_CAULDRON = new LayeredReinforcedCauldronBlock(AbstractBlock.Settings.of(Material.METAL)
             .requiresTool().strength(0.5F).luminance(state -> 1).nonOpaque());
 
     public static final Block MAGIC_LECTERN = new MagicLecternBlock(AbstractBlock.Settings.copy(Blocks.LECTERN));

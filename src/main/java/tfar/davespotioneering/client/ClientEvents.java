@@ -5,30 +5,30 @@ import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.item.ModelPredicateProvider;
+import net.minecraft.client.gui.screen.ingame.HandledScreens;
+import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.item.UnclampedModelPredicateProvider;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.item.BuiltinModelItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.PotionItem;
 import net.minecraft.item.ToolItem;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
@@ -72,10 +72,10 @@ public class ClientEvents implements ClientModInitializer {
 
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.COMPOUND_BREWING_STAND, RenderLayer.getCutoutMipped());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.POTION_INJECTOR,RenderLayer.getTranslucent());
-        ScreenRegistry.register(ModContainerTypes.ADVANCED_BREWING_STAND, AdvancedBrewingStandScreen::new);
-        ScreenRegistry.register(ModContainerTypes.ALCHEMICAL_GAUNTLET, GauntletWorkstationScreen::new);
+        HandledScreens.register(ModContainerTypes.ADVANCED_BREWING_STAND, AdvancedBrewingStandScreen::new);
+        HandledScreens.register(ModContainerTypes.ALCHEMICAL_GAUNTLET, GauntletWorkstationScreen::new);
 
-        BlockEntityRendererRegistry.INSTANCE.register(ModBlockEntityTypes.POTION_INJECTOR, PotionInjectorRenderer::new);
+        BlockEntityRendererRegistry.register(ModBlockEntityTypes.POTION_INJECTOR, c -> new PotionInjectorRenderer(c.getRenderDispatcher()));
 
         ColorProviderRegistry.BLOCK.register((state, reader, pos, index) -> {
             if (pos != null) {
@@ -85,9 +85,9 @@ public class ClientEvents implements ClientModInitializer {
                 }
             }
             return 0xffffff;
-        }, ModBlocks.REINFORCED_CAULDRON);
+        }, ModBlocks.REINFORCED_WATER_CAULDRON);
 
-        FabricModelPredicateProviderRegistry.register(ModItems.POTIONEER_GAUNTLET, new Identifier("active"),GAUNTLET
+       ModelPredicateProviderRegistry.register(ModItems.POTIONEER_GAUNTLET, new Identifier("active"),GAUNTLET
                 );
 
         registerBlockingProperty(ModItems.WHITE_UMBRELLA);
@@ -129,7 +129,7 @@ public class ClientEvents implements ClientModInitializer {
 
     }
 
-    public static final ModelPredicateProvider GAUNTLET = (ItemStack stack, ClientWorld b, LivingEntity c) -> stack.hasTag() ? stack.getTag().getBoolean("active") ? 1 : 0 : 0;
+    public static final UnclampedModelPredicateProvider GAUNTLET = (stack, level, entity, i) -> stack.hasNbt() ? stack.getNbt().getBoolean("active") ? 1 : 0 : 0;
 
 
     public static BuiltinItemRendererRegistry.DynamicItemRenderer umbrella(String s) {
@@ -211,13 +211,13 @@ public class ClientEvents implements ClientModInitializer {
         if (stack.getItem() instanceof ToolItem && PotionUtil.getPotion(stack) != Potions.EMPTY) {
             tooltip.add(new LiteralText("Coated with"));
             PotionUtil.buildTooltip(stack, tooltip, 0.125F);
-            tooltip.add(new LiteralText("Uses: " + stack.getTag().getInt("uses")));
+            tooltip.add(new LiteralText("Uses: " + stack.getNbt().getInt("uses")));
         }
     }
 
     private static void registerBlockingProperty(Item item) {
         FabricModelPredicateProviderRegistry.register(item, new Identifier("blocking"),
-                (stack, world, entity) -> entity != null && entity.isUsingItem() && entity.getActiveItem() == stack ? 1.0F : 0.0F);
+                (stack, world, entity,i) -> entity != null && entity.isUsingItem() && entity.getActiveItem() == stack ? 1.0F : 0.0F);
     }
 
     public static void gauntletHud(MatrixStack matrixStack, float tickDelta) {
@@ -230,7 +230,7 @@ public class ClientEvents implements ClientModInitializer {
         // check if holding gauntlet
         if (g.getItem() instanceof GauntletItem) {
             // get nbt
-            CompoundTag info = player.getMainHandStack().getOrCreateTag().getCompound("info");
+            NbtCompound info = player.getMainHandStack().getOrCreateNbt().getCompound("info");
             Potion[] potions = GauntletItem.getPotionsFromNBT(info);
             if (MinecraftClient.getInstance().currentScreen instanceof GauntletHUDMovementScreen) return;
             GauntletHUD.render(matrixStack);
@@ -256,7 +256,7 @@ public class ClientEvents implements ClientModInitializer {
 
                 Vec3d vec = player.getPos().add(0, +player.getHeight() / 2, 0);
 
-                double yaw = -MathHelper.wrapDegrees(player.yaw);
+                double yaw = -MathHelper.wrapDegrees(player.getYaw());
 
                 double of1 = Math.random() * .60 + .15;
                 double of2 = .40 + Math.random() * .10;

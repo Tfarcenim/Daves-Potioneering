@@ -1,6 +1,5 @@
 package tfar.davespotioneering.blockentity;
 
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CauldronBlock;
 import net.minecraft.block.entity.BlockEntity;
@@ -18,13 +17,13 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import tfar.davespotioneering.block.ReinforcedCauldronBlock;
+import tfar.davespotioneering.block.LayeredReinforcedCauldronBlock;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
 import tfar.davespotioneering.init.ModPotions;
 
 import javax.annotation.Nonnull;
 
-public class ReinforcedCauldronBlockEntity extends BlockEntity implements BlockEntityClientSerializable {
+public class ReinforcedCauldronBlockEntity extends BlockEntity {
 
     @Nonnull protected Potion potion = Potions.EMPTY;
 
@@ -90,9 +89,9 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity implements BlockE
             BlockState blockState = getCachedState();
             int fluidLevel = blockState.get(CauldronBlock.LEVEL);
             if (potion == ModPotions.MILK && PotionUtil.getPotion(stack) != Potions.EMPTY) {
-                ReinforcedCauldronBlock.removeCoating(blockState,this.world,pos,null,stack);
+                LayeredReinforcedCauldronBlock.removeCoating(blockState,this.world,pos,null,stack);
             } else if (stack.getItem() == Items.ARROW && fluidLevel > 0) {
-              ReinforcedCauldronBlock.handleArrowCoating(blockState,this.world,pos,null,stack,fluidLevel);
+              LayeredReinforcedCauldronBlock.handleArrowCoating(blockState,this.world,pos,null,stack,fluidLevel);
             } else if (fluidLevel == 3) {
                 //burn off a layer, then schedule the rest of the ticks
                 this.world.playSound(null,pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.8F, 1);
@@ -103,15 +102,15 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity implements BlockE
     }
 
     private void scheduleTick() {
-        this.world.getBlockTickScheduler().schedule(this.getPos(), this.getCachedState().getBlock(), ReinforcedCauldronBlock.brew_speed);
+        this.world.getBlockTickScheduler().schedule(this.getPos(), this.getCachedState().getBlock(), LayeredReinforcedCauldronBlock.brew_speed);
     }
 
-    @Override
+    //@Override
     public void fromClientTag(CompoundTag tag) {
         potion = Registry.POTION.get(new Identifier(tag.getString("potion")));
     }
 
-    @Override
+   // @Override
     public CompoundTag toClientTag(CompoundTag tag) {
         tag.putString("potion", Registry.POTION.getId(potion).toString());
         return tag;
@@ -120,6 +119,6 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity implements BlockE
     @Override
     public void markDirty() {
         super.markDirty();
-        sync();
+      //  sync();
     }
 }

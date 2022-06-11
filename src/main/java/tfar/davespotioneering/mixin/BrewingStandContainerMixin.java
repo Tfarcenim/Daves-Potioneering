@@ -27,7 +27,7 @@ abstract class BrewingStandContainerMixin extends ScreenHandler {
      * Handle when the stack in slot {@code index} is shift-clicked. Normally this moves the stack between the player
      * inventory and the other inventory(s).
      *
-     * This change is made to allow potions to be shift-clicked in and out despite not having a stack size of 1
+     * @reason This change is made to allow potions to be shift-clicked in and out despite not having a stack size of 1
      *
      */
     @Overwrite
