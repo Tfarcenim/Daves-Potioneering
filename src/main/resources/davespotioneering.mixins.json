@@ -9,6 +9,7 @@
     "BrewingStandBlockEntityMixin",
     "BrewingStandContainerAccess",
     "BrewingStandContainerMixin",
+    "LayeredCauldronBlockMixin",
     "PlayerEntityMixin",
     "PotionEntityMixin",
     "PotionItemMixin",

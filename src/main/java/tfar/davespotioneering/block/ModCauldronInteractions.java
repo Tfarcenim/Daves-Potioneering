@@ -13,11 +13,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
-import net.minecraft.world.level.block.ShulkerBoxBlock;
-import net.minecraft.world.level.block.entity.BannerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -48,71 +45,6 @@ public class ModCauldronInteractions {
     };
     static final CauldronInteraction FILL_POWDER_SNOW = (p_175669_, p_175670_, p_175671_, p_175672_, p_175673_, p_175674_) -> {
         return emptyBucket(p_175670_, p_175671_, p_175672_, p_175673_, p_175674_, Blocks.POWDER_SNOW_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, Integer.valueOf(3)), SoundEvents.BUCKET_EMPTY_POWDER_SNOW);
-    };
-    static final CauldronInteraction SHULKER_BOX = (p_175662_, p_175663_, p_175664_, p_175665_, p_175666_, p_175667_) -> {
-        Block block = Block.byItem(p_175667_.getItem());
-        if (!(block instanceof ShulkerBoxBlock)) {
-            return InteractionResult.PASS;
-        } else {
-            if (!p_175663_.isClientSide) {
-                ItemStack itemstack = new ItemStack(Blocks.SHULKER_BOX);
-                if (p_175667_.hasTag()) {
-                    itemstack.setTag(p_175667_.getTag().copy());
-                }
-
-                p_175665_.setItemInHand(p_175666_, itemstack);
-                p_175665_.awardStat(Stats.CLEAN_SHULKER_BOX);
-                LayeredCauldronBlock.lowerFillLevel(p_175662_, p_175663_, p_175664_);
-            }
-
-            return InteractionResult.sidedSuccess(p_175663_.isClientSide);
-        }
-    };
-    static CauldronInteraction BANNER = (p_175653_, p_175654_, p_175655_, p_175656_, p_175657_, p_175658_) -> {
-        if (BannerBlockEntity.getPatternCount(p_175658_) <= 0) {
-            return InteractionResult.PASS;
-        } else {
-            if (!p_175654_.isClientSide) {
-                ItemStack itemstack = p_175658_.copy();
-                itemstack.setCount(1);
-                BannerBlockEntity.removeLastPattern(itemstack);
-                if (!p_175656_.getAbilities().instabuild) {
-                    p_175658_.shrink(1);
-                }
-
-                if (p_175658_.isEmpty()) {
-                    p_175656_.setItemInHand(p_175657_, itemstack);
-                } else if (p_175656_.getInventory().add(itemstack)) {
-                    p_175656_.inventoryMenu.sendAllDataToRemote();
-                } else {
-                    p_175656_.drop(itemstack, false);
-                }
-
-                p_175656_.awardStat(Stats.CLEAN_BANNER);
-                LayeredCauldronBlock.lowerFillLevel(p_175653_, p_175654_, p_175655_);
-            }
-
-            return InteractionResult.sidedSuccess(p_175654_.isClientSide);
-        }
-    };
-   static CauldronInteraction DYED_ITEM = (p_175629_, p_175630_, p_175631_, p_175632_, p_175633_, p_175634_) -> {
-        Item item = p_175634_.getItem();
-        if (!(item instanceof DyeableLeatherItem)) {
-            return InteractionResult.PASS;
-        } else {
-            DyeableLeatherItem dyeableleatheritem = (DyeableLeatherItem)item;
-            if (!dyeableleatheritem.hasCustomColor(p_175634_)) {
-                return InteractionResult.PASS;
-            } else {
-                if (!p_175630_.isClientSide) {
-                    dyeableleatheritem.clearColor(p_175634_);
-                    p_175632_.awardStat(Stats.CLEAN_ARMOR);
-                    LayeredCauldronBlock.lowerFillLevel(p_175629_, p_175630_, p_175631_);
-                }
-
-                return InteractionResult.sidedSuccess(p_175630_.isClientSide);
-            }
-        }
     };
 
     public static void bootStrap() {
@@ -186,43 +118,43 @@ public class ModCauldronInteractions {
                 return InteractionResult.PASS;
             }
         });
-        WATER.put(Items.LEATHER_BOOTS, DYED_ITEM);
-        WATER.put(Items.LEATHER_LEGGINGS, DYED_ITEM);
-        WATER.put(Items.LEATHER_CHESTPLATE, DYED_ITEM);
-        WATER.put(Items.LEATHER_HELMET, DYED_ITEM);
-        WATER.put(Items.LEATHER_HORSE_ARMOR, DYED_ITEM);
-        WATER.put(Items.WHITE_BANNER, BANNER);
-        WATER.put(Items.GRAY_BANNER, BANNER);
-        WATER.put(Items.BLACK_BANNER, BANNER);
-        WATER.put(Items.BLUE_BANNER, BANNER);
-        WATER.put(Items.BROWN_BANNER, BANNER);
-        WATER.put(Items.CYAN_BANNER, BANNER);
-        WATER.put(Items.GREEN_BANNER, BANNER);
-        WATER.put(Items.LIGHT_BLUE_BANNER, BANNER);
-        WATER.put(Items.LIGHT_GRAY_BANNER, BANNER);
-        WATER.put(Items.LIME_BANNER, BANNER);
-        WATER.put(Items.MAGENTA_BANNER, BANNER);
-        WATER.put(Items.ORANGE_BANNER, BANNER);
-        WATER.put(Items.PINK_BANNER, BANNER);
-        WATER.put(Items.PURPLE_BANNER, BANNER);
-        WATER.put(Items.RED_BANNER, BANNER);
-        WATER.put(Items.YELLOW_BANNER, BANNER);
-        WATER.put(Items.WHITE_SHULKER_BOX, SHULKER_BOX);
-        WATER.put(Items.GRAY_SHULKER_BOX, SHULKER_BOX);
-        WATER.put(Items.BLACK_SHULKER_BOX, SHULKER_BOX);
-        WATER.put(Items.BLUE_SHULKER_BOX, SHULKER_BOX);
-        WATER.put(Items.BROWN_SHULKER_BOX, SHULKER_BOX);
-        WATER.put(Items.CYAN_SHULKER_BOX, SHULKER_BOX);
-        WATER.put(Items.GREEN_SHULKER_BOX, SHULKER_BOX);
-        WATER.put(Items.LIGHT_BLUE_SHULKER_BOX, SHULKER_BOX);
-        WATER.put(Items.LIGHT_GRAY_SHULKER_BOX, SHULKER_BOX);
-        WATER.put(Items.LIME_SHULKER_BOX, SHULKER_BOX);
-        WATER.put(Items.MAGENTA_SHULKER_BOX, SHULKER_BOX);
-        WATER.put(Items.ORANGE_SHULKER_BOX, SHULKER_BOX);
-        WATER.put(Items.PINK_SHULKER_BOX, SHULKER_BOX);
-        WATER.put(Items.PURPLE_SHULKER_BOX, SHULKER_BOX);
-        WATER.put(Items.RED_SHULKER_BOX, SHULKER_BOX);
-        WATER.put(Items.YELLOW_SHULKER_BOX, SHULKER_BOX);
+        WATER.put(Items.LEATHER_BOOTS, CauldronInteraction.DYED_ITEM);
+        WATER.put(Items.LEATHER_LEGGINGS, CauldronInteraction.DYED_ITEM);
+        WATER.put(Items.LEATHER_CHESTPLATE, CauldronInteraction.DYED_ITEM);
+        WATER.put(Items.LEATHER_HELMET, CauldronInteraction.DYED_ITEM);
+        WATER.put(Items.LEATHER_HORSE_ARMOR, CauldronInteraction.DYED_ITEM);
+        WATER.put(Items.WHITE_BANNER, CauldronInteraction.BANNER);
+        WATER.put(Items.GRAY_BANNER, CauldronInteraction.BANNER);
+        WATER.put(Items.BLACK_BANNER, CauldronInteraction.BANNER);
+        WATER.put(Items.BLUE_BANNER, CauldronInteraction.BANNER);
+        WATER.put(Items.BROWN_BANNER, CauldronInteraction.BANNER);
+        WATER.put(Items.CYAN_BANNER, CauldronInteraction.BANNER);
+        WATER.put(Items.GREEN_BANNER, CauldronInteraction.BANNER);
+        WATER.put(Items.LIGHT_BLUE_BANNER, CauldronInteraction.BANNER);
+        WATER.put(Items.LIGHT_GRAY_BANNER, CauldronInteraction.BANNER);
+        WATER.put(Items.LIME_BANNER, CauldronInteraction.BANNER);
+        WATER.put(Items.MAGENTA_BANNER, CauldronInteraction.BANNER);
+        WATER.put(Items.ORANGE_BANNER, CauldronInteraction.BANNER);
+        WATER.put(Items.PINK_BANNER, CauldronInteraction.BANNER);
+        WATER.put(Items.PURPLE_BANNER, CauldronInteraction.BANNER);
+        WATER.put(Items.RED_BANNER, CauldronInteraction.BANNER);
+        WATER.put(Items.YELLOW_BANNER, CauldronInteraction.BANNER);
+        WATER.put(Items.WHITE_SHULKER_BOX, CauldronInteraction.SHULKER_BOX);
+        WATER.put(Items.GRAY_SHULKER_BOX, CauldronInteraction.SHULKER_BOX);
+        WATER.put(Items.BLACK_SHULKER_BOX, CauldronInteraction.SHULKER_BOX);
+        WATER.put(Items.BLUE_SHULKER_BOX, CauldronInteraction.SHULKER_BOX);
+        WATER.put(Items.BROWN_SHULKER_BOX, CauldronInteraction.SHULKER_BOX);
+        WATER.put(Items.CYAN_SHULKER_BOX, CauldronInteraction.SHULKER_BOX);
+        WATER.put(Items.GREEN_SHULKER_BOX, CauldronInteraction.SHULKER_BOX);
+        WATER.put(Items.LIGHT_BLUE_SHULKER_BOX, CauldronInteraction.SHULKER_BOX);
+        WATER.put(Items.LIGHT_GRAY_SHULKER_BOX, CauldronInteraction.SHULKER_BOX);
+        WATER.put(Items.LIME_SHULKER_BOX, CauldronInteraction.SHULKER_BOX);
+        WATER.put(Items.MAGENTA_SHULKER_BOX, CauldronInteraction.SHULKER_BOX);
+        WATER.put(Items.ORANGE_SHULKER_BOX, CauldronInteraction.SHULKER_BOX);
+        WATER.put(Items.PINK_SHULKER_BOX, CauldronInteraction.SHULKER_BOX);
+        WATER.put(Items.PURPLE_SHULKER_BOX, CauldronInteraction.SHULKER_BOX);
+        WATER.put(Items.RED_SHULKER_BOX, CauldronInteraction.SHULKER_BOX);
+        WATER.put(Items.YELLOW_SHULKER_BOX, CauldronInteraction.SHULKER_BOX);
 
         //custom//
         WATER.put(Items.DRAGON_BREATH,ModCauldronInteractions::dragonsBreath);
