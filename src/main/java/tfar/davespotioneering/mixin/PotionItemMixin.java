@@ -71,12 +71,12 @@ public class PotionItemMixin {
 
         if (playerentity != null) {
             playerentity.incrementStat(Stats.USED.getOrCreateStat((Item)(Object)this));
-            if (!playerentity.abilities.creativeMode) {
+            if (!playerentity.getAbilities().creativeMode) {
                 potion.decrement(1);
             }
         }
 
-        if (playerentity == null || !playerentity.abilities.creativeMode) {
+        if (playerentity == null || !playerentity.getAbilities().creativeMode) {
             if (potion.isEmpty()) {
                 return new ItemStack(Items.GLASS_BOTTLE);
             }
@@ -85,7 +85,7 @@ public class PotionItemMixin {
                 //the actual change
                 if (ClothConfig.return_empty_bottles) {
                     //playerentity.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE));
-                    playerentity.inventory.insertStack(new ItemStack(Items.GLASS_BOTTLE));
+                    playerentity.getInventory().insertStack(new ItemStack(Items.GLASS_BOTTLE));
                 } else {
                     playerentity.dropItem(new ItemStack(Items.GLASS_BOTTLE),false);
                 }

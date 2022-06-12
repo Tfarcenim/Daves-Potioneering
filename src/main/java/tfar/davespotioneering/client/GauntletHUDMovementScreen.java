@@ -33,27 +33,27 @@ public class GauntletHUDMovementScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        addButton(new ButtonWidget(5, 15, 75, 20, new TranslatableText(KEY + GauntletHUD.HudPreset.TOP_LEFT.ordinal()), (button) -> {
+        addSelectableChild(new ButtonWidget(5, 15, 75, 20, new TranslatableText(KEY + GauntletHUD.HudPreset.TOP_LEFT.ordinal()), (button) -> {
             x = getFixedPositionValue(5, true);
             y = getFixedPositionValue(5, false);
             preset = GauntletHUD.HudPreset.TOP_LEFT;
         }));
-        addButton(new ButtonWidget(85, 15, 75, 20, new TranslatableText(KEY + GauntletHUD.HudPreset.TOP_RIGHT.ordinal()), (button) -> {
+        addSelectableChild(new ButtonWidget(85, 15, 75, 20, new TranslatableText(KEY + GauntletHUD.HudPreset.TOP_RIGHT.ordinal()), (button) -> {
             x = getFixedPositionValue(width - 120 - 5, true);
             y = getFixedPositionValue(5, false);
             preset = GauntletHUD.HudPreset.TOP_RIGHT;
         }));
-        addButton(new ButtonWidget(165, 15, 75, 20, new TranslatableText(KEY + GauntletHUD.HudPreset.BTM_LEFT.ordinal()), (button) -> {
+        addSelectableChild(new ButtonWidget(165, 15, 75, 20, new TranslatableText(KEY + GauntletHUD.HudPreset.BTM_LEFT.ordinal()), (button) -> {
             x = getFixedPositionValue(5, true);
             y = getFixedPositionValue(height - 45 - 5, false);
             preset = GauntletHUD.HudPreset.BTM_LEFT;
         }));
-        addButton(new ButtonWidget(245, 15, 75, 20, new TranslatableText(KEY + GauntletHUD.HudPreset.BTM_RIGHT.ordinal()), (button) -> {
+        addSelectableChild(new ButtonWidget(245, 15, 75, 20, new TranslatableText(KEY + GauntletHUD.HudPreset.BTM_RIGHT.ordinal()), (button) -> {
             x = getFixedPositionValue(width - 120 - 5, true);
             y = getFixedPositionValue(height - 45 - 5, false);
             preset = GauntletHUD.HudPreset.BTM_RIGHT;
         }));
-        addButton(new ButtonWidget(325, 15, 75, 20, new TranslatableText(KEY + GauntletHUD.HudPreset.ABOVE_HOTBAR.ordinal()), (button) -> {
+        addSelectableChild(new ButtonWidget(325, 15, 75, 20, new TranslatableText(KEY + GauntletHUD.HudPreset.ABOVE_HOTBAR.ordinal()), (button) -> {
             if (client != null && client.player != null && client.player.isCreative()) {
                 x = getFixedPositionValue((width - 120) / 2, true);
                 y = getFixedPositionValue(height - 42 - 25, false);
@@ -90,7 +90,7 @@ public class GauntletHUDMovementScreen extends Screen {
     }
 
     public static void open() {
-        MinecraftClient.getInstance().openScreen(null);
-        MinecraftClient.getInstance().openScreen(new GauntletHUDMovementScreen());
+        MinecraftClient.getInstance().setScreen(null);
+        MinecraftClient.getInstance().setScreen(new GauntletHUDMovementScreen());
     }
 }

@@ -5,10 +5,12 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.BlockPos;
 import tfar.davespotioneering.block.PotionInjectorBlock;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
 import tfar.davespotioneering.inv.PotionInjectorHandler;
@@ -26,12 +28,12 @@ public class PotionInjectorBlockEntity extends BlockEntity implements NamedScree
         }
     };
 
-    public PotionInjectorBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public PotionInjectorBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos blockPos, BlockState blockState) {
+        super(tileEntityTypeIn,blockPos,blockState);
     }
 
-    public PotionInjectorBlockEntity() {
-        this(ModBlockEntityTypes.POTION_INJECTOR);
+    public PotionInjectorBlockEntity(BlockPos blockPos, BlockState blockState) {
+        this(ModBlockEntityTypes.POTION_INJECTOR,blockPos,blockState);
     }
 
     @Override
@@ -46,14 +48,12 @@ public class PotionInjectorBlockEntity extends BlockEntity implements NamedScree
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag compound) {
+    public void writeNbt(NbtCompound compound) {
         compound.put("inv",handler.getTags());
-        return super.toTag(compound);
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundTag nbt) {
-        handler.readTags(nbt.getList("inv",10));
-        super.fromTag(state, nbt);
+    public void readNbt(NbtCompound nbt) {
+        handler.readTags(nbt.getList("inv", NbtElement.COMPOUND_TYPE));
     }
 }

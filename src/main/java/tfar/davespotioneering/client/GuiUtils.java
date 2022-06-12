@@ -22,17 +22,13 @@ package tfar.davespotioneering.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.font.Font;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Style;
 import net.minecraft.util.Language;
 import net.minecraft.util.math.Matrix4f;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -92,7 +88,7 @@ public class GuiUtils
         if (!textLines.isEmpty())
         {
 
-            RenderSystem.disableRescaleNormal();
+           // RenderSystem.disableRescaleNormal();
             RenderSystem.disableDepthTest();
             int tooltipTextWidth = 0;
 
@@ -172,7 +168,7 @@ public class GuiUtils
             final int zLevel = 400;
 
             mStack.push();
-            Matrix4f mat = mStack.peek().getModel();
+            Matrix4f mat = mStack.peek().getPositionMatrix();
             //TODO, lots of unnessesary GL calls here, we can buffer all these together.
             drawGradientRect(mat, zLevel, tooltipX - 3, tooltipY - 4, tooltipX + tooltipTextWidth + 3, tooltipY - 3, backgroundColor, backgroundColor);
             drawGradientRect(mat, zLevel, tooltipX - 3, tooltipY + tooltipHeight + 3, tooltipX + tooltipTextWidth + 3, tooltipY + tooltipHeight + 4, backgroundColor, backgroundColor);
@@ -203,7 +199,7 @@ public class GuiUtils
             mStack.pop();
 
             RenderSystem.enableDepthTest();
-            RenderSystem.enableRescaleNormal();
+            //RenderSystem.enableRescaleNormal();
         }
     }
 
@@ -223,18 +219,18 @@ public class GuiUtils
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        RenderSystem.shadeModel(GL11.GL_SMOOTH);
+     //   RenderSystem.shadeModel(GL11.GL_SMOOTH);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
+        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
         buffer.vertex(mat, right,    top, zLevel).color(startRed, startGreen, startBlue, startAlpha).next();
         buffer.vertex(mat,  left,    top, zLevel).color(startRed, startGreen, startBlue, startAlpha).next();
         buffer.vertex(mat,  left, bottom, zLevel).color(  endRed,   endGreen,   endBlue,   endAlpha).next();
         buffer.vertex(mat, right, bottom, zLevel).color(  endRed,   endGreen,   endBlue,   endAlpha).next();
         tessellator.draw();
 
-        RenderSystem.shadeModel(GL11.GL_FLAT);
+        //RenderSystem.shadeModel(GL11.GL_FLAT);
         RenderSystem.disableBlend();
         RenderSystem.enableTexture();
     }

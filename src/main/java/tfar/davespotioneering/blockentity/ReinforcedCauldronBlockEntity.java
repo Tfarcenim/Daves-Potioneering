@@ -1,7 +1,7 @@
 package tfar.davespotioneering.blockentity;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.CauldronBlock;
+import net.minecraft.block.LeveledCauldronBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.color.world.BiomeColors;
@@ -9,13 +9,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import tfar.davespotioneering.block.LayeredReinforcedCauldronBlock;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
@@ -27,12 +28,12 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity {
 
     @Nonnull protected Potion potion = Potions.EMPTY;
 
-    public ReinforcedCauldronBlockEntity() {
-        this(ModBlockEntityTypes.REINFORCED_CAULDRON);
+    public ReinforcedCauldronBlockEntity(BlockPos blockPos, BlockState blockState) {
+        this(ModBlockEntityTypes.REINFORCED_CAULDRON,blockPos,blockState);
     }
 
-    public ReinforcedCauldronBlockEntity(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public ReinforcedCauldronBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos blockPos, BlockState blockState) {
+        super(tileEntityTypeIn,blockPos,blockState);
     }
 
     @Nonnull
@@ -52,23 +53,22 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundTag nbt) {
+    public void readNbt(NbtCompound nbt) {
         potion = Registry.POTION.get(new Identifier(nbt.getString("potion")));
-        super.fromTag(state, nbt);
+        super.readNbt(nbt);
     }
 
-    @Nonnull
     @Override
-    public CompoundTag toTag(CompoundTag compound) {
+    public void writeNbt(NbtCompound compound) {
         compound.putString("potion", Registry.POTION.getId(potion).toString());
-        return super.toTag(compound);
     }
 
     @Nonnull
     @Override
-    public CompoundTag toInitialChunkDataTag() {
-        CompoundTag tag = super.toInitialChunkDataTag();
-        return toTag(tag);    // okay to send entire inventory on chunk load
+    public NbtCompound toInitialChunkDataNbt() {
+        NbtCompound tag = super.toInitialChunkDataNbt();
+        writeNbt(tag);
+        return tag;    // okay to send entire inventory on chunk load
     }
 
     //Do not use
@@ -87,31 +87,31 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity {
         if (entity instanceof ItemEntity) {
             ItemStack stack =  ((ItemEntity) entity).getStack();
             BlockState blockState = getCachedState();
-            int fluidLevel = blockState.get(CauldronBlock.LEVEL);
+            int fluidLevel = blockState.get(LeveledCauldronBlock.LEVEL);
             if (potion == ModPotions.MILK && PotionUtil.getPotion(stack) != Potions.EMPTY) {
                 LayeredReinforcedCauldronBlock.removeCoating(blockState,this.world,pos,null,stack);
             } else if (stack.getItem() == Items.ARROW && fluidLevel > 0) {
-              LayeredReinforcedCauldronBlock.handleArrowCoating(blockState,this.world,pos,null,stack,fluidLevel);
+              LayeredReinforcedCauldronBlock.handleArrowCoating(blockState,this.world,pos,null,null,stack);
             } else if (fluidLevel == 3) {
                 //burn off a layer, then schedule the rest of the ticks
                 this.world.playSound(null,pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.8F, 1);
-                ((CauldronBlock)blockState.getBlock()).setLevel(this.world,pos,blockState,2);
+                LayeredReinforcedCauldronBlock.lowerFillLevel0(blockState, this.world, pos);
                 scheduleTick();
             }
         }
     }
 
     private void scheduleTick() {
-        this.world.getBlockTickScheduler().schedule(this.getPos(), this.getCachedState().getBlock(), LayeredReinforcedCauldronBlock.brew_speed);
+        this.world.createAndScheduleBlockTick(this.getPos(), this.getCachedState().getBlock(), LayeredReinforcedCauldronBlock.brew_speed);
     }
 
     //@Override
-    public void fromClientTag(CompoundTag tag) {
+    public void fromClientTag(NbtCompound tag) {
         potion = Registry.POTION.get(new Identifier(tag.getString("potion")));
     }
 
    // @Override
-    public CompoundTag toClientTag(CompoundTag tag) {
+    public NbtCompound toClientTag(NbtCompound tag) {
         tag.putString("potion", Registry.POTION.getId(potion).toString());
         return tag;
     }

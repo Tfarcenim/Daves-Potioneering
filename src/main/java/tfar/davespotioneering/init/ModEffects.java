@@ -1,7 +1,7 @@
 package tfar.davespotioneering.init;
 
 import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectType;
+import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import tfar.davespotioneering.DavesPotioneering;
@@ -15,13 +15,12 @@ public class ModEffects {
 
     private static List<StatusEffect> MOD_EFFECTS;
 
-    public static final StatusEffect MILK = new MilkEffect(StatusEffectType.NEUTRAL,0xffffff);
+    public static final StatusEffect MILK = new MilkEffect(StatusEffectCategory.NEUTRAL,0xffffff);
 
     public static void register() {
         for (Field field : ModEffects.class.getFields()) {
             try {
-                if (field.get(null) instanceof StatusEffect) {
-                    StatusEffect effect = (StatusEffect)field.get(null);
+                if (field.get(null) instanceof StatusEffect effect) {
                     Registry.register(Registry.STATUS_EFFECT,new Identifier(DavesPotioneering.MODID,field.getName().toLowerCase(Locale.ROOT)),effect);
                 }
             } catch (IllegalAccessException illegalAccessException) {

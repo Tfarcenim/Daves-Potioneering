@@ -6,6 +6,7 @@ import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.texture.Sprite;
@@ -13,7 +14,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -50,8 +51,8 @@ public class GauntletHUD {
     }
 
     public static void render(MatrixStack matrixStack) {
-        RenderSystem.pushMatrix();
-        RenderSystem.color4f(1, 1, 1, 1);
+        matrixStack.push();
+        RenderSystem.setShaderColor(1, 1, 1, 1);
         mc.getTextureManager().bindTexture(hud_texture);
 
         InGameHud hud = mc.inGameHud;
@@ -86,11 +87,11 @@ public class GauntletHUD {
         if (player == null) return;
         ItemStack g = player.getMainHandStack();
 
-        CompoundTag info = g.getOrCreateTag().getCompound("info");
+        NbtCompound info = g.getOrCreateNbt().getCompound("info");
         renderPotion(prePotion, matrixStack, xFixed + 3, yFixed + 21, GauntletItem.getCooldownFromPotionByIndex(info.getInt("activePotionIndex")-1, g), false);
         renderPotion(activePotion, matrixStack, xFixed + 51, yFixed + 5, GauntletItem.getCooldownFromPotionByIndex(info.getInt("activePotionIndex"), g), true);
         renderPotion(postPotion, matrixStack, xFixed + 99, yFixed + 21, GauntletItem.getCooldownFromPotionByIndex(info.getInt("activePotionIndex")+1, g), false);
-        RenderSystem.popMatrix();
+        matrixStack.pop();
     }
 
     private static void renderPotion(Potion potion, MatrixStack matrixStack, int x, int y, int cooldown, boolean isActivePotion) {
@@ -100,8 +101,8 @@ public class GauntletHUD {
 
         if (potion.getEffects().isEmpty()) return;
 
-        RenderSystem.pushMatrix();
-        RenderSystem.color4f(1, 1, 1, 1);
+        matrixStack.push();
+        RenderSystem.setShaderColor(1, 1, 1, 1);
 
         if (potion.getEffects().size() > 1) {
             if (name.toString().contains("turtle_master")) {
@@ -121,12 +122,12 @@ public class GauntletHUD {
 
         // render cooldown, modified from ItemRenderer
         if (cooldown > 0.0F) {
-            RenderSystem.pushMatrix();
+            matrixStack.push();
             RenderSystem.disableDepthTest();
             RenderSystem.disableTexture();
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
-            RenderSystem.translatef(1, 1, mc.inGameHud.getZOffset()+1);
+            matrixStack.translate(1, 1, mc.inGameHud.getZOffset()+1);
             Tessellator tessellator1 = Tessellator.getInstance();
             BufferBuilder bufferbuilder1 = tessellator1.getBuffer();
             if (isActivePotion) {
@@ -138,10 +139,10 @@ public class GauntletHUD {
             }
             RenderSystem.enableTexture();
             RenderSystem.enableDepthTest();
-            RenderSystem.popMatrix();
+            matrixStack.pop();
         }
 
-        RenderSystem.popMatrix();
+        matrixStack.pop();
     }
 
     private static int getScaledCooldown(float pixels, float cooldown) {
@@ -158,7 +159,7 @@ public class GauntletHUD {
 
     // copy-pasted from ItemRenderer class
     private static void draw(BufferBuilder renderer, int x, int y, int width, int height, int red, int green, int blue, int alpha) {
-        renderer.begin(7, VertexFormats.POSITION_COLOR);
+        renderer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
         renderer.vertex(x, y, 0.0D).color(red, green, blue, alpha).next();
         renderer.vertex(x, y + height, 0.0D).color(red, green, blue, alpha).next();
         renderer.vertex(x + width, y + height, 0.0D).color(red, green, blue, alpha).next();

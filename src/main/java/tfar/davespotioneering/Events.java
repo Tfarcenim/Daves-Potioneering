@@ -41,8 +41,7 @@ public class Events {
     }
 
     public static ActionResult milkCow(PlayerEntity player, World e2, Hand hand, Entity clicked, @Nullable EntityHitResult e5) {
-        if (clicked instanceof CowEntity) {
-            CowEntity cowEntity = (CowEntity)clicked;
+        if (clicked instanceof CowEntity cowEntity) {
             ItemStack itemstack = player.getStackInHand(hand);
             if (itemstack.getItem() == Items.GLASS_BOTTLE && !cowEntity.isBaby()) {
                 player.playSound(SoundEvents.ENTITY_COW_MILK, 1.0F, 1.0F);

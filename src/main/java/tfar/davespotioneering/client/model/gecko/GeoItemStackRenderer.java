@@ -4,6 +4,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
+import net.minecraft.client.render.entity.model.EntityModelLoader;
 import net.minecraft.client.render.item.BuiltinModelItemRenderer;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
@@ -40,11 +42,12 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends BuiltinModelIte
 
     private static final Map<Item, GeoItemStackRenderer<?>> animatedRenderers = new ConcurrentHashMap<>();
 
-    public GeoItemStackRenderer(AnimatedGeoModel<T> modelProvider, T ianimatable) {
-        this(modelProvider, RenderLayer::getEntityCutout, ianimatable);
+    public GeoItemStackRenderer(AnimatedGeoModel<T> modelProvider, T ianimatable,BlockEntityRenderDispatcher blockEntityRenderDispatcher, EntityModelLoader entityModelLoader) {
+        this(modelProvider, RenderLayer::getEntityCutout, ianimatable,blockEntityRenderDispatcher,entityModelLoader);
     }
 
-    public GeoItemStackRenderer(AnimatedGeoModel<T> modelProvider, Function<Identifier, RenderLayer> renderTypeGetter, T ianimatable) {
+    public GeoItemStackRenderer(AnimatedGeoModel<T> modelProvider, Function<Identifier, RenderLayer> renderTypeGetter, T ianimatable, BlockEntityRenderDispatcher blockEntityRenderDispatcher, EntityModelLoader entityModelLoader) {
+        super(blockEntityRenderDispatcher,entityModelLoader);
         this.modelProvider = modelProvider;
         this.renderTypeGetter = renderTypeGetter;
         this.ianimatable = ianimatable;

@@ -1,8 +1,5 @@
 package tfar.davespotioneering.block;
 
-import tfar.davespotioneering.blockentity.PotionInjectorBlockEntity;
-
-import javax.annotation.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
@@ -33,6 +30,9 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import tfar.davespotioneering.blockentity.PotionInjectorBlockEntity;
+
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class PotionInjectorBlock extends Block implements BlockEntityProvider {
@@ -129,7 +129,7 @@ public class PotionInjectorBlock extends Block implements BlockEntityProvider {
 
     @org.jetbrains.annotations.Nullable
     @Override
-    public BlockEntity createBlockEntity(BlockView blockGetter) {
-        return new PotionInjectorBlockEntity();
+    public BlockEntity createBlockEntity(BlockPos pos,BlockState state) {
+        return new PotionInjectorBlockEntity(pos,state);
     }
 }

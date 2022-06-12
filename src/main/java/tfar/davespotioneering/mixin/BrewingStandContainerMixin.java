@@ -66,7 +66,7 @@ abstract class BrewingStandContainerMixin extends ScreenHandler {
                     return ItemStack.EMPTY;
                 }
 
-                slot.onStackChanged(itemstack1, itemstack);
+                slot.onQuickTransfer(itemstack1, itemstack);
             }
 
             if (itemstack1.isEmpty()) {

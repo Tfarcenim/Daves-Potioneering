@@ -7,10 +7,10 @@ import javax.annotation.Nonnull;
 public class ItemHandlerHelper {
     public static boolean canItemStacksStack(@Nonnull ItemStack a, @Nonnull ItemStack b)
     {
-        if (a.isEmpty() || !a.isItemEqual(b) || a.hasTag() != b.hasTag())
+        if (a.isEmpty() || !a.isItemEqual(b) || a.hasNbt() != b.hasNbt())
             return false;
 
-        return (!a.hasTag() || a.getTag().equals(b.getTag()));
+        return (!a.hasNbt() || a.getNbt().equals(b.getNbt()));
     }
 
     @Nonnull

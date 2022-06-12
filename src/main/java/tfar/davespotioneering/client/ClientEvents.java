@@ -20,7 +20,6 @@ import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.item.UnclampedModelPredicateProvider;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.item.BuiltinModelItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
@@ -75,7 +74,7 @@ public class ClientEvents implements ClientModInitializer {
         HandledScreens.register(ModContainerTypes.ADVANCED_BREWING_STAND, AdvancedBrewingStandScreen::new);
         HandledScreens.register(ModContainerTypes.ALCHEMICAL_GAUNTLET, GauntletWorkstationScreen::new);
 
-        BlockEntityRendererRegistry.register(ModBlockEntityTypes.POTION_INJECTOR, c -> new PotionInjectorRenderer(c.getRenderDispatcher()));
+        BlockEntityRendererRegistry.register(ModBlockEntityTypes.POTION_INJECTOR, PotionInjectorRenderer::new);
 
         ColorProviderRegistry.BLOCK.register((state, reader, pos, index) -> {
             if (pos != null) {
@@ -144,18 +143,14 @@ public class ClientEvents implements ClientModInitializer {
         return new DoubleGeoItemStackRenderer<>(
                 GeoItemStackRenderer.GeoItemModel.makeClosedUmbrella(itemName),
                 GeoItemStackRenderer.GeoItemModel.makeOpenUmbrella(itemName)
-                ,GeoItemStackRenderer.NOTHING);
+                ,GeoItemStackRenderer.NOTHING,MinecraftClient.getInstance().getBlockEntityRenderDispatcher(), MinecraftClient.getInstance().getEntityModelLoader());
     }
 
     private static BuiltinItemRendererRegistry.DynamicItemRenderer  createAgedUmbrellaItemStackRenderer() {
         return new DoubleGeoItemStackRenderer<>(
                 GeoItemStackRenderer.GeoItemModel.makeClosedUmbrella("aged"),
                 GeoItemStackRenderer.GeoItemModel.makeOpenAgedUmbrella()
-                ,GeoItemStackRenderer.NOTHING);
-    }
-
-    private static BuiltinModelItemRenderer createGeoItemStackRendererTransparent(Identifier itemName) {
-        return new GeoItemStackRenderer<>(new GeoItemStackRenderer.GeoItemModel<>(itemName), RenderLayer::getEntityTranslucent,GeoItemStackRenderer.NOTHING);
+                ,GeoItemStackRenderer.NOTHING,MinecraftClient.getInstance().getBlockEntityRenderDispatcher(), MinecraftClient.getInstance().getEntityModelLoader());
     }
 
     public static void switchGameMode(GameMode oldGameType, GameMode newGameType) {

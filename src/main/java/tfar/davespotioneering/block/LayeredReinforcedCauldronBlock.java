@@ -13,13 +13,11 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.PotionItem;
 import net.minecraft.item.ToolItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
-import net.minecraft.potion.Potions;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -29,10 +27,8 @@ import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockView;
@@ -40,6 +36,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.init.ModBlocks;
+import tfar.davespotioneering.init.ModPotions;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -58,30 +55,30 @@ public class LayeredReinforcedCauldronBlock extends LeveledCauldronBlock impleme
     }
 
     public static void handlePotionBottle(BlockState state, World world, BlockPos pos, PlayerEntity player, ItemStack stack, int level) {
-        Potion potion = PotionUtils.getPotion(stack);
+        Potion potion = PotionUtil.getPotion(stack);
         ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) world.getBlockEntity(pos);
         Potion storedPotion = reinforcedCauldronBlockEntity.getPotion();
-        if (!world.isClientSide) {
+        if (!world.isClient) {
             if (level < 3) {
-                if (!player.getAbilities().instabuild) {
-                    player.awardStat(Stats.USE_CAULDRON);
-                    stack.shrink(1);
+                if (!player.getAbilities().creativeMode) {
+                    player.incrementStat(Stats.USE_CAULDRON);
+                    stack.decrement(1);
 
                     ItemStack itemstack4 = new ItemStack(Items.GLASS_BOTTLE);
 
-                    if (!player.getInventory().add(itemstack4)) {
-                        player.drop(itemstack4, false);
+                    if (!player.getInventory().insertStack(itemstack4)) {
+                        player.dropItem(itemstack4, false);
                     } else {
                         // ((ServerPlayer) player).refreshContainer(player.inventoryMenu);
                     }
                 }
 
-                world.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
+                world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
 
                 if (level > 0 && storedPotion != potion) {
                     boom(world, pos);
                 } else {
-                    setWaterLevel(world, pos, state, level + 1);
+                //    setWaterLevel(world, pos, state, level + 1);
                     reinforcedCauldronBlockEntity.setPotion(potion);
                 }
             }
@@ -89,55 +86,67 @@ public class LayeredReinforcedCauldronBlock extends LeveledCauldronBlock impleme
     }
 
     public static void lowerFillLevel0(BlockState p_153560_, World p_153561_, BlockPos pos) {
-        int i = p_153560_.getValue(LEVEL) - 1;
-        p_153561_.setBlockAndUpdate(pos, i == 0 ? ModBlocks.REINFORCED_CAULDRON.defaultBlockState() : p_153560_.setValue(LEVEL, i));
+        int i = p_153560_.get(LEVEL) - 1;
+        p_153561_.setBlockState(pos, i == 0 ? ModBlocks.REINFORCED_CAULDRON.getDefaultState() : p_153560_.with(LEVEL, i));
     }
 
     public static void boom(World level, BlockPos pos) {
-        level.setBlockAndUpdate(pos,ModBlocks.REINFORCED_CAULDRON.defaultBlockState());
-        level.explode(null, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, 1, false, Explosion.BlockInteraction.NONE);
+        level.setBlockState(pos,ModBlocks.REINFORCED_CAULDRON.getDefaultState());
+        level.createExplosion(null, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, 1, false, Explosion.DestructionType.NONE);
     }
 
     public static void handleWeaponCoating(BlockState state, World level, BlockPos pos, @Nullable PlayerEntity player, Hand p_175715_, ItemStack stack) {
-        if (state.getValue(DRAGONS_BREATH)) {
+        if (state.get(DRAGONS_BREATH)) {
             ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) level.getBlockEntity(pos);
             Potion potion = reinforcedCauldronBlockEntity.getPotion();
-            if (!level.isClientSide) {
-                if (player != null && !player.getAbilities().instabuild) {
-                    player.awardStat(Stats.USE_CAULDRON);
+            if (!level.isClient) {
+                if (player != null && !player.getAbilities().creativeMode) {
+                    player.incrementStat(Stats.USE_CAULDRON);
                 }
                 addCoating(stack,potion);
-                level.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
-                level.setBlockAndUpdate(pos,ModBlocks.REINFORCED_CAULDRON.defaultBlockState());
+                level.playSound(null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                level.setBlockState(pos,ModBlocks.REINFORCED_CAULDRON.getDefaultState());
             }
         }
     }
 
     public static void handleArrowCoating(BlockState state, World level, BlockPos pos, @Nullable PlayerEntity player, Hand p_175715_, ItemStack stack) {
-        int wWorld = state.getValue(LEVEL);
-        if (state.getValue(DRAGONS_BREATH)) {
+        int wLevel = state.get(LEVEL);
+        if (state.get(DRAGONS_BREATH)) {
             //can't tip arrows if there's less than 8
             if (stack.getCount() < 8) {
                 return;
             }
             ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) level.getBlockEntity(pos);
             Potion potion = reinforcedCauldronBlockEntity.getPotion();
-            if (!level.isClientSide) {
-                if (player != null && !player.getAbilities().instabuild) {
-                    player.awardStat(Stats.USE_CAULDRON);
+            if (!level.isClient) {
+                if (player != null && !player.getAbilities().creativeMode) {
+                    player.incrementStat(Stats.USE_CAULDRON);
                 }
                 ItemStack tippedArrows = new ItemStack(Items.TIPPED_ARROW, 8);
                 addCoating(tippedArrows, potion);
-                stack.shrink(8);
-                level.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
+                stack.decrement(8);
+                level.playSound(null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
 
-                level.addFreshEntity(new ItemEntity(level, pos.getX(), pos.getY() + 1, pos.getZ(), tippedArrows));
-                if (wWorld <= 1) {
-                    level.setBlockAndUpdate(pos, ModBlocks.REINFORCED_CAULDRON.defaultBlockState());
+                level.spawnEntity(new ItemEntity(level, pos.getX(), pos.getY() + 1, pos.getZ(), tippedArrows));
+                if (wLevel <= 1) {
+                    level.setBlockState(pos, ModBlocks.REINFORCED_CAULDRON.getDefaultState());
                 } else {
-                    level.setBlockAndUpdate(pos, ModBlocks.REINFORCED_WATER_CAULDRON.defaultBlockState().setValue(LEVEL,wWorld - 1));
+                    level.setBlockState(pos, ModBlocks.REINFORCED_WATER_CAULDRON.getDefaultState().with(LEVEL,wLevel - 1));
                 }
             }
+        }
+    }
+
+    public static void removeCoating(BlockState state, World world, BlockPos pos,@Nullable PlayerEntity player, ItemStack stack) {
+        ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) world.getBlockEntity(pos);
+        Potion potion = reinforcedCauldronBlockEntity.getPotion();
+        if (potion == ModPotions.MILK && !world.isClient) {
+            if (player != null && !player.getAbilities().creativeMode) {
+                player.incrementStat(Stats.USE_CAULDRON);
+            }
+            removeCoating(stack);
+            world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
         }
     }
 
@@ -179,7 +188,7 @@ public class LayeredReinforcedCauldronBlock extends LeveledCauldronBlock impleme
 
     /**
      * Called periodically clientside on blocks near the player to show effects (like furnace fire particles). Note that
-     * this method is unrelated to {@link #randomTick} and {@link #ticksRandomly(BlockState)}, and will always be called regardless
+     * this method is unrelated to {@link #randomTick} and {@link #randomDisplayTick(BlockState)}, and will always be called regardless
      * of whether the block can receive random update ticks
      */
     public void randomDisplayTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand) {
@@ -267,6 +276,6 @@ public class LayeredReinforcedCauldronBlock extends LeveledCauldronBlock impleme
     @org.jetbrains.annotations.Nullable
     @Override
     public BlockEntity createBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new ReinforcedCauldronBlockEntity();
+        return new ReinforcedCauldronBlockEntity(blockPos,blockState);
     }
 }

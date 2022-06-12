@@ -96,7 +96,7 @@ public class AdvancedBrewingStandContainer extends ScreenHandler {
                 if (!this.insertItem(slotStack, 0, AdvancedBrewingStandBlockEntity.SLOTS, true)) {
                     return ItemStack.EMPTY;
                 }
-                slot.onStackChanged(slotStack, itemstack);
+                slot.onQuickTransfer(slotStack, itemstack);
             }
 
             if (slotStack.isEmpty()) {
@@ -184,14 +184,13 @@ public class AdvancedBrewingStandContainer extends ScreenHandler {
             return 2;
         }
 
-        public ItemStack onTakeItem(PlayerEntity thePlayer, ItemStack stack) {
+        public void onTakeItem(PlayerEntity thePlayer, ItemStack stack) {
             Potion potion = PotionUtil.getPotion(stack);
             if (thePlayer instanceof ServerPlayerEntity) {
                 Criteria.BREWED_POTION.trigger((ServerPlayerEntity)thePlayer, potion);
             }
 
             super.onTakeItem(thePlayer, stack);
-            return stack;
         }
     }
 }

@@ -1,8 +1,5 @@
 package tfar.davespotioneering.block;
 
-import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
-
-import javax.annotation.Nullable;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BrewingStandBlock;
 import net.minecraft.block.entity.BlockEntity;
@@ -21,6 +18,9 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
+
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class AdvancedBrewingStandBlock extends BrewingStandBlock {
@@ -70,7 +70,7 @@ public class AdvancedBrewingStandBlock extends BrewingStandBlock {
     }
 
     @Override
-    public BlockEntity createBlockEntity(BlockView worldIn) {
-        return new AdvancedBrewingStandBlockEntity();
+    public BlockEntity createBlockEntity(BlockPos blockPos, BlockState blockState) {
+        return new AdvancedBrewingStandBlockEntity(blockPos,blockState);
     }
 }

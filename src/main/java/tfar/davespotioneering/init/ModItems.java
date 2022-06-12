@@ -1,5 +1,6 @@
 package tfar.davespotioneering.init;
 
+import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.minecraft.item.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -21,12 +22,9 @@ public class ModItems {
 
     private static List<Item> MOD_ITEMS;
 
-    public static final ItemGroup tab = new ItemGroup(8,DavesPotioneering.MODID) {
-        @Override
-        public ItemStack createIcon() {
-            return new ItemStack(ModItems.COMPOUND_BREWING_STAND);
-        }
-    };
+    public static final ItemGroup tab = FabricItemGroupBuilder
+            .create(new Identifier(DavesPotioneering.MODID, DavesPotioneering.MODID))
+            .icon(() -> new ItemStack(ModItems.POTIONEER_GAUNTLET)).build();
     
     public static final Item COMPOUND_BREWING_STAND = new BlockItem(ModBlocks.COMPOUND_BREWING_STAND,new Item.Settings().group(tab));
     public static final Item REINFORCED_CAULDRON = new BlockItem(ModBlocks.REINFORCED_WATER_CAULDRON,new Item.Settings().group(tab));

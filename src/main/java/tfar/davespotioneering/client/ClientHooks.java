@@ -3,23 +3,17 @@ package tfar.davespotioneering.client;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.ItemModels;
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedModelManager;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
-import tfar.davespotioneering.DavesPotioneering;
-import tfar.davespotioneering.client.model.custom.FullBrightModel;
 import tfar.davespotioneering.duck.ModelManagerDuck;
 import tfar.davespotioneering.init.ModItems;
 import tfar.davespotioneering.item.Perspective;
 import tfar.davespotioneering.mixin.BakedModelManagerAccess;
-import tfar.davespotioneering.mixin.ModelOverrideListMixin;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -74,7 +68,7 @@ public class ClientHooks {
         modelsToBake.put(model,unbakedModel);
     }
 
-    public static void onModelBake(BakedModelManager modelManager, Map<Identifier, BakedModel> modelRegistry, ModelLoader modelLoader) {
+    /*public static void onModelBake(BakedModelManager modelManager, Map<Identifier, BakedModel> modelRegistry, ModelLoader modelLoader) {
 
         Identifier rl = new ModelIdentifier(new Identifier(DavesPotioneering.MODID,"potioneer_gauntlet"),"inventory");
 
@@ -87,5 +81,5 @@ public class ClientHooks {
         FullBrightModel newModel = new FullBrightModel(gauntletOverrideModel,false);
 
         ((ModelOverrideListMixin)modelOverrideList).getModels().set(0,newModel);
-    }
+    }*/
 }

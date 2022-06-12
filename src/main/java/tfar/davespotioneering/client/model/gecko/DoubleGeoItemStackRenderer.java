@@ -4,6 +4,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
+import net.minecraft.client.render.entity.model.EntityModelLoader;
 import net.minecraft.client.render.item.BuiltinModelItemRenderer;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
@@ -29,11 +31,12 @@ public class DoubleGeoItemStackRenderer<T extends IAnimatable> extends BuiltinMo
     protected final Function<Identifier, RenderLayer> renderTypeGetter;
     private final T ianimatable;
 
-    public DoubleGeoItemStackRenderer(AnimatedGeoModel<T> modelProvider1,AnimatedGeoModel<T> modelProvider2, T ianimatable) {
-        this(modelProvider1,modelProvider2, RenderLayer::getEntityCutout, ianimatable);
+    public DoubleGeoItemStackRenderer(AnimatedGeoModel<T> modelProvider1,AnimatedGeoModel<T> modelProvider2, T ianimatable, BlockEntityRenderDispatcher blockEntityRenderDispatcher, EntityModelLoader entityModelLoader) {
+        this(modelProvider1,modelProvider2, RenderLayer::getEntityCutout, ianimatable,blockEntityRenderDispatcher,entityModelLoader);
     }
 
-    public DoubleGeoItemStackRenderer(AnimatedGeoModel<T> modelProvider1,AnimatedGeoModel<T> modelProvider2, Function<Identifier, RenderLayer> renderTypeGetter, T ianimatable) {
+    public DoubleGeoItemStackRenderer(AnimatedGeoModel<T> modelProvider1, AnimatedGeoModel<T> modelProvider2, Function<Identifier, RenderLayer> renderTypeGetter, T ianimatable, BlockEntityRenderDispatcher blockEntityRenderDispatcher, EntityModelLoader entityModelLoader) {
+        super(blockEntityRenderDispatcher,entityModelLoader);
         this.modelProvider1 = modelProvider1;
         this.modelProvider2 = modelProvider2;
         this.renderTypeGetter = renderTypeGetter;

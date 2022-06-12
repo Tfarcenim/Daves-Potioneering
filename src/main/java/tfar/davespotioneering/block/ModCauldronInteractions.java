@@ -2,7 +2,6 @@ package tfar.davespotioneering.block;
 
 import net.minecraft.block.*;
 import net.minecraft.block.cauldron.CauldronBehavior;
-import net.minecraft.block.entity.BannerBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
@@ -28,20 +27,16 @@ import static tfar.davespotioneering.block.LayeredReinforcedCauldronBlock.DRAGON
 /**
  * Copied from @CauldronBehavior
  */
-public class ModCauldronBehaviors {
+public class ModCauldronInteractions {
 
         public static final Map<Item, CauldronBehavior> WATER = CauldronBehavior.createMap();
 
         public static final Map<Item, CauldronBehavior> EMPTY = CauldronBehavior.createMap();
         static final Map<Item, CauldronBehavior> LAVA = CauldronBehavior.createMap();
         static final Map<Item, CauldronBehavior> POWDER_SNOW = CauldronBehavior.createMap();
-        static final CauldronBehavior FILL_WATER = (p_175683_, p_175684_, p_175685_, p_175686_, p_175687_, p_175688_) -> emptyBucket(p_175684_, p_175685_, p_175686_, p_175687_, p_175688_, ModBlocks.REINFORCED_WATER_CAULDRON.getDefaultState().with(LeveledCauldronBlock.LEVEL, 3), SoundEvents.BUCKET_EMPTY);
-        static final CauldronBehavior FILL_LAVA = (p_175676_, p_175677_, p_175678_, p_175679_, p_175680_, p_175681_) -> {
-            return emptyBucket(p_175677_, p_175678_, p_175679_, p_175680_, p_175681_, Blocks.LAVA_CAULDRON., SoundEvents.ITEM_BUCKET_EMPTY_LAVA);
-        };
-        static final CauldronBehavior FILL_POWDER_SNOW = (p_175669_, p_175670_, p_175671_, p_175672_, p_175673_, p_175674_) -> {
-            return emptyBucket(p_175670_, p_175671_, p_175672_, p_175673_, p_175674_, Blocks.POWDER_SNOW_CAULDRON.getDefaultState().with(LeveledCauldronBlock.LEVEL, 3), SoundEvents.BUCKET_EMPTY_POWDER_SNOW);
-        };
+        static final CauldronBehavior FILL_WATER = (p_175683_, p_175684_, p_175685_, p_175686_, p_175687_, p_175688_) -> CauldronBehavior.fillCauldron(p_175684_, p_175685_, p_175686_, p_175687_, p_175688_, ModBlocks.REINFORCED_WATER_CAULDRON.getDefaultState().with(LeveledCauldronBlock.LEVEL, 3), SoundEvents.ITEM_BUCKET_EMPTY);
+        static final CauldronBehavior FILL_LAVA = (p_175676_, p_175677_, p_175678_, p_175679_, p_175680_, p_175681_) -> CauldronBehavior.fillCauldron(p_175677_, p_175678_, p_175679_, p_175680_, p_175681_, Blocks.LAVA_CAULDRON.getDefaultState().with(LeveledCauldronBlock.LEVEL, 3), SoundEvents.ITEM_BUCKET_EMPTY_LAVA);
+        static final CauldronBehavior FILL_POWDER_SNOW = (p_175669_, p_175670_, p_175671_, p_175672_, p_175673_, p_175674_) -> CauldronBehavior.fillCauldron(p_175670_, p_175671_, p_175672_, p_175673_, p_175674_, Blocks.POWDER_SNOW_CAULDRON.getDefaultState().with(LeveledCauldronBlock.LEVEL, 3), SoundEvents.ITEM_BUCKET_EMPTY_POWDER_SNOW);
 
         public static void bootStrap() {
             addDefaultInteractions(EMPTY);
@@ -50,7 +45,7 @@ public class ModCauldronBehaviors {
                     Item item = stack.getItem();
                     player.setStackInHand(hand, ItemUsage.exchangeStack(stack, player, new ItemStack(Items.GLASS_BOTTLE)));
                     player.incrementStat(Stats.USE_CAULDRON);
-                    player.incrementStat(Stats.USED.get(item));
+                    player.incrementStat(Stats.USED.getOrCreateStat(item));
                     level.setBlockState(pos, ModBlocks.REINFORCED_WATER_CAULDRON.getDefaultState());
 
                     BlockEntity blockEntity = level.getBlockEntity(pos);
@@ -149,12 +144,12 @@ public class ModCauldronBehaviors {
             WATER.put(Items.YELLOW_SHULKER_BOX, CauldronBehavior.CLEAN_SHULKER_BOX);
 
             //custom//
-            WATER.put(Items.DRAGON_BREATH,ModCauldronBehaviors::dragonsBreath);
-            WATER.put(Items.ARROW,ModCauldronBehaviors::arrowCoating);
+            WATER.put(Items.DRAGON_BREATH, ModCauldronInteractions::dragonsBreath);
+            WATER.put(Items.ARROW, ModCauldronInteractions::arrowCoating);
 
             for (Item item : Registry.ITEM) {
                 if (item instanceof ToolItem) {
-                    WATER.put(item,ModCauldronBehaviors::weaponCoating);
+                    WATER.put(item, ModCauldronInteractions::weaponCoating);
                 }
             }
             //end//
@@ -193,37 +188,23 @@ public class ModCauldronBehaviors {
             }
         }
 
-        static ActionResult emptyBucket(World p_175619_, BlockPos p_175620_, PlayerEntity p_175621_, Hand p_175622_, ItemStack p_175623_, BlockState p_175624_, SoundEvent p_175625_) {
-            if (!p_175619_.isClient) {
-                Item item = p_175623_.getItem();
-                p_175621_.setStackInHand(p_175622_, ItemUsage.exchangeStack(p_175623_, p_175621_, new ItemStack(Items.BUCKET)));
-                p_175621_.incrementStat(Stats.FILL_CAULDRON);
-                p_175621_.incrementStat(Stats.USED.getOrCreateStat(item));
-                p_175619_.setBlockState(p_175620_, p_175624_);
-                p_175619_.playSound(null, p_175620_, p_175625_, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                p_175619_.emitGameEvent(null, GameEvent.FLUID_PLACE, p_175620_);
-            }
-
-            return ActionResult.success(p_175619_.isClient);
-        }
-
         @Nonnull
         static ActionResult dragonsBreath(BlockState state, World level, BlockPos pos, PlayerEntity player, Hand p_175715_, ItemStack stack) {
             if (!level.isClient) {
                 if (!player.getAbilities().creativeMode) {
                     player.incrementStat(Stats.USE_CAULDRON);
-                    stack.shrink(1);
+                    stack.decrement(1);
 
                     ItemStack itemstack4 = new ItemStack(Items.GLASS_BOTTLE);
 
-                    if (!player.getInventory().add(itemstack4)) {
-                        player.drop(itemstack4, false);
+                    if (!player.getInventory().insertStack(itemstack4)) {
+                        player.dropItem(itemstack4, false);
                     } else {
                         //     ((ServerPlayer) player).refreshContainer(player.inventoryMenu);
                     }
                 }
                 level.playSound(null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                level.setBlockState(pos,state.setValue(DRAGONS_BREATH,true));
+                level.setBlockState(pos,state.with(DRAGONS_BREATH,true));
             }
             return ActionResult.success(level.isClient);
         }

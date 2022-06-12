@@ -27,8 +27,8 @@ public class FastDripParticle extends SpriteBillboardParticle {
             return ParticleTextureSheet.PARTICLE_SHEET_OPAQUE;
         }
 
-        public int getColorMultiplier(float partialTick) {
-            return this.fullbright ? 240 : super.getColorMultiplier(partialTick);
+        public int getBrightness(float partialTick) {
+            return this.fullbright ? 240 : super.getBrightness(partialTick);
         }
 
         public void tick() {
@@ -82,7 +82,7 @@ public class FastDripParticle extends SpriteBillboardParticle {
                     //turns into fast_falling_water
                     Particle particle = ((ParticleManagerAccess) MinecraftClient.getInstance().particleManager).$makeParticle(this.particleData, this.x, this.y, this.z, this.velocityX, this.velocityY, this.velocityZ);
 
-                    particle.setColor(colorRed,colorGreen,colorBlue);
+                    particle.setColor(red,green,blue);
 
 
                     MinecraftClient.getInstance().particleManager.addParticle(particle);
@@ -129,7 +129,7 @@ public class FastDripParticle extends SpriteBillboardParticle {
                 //turns into splash
                 Particle particle = ((ParticleManagerAccess) MinecraftClient.getInstance().particleManager).$makeParticle(this.particleData, this.x, this.y, this.z, this.velocityX, this.velocityY, this.velocityZ);
 
-                    particle.setColor(colorRed,colorGreen,colorBlue);
+                    particle.setColor(red,green,blue);
 
 
                 MinecraftClient.getInstance().particleManager.addParticle(particle);

@@ -10,8 +10,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.PotionItem;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.recipe.BrewingRecipeRegistry;
@@ -21,7 +21,6 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ItemScatterer;
-import net.minecraft.util.Tickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import org.apache.commons.lang3.tuple.Pair;
@@ -35,7 +34,7 @@ import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 
-public class AdvancedBrewingStandBlockEntity extends BlockEntity implements Tickable, NamedScreenHandlerFactory, BrewingStandDuck {
+public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  NamedScreenHandlerFactory, BrewingStandDuck {
     /** an array of the output slot indices */
 
     //potions are 0,1,2
@@ -59,6 +58,7 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements Tick
     /** used to check if the current ingredient has been removed from the brewing stand during brewing */
     private Item ingredientID;
     private int fuel;
+
     protected final PropertyDelegate data = new PropertyDelegate() {
         public int get(int index) {
             switch(index) {
@@ -87,12 +87,12 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements Tick
         }
     };
 
-    public AdvancedBrewingStandBlockEntity() {
-        super(ModBlockEntityTypes.COMPOUND_BREWING_STAND);
+    public AdvancedBrewingStandBlockEntity(BlockPos blockPos, BlockState blockState) {
+        this(ModBlockEntityTypes.COMPOUND_BREWING_STAND,blockPos,blockState);
     }
 
-    protected AdvancedBrewingStandBlockEntity(BlockEntityType<?> typeIn) {
-        super(typeIn);
+    protected AdvancedBrewingStandBlockEntity(BlockEntityType<?> typeIn, BlockPos blockPos, BlockState blockState) {
+        super(typeIn,blockPos,blockState);
     }
 
     protected Text getDefaultName() {
@@ -255,9 +255,9 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements Tick
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundTag nbt) {
-        super.fromTag(state, nbt);
-        ListTag items = nbt.getList("Items",10);
+    public void readNbt(NbtCompound nbt) {
+        super.readNbt(nbt);
+        NbtList items = nbt.getList("Items",10);
         brewingHandler.readTags(items);
         this.brewTime = nbt.getShort("BrewTime");
         this.fuel = nbt.getInt("Fuel");
@@ -265,13 +265,12 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements Tick
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag compound) {
-        super.toTag(compound);
+    public void writeNbt(NbtCompound compound) {
+        super.writeNbt(compound);
         compound.putShort("BrewTime", (short)this.brewTime);
         compound.put("Items",brewingHandler.getTags());
         compound.putInt("Fuel", this.fuel);
         compound.putInt("xp",xp);
-        return compound;
     }
 
     @Override

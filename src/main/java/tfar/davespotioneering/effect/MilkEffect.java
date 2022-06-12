@@ -2,10 +2,10 @@ package tfar.davespotioneering.effect;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.InstantStatusEffect;
-import net.minecraft.entity.effect.StatusEffectType;
+import net.minecraft.entity.effect.StatusEffectCategory;
 
 public class MilkEffect extends InstantStatusEffect {
-    public MilkEffect(StatusEffectType typeIn, int liquidColorIn) {
+    public MilkEffect(StatusEffectCategory typeIn, int liquidColorIn) {
         super(typeIn, liquidColorIn);
     }
 

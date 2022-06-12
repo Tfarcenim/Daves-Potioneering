@@ -20,11 +20,11 @@ public class Util {
     public static final String MILKIFY = "milkified";
 
     public static void milkifyPotion(ItemStack potion) {
-        potion.getOrCreateTag().putBoolean(MILKIFY, true);
+        potion.getOrCreateNbt().putBoolean(MILKIFY, true);
     }
 
     public static boolean isMilkified(ItemStack potion) {
-        return potion.hasTag() && potion.getTag().getBoolean(MILKIFY);
+        return potion.hasNbt() && potion.getNbt().getBoolean(MILKIFY);
     }
 
     //brewing xp is determined by the ingredient used, more valuable ingredients should give more xp

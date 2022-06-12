@@ -3,8 +3,8 @@ package tfar.davespotioneering.inv;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import tfar.davespotioneering.item.GauntletItem;
 import tfar.davespotioneering.mixin.SimpleContainerAccess;
 
@@ -83,28 +83,28 @@ public class PotionInjectorHandler extends SimpleInventory {
     }
 
     //needed to prevent markDirty updates when loading from save
-    public void readTags(ListTag tags) {
+    public void readTags(NbtList tags) {
         for (int i = 0; i < tags.size(); i++)
         {
-            CompoundTag itemTags = tags.getCompound(i);
+            NbtCompound itemTags = tags.getCompound(i);
             int slot = itemTags.getInt("Slot");
 
             if (slot >= 0 && slot < ((SimpleContainerAccess)this).getStacks().size())
             {
-                ((SimpleContainerAccess)this).getStacks().set(i,ItemStack.fromTag(itemTags));
+                ((SimpleContainerAccess)this).getStacks().set(i,ItemStack.fromNbt(itemTags));
             }
         }
     }
 
-    public ListTag getTags() {
-        ListTag nbtTagList = new ListTag();
+    public NbtList getTags() {
+        NbtList nbtTagList = new NbtList();
         for (int i = 0; i < this.size(); i++)
         {
             if (!((SimpleContainerAccess)this).getStacks().get(i).isEmpty())
             {
-                CompoundTag itemTag = new CompoundTag();
+                NbtCompound itemTag = new NbtCompound();
                 itemTag.putInt("Slot", i);
-                ((SimpleContainerAccess)this).getStacks().get(i).toTag(itemTag);
+                ((SimpleContainerAccess)this).getStacks().get(i).writeNbt(itemTag);
                 nbtTagList.add(itemTag);
             }
         }
