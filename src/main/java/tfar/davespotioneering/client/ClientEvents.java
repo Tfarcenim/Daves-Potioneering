@@ -116,6 +116,8 @@ public class ClientEvents implements ClientModInitializer {
         BuiltinItemRendererRegistry.INSTANCE.register(ModItems.MAGENTA_UMBRELLA,classicUmbrella(DyeColor.MAGENTA));
         BuiltinItemRendererRegistry.INSTANCE.register(ModItems.LIGHT_BLUE_UMBRELLA,classicUmbrella(DyeColor.LIGHT_BLUE));
         BuiltinItemRendererRegistry.INSTANCE.register(ModItems.YELLOW_UMBRELLA,classicUmbrella(DyeColor.YELLOW));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.LIME_UMBRELLA,classicUmbrella(DyeColor.LIME));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.PINK_UMBRELLA,classicUmbrella(DyeColor.PINK));
         BuiltinItemRendererRegistry.INSTANCE.register(ModItems.GRAY_UMBRELLA,classicUmbrella(DyeColor.GRAY));
         BuiltinItemRendererRegistry.INSTANCE.register(ModItems.LIGHT_GRAY_UMBRELLA,classicUmbrella(DyeColor.LIGHT_GRAY));
         BuiltinItemRendererRegistry.INSTANCE.register(ModItems.CYAN_UMBRELLA,classicUmbrella(DyeColor.CYAN));

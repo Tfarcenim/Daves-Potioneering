@@ -18,6 +18,6 @@ public class ItemOverrideListMixin {
 
     @Inject(method = "apply",at = @At(value = "RETURN",ordinal = 1),locals = LocalCapture.CAPTURE_FAILHARD)
     private void validModel(BakedModel itempropertyfunction, ItemStack j, ClientWorld level, LivingEntity entity, int i1, CallbackInfoReturnable<BakedModel> cir, Item item, int i, float[] afloat, ModelOverrideList.BakedOverride[] var9, int var10, int var11, ModelOverrideList.BakedOverride itemoverrides$bakedoverride, BakedModel bakedmodel) {
-        DoubleGeoItemStackRenderer.override.set(i);
+        DoubleGeoItemStackRenderer.override.set(afloat[0]);
     }
 }

@@ -35,7 +35,7 @@ import java.util.function.Function;
 
 public class GeoItemStackRenderer<T extends IAnimatable> extends BuiltinModelItemRenderer implements IGeoRenderer<T>, BuiltinItemRendererRegistry.DynamicItemRenderer  {
 
-    private final AnimatedGeoModel<T> modelProvider;
+    protected final AnimatedGeoModel<T> modelProvider;
     protected ItemStack currentItemStack;
     protected final Function<Identifier, RenderLayer> renderTypeGetter;
     private final T ianimatable;
@@ -79,11 +79,11 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends BuiltinModelIte
 
     public void render(MatrixStack matrices, VertexConsumerProvider bufferIn, int packedLightIn, ItemStack itemStack) {
         this.currentItemStack = itemStack;
-        GeoModel model = modelProvider.getModel(modelProvider.getModelLocation(ianimatable));
+        GeoModel model = getGeoModelProvider().getModel(getGeoModelProvider().getModelLocation(ianimatable));
         MinecraftClient mc = MinecraftClient.getInstance();
         AnimationEvent<T> itemEvent = new AnimationEvent<>(ianimatable, 0, 0, mc.getTickDelta(),
                 false, Collections.singletonList(itemStack));
-        modelProvider.setLivingAnimations(ianimatable, this.getUniqueID(ianimatable), itemEvent);
+        getGeoModelProvider().setLivingAnimations(ianimatable, this.getUniqueID(ianimatable), itemEvent);
         matrices.push();
         matrices.translate(0, 0.01f, 0);
         matrices.translate(0.5, 0.5, 0.5);
@@ -117,7 +117,7 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends BuiltinModelIte
 
     @Override
     public Identifier getTextureLocation(T instance) {
-        return this.modelProvider.getTextureLocation(instance);
+        return this.getGeoModelProvider().getTextureLocation(instance);
     }
 
     public static class GeoItemModel<T extends IAnimatable> extends AnimatedGeoModel<T> {
