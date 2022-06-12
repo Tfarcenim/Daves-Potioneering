@@ -94,7 +94,7 @@ public class DoubleGeoItemStackRenderer<T extends IAnimatable> extends BlockEnti
         matrices.popPose();
     }
 
-    public static final ThreadLocal<Integer> override = ThreadLocal.withInitial(() -> 0);
+    public static final ThreadLocal<Float> override = ThreadLocal.withInitial(() -> 0f);
 
     @Override
     public RenderType getRenderType(T animatable, float partialTicks, PoseStack stack, @Nullable MultiBufferSource renderTypeBuffer, @Nullable VertexConsumer vertexBuilder, int packedLightIn, ResourceLocation textureLocation) {
@@ -103,7 +103,7 @@ public class DoubleGeoItemStackRenderer<T extends IAnimatable> extends BlockEnti
 
     @Override
     public AnimatedGeoModel<T> getGeoModelProvider() {
-        return override.get() == 1 ? modelProvider1 : modelProvider2;
+        return override.get() == 1 ? modelProvider2 : modelProvider1;
     }
 
     @Override
