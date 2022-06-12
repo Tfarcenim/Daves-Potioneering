@@ -10,6 +10,7 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
@@ -71,11 +72,11 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity {
         return tag;    // okay to send entire inventory on chunk load
     }
 
-    //Do not use
-   // @Override
-   // public BlockEntityUpdateS2CPacket toUpdatePacket() {
-   //     return new BlockEntityUpdateS2CPacket(getPos(), 1, toInitialChunkDataTag());
-   // }
+
+    @Override
+    public BlockEntityUpdateS2CPacket toUpdatePacket() {
+        return BlockEntityUpdateS2CPacket.create(this);
+    }
 
     //@Override
     //public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {

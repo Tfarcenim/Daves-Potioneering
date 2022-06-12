@@ -4,7 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LeveledCauldronBlock;
-import net.minecraft.block.cauldron.CauldronBehavior;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
@@ -50,7 +49,7 @@ public class LayeredReinforcedCauldronBlock extends LeveledCauldronBlock impleme
     public static int brew_speed = 12;
 
     public LayeredReinforcedCauldronBlock(Settings properties) {
-        super(properties,LeveledCauldronBlock.RAIN_PREDICATE, CauldronBehavior.WATER_CAULDRON_BEHAVIOR);
+        super(properties,LeveledCauldronBlock.RAIN_PREDICATE, ModCauldronInteractions.WATER);
         this.setDefaultState(this.stateManager.getDefaultState().with(DRAGONS_BREATH,false));
     }
 

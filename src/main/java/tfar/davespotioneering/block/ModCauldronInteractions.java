@@ -154,11 +154,7 @@ public class ModCauldronInteractions {
             }
             //end//
 
-            LAVA.put(Items.BUCKET, (p_175697_, p_175698_, p_175699_, p_175700_, p_175701_, p_175702_) -> {
-                return fillBucket(p_175697_, p_175698_, p_175699_, p_175700_, p_175701_, p_175702_, new ItemStack(Items.LAVA_BUCKET), (p_175651_) -> {
-                    return true;
-                }, SoundEvents.ITEM_BUCKET_FILL_LAVA);
-            });
+            LAVA.put(Items.BUCKET, (p_175697_, p_175698_, p_175699_, p_175700_, p_175701_, p_175702_) -> fillBucket(p_175697_, p_175698_, p_175699_, p_175700_, p_175701_, p_175702_, new ItemStack(Items.LAVA_BUCKET), (p_175651_) -> true, SoundEvents.ITEM_BUCKET_FILL_LAVA));
             addDefaultInteractions(LAVA);
             POWDER_SNOW.put(Items.BUCKET, (p_175690_, p_175691_, p_175692_, p_175693_, p_175694_, p_175695_) -> fillBucket(p_175690_, p_175691_, p_175692_, p_175693_, p_175694_, p_175695_, new ItemStack(Items.POWDER_SNOW_BUCKET), (p_175627_) -> p_175627_.get(LeveledCauldronBlock.LEVEL) == 3, SoundEvents.ITEM_BUCKET_FILL_POWDER_SNOW));
             addDefaultInteractions(POWDER_SNOW);
@@ -179,7 +175,7 @@ public class ModCauldronInteractions {
                     player.setStackInHand(p_175640_, ItemUsage.exchangeStack(p_175641_, player, p_175642_));
                     player.incrementStat(Stats.USE_CAULDRON);
                     player.incrementStat(Stats.USED.getOrCreateStat(item));
-                    p_175637_.setBlockState(p_175638_, ModBlocks.REINFORCED_WATER_CAULDRON.getDefaultState());//patch
+                    p_175637_.setBlockState(p_175638_, ModBlocks.REINFORCED_CAULDRON.getDefaultState());//patch
                     p_175637_.playSound(null, p_175638_, p_175644_, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     p_175637_.emitGameEvent(null, GameEvent.FLUID_PICKUP, p_175638_);
                 }

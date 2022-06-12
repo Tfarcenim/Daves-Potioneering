@@ -21,7 +21,7 @@ public class ModBlocks {
             .requiresTool().strength(0.5F).luminance(state -> 1).nonOpaque());
 
     public static final Block REINFORCED_CAULDRON = new ReinforcedCauldronBlock(AbstractBlock.Settings.of(Material.METAL)
-            .requiresTool().strength(0.5F).luminance(state -> 1).nonOpaque());
+            .requiresTool().strength(0.5F).luminance(state -> 1).nonOpaque(),ModCauldronInteractions.EMPTY);
 
     public static final Block REINFORCED_WATER_CAULDRON = new LayeredReinforcedCauldronBlock(AbstractBlock.Settings.copy(REINFORCED_CAULDRON));
 

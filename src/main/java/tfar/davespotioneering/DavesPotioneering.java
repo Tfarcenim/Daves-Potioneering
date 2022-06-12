@@ -13,6 +13,7 @@ import net.minecraft.item.Items;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
+import tfar.davespotioneering.block.ModCauldronInteractions;
 import tfar.davespotioneering.config.ClothConfig;
 import tfar.davespotioneering.init.*;
 import tfar.davespotioneering.mixin.BlockEntityTypeAcces;
@@ -58,6 +59,7 @@ public class DavesPotioneering implements ModInitializer {
 
 
         PacketHandler.registerMessages();
+        ModCauldronInteractions.bootStrap();
     }
 
     protected static void strongRecipe(Potion potion,Potion strong) {

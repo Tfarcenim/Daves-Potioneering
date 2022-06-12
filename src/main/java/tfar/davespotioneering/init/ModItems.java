@@ -27,7 +27,7 @@ public class ModItems {
             .icon(() -> new ItemStack(ModItems.POTIONEER_GAUNTLET)).build();
     
     public static final Item COMPOUND_BREWING_STAND = new BlockItem(ModBlocks.COMPOUND_BREWING_STAND,new Item.Settings().group(tab));
-    public static final Item REINFORCED_CAULDRON = new BlockItem(ModBlocks.REINFORCED_WATER_CAULDRON,new Item.Settings().group(tab));
+    public static final Item REINFORCED_CAULDRON = new BlockItem(ModBlocks.REINFORCED_CAULDRON,new Item.Settings().group(tab));
     public static final Item POTIONEER_GAUNTLET = new GauntletItem(new Item.Settings().group(tab).maxDamage(32));
     public static final Item NETHERITE_GAUNTLET = new SimpleGauntletItem(ToolMaterials.NETHERITE,4,-2.8f,new Item.Settings().group(tab),NET_ID);
     public static final Item RUDIMENTARY_GAUNTLET = new SimpleGauntletItem(ToolMaterials.IRON,3,-2.8f,new Item.Settings().group(tab),RUD_ID);
