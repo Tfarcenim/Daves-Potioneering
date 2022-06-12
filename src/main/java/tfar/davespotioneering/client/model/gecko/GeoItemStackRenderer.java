@@ -38,7 +38,7 @@ import java.util.function.Function;
 
 public class GeoItemStackRenderer<T extends IAnimatable> extends BlockEntityWithoutLevelRenderer implements IGeoRenderer<T> {
 
-    private final AnimatedGeoModel<T> modelProvider;
+    protected final AnimatedGeoModel<T> modelProvider;
     protected ItemStack currentItemStack;
     protected final Function<ResourceLocation, RenderType> renderTypeGetter;
     private final T ianimatable;
@@ -82,11 +82,11 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends BlockEntityWith
 
     public void render(PoseStack matrices, MultiBufferSource bufferIn, int packedLightIn, ItemStack itemStack) {
         this.currentItemStack = itemStack;
-        GeoModel model = modelProvider.getModel(modelProvider.getModelLocation(ianimatable));
+        GeoModel model = getGeoModelProvider().getModel(getGeoModelProvider().getModelLocation(ianimatable));
         Minecraft mc = Minecraft.getInstance();
         AnimationEvent<T> itemEvent = new AnimationEvent<>(ianimatable, 0, 0, mc.getFrameTime(),
                 false, Collections.singletonList(itemStack));
-        modelProvider.setLivingAnimations(ianimatable, this.getUniqueID(ianimatable), itemEvent);
+        getGeoModelProvider().setLivingAnimations(ianimatable, this.getUniqueID(ianimatable), itemEvent);
         matrices.pushPose();
         matrices.translate(0, 0.01f, 0);
         matrices.translate(0.5, 0.5, 0.5);
@@ -120,7 +120,7 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends BlockEntityWith
 
     @Override
     public ResourceLocation getTextureLocation(T instance) {
-        return this.modelProvider.getTextureLocation(instance);
+        return this.getGeoModelProvider().getTextureLocation(instance);
     }
 
     public static class GeoItemModel<T extends IAnimatable> extends AnimatedGeoModel<T> {
