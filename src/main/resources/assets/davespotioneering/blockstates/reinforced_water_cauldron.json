@@ -1,11 +1,5 @@
 {
   "variants": {
-    "dragons_breath=false,level=0": {
-      "model": "davespotioneering:block/reinforced_cauldron_level0"
-    },
-    "dragons_breath=true,level=0": {
-      "model": "davespotioneering:block/reinforced_cauldron_level0"
-    },
     "dragons_breath=false,level=1": {
       "model": "davespotioneering:block/reinforced_cauldron_level1"
     },
