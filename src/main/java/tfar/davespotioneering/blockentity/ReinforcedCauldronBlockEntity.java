@@ -85,7 +85,7 @@ public class ReinforcedCauldronBlockEntity extends TileEntity {
     }
 
     public void onEntityCollision(Entity entity) {
-        if (entity instanceof ItemEntity) {
+        if (entity instanceof ItemEntity && getBlockState().get(ReinforcedCauldronBlock.DRAGONS_BREATH)) {
             ItemStack stack =  ((ItemEntity) entity).getItem();
             BlockState blockState = getBlockState();
             int level = blockState.get(CauldronBlock.LEVEL);
