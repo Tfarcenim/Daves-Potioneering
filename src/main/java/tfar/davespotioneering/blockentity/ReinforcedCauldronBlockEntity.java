@@ -87,7 +87,7 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity {
     }
 
     public void onEntityCollision(Entity entity) {
-        if (entity instanceof ItemEntity) {
+        if (entity instanceof ItemEntity && getBlockState().hasProperty(LayeredReinforcedCauldronBlock.DRAGONS_BREATH)) {
             ItemStack stack =  ((ItemEntity) entity).getItem();
             BlockState blockState = getBlockState();
             int waterLevel = blockState.getValue(LayeredCauldronBlock.LEVEL);
