@@ -85,7 +85,7 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity implements BlockE
     //}
 
     public void onEntityCollision(Entity entity) {
-        if (entity instanceof ItemEntity) {
+        if (entity instanceof ItemEntity && getCachedState().get(ReinforcedCauldronBlock.DRAGONS_BREATH)) {
             ItemStack stack =  ((ItemEntity) entity).getStack();
             BlockState blockState = getCachedState();
             int fluidLevel = blockState.get(CauldronBlock.LEVEL);
