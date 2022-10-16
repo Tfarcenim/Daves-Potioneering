@@ -32,7 +32,6 @@ import net.minecraft.particle.ParticleEffect;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
@@ -201,14 +200,14 @@ public class ClientEvents implements ClientModInitializer {
     public static void tooltips(ItemStack stack, TooltipContext e2, List<Text> tooltip) {
         if (stack.getItem() instanceof PotionItem) {
             if (Util.isMilkified(stack)) {
-                tooltip.add(new LiteralText("Milkified"));
+                tooltip.add(Text.literal("Milkified"));
             }
         }
 
         if (stack.getItem() instanceof ToolItem && PotionUtil.getPotion(stack) != Potions.EMPTY) {
-            tooltip.add(new LiteralText("Coated with"));
+            tooltip.add(Text.literal("Coated with"));
             PotionUtil.buildTooltip(stack, tooltip, 0.125F);
-            tooltip.add(new LiteralText("Uses: " + stack.getNbt().getInt("uses")));
+            tooltip.add(Text.literal("Uses: " + stack.getNbt().getInt("uses")));
         }
     }
 

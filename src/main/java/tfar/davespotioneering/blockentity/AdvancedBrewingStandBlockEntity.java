@@ -19,7 +19,6 @@ import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -96,7 +95,7 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
     }
 
     protected Text getDefaultName() {
-        return new TranslatableText("container.davespotioneering.compound_brewing");
+        return Text.translatable("container.davespotioneering.compound_brewing");
     }
 
     public void tick() {

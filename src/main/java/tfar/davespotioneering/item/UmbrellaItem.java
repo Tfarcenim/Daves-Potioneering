@@ -3,9 +3,7 @@ package tfar.davespotioneering.item;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShieldItem;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -22,8 +20,8 @@ public class UmbrellaItem extends ShieldItem {
 
     @Override
     public void appendTooltip(ItemStack stack, @Nullable World worldIn, List<Text> tooltip, TooltipContext flagIn) {
-        tooltip.add(new LiteralText(style));
+        tooltip.add(Text.literal(style));
 
-        tooltip.add(new TranslatableText(getTranslationKey()+".desc"));
+        tooltip.add(Text.translatable(getTranslationKey()+".desc"));
     }
 }

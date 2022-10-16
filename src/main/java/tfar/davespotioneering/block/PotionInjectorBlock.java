@@ -18,7 +18,6 @@ import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
@@ -43,7 +42,7 @@ public class PotionInjectorBlock extends Block implements BlockEntityProvider {
 
     public static final String TRANS_KEY = "davespotioneering.container.potion_injector";
 
-    public static final Text CONTAINER_NAME = new TranslatableText(TRANS_KEY);
+    public static final Text CONTAINER_NAME = Text.translatable(TRANS_KEY);
 
     public static final BooleanProperty HAS_GAUNTLET = BooleanProperty.of("has_gauntlet");
     public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
@@ -110,21 +109,21 @@ public class PotionInjectorBlock extends Block implements BlockEntityProvider {
     @Override
     public void appendTooltip(ItemStack stack, @Nullable BlockView worldIn, List<Text> tooltip, TooltipContext flagIn) {
 
-        tooltip.add(new TranslatableText(getTranslationKey()+".hold_shift.desc"));
+        tooltip.add(Text.translatable(getTranslationKey()+".hold_shift.desc"));
         if (Screen.hasShiftDown())
             tooltip.add(this.getShiftDescription().formatted(Formatting.GRAY));
 
-        tooltip.add(new TranslatableText(getTranslationKey()+".hold_ctrl.desc"));
+        tooltip.add(Text.translatable(getTranslationKey()+".hold_ctrl.desc"));
         if (Screen.hasControlDown())
             tooltip.add(this.getCtrlDescription().formatted(Formatting.GRAY));
     }
 
     public MutableText getShiftDescription() {
-        return new TranslatableText(this.getTranslationKey() + ".shift.desc");
+        return Text.translatable(this.getTranslationKey() + ".shift.desc");
     }
 
     public MutableText getCtrlDescription() {
-        return new TranslatableText(this.getTranslationKey() + ".ctrl.desc");
+        return Text.translatable(this.getTranslationKey() + ".ctrl.desc");
     }
 
     @org.jetbrains.annotations.Nullable

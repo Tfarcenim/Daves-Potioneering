@@ -14,10 +14,8 @@ import net.minecraft.item.ToolMaterials;
 import net.minecraft.nbt.*;
 import net.minecraft.potion.Potion;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.*;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
@@ -119,33 +117,33 @@ public class GauntletItem extends SwordItem implements Perspective{
     public void appendTooltip(ItemStack stack, @Nullable World worldIn, List<Text> tooltip, TooltipContext flagIn) {
         super.appendTooltip(stack, worldIn, tooltip, flagIn);
 
-        tooltip.add(new TranslatableText(getTranslationKey()+".hold_shift.desc"));
+        tooltip.add(Text.translatable(getTranslationKey()+".hold_shift.desc"));
         if (Screen.hasShiftDown())
             tooltip.add(this.getShiftDescription().formatted(Formatting.GRAY));
 
-        tooltip.add(new TranslatableText(getTranslationKey()+".hold_ctrl.desc"));
+        tooltip.add(Text.translatable(getTranslationKey()+".hold_ctrl.desc"));
         if (Screen.hasControlDown())
             tooltip.add(this.getCtrlDescription().formatted(Formatting.GRAY));
 
         Pair<List<StatusEffectInstance>, List<Potion>> tuple = getEffectsFromGauntlet(stack);
         if (tuple == null) return;
         if (tuple.getLeft().isEmpty()) return;
-        tooltip.add(new LiteralText(" "));
+        tooltip.add(Text.literal(" "));
 
         for (StatusEffectInstance instance : tuple.getLeft()) {
-            TranslatableText effectFormatted = new TranslatableText(instance.getTranslationKey());
+            MutableText effectFormatted = Text.translatable(instance.getTranslationKey());
             effectFormatted.formatted(instance.getEffectType().getCategory().getFormatting());
-            LiteralText amplifier = new LiteralText("");
-            LiteralText duration;
-            TranslatableText product;
+            MutableText amplifier = Text.literal("");
+            MutableText duration;
+            MutableText product;
             if (instance.getAmplifier() > 0) {
-                amplifier = new LiteralText(String.valueOf(instance.getAmplifier()));
+                amplifier = Text.literal(String.valueOf(instance.getAmplifier()));
             }
             if (instance.getDuration() > 1) {
-                duration = new LiteralText(StatusEffectUtil.durationToString(instance, 1f));
-                product = new TranslatableText("davespotioneering.tooltip.gauntlet.withDuration", effectFormatted, amplifier, duration);
+                duration = Text.literal(StatusEffectUtil.durationToString(instance, 1f));
+                product = Text.translatable("davespotioneering.tooltip.gauntlet.withDuration", effectFormatted, amplifier, duration);
             } else {
-                product = new TranslatableText("davespotioneering.tooltip.gauntlet", effectFormatted, amplifier);
+                product = Text.translatable("davespotioneering.tooltip.gauntlet", effectFormatted, amplifier);
             }
 
             tooltip.add(product);
@@ -174,11 +172,11 @@ public class GauntletItem extends SwordItem implements Perspective{
     }
 
     public MutableText getShiftDescription() {
-        return new TranslatableText(this.getTranslationKey() + ".shift.desc");
+        return Text.translatable(this.getTranslationKey() + ".shift.desc");
     }
 
     public MutableText getCtrlDescription() {
-        return new TranslatableText(this.getTranslationKey() + ".ctrl.desc");
+        return Text.translatable(this.getTranslationKey() + ".ctrl.desc");
     }
 
     @Nullable

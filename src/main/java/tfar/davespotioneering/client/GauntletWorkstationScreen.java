@@ -9,7 +9,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import tfar.davespotioneering.DavesPotioneering;
@@ -37,7 +36,7 @@ public class GauntletWorkstationScreen extends HandledScreen<PotionInjectorMenu>
         int x = this.x + 47;
         int y = this.y + 76;
         int w = 24;
-        addSelectableChild(new ButtonWidget(x,y,36,20,new LiteralText("Strip"),this::strip){
+        addSelectableChild(new ButtonWidget(x,y,36,20,Text.literal("Strip"),this::strip){
             @Override
             public void playDownSound(SoundManager handler) {
 
@@ -54,7 +53,7 @@ public class GauntletWorkstationScreen extends HandledScreen<PotionInjectorMenu>
                 handler.play(PositionedSoundInstance.master(soundEvent, 1.0F));
             }
         });
-        addSelectableChild(new ButtonWidget(x + 46,y,36,20,new LiteralText("Inject"),this::inject){
+        addSelectableChild(new ButtonWidget(x + 46,y,36,20,Text.literal("Inject"),this::inject){
             @Override
             public void playDownSound(SoundManager handler) {
 

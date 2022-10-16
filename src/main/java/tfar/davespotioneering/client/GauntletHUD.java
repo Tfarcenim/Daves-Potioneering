@@ -107,7 +107,7 @@ public class GauntletHUD {
         if (potion.getEffects().size() > 1) {
             if (name.toString().contains("turtle_master")) {
                 mc.getTextureManager().bindTexture(getGauntletIconLoc("turtle_master"));
-            } else if (mc.getResourceManager().containsResource(getGauntletIconLoc(name.toString()))) {
+            } else if (mc.getResourceManager().getResource(getGauntletIconLoc(name.toString())).isPresent()) {
                 mc.getTextureManager().bindTexture(getGauntletIconLoc(name.toString()));
             } else {
                 mc.getTextureManager().bindTexture(getGauntletIconLoc("unknown"));

@@ -6,6 +6,7 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.Random;
 import tfar.davespotioneering.mixin.BakedQuadAccess;
 
 import javax.annotation.Nullable;

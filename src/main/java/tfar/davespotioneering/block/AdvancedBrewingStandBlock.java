@@ -10,7 +10,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.stat.Stats;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
@@ -46,11 +45,11 @@ public class AdvancedBrewingStandBlock extends BrewingStandBlock {
     @Override
     public void appendTooltip(ItemStack stack, @Nullable BlockView worldIn, List<Text> tooltip, TooltipContext flagIn) {
 
-        tooltip.add(new TranslatableText(getTranslationKey()+".hold_shift.desc"));
+        tooltip.add(Text.translatable(getTranslationKey()+".hold_shift.desc"));
         if (Screen.hasShiftDown())
             tooltip.add(this.getShiftDescription().formatted(Formatting.GRAY));
 
-        tooltip.add(new TranslatableText(getTranslationKey()+".hold_ctrl.desc"));
+        tooltip.add(Text.translatable(getTranslationKey()+".hold_ctrl.desc"));
         if (Screen.hasControlDown())
             for (int i = 0; i < C_LINES;i++) {
                 tooltip.add(this.getCtrlDescriptions(i).formatted(Formatting.GRAY));
@@ -58,15 +57,15 @@ public class AdvancedBrewingStandBlock extends BrewingStandBlock {
     }
 
     public MutableText getShiftDescription() {
-        return new TranslatableText(this.getTranslationKey() + ".shift.desc");
+        return Text.translatable(this.getTranslationKey() + ".shift.desc");
     }
 
     public MutableText getCtrlDescription() {
-        return new TranslatableText(this.getTranslationKey() + ".ctrl.desc");
+        return Text.translatable(this.getTranslationKey() + ".ctrl.desc");
     }
 
     public MutableText getCtrlDescriptions(int i) {
-        return new TranslatableText(this.getTranslationKey() + i +".ctrl.desc");
+        return Text.translatable(this.getTranslationKey() + i +".ctrl.desc");
     }
 
     @Override

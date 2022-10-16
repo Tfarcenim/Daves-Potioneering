@@ -10,7 +10,6 @@ import net.minecraft.client.render.item.BuiltinModelItemRenderer;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
@@ -29,8 +28,6 @@ import tfar.davespotioneering.DavesPotioneering;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 public class GeoItemStackRenderer<T extends IAnimatable> extends BuiltinModelItemRenderer implements IGeoRenderer<T>, BuiltinItemRendererRegistry.DynamicItemRenderer  {
@@ -39,8 +36,6 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends BuiltinModelIte
     protected ItemStack currentItemStack;
     protected final Function<Identifier, RenderLayer> renderTypeGetter;
     private final T ianimatable;
-
-    private static final Map<Item, GeoItemStackRenderer<?>> animatedRenderers = new ConcurrentHashMap<>();
 
     public GeoItemStackRenderer(AnimatedGeoModel<T> modelProvider, T ianimatable,BlockEntityRenderDispatcher blockEntityRenderDispatcher, EntityModelLoader entityModelLoader) {
         this(modelProvider, RenderLayer::getEntityCutout, ianimatable,blockEntityRenderDispatcher,entityModelLoader);
@@ -51,10 +46,6 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends BuiltinModelIte
         this.modelProvider = modelProvider;
         this.renderTypeGetter = renderTypeGetter;
         this.ianimatable = ianimatable;
-    }
-
-    public static void registerAnimatedItem(Item item, GeoItemStackRenderer<?> renderer) {
-        animatedRenderers.put(item, renderer);
     }
 
     //render
@@ -79,7 +70,7 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends BuiltinModelIte
 
     public void render(MatrixStack matrices, VertexConsumerProvider bufferIn, int packedLightIn, ItemStack itemStack) {
         this.currentItemStack = itemStack;
-        GeoModel model = getGeoModelProvider().getModel(getGeoModelProvider().getModelLocation(ianimatable));
+        GeoModel model = getGeoModelProvider().getModel(getGeoModelProvider().getModelResource(ianimatable));
         MinecraftClient mc = MinecraftClient.getInstance();
         AnimationEvent<T> itemEvent = new AnimationEvent<>(ianimatable, 0, 0, mc.getTickDelta(),
                 false, Collections.singletonList(itemStack));
@@ -111,13 +102,28 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends BuiltinModelIte
     }
 
     @Override
+    public void setCurrentRTB(VertexConsumerProvider rtb) {
+
+    }
+
+    @Override
+    public VertexConsumerProvider getCurrentRTB() {
+        return null;
+    }
+
+    @Override
     public AnimatedGeoModel<T> getGeoModelProvider() {
         return modelProvider;
     }
 
     @Override
     public Identifier getTextureLocation(T instance) {
-        return this.getGeoModelProvider().getTextureLocation(instance);
+        return this.getGeoModelProvider().getTextureResource(instance);
+    }
+
+    @Override
+    public Identifier getTextureResource(T instance) {
+        return getTextureLocation(instance);
     }
 
     public static class GeoItemModel<T extends IAnimatable> extends AnimatedGeoModel<T> {
@@ -170,17 +176,17 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends BuiltinModelIte
         }
 
         @Override
-        public Identifier getModelLocation(T object) {
+        public Identifier getModelResource(T object) {
             return modelLoc;
         }
 
         @Override
-        public Identifier getTextureLocation(T object) {
+        public Identifier getTextureResource(T object) {
             return textureLoc;
         }
 
         @Override
-        public Identifier getAnimationFileLocation(T animatable) {
+        public Identifier getAnimationResource(T animatable) {
             return animation;
         }
     }

@@ -25,7 +25,6 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -209,10 +208,9 @@ public class LayeredReinforcedCauldronBlock extends LeveledCauldronBlock impleme
         super.onEntityCollision(state, worldIn, pos, entityIn);
     }
 
-
     //this is used for the coating
     @Override
-    public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
+    public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, net.minecraft.util.math.random.Random rand) {
         int level = state.get(LEVEL);
 
         world.playSound(null,pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.8F, 1);
@@ -227,20 +225,20 @@ public class LayeredReinforcedCauldronBlock extends LeveledCauldronBlock impleme
     @Override
     public void appendTooltip(ItemStack stack, @Nullable BlockView worldIn, List<Text> tooltip, TooltipContext flagIn) {
 
-        tooltip.add(new TranslatableText(getTranslationKey()+".hold_shift.desc"));
+        tooltip.add(Text.translatable(getTranslationKey()+".hold_shift.desc"));
         if (Screen.hasShiftDown())
             for (int i = 0; i < S_LINES;i++) {
 
                 tooltip.add(this.getShiftDescriptions(i).formatted(Formatting.GRAY));
             }
 
-        tooltip.add(new TranslatableText(getTranslationKey()+".hold_ctrl.desc"));
+        tooltip.add(Text.translatable(getTranslationKey()+".hold_ctrl.desc"));
         if (Screen.hasControlDown())
             for (int i = 0; i < C_LINES;i++) {
                 tooltip.add(this.getCtrlDescriptions(i).formatted(Formatting.GRAY));
             }
 
-        tooltip.add(new TranslatableText(getTranslationKey()+".hold_alt.desc"));
+        tooltip.add(Text.translatable(getTranslationKey()+".hold_alt.desc"));
         if (Screen.hasAltDown()) {
             for (int i = 0; i < A_LINES;i++) {
                 tooltip.add(this.getAltDescriptions(i).formatted(Formatting.GRAY));
@@ -249,27 +247,27 @@ public class LayeredReinforcedCauldronBlock extends LeveledCauldronBlock impleme
     }
 
     public MutableText getShiftDescription() {
-        return new TranslatableText(this.getTranslationKey() + ".shift.desc");
+        return Text.translatable(this.getTranslationKey() + ".shift.desc");
     }
 
     public MutableText getShiftDescriptions(int i) {
-        return new TranslatableText(this.getTranslationKey() + i +".shift.desc");
+        return Text.translatable(this.getTranslationKey() + i +".shift.desc");
     }
 
     public MutableText getCtrlDescription() {
-        return new TranslatableText(this.getTranslationKey() + ".ctrl.desc");
+        return Text.translatable(this.getTranslationKey() + ".ctrl.desc");
     }
 
     public MutableText getCtrlDescriptions(int i) {
-        return new TranslatableText(this.getTranslationKey() + i +".ctrl.desc");
+        return Text.translatable(this.getTranslationKey() + i +".ctrl.desc");
     }
 
     public MutableText getAltDescription() {
-        return new TranslatableText(this.getTranslationKey() + ".alt.desc");
+        return Text.translatable(this.getTranslationKey() + ".alt.desc");
     }
 
     public MutableText getAltDescriptions(int i) {
-        return new TranslatableText(this.getTranslationKey() + i+".alt.desc");
+        return Text.translatable(this.getTranslationKey() + i+".alt.desc");
     }
 
     @org.jetbrains.annotations.Nullable
