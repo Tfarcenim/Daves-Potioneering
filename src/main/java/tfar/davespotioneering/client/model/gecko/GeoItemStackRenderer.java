@@ -36,10 +36,10 @@ import java.util.function.Function;
 
 public class GeoItemStackRenderer<T extends IAnimatable> extends ItemStackTileEntityRenderer implements IGeoRenderer<T> {
 
-    private final AnimatedGeoModel<T> modelProvider;
+    protected final AnimatedGeoModel<T> modelProvider;
     protected ItemStack currentItemStack;
     protected final Function<ResourceLocation, RenderType> renderTypeGetter;
-    private final T ianimatable;
+    protected final T ianimatable;
 
     private static final Map<Item, GeoItemStackRenderer<?>> animatedRenderers = new ConcurrentHashMap<>();
 
@@ -79,11 +79,11 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends ItemStackTileEn
 
     public void render(MatrixStack matrices, IRenderTypeBuffer bufferIn, int packedLightIn, ItemStack itemStack) {
         this.currentItemStack = itemStack;
-        GeoModel model = modelProvider.getModel(modelProvider.getModelLocation(ianimatable));
+        GeoModel model = getGeoModelProvider().getModel(getGeoModelProvider().getModelLocation(ianimatable));
         Minecraft mc = Minecraft.getInstance();
         AnimationEvent<T> itemEvent = new AnimationEvent<>(ianimatable, 0, 0, mc.getRenderPartialTicks(),
                 false, Collections.singletonList(itemStack));
-        modelProvider.setLivingAnimations(ianimatable, this.getUniqueID(ianimatable), itemEvent);
+        getGeoModelProvider().setLivingAnimations(ianimatable, this.getUniqueID(ianimatable), itemEvent);
         matrices.push();
         matrices.translate(0, 0.01f, 0);
         matrices.translate(0.5, 0.5, 0.5);
@@ -127,7 +127,7 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends ItemStackTileEn
 
     @Override
     public ResourceLocation getTextureLocation(T instance) {
-        return this.modelProvider.getTextureLocation(instance);
+        return this.getGeoModelProvider().getTextureLocation(instance);
     }
 
     public static class GeoItemModel<T extends IAnimatable> extends AnimatedGeoModel<T> {
