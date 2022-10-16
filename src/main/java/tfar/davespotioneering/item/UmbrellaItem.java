@@ -36,7 +36,7 @@ public class UmbrellaItem extends ShieldItem {
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         tooltip.add(new TextComponent(style));
 
-        tooltip.add(new TranslatableComponent(getDescriptionId()+".desc"));
+        tooltip.add(Component.translatable(getDescriptionId()+".desc"));
     }
 
     @Override

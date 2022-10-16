@@ -6,7 +6,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -43,7 +42,7 @@ public class PotionInjectorBlock extends Block implements EntityBlock {
 
     public static final String TRANS_KEY = "davespotioneering.container.potion_injector";
 
-    public static final Component CONTAINER_NAME = new TranslatableComponent(TRANS_KEY);
+    public static final Component CONTAINER_NAME = Component.translatable(TRANS_KEY);
 
     public static final BooleanProperty HAS_GAUNTLET = BooleanProperty.create("has_gauntlet");
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
@@ -110,21 +109,21 @@ public class PotionInjectorBlock extends Block implements EntityBlock {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter worldIn, List<Component> tooltip, TooltipFlag flagIn) {
 
-        tooltip.add(new TranslatableComponent(getDescriptionId()+".hold_shift.desc"));
+        tooltip.add(Component.translatable(getDescriptionId()+".hold_shift.desc"));
         if (Screen.hasShiftDown())
             tooltip.add(this.getShiftDescription().withStyle(ChatFormatting.GRAY));
 
-        tooltip.add(new TranslatableComponent(getDescriptionId()+".hold_ctrl.desc"));
+        tooltip.add(Component.translatable(getDescriptionId()+".hold_ctrl.desc"));
         if (Screen.hasControlDown())
             tooltip.add(this.getCtrlDescription().withStyle(ChatFormatting.GRAY));
     }
 
     public MutableComponent getShiftDescription() {
-        return new TranslatableComponent(this.getDescriptionId() + ".shift.desc");
+        return Component.translatable(this.getDescriptionId() + ".shift.desc");
     }
 
     public MutableComponent getCtrlDescription() {
-        return new TranslatableComponent(this.getDescriptionId() + ".ctrl.desc");
+        return Component.translatable(this.getDescriptionId() + ".ctrl.desc");
     }
 
     @org.jetbrains.annotations.Nullable

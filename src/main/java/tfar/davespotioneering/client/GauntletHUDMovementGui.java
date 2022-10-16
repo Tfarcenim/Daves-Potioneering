@@ -20,7 +20,7 @@ public class GauntletHUDMovementGui extends Screen {
     public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
-        minecraft.font.drawShadow(matrixStack, new TranslatableComponent("davespotioneering.gui.moveGauntletHUD"), 6, 5, ChatFormatting.WHITE.getColor());
+        minecraft.font.drawShadow(matrixStack, Component.translatable("davespotioneering.gui.moveGauntletHUD"), 6, 5, ChatFormatting.WHITE.getColor());
         hud.render(matrixStack);
     }
 
@@ -29,27 +29,27 @@ public class GauntletHUDMovementGui extends Screen {
     @Override
     protected void init() {
         super.init();
-        addRenderableWidget(new Button(5, 15, 75, 20, new TranslatableComponent(KEY + GauntletHUD.HudPresets.TOP_LEFT.ordinal()), (button) -> {
+        addRenderableWidget(new Button(5, 15, 75, 20, Component.translatable(KEY + GauntletHUD.HudPresets.TOP_LEFT.ordinal()), (button) -> {
             hud.x = getFixedPositionValue(5, true);
             hud.y = getFixedPositionValue(5, false);
             hud.preset = GauntletHUD.HudPresets.TOP_LEFT;
         }));
-        addRenderableWidget(new Button(85, 15, 75, 20, new TranslatableComponent(KEY + GauntletHUD.HudPresets.TOP_RIGHT.ordinal()), (button) -> {
+        addRenderableWidget(new Button(85, 15, 75, 20, Component.translatable(KEY + GauntletHUD.HudPresets.TOP_RIGHT.ordinal()), (button) -> {
             hud.x = getFixedPositionValue(width - 120 - 5, true);
             hud.y = getFixedPositionValue(5, false);
             hud.preset = GauntletHUD.HudPresets.TOP_RIGHT;
         }));
-        addRenderableWidget(new Button(165, 15, 75, 20, new TranslatableComponent(KEY + GauntletHUD.HudPresets.BTM_LEFT.ordinal()), (button) -> {
+        addRenderableWidget(new Button(165, 15, 75, 20, Component.translatable(KEY + GauntletHUD.HudPresets.BTM_LEFT.ordinal()), (button) -> {
             hud.x = getFixedPositionValue(5, true);
             hud.y = getFixedPositionValue(height - 45 - 5, false);
             hud.preset = GauntletHUD.HudPresets.BTM_LEFT;
         }));
-        addRenderableWidget(new Button(245, 15, 75, 20, new TranslatableComponent(KEY + GauntletHUD.HudPresets.BTM_RIGHT.ordinal()), (button) -> {
+        addRenderableWidget(new Button(245, 15, 75, 20, Component.translatable(KEY + GauntletHUD.HudPresets.BTM_RIGHT.ordinal()), (button) -> {
             hud.x = getFixedPositionValue(width - 120 - 5, true);
             hud.y = getFixedPositionValue(height - 45 - 5, false);
             hud.preset = GauntletHUD.HudPresets.BTM_RIGHT;
         }));
-        addRenderableWidget(new Button(325, 15, 75, 20, new TranslatableComponent(KEY + GauntletHUD.HudPresets.ABOVE_HOTBAR.ordinal()), (button) -> {
+        addRenderableWidget(new Button(325, 15, 75, 20, Component.translatable(KEY + GauntletHUD.HudPresets.ABOVE_HOTBAR.ordinal()), (button) -> {
             if (minecraft != null && minecraft.player != null && minecraft.player.isCreative()) {
                 hud.x = getFixedPositionValue((width - 120) / 2, true);
                 hud.y = getFixedPositionValue(height - 42 - 25, false);

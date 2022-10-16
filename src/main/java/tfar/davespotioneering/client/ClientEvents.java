@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
@@ -96,14 +96,14 @@ public class ClientEvents {
         ItemStack stack = e.getItemStack();
         if (stack.getItem() instanceof PotionItem) {
             if (Util.isMilkified(stack)) {
-                e.getToolTip().add(new TextComponent("Milkified"));
+                e.getToolTip().add(Component.literal("Milkified"));
             }
         }
 
         if (stack.getItem() instanceof TieredItem && PotionUtils.getPotion(stack) != Potions.EMPTY) {
-            e.getToolTip().add(new TextComponent("Coated with"));
+            e.getToolTip().add(Component.literal("Coated with"));
             PotionUtils.addPotionTooltip(stack, e.getToolTip(), 0.125F);
-            e.getToolTip().add(new TextComponent("Uses: " + stack.getTag().getInt("uses")));
+            e.getToolTip().add(Component.literal("Uses: " + stack.getTag().getInt("uses")));
         }
     }
 

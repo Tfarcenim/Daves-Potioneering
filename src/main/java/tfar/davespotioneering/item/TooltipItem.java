@@ -24,20 +24,20 @@ public class TooltipItem extends Item {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
 
-        tooltip.add(new TranslatableComponent(getDescriptionId()+".hold_shift.desc"));
+        tooltip.add(Component.translatable(getDescriptionId()+".hold_shift.desc"));
         if (Screen.hasShiftDown())
         tooltip.add(this.getShiftDescription().withStyle(ChatFormatting.GRAY));
 
-        tooltip.add(new TranslatableComponent(getDescriptionId()+".hold_ctrl.desc"));
+        tooltip.add(Component.translatable(getDescriptionId()+".hold_ctrl.desc"));
         if (Screen.hasControlDown())
             tooltip.add(this.getCtrlDescription().withStyle(ChatFormatting.GRAY));
     }
 
     public MutableComponent getCtrlDescription() {
-        return new TranslatableComponent(this.getDescriptionId() + ".ctrl.desc");
+        return Component.translatable(this.getDescriptionId() + ".ctrl.desc");
     }
 
     public MutableComponent getShiftDescription() {
-        return new TranslatableComponent(this.getDescriptionId() + ".shift.desc");
+        return Component.translatable(this.getDescriptionId() + ".shift.desc");
     }
 }

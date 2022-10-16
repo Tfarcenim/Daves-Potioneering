@@ -8,7 +8,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -281,20 +280,20 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter worldIn, List<Component> tooltip, TooltipFlag flagIn) {
 
-        tooltip.add(new TranslatableComponent(getDescriptionId()+".hold_shift.desc"));
+        tooltip.add(Component.translatable(getDescriptionId()+".hold_shift.desc"));
         if (Screen.hasShiftDown())
             for (int i = 0; i < S_LINES;i++) {
 
                 tooltip.add(this.getShiftDescriptions(i).withStyle(ChatFormatting.GRAY));
             }
 
-        tooltip.add(new TranslatableComponent(getDescriptionId()+".hold_ctrl.desc"));
+        tooltip.add(Component.translatable(getDescriptionId()+".hold_ctrl.desc"));
         if (Screen.hasControlDown())
             for (int i = 0; i < C_LINES;i++) {
                 tooltip.add(this.getCtrlDescriptions(i).withStyle(ChatFormatting.GRAY));
             }
 
-        tooltip.add(new TranslatableComponent(getDescriptionId()+".hold_alt.desc"));
+        tooltip.add(Component.translatable(getDescriptionId()+".hold_alt.desc"));
         if (Screen.hasAltDown()) {
             for (int i = 0; i < A_LINES;i++) {
                 tooltip.add(this.getAltDescriptions(i).withStyle(ChatFormatting.GRAY));
@@ -303,27 +302,27 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
     }
 
     public MutableComponent getShiftDescription() {
-        return new TranslatableComponent(this.getDescriptionId() + ".shift.desc");
+        return Component.translatable(this.getDescriptionId() + ".shift.desc");
     }
 
     public MutableComponent getShiftDescriptions(int i) {
-        return new TranslatableComponent(this.getDescriptionId() + i +".shift.desc");
+        return Component.translatable(this.getDescriptionId() + i +".shift.desc");
     }
 
     public MutableComponent getCtrlDescription() {
-        return new TranslatableComponent(this.getDescriptionId() + ".ctrl.desc");
+        return Component.translatable(this.getDescriptionId() + ".ctrl.desc");
     }
 
     public MutableComponent getCtrlDescriptions(int i) {
-        return new TranslatableComponent(this.getDescriptionId() + i +".ctrl.desc");
+        return Component.translatable(this.getDescriptionId() + i +".ctrl.desc");
     }
 
     public MutableComponent getAltDescription() {
-        return new TranslatableComponent(this.getDescriptionId() + ".alt.desc");
+        return Component.translatable(this.getDescriptionId() + ".alt.desc");
     }
 
     public MutableComponent getAltDescriptions(int i) {
-        return new TranslatableComponent(this.getDescriptionId() + i+".alt.desc");
+        return Component.translatable(this.getDescriptionId() + i+".alt.desc");
     }
 
     @org.jetbrains.annotations.Nullable

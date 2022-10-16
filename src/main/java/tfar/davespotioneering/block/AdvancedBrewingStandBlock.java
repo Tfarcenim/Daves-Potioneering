@@ -5,7 +5,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -49,11 +48,11 @@ public class AdvancedBrewingStandBlock extends BrewingStandBlock {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter worldIn, List<Component> tooltip, TooltipFlag flagIn) {
 
-        tooltip.add(new TranslatableComponent(getDescriptionId()+".hold_shift.desc"));
+        tooltip.add(Component.translatable(getDescriptionId()+".hold_shift.desc"));
         if (Screen.hasShiftDown())
             tooltip.add(this.getShiftDescription().withStyle(ChatFormatting.GRAY));
 
-        tooltip.add(new TranslatableComponent(getDescriptionId()+".hold_ctrl.desc"));
+        tooltip.add(Component.translatable(getDescriptionId()+".hold_ctrl.desc"));
         if (Screen.hasControlDown())
             for (int i = 0; i < C_LINES;i++) {
                 tooltip.add(this.getCtrlDescriptions(i).withStyle(ChatFormatting.GRAY));
@@ -61,15 +60,15 @@ public class AdvancedBrewingStandBlock extends BrewingStandBlock {
     }
 
     public MutableComponent getShiftDescription() {
-        return new TranslatableComponent(this.getDescriptionId() + ".shift.desc");
+        return Component.translatable(this.getDescriptionId() + ".shift.desc");
     }
 
     public MutableComponent getCtrlDescription() {
-        return new TranslatableComponent(this.getDescriptionId() + ".ctrl.desc");
+        return Component.translatable(this.getDescriptionId() + ".ctrl.desc");
     }
 
     public MutableComponent getCtrlDescriptions(int i) {
-        return new TranslatableComponent(this.getDescriptionId() + i +".ctrl.desc");
+        return Component.translatable(this.getDescriptionId() + i +".ctrl.desc");
     }
 
     public BlockEntity newBlockEntity(BlockPos p_152698_, BlockState p_152699_) {

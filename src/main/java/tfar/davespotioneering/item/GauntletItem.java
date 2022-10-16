@@ -6,8 +6,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Tuple;
@@ -139,33 +137,33 @@ public class GauntletItem extends SwordItem {
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
 
-        tooltip.add(new TranslatableComponent(getDescriptionId()+".hold_shift.desc"));
+        tooltip.add(Component.translatable(getDescriptionId()+".hold_shift.desc"));
         if (Screen.hasShiftDown())
             tooltip.add(this.getShiftDescription().withStyle(ChatFormatting.GRAY));
 
-        tooltip.add(new TranslatableComponent(getDescriptionId()+".hold_ctrl.desc"));
+        tooltip.add(Component.translatable(getDescriptionId()+".hold_ctrl.desc"));
         if (Screen.hasControlDown())
             tooltip.add(this.getCtrlDescription().withStyle(ChatFormatting.GRAY));
 
         Tuple<List<MobEffectInstance>, List<Potion>> tuple = getEffectsFromGauntlet(stack);
         if (tuple == null) return;
         if (tuple.getA().isEmpty()) return;
-        tooltip.add(new TextComponent(" "));
+        tooltip.add(Component.literal(" "));
 
         for (MobEffectInstance instance : tuple.getA()) {
-            TranslatableComponent effectFormatted = new TranslatableComponent(instance.getDescriptionId());
+            MutableComponent effectFormatted = Component.translatable(instance.getDescriptionId());
             effectFormatted.withStyle(instance.getEffect().getCategory().getTooltipFormatting());
-            TextComponent amplifier = new TextComponent("");
-            TextComponent duration;
-            TranslatableComponent product;
+            Component amplifier = Component.literal("");
+            Component duration;
+            Component product;
             if (instance.getAmplifier() > 0) {
-                amplifier = new TextComponent(String.valueOf(instance.getAmplifier()));
+                amplifier = Component.literal(String.valueOf(instance.getAmplifier()));
             }
             if (instance.getDuration() > 1) {
-                duration = new TextComponent(MobEffectUtil.formatDuration(instance, 1f));
-                product = new TranslatableComponent("davespotioneering.tooltip.gauntlet.withDuration", effectFormatted, amplifier, duration);
+                duration = Component.literal(MobEffectUtil.formatDuration(instance, 1f));
+                product = Component.translatable("davespotioneering.tooltip.gauntlet.withDuration", effectFormatted, amplifier, duration);
             } else {
-                product = new TranslatableComponent("davespotioneering.tooltip.gauntlet", effectFormatted, amplifier);
+                product = Component.translatable("davespotioneering.tooltip.gauntlet", effectFormatted, amplifier);
             }
 
             tooltip.add(product);
@@ -193,11 +191,11 @@ public class GauntletItem extends SwordItem {
     }
 
     public MutableComponent getShiftDescription() {
-        return new TranslatableComponent(this.getDescriptionId() + ".shift.desc");
+        return Component.translatable(this.getDescriptionId() + ".shift.desc");
     }
 
     public MutableComponent getCtrlDescription() {
-        return new TranslatableComponent(this.getDescriptionId() + ".ctrl.desc");
+        return Component.translatable(this.getDescriptionId() + ".ctrl.desc");
     }
 
     @Nullable

@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -103,7 +102,7 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements Menu
     }
 
     protected Component getDefaultName() {
-        return new TranslatableComponent("container.davespotioneering.compound_brewing");
+        return Component.translatable("container.davespotioneering.compound_brewing");
     }
 
     public static void serverTick(Level p_155286_, BlockPos p_155287_, BlockState p_155288_, AdvancedBrewingStandBlockEntity p_155289_) {

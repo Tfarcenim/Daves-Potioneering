@@ -1,7 +1,6 @@
 package tfar.davespotioneering.init;
 
 import net.minecraft.world.inventory.MenuType;
-import net.minecraftforge.event.RegistryEvent;
 import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
 import tfar.davespotioneering.menu.PotionInjectorMenu;
 
