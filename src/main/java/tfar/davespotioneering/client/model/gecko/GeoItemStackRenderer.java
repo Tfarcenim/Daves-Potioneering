@@ -21,13 +21,13 @@ import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.core.util.Color;
 import software.bernie.geckolib3.geo.render.built.GeoModel;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 import tfar.davespotioneering.DavesPotioneering;
 
 import javax.annotation.Nullable;
-import java.awt.*;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
@@ -108,6 +108,16 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends ItemStackTileEn
     @Override
     public RenderType getRenderType(T animatable, float partialTicks, MatrixStack stack, @Nullable IRenderTypeBuffer renderTypeBuffer, @Nullable IVertexBuilder vertexBuilder, int packedLightIn, ResourceLocation textureLocation) {
         return renderTypeGetter.apply(textureLocation);
+    }
+
+    @Override
+    public void setCurrentRTB(IRenderTypeBuffer iRenderTypeBuffer) {
+
+    }
+
+    @Override
+    public IRenderTypeBuffer getCurrentRTB() {
+        return null;
     }
 
     @Override
