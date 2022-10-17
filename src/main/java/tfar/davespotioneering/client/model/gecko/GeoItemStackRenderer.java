@@ -6,11 +6,9 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.entity.model.EntityModelLoader;
-import net.minecraft.client.render.item.BuiltinModelItemRenderer;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
@@ -29,32 +27,23 @@ import tfar.davespotioneering.DavesPotioneering;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
-public class GeoItemStackRenderer<T extends IAnimatable> extends BuiltinModelItemRenderer implements IGeoRenderer<T>, BuiltinItemRendererRegistry.DynamicItemRenderer  {
+public class GeoItemStackRenderer<T extends IAnimatable> implements IGeoRenderer<T>, BuiltinItemRendererRegistry.DynamicItemRenderer  {
 
     protected final AnimatedGeoModel<T> modelProvider;
     protected ItemStack currentItemStack;
     protected final Function<Identifier, RenderLayer> renderTypeGetter;
     private final T ianimatable;
 
-    private static final Map<Item, GeoItemStackRenderer<?>> animatedRenderers = new ConcurrentHashMap<>();
-
     public GeoItemStackRenderer(AnimatedGeoModel<T> modelProvider, T ianimatable,BlockEntityRenderDispatcher blockEntityRenderDispatcher, EntityModelLoader entityModelLoader) {
         this(modelProvider, RenderLayer::getEntityCutout, ianimatable,blockEntityRenderDispatcher,entityModelLoader);
     }
 
     public GeoItemStackRenderer(AnimatedGeoModel<T> modelProvider, Function<Identifier, RenderLayer> renderTypeGetter, T ianimatable, BlockEntityRenderDispatcher blockEntityRenderDispatcher, EntityModelLoader entityModelLoader) {
-        super(blockEntityRenderDispatcher,entityModelLoader);
         this.modelProvider = modelProvider;
         this.renderTypeGetter = renderTypeGetter;
         this.ianimatable = ianimatable;
-    }
-
-    public static void registerAnimatedItem(Item item, GeoItemStackRenderer<?> renderer) {
-        animatedRenderers.put(item, renderer);
     }
 
     //render
