@@ -15,7 +15,6 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -32,8 +31,6 @@ import tfar.davespotioneering.DavesPotioneering;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 public class GeoItemStackRenderer<T extends IAnimatable> extends BlockEntityWithoutLevelRenderer implements IGeoRenderer<T> {
@@ -42,8 +39,6 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends BlockEntityWith
     protected ItemStack currentItemStack;
     protected final Function<ResourceLocation, RenderType> renderTypeGetter;
     private final T ianimatable;
-
-    private static final Map<Item, GeoItemStackRenderer<?>> animatedRenderers = new ConcurrentHashMap<>();
 
     public GeoItemStackRenderer(AnimatedGeoModel<T> modelProvider, T ianimatable, BlockEntityRenderDispatcher p_172550_, EntityModelSet p_172551_) {
         this(modelProvider, RenderType::entityCutout, ianimatable,p_172550_,p_172551_);
@@ -54,10 +49,6 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends BlockEntityWith
         this.modelProvider = modelProvider;
         this.renderTypeGetter = renderTypeGetter;
         this.ianimatable = ianimatable;
-    }
-
-    public static void registerAnimatedItem(Item item, GeoItemStackRenderer<?> renderer) {
-        animatedRenderers.put(item, renderer);
     }
 
     //render
@@ -111,6 +102,16 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends BlockEntityWith
     @Override
     public RenderType getRenderType(T animatable, float partialTicks, PoseStack stack, @Nullable MultiBufferSource renderTypeBuffer, @Nullable VertexConsumer vertexBuilder, int packedLightIn, ResourceLocation textureLocation) {
         return renderTypeGetter.apply(textureLocation);
+    }
+
+    @Override
+    public void setCurrentRTB(MultiBufferSource rtb) {
+
+    }
+
+    @Override
+    public MultiBufferSource getCurrentRTB() {
+        return null;
     }
 
     @Override
