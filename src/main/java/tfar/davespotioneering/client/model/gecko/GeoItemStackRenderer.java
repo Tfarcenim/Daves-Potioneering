@@ -6,7 +6,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.entity.model.EntityModelLoader;
-import net.minecraft.client.render.item.BuiltinModelItemRenderer;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
@@ -30,7 +29,7 @@ import java.util.Collections;
 import java.util.Locale;
 import java.util.function.Function;
 
-public class GeoItemStackRenderer<T extends IAnimatable> extends BuiltinModelItemRenderer implements IGeoRenderer<T>, BuiltinItemRendererRegistry.DynamicItemRenderer  {
+public class GeoItemStackRenderer<T extends IAnimatable> implements IGeoRenderer<T>, BuiltinItemRendererRegistry.DynamicItemRenderer  {
 
     protected final AnimatedGeoModel<T> modelProvider;
     protected ItemStack currentItemStack;
@@ -42,7 +41,6 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends BuiltinModelIte
     }
 
     public GeoItemStackRenderer(AnimatedGeoModel<T> modelProvider, Function<Identifier, RenderLayer> renderTypeGetter, T ianimatable, BlockEntityRenderDispatcher blockEntityRenderDispatcher, EntityModelLoader entityModelLoader) {
-        super(blockEntityRenderDispatcher,entityModelLoader);
         this.modelProvider = modelProvider;
         this.renderTypeGetter = renderTypeGetter;
         this.ianimatable = ianimatable;
@@ -58,17 +56,17 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends BuiltinModelIte
             MinecraftClient mc = MinecraftClient.getInstance();
             VertexConsumerProvider.Immediate buffer = mc.getBufferBuilders().getEntityVertexConsumers();
             DiffuseLighting.disableGuiDepthLighting();
-            this.render(matrices, bufferIn, combinedLightIn, stack);
+            this.render1(matrices, bufferIn, combinedLightIn, stack);
             buffer.draw();
             RenderSystem.enableDepthTest();
             DiffuseLighting.enableGuiDepthLighting();
             matrices.pop();
         } else {
-            this.render(matrices, bufferIn, combinedLightIn, stack);
+            this.render1(matrices, bufferIn, combinedLightIn, stack);
         }
     }
 
-    public void render(MatrixStack matrices, VertexConsumerProvider bufferIn, int packedLightIn, ItemStack itemStack) {
+    public void render1(MatrixStack matrices, VertexConsumerProvider bufferIn, int packedLightIn, ItemStack itemStack) {
         this.currentItemStack = itemStack;
         GeoModel model = getGeoModelProvider().getModel(getGeoModelProvider().getModelResource(ianimatable));
         MinecraftClient mc = MinecraftClient.getInstance();
