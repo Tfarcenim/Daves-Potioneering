@@ -35,7 +35,7 @@ public class AdvancedBrewingStandScreen extends HandledScreen<AdvancedBrewingSta
 
     protected void drawBackground(MatrixStack matrixStack, float partialTicks, int x, int y) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        this.client.getTextureManager().bindTexture(BREWING_STAND_GUI_TEXTURES);
+        RenderSystem.setShaderTexture(0,BREWING_STAND_GUI_TEXTURES);
         int i = (this.width - this.backgroundWidth) / 2;
         int j = (this.height - this.backgroundHeight) / 2;
         this.drawTexture(matrixStack, i, j, 0, 0, this.backgroundWidth, this.backgroundHeight);
