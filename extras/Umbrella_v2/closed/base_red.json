@@ -1,7 +1,0 @@
-{
-    "parent": "modname:item/umbrella_closed",
-    "textures": {
-      "type": "modname:item/umbrella/closed/materials/base",
-      "fabric": "modname:item/umbrella/closed/fabrics/red"
-    }
-  }
