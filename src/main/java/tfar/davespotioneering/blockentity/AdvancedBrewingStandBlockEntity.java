@@ -3,15 +3,16 @@ package tfar.davespotioneering.blockentity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BrewingStandBlock;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventories;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.PotionItem;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.recipe.BrewingRecipeRegistry;
@@ -22,6 +23,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
 import tfar.davespotioneering.Events;
 import tfar.davespotioneering.Util;
@@ -98,39 +100,39 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
         return Text.translatable("container.davespotioneering.compound_brewing");
     }
 
-    public void tick() {
-        ItemStack fuelStack = this.brewingHandler.getStack(FUEL);
-        if (this.fuel <= 0 && fuelStack.getItem() == Items.BLAZE_POWDER) {
-            this.fuel = 20;
+    public static void tick(World world, BlockPos blockPos, BlockState blockState, AdvancedBrewingStandBlockEntity brewingStandBlockEntity) {
+        ItemStack fuelStack = brewingStandBlockEntity.brewingHandler.getStack(FUEL);
+        if (brewingStandBlockEntity.fuel <= 0 && fuelStack.getItem() == Items.BLAZE_POWDER) {
+            brewingStandBlockEntity.fuel = 20;
             fuelStack.decrement(1);
-            this.markDirty();
+            markDirty(world,blockPos,blockState);
         }
 
-        boolean canBrew = this.canBrew();
-        boolean brewing = this.brewTime > 0;
-        ItemStack ing = getPriorityIngredient().getRight();
+        boolean canBrew = brewingStandBlockEntity.canBrew();
+        boolean brewing = brewingStandBlockEntity.brewTime > 0;
+        ItemStack ing = brewingStandBlockEntity.getPriorityIngredient().getRight();
         if (brewing) {
-            --this.brewTime;
-            boolean done = this.brewTime == 0;
+            --brewingStandBlockEntity.brewTime;
+            boolean done = brewingStandBlockEntity.brewTime == 0;
             if (done && canBrew) {
-                this.brewPotions();
-                this.markDirty();
+                brewingStandBlockEntity.brewPotions();
+                markDirty(world,blockPos,blockState);
             } else if (!canBrew) {
-                this.brewTime = 0;
-                this.markDirty();
-            } else if (this.ingredientID != ing.getItem()) {
-                this.brewTime = 0;
-                this.markDirty();
+                brewingStandBlockEntity.brewTime = 0;
+                markDirty(world,blockPos,blockState);
+            } else if (brewingStandBlockEntity.ingredientID != ing.getItem()) {
+                brewingStandBlockEntity.brewTime = 0;
+                markDirty(world,blockPos,blockState);
             }
-        } else if (canBrew && this.fuel > 0) {
-            --this.fuel;
-            this.brewTime = TIME;
-            this.ingredientID = ing.getItem();
-            this.markDirty();
+        } else if (canBrew && brewingStandBlockEntity.fuel > 0) {
+            --brewingStandBlockEntity.fuel;
+            brewingStandBlockEntity.brewTime = TIME;
+            brewingStandBlockEntity.ingredientID = ing.getItem();
+            markDirty(world,blockPos,blockState);
         }
 
-        if (!this.world.isClient) {
-            setBottleBlockStates();
+        if (!brewingStandBlockEntity.world.isClient) {
+            brewingStandBlockEntity.setBottleBlockStates();
         }
     }
 
@@ -142,11 +144,9 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
             if (!(blockstate.getBlock() instanceof BrewingStandBlock)) {
                 return;
             }
-
             for(int i = 0; i < BrewingStandBlock.BOTTLE_PROPERTIES.length; ++i) {
                 blockstate = blockstate.with(BrewingStandBlock.BOTTLE_PROPERTIES[i], aboolean[i]);
             }
-
             this.world.setBlockState(this.pos, blockstate, 2);
         }
     }
@@ -256,8 +256,7 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
     @Override
     public void readNbt(NbtCompound nbt) {
         super.readNbt(nbt);
-        NbtList items = nbt.getList("Items",10);
-        brewingHandler.readTags(items);
+        Inventories.readNbt(nbt,brewingHandler.getItems());
         this.brewTime = nbt.getShort("BrewTime");
         this.fuel = nbt.getInt("Fuel");
         xp = nbt.getInt("xp");
@@ -267,7 +266,7 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
     public void writeNbt(NbtCompound compound) {
         super.writeNbt(compound);
         compound.putShort("BrewTime", (short)this.brewTime);
-        compound.put("Items",brewingHandler.getTags());
+        Inventories.writeNbt(compound,brewingHandler.getItems());
         compound.putInt("Fuel", this.fuel);
         compound.putInt("xp",xp);
     }
@@ -294,6 +293,18 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
             Util.splitAndSpawnExperience(world, player.getPos(), xp);
             xp = 0;
             markDirty();
+        }
+    }
+
+    @Nullable
+    public static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> checkType(BlockEntityType<A> blockEntityType, BlockEntityType<E> blockEntityType2, BlockEntityTicker<? super E> blockEntityTicker) {
+        return blockEntityType2 == blockEntityType ? (BlockEntityTicker<A>) blockEntityTicker : null;
+    }
+
+    protected static void markDirty(World world, BlockPos blockPos, BlockState blockState) {
+        world.markDirty(blockPos);
+        if (!blockState.isAir()) {
+            world.updateComparators(blockPos, blockState.getBlock());
         }
     }
 }

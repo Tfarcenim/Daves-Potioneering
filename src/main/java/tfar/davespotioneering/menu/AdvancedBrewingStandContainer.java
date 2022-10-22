@@ -1,20 +1,16 @@
 package tfar.davespotioneering.menu;
 
-import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtil;
 import net.minecraft.recipe.BrewingRecipeRegistry;
 import net.minecraft.screen.ArrayPropertyDelegate;
 import net.minecraft.screen.BrewingStandScreenHandler;
 import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.server.network.ServerPlayerEntity;
 import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
 import tfar.davespotioneering.init.ModContainerTypes;
 import tfar.davespotioneering.inv.BrewingHandler;
@@ -53,7 +49,7 @@ public class AdvancedBrewingStandContainer extends ScreenHandler {
 
         this.addSlot(new IngredientSlot(inventory, 7, 79, ing1));
 
-        this.addSlot(new FuelSlot(inventory, AdvancedBrewingStandBlockEntity.FUEL, 17, ing1));
+        this.addSlot(new BrewingStandScreenHandler.FuelSlot(inventory, AdvancedBrewingStandBlockEntity.FUEL, 17, ing1));
 
         this.addProperties(data);
 
@@ -123,34 +119,6 @@ public class AdvancedBrewingStandContainer extends ScreenHandler {
         return this.data.get(0);
     }
 
-    public static class FuelSlot extends Slot {
-        public FuelSlot(Inventory iInventoryIn, int index, int xPosition, int yPosition) {
-            super(iInventoryIn, index, xPosition, yPosition);
-        }
-
-        /**
-         * Check if the stack is allowed to be placed in this slot, used for armor slots as well as furnace fuel.
-         */
-        public boolean canInsert(ItemStack stack) {
-            return isValidBrewingFuel(stack);
-        }
-
-        /**
-         * Returns true if the given ItemStack is usable as a fuel in the brewing stand.
-         */
-        public static boolean isValidBrewingFuel(ItemStack itemStackIn) {
-            return itemStackIn.getItem() == Items.BLAZE_POWDER;
-        }
-
-        /**
-         * Returns the maximum stack size for a given slot (usually the same as getInventoryStackLimit(), but 1 in the
-         * case of armor slots)
-         */
-        public int getMaxItemCount() {
-            return 64;
-        }
-    }
-
     static class IngredientSlot extends Slot {
         public IngredientSlot(Inventory iInventoryIn, int index, int xPosition, int yPosition) {
             super(iInventoryIn, index, xPosition, yPosition);
@@ -164,16 +132,9 @@ public class AdvancedBrewingStandContainer extends ScreenHandler {
         }
     }
 
-    public static class PotionSlot extends Slot {
+    public static class PotionSlot extends BrewingStandScreenHandler.PotionSlot {
         public PotionSlot(Inventory iItemHandler, int index, int x, int y) {
             super(iItemHandler, index, x, y);
-        }
-
-        /**
-         * Check if the stack is allowed to be placed in this slot, used for armor slots as well as furnace fuel.
-         */
-        public boolean canInsert(ItemStack stack) {
-            return BrewingStandScreenHandler.PotionSlot.matches(stack);
         }
 
         /**
@@ -182,15 +143,6 @@ public class AdvancedBrewingStandContainer extends ScreenHandler {
          */
         public int getMaxItemCount() {
             return 2;
-        }
-
-        public void onTakeItem(PlayerEntity thePlayer, ItemStack stack) {
-            Potion potion = PotionUtil.getPotion(stack);
-            if (thePlayer instanceof ServerPlayerEntity) {
-                Criteria.BREWED_POTION.trigger((ServerPlayerEntity)thePlayer, potion);
-            }
-
-            super.onTakeItem(thePlayer, stack);
         }
     }
 }

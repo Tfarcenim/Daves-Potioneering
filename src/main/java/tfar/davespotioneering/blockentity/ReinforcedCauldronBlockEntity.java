@@ -116,10 +116,4 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity {
         tag.putString("potion", Registry.POTION.getId(potion).toString());
         return tag;
     }
-
-    @Override
-    public void markDirty() {
-        super.markDirty();
-      //  sync();
-    }
 }

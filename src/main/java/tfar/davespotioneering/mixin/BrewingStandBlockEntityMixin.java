@@ -30,7 +30,7 @@ public class BrewingStandBlockEntityMixin extends BlockEntity implements Brewing
         if (xp > 0) {
             xp = 0;
             Util.splitAndSpawnExperience(world, player.getPos(), xp);
-            this.markDirty();
+            markDirty(world,pos,getCachedState());
         }
     }
 }
