@@ -79,6 +79,6 @@ public class AdvancedBrewingStandBlock extends BrewingStandBlock {
     @Override
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState blockState, BlockEntityType<T> blockEntityType) {
-        return world.isClient ? null : AdvancedBrewingStandBlockEntity.checkType(blockEntityType, ModBlockEntityTypes.COMPOUND_BREWING_STAND, AdvancedBrewingStandBlockEntity::tick);
+        return world.isClient ? null : checkType(blockEntityType, ModBlockEntityTypes.COMPOUND_BREWING_STAND, AdvancedBrewingStandBlockEntity::tick);
     }
 }
