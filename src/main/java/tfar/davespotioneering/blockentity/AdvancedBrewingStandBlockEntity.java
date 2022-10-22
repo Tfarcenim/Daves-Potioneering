@@ -6,12 +6,12 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventories;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.PotionItem;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.recipe.BrewingRecipeRegistry;
@@ -23,6 +23,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
 import tfar.davespotioneering.Events;
 import tfar.davespotioneering.Util;
@@ -34,13 +35,15 @@ import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 
-public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  NamedScreenHandlerFactory, BrewingStandDuck {
-    /** an array of the output slot indices */
+public class AdvancedBrewingStandBlockEntity extends BlockEntity implements NamedScreenHandlerFactory, BrewingStandDuck {
+    /**
+     * an array of the output slot indices
+     */
 
     //potions are 0,1,2
     public static final int[] POTIONS = new int[]{0, 1, 2};
     //ingredients are 3,4,5,6,7
-    public static final int[] INGREDIENTS = new int[]{3,4,5,6,7};
+    public static final int[] INGREDIENTS = new int[]{3, 4, 5, 6, 7};
     //fuel is 8
     public static final int FUEL = 8;
 
@@ -50,18 +53,24 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
 
     public static final int SLOTS = POTIONS.length + INGREDIENTS.length + 1;
 
-    /** The ItemStacks currently placed in the slots of the brewing stand */
+    /**
+     * The ItemStacks currently placed in the slots of the brewing stand
+     */
     private final BrewingHandler brewingHandler = new BrewingHandler(SLOTS);
     private int brewTime;
-    /** an integer with each bit specifying whether that slot of the stand contains a potion */
+    /**
+     * an integer with each bit specifying whether that slot of the stand contains a potion
+     */
     private boolean[] filledSlots;
-    /** used to check if the current ingredient has been removed from the brewing stand during brewing */
+    /**
+     * used to check if the current ingredient has been removed from the brewing stand during brewing
+     */
     private Item ingredientID;
     private int fuel;
 
     protected final PropertyDelegate data = new PropertyDelegate() {
         public int get(int index) {
-            switch(index) {
+            switch (index) {
                 case 0:
                     return brewTime;
                 case 1:
@@ -72,7 +81,7 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
         }
 
         public void set(int index, int value) {
-            switch(index) {
+            switch (index) {
                 case 0:
                     brewTime = value;
                     break;
@@ -88,50 +97,50 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
     };
 
     public AdvancedBrewingStandBlockEntity(BlockPos blockPos, BlockState blockState) {
-        this(ModBlockEntityTypes.COMPOUND_BREWING_STAND,blockPos,blockState);
+        this(ModBlockEntityTypes.COMPOUND_BREWING_STAND, blockPos, blockState);
     }
 
     protected AdvancedBrewingStandBlockEntity(BlockEntityType<?> typeIn, BlockPos blockPos, BlockState blockState) {
-        super(typeIn,blockPos,blockState);
+        super(typeIn, blockPos, blockState);
     }
 
     protected Text getDefaultName() {
         return new TranslatableText("container.davespotioneering.compound_brewing");
     }
 
-    public void tick() {
-        ItemStack fuelStack = this.brewingHandler.getStack(FUEL);
-        if (this.fuel <= 0 && fuelStack.getItem() == Items.BLAZE_POWDER) {
-            this.fuel = 20;
+    public static void tick(World world, BlockPos blockPos, BlockState blockState, AdvancedBrewingStandBlockEntity blockEntity) {
+        ItemStack fuelStack = blockEntity.brewingHandler.getStack(FUEL);
+        if (blockEntity.fuel <= 0 && fuelStack.getItem() == Items.BLAZE_POWDER) {
+            blockEntity.fuel = 20;
             fuelStack.decrement(1);
-            this.markDirty();
+            markDirty(world, blockPos, blockState);
         }
 
-        boolean canBrew = this.canBrew();
-        boolean brewing = this.brewTime > 0;
-        ItemStack ing = getPriorityIngredient().getRight();
+        boolean canBrew = blockEntity.canBrew();
+        boolean brewing = blockEntity.brewTime > 0;
+        ItemStack ing = blockEntity.getPriorityIngredient().getRight();
         if (brewing) {
-            --this.brewTime;
-            boolean done = this.brewTime == 0;
+            --blockEntity.brewTime;
+            boolean done = blockEntity.brewTime == 0;
             if (done && canBrew) {
-                this.brewPotions();
-                this.markDirty();
+                blockEntity.brewPotions();
+                markDirty(world, blockPos, blockState);
             } else if (!canBrew) {
-                this.brewTime = 0;
-                this.markDirty();
-            } else if (this.ingredientID != ing.getItem()) {
-                this.brewTime = 0;
-                this.markDirty();
+                blockEntity.brewTime = 0;
+                markDirty(world, blockPos, blockState);
+            } else if (blockEntity.ingredientID != ing.getItem()) {
+                blockEntity.brewTime = 0;
+                markDirty(world, blockPos, blockState);
             }
-        } else if (canBrew && this.fuel > 0) {
-            --this.fuel;
-            this.brewTime = TIME;
-            this.ingredientID = ing.getItem();
-            this.markDirty();
+        } else if (canBrew && blockEntity.fuel > 0) {
+            --blockEntity.fuel;
+            blockEntity.brewTime = TIME;
+            blockEntity.ingredientID = ing.getItem();
+            markDirty(world, blockPos, blockState);
         }
 
-        if (!this.world.isClient) {
-            setBottleBlockStates();
+        if (!blockEntity.world.isClient) {
+            blockEntity.setBottleBlockStates();
         }
     }
 
@@ -144,7 +153,7 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
                 return;
             }
 
-            for(int i = 0; i < BrewingStandBlock.BOTTLE_PROPERTIES.length; ++i) {
+            for (int i = 0; i < BrewingStandBlock.BOTTLE_PROPERTIES.length; ++i) {
                 blockstate = blockstate.with(BrewingStandBlock.BOTTLE_PROPERTIES[i], aboolean[i]);
             }
 
@@ -153,21 +162,21 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
     }
 
     //searches 7 => 3
-    public Pair<Integer,ItemStack> getPriorityIngredient() {
-        for (int i = 7; i > 2;i--) {
+    public Pair<Integer, ItemStack> getPriorityIngredient() {
+        for (int i = 7; i > 2; i--) {
             ItemStack stack = brewingHandler.getStack(i);
             if (!stack.isEmpty() && isThereARecipe(stack)) {
-                return Pair.of(i,stack);
+                return Pair.of(i, stack);
             }
         }
-        return Pair.of(-1,ItemStack.EMPTY);
+        return Pair.of(-1, ItemStack.EMPTY);
     }
 
 
     public boolean isThereARecipe(ItemStack ingredient) {
 
         if (!ingredient.isEmpty()) {
-            return BrewingRecipeRegistry.hasRecipe(ingredient,ingredient);
+            return BrewingRecipeRegistry.hasRecipe(ingredient, ingredient);
         }
         return false;
 
@@ -180,7 +189,7 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
     public boolean[] createFilledSlotsArray() {
         boolean[] aboolean = new boolean[3];
 
-        for(int i = 0; i < 3; ++i) {
+        for (int i = 0; i < 3; ++i) {
             if (!this.brewingHandler.getStack(i).isEmpty()) {
                 aboolean[i] = true;
             }
@@ -205,14 +214,14 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
     }
 
     private void brewPotions() {
-        Pair<Integer,ItemStack> pair = getPriorityIngredient();
+        Pair<Integer, ItemStack> pair = getPriorityIngredient();
         ItemStack ingredient = pair.getRight();
 
         boolean canMilkify = ingredient.getItem() == Items.MILK_BUCKET;
 
         //note: this is changed from the BrewingRecipeRegistry version to allow for >1 potion in a stack
         Util.brewPotions(brewingHandler.getItems(), ingredient, POTIONS);
-        Events.potionBrew(this,ingredient);
+        Events.potionBrew(this, ingredient);
 
         if (canMilkify) {
             for (int i = 0; i < POTIONS.length; i++) {
@@ -257,8 +266,7 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
     @Override
     public void readNbt(NbtCompound nbt) {
         super.readNbt(nbt);
-        NbtList items = nbt.getList("Items",10);
-        brewingHandler.readTags(items);
+        Inventories.readNbt(nbt,brewingHandler.getItems());
         this.brewTime = nbt.getShort("BrewTime");
         this.fuel = nbt.getInt("Fuel");
         xp = nbt.getInt("xp");
@@ -267,10 +275,10 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
     @Override
     public void writeNbt(NbtCompound compound) {
         super.writeNbt(compound);
-        compound.putShort("BrewTime", (short)this.brewTime);
-        compound.put("Items",brewingHandler.getTags());
+        compound.putShort("BrewTime", (short) this.brewTime);
+        Inventories.writeNbt(compound,brewingHandler.getItems());
         compound.putInt("Fuel", this.fuel);
-        compound.putInt("xp",xp);
+        compound.putInt("xp", xp);
     }
 
     @Override
@@ -281,7 +289,7 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
     @Nullable
     @Override
     public ScreenHandler createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
-        return new AdvancedBrewingStandContainer(id, playerInventory, brewingHandler, this.data,this);
+        return new AdvancedBrewingStandContainer(id, playerInventory, brewingHandler, this.data, this);
     }
 
     @Override
@@ -291,7 +299,7 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
 
     @Override
     public void dump(PlayerEntity player) {
-        if(xp > 0) {
+        if (xp > 0) {
             Util.splitAndSpawnExperience(world, player.getPos(), xp);
             xp = 0;
             markDirty();

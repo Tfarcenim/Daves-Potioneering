@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.util.collection.DefaultedList;
 import tfar.davespotioneering.item.GauntletItem;
 import tfar.davespotioneering.mixin.SimpleContainerAccess;
 
@@ -109,5 +110,9 @@ public class PotionInjectorHandler extends SimpleInventory {
             }
         }
         return nbtTagList;
+    }
+
+    public DefaultedList<ItemStack> getItems() {
+        return ((SimpleContainerAccess)this).getStacks();
     }
 }

@@ -3,6 +3,8 @@ package tfar.davespotioneering.block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BrewingStandBlock;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,6 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
+import tfar.davespotioneering.init.ModBlockEntityTypes;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -72,5 +75,11 @@ public class AdvancedBrewingStandBlock extends BrewingStandBlock {
     @Override
     public BlockEntity createBlockEntity(BlockPos blockPos, BlockState blockState) {
         return new AdvancedBrewingStandBlockEntity(blockPos,blockState);
+    }
+
+    @Override
+    @Nullable
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState blockState, BlockEntityType<T> blockEntityType) {
+        return world.isClient ? null : checkType(blockEntityType, ModBlockEntityTypes.COMPOUND_BREWING_STAND, AdvancedBrewingStandBlockEntity::tick);
     }
 }

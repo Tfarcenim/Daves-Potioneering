@@ -5,8 +5,8 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventories;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
@@ -49,11 +49,11 @@ public class PotionInjectorBlockEntity extends BlockEntity implements NamedScree
 
     @Override
     public void writeNbt(NbtCompound compound) {
-        compound.put("inv",handler.getTags());
+        Inventories.writeNbt(compound,handler.getItems());
     }
 
     @Override
     public void readNbt(NbtCompound nbt) {
-        handler.readTags(nbt.getList("inv", NbtElement.COMPOUND_TYPE));
+        Inventories.readNbt(nbt,handler.getItems());
     }
 }
