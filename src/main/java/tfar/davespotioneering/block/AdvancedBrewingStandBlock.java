@@ -80,5 +80,4 @@ public class AdvancedBrewingStandBlock extends BrewingStandBlock {
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return level.isClientSide ? null : createTickerHelper(type, ModBlockEntityTypes.COMPOUND_BREWING_STAND, AdvancedBrewingStandBlockEntity::serverTick);
     }
-
 }
