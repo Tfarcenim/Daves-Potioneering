@@ -5,12 +5,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
-import net.minecraftforge.event.RegistryEvent;
 import tfar.davespotioneering.block.*;
 
-import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Locale;
 
 public class ModBlocks {
 
@@ -28,17 +25,4 @@ public class ModBlocks {
 
     public static final Block POTION_INJECTOR = new PotionInjectorBlock(BlockBehaviour.Properties.copy(Blocks.FLETCHING_TABLE).noOcclusion());
 
-
-    public static void register(RegistryEvent.Register<Block> e) {
-        for (Field field : ModBlocks.class.getFields()) {
-            try {
-                Object o = field.get(null);
-                if (o instanceof Block) {
-                       e.getRegistry().register(((Block) o).setRegistryName(field.getName().toLowerCase(Locale.ROOT)));
-                }
-            } catch (IllegalAccessException illegalAccessException) {
-                illegalAccessException.printStackTrace();
-            }
-        }
-    }
 }

@@ -13,12 +13,14 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.init.ModSoundEvents;
 import tfar.davespotioneering.item.GauntletItem;
 
-public class GauntletHUD {
+public class GauntletHUD implements IGuiOverlay {
     public static final ResourceLocation GAUNTLET_ICON_LOC = new ResourceLocation(DavesPotioneering.MODID, "textures/gauntlet_icons/");
     public final static GauntletHUD hudInstance = new GauntletHUD();
 
@@ -92,20 +94,20 @@ public class GauntletHUD {
     }
 
     private void renderPotion(Potion potion, PoseStack matrixStack, int x, int y, int cooldown, boolean isActivePotion) {
-        if (potion == null || potion.getRegistryName() == null) return;
+        if (potion == null) return;
         if (potion.getEffects().isEmpty()) return;
 
         matrixStack.pushPose();
         RenderSystem.setShaderColor(1, 1, 1, 1);
 
         if (potion.getEffects().size() > 1) {
-            if (potion.getRegistryName().toString().contains("turtle_master")) {
-                bind(getGauntletIconLoc("turtle_master"));
-            } else if (mc.getResourceManager().hasResource(getGauntletIconLoc(potion.getRegistryName().toString()))) {
-                bind(getGauntletIconLoc(potion.getRegistryName().toString()));
-            } else {
-                bind(getGauntletIconLoc("unknown"));
-            }
+      //      if (potion.getRegistryName().toString().contains("turtle_master")) {
+      //          bind(getGauntletIconLoc("turtle_master"));
+      //      } else if (mc.getResourceManager().hasResource(getGauntletIconLoc(potion.getRegistryName().toString()))) {
+       //         bind(getGauntletIconLoc(potion.getRegistryName().toString()));
+     //       } else {
+     //           bind(getGauntletIconLoc("unknown"));
+    //        }
             GuiComponent.blit(matrixStack, x, y, mc.gui.getBlitOffset(), 0, 0, 18, 18, 18, 18);
         } else {
             MobEffect effect = potion.getEffects().get(0).getEffect();
@@ -178,6 +180,30 @@ public class GauntletHUD {
 
     public static void backwardCycle() {
         backwardCycle = true;
+    }
+
+    @Override
+    public void render(ForgeGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
+        // only renders when the hotbar renders
+        //            if (Minecraft.getInstance().currentScreen != null) return;
+        // get player from client
+        Player player = Minecraft.getInstance().player;
+        if (player == null) return;
+        ItemStack g = player.getMainHandItem();
+        // check if holding gauntlet
+        if (g.getItem() instanceof GauntletItem) {
+            // get nbt
+            CompoundTag info = player.getMainHandItem().getOrCreateTag().getCompound("info");
+            Potion[] potions = GauntletItem.getPotionsFromNBT(info);
+            if (Minecraft.getInstance().screen instanceof GauntletHUDMovementGui) return;
+            GauntletHUD.hudInstance.render(poseStack);
+            if (potions == null) {
+                // reset
+                GauntletHUD.hudInstance.init(null, null, null);
+                return;
+            }
+            GauntletHUD.hudInstance.init(potions[0], potions[1], potions[2]);
+        }
     }
 
     public enum HudPresets{

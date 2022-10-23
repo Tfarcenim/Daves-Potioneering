@@ -26,15 +26,16 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
@@ -50,7 +51,7 @@ import static tfar.davespotioneering.DavesPotioneering.MODID;
 
 public class ClientEvents {
 
-    public static void particle(ParticleFactoryRegisterEvent e) {
+    public static void particle(RegisterParticleProvidersEvent e) {
 
         ParticleEngine manager = Minecraft.getInstance().particleEngine;
 
@@ -59,11 +60,11 @@ public class ClientEvents {
         manager.register(ModParticleTypes.TINTED_SPLASH, TintedSplashParticle.Factory::new);
     }
 
-    public static void registerLoader(final ModelRegistryEvent event) {
-        ModelLoaderRegistry.registerLoader(new ResourceLocation(MODID, "fullbright"), ModelLoader.INSTANCE);
+    public static void registerLoader(final ModelEvent.RegisterGeometryLoaders event) {
+        event.register("fullbright", ModelLoader.INSTANCE);
     }
 
-    public static void onMouseInput(InputEvent.MouseInputEvent e) {
+    public static void onMouseInput(InputEvent.MouseButton e) {
         Player player = Minecraft.getInstance().player;
         if (player == null) return;
         ItemStack held = player.getMainHandItem();
@@ -75,7 +76,7 @@ public class ClientEvents {
         }
     }
 
-    public static void onMouseScroll(InputEvent.MouseScrollEvent event) {
+    public static void onMouseScroll(InputEvent.MouseScrollingEvent event) {
         Player player = Minecraft.getInstance().player;
         if (player == null) return;
         ItemStack held = player.getMainHandItem();
@@ -108,16 +109,17 @@ public class ClientEvents {
     }
 
     public static void doClientStuff(final FMLClientSetupEvent event) {
+
+
+
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::tooltips);
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::onMouseInput);
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::onMouseScroll);
-        MinecraftForge.EVENT_BUS.addListener(ClientEvents::gauntletHud);
-        MinecraftForge.EVENT_BUS.addListener(ClientEvents::gaun);
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::playerTick);
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.COMPOUND_BREWING_STAND, RenderType.cutoutMipped());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.POTION_INJECTOR,RenderType.translucent());
-        MenuScreens.register(ModContainerTypes.ADVANCED_BREWING_STAND, AdvancedBrewingStandScreen::new);
-        MenuScreens.register(ModContainerTypes.ALCHEMICAL_GAUNTLET, GauntletWorkstationScreen::new);
+        MenuScreens.register(ModMenuTypes.ADVANCED_BREWING_STAND, AdvancedBrewingStandScreen::new);
+        MenuScreens.register(ModMenuTypes.ALCHEMICAL_GAUNTLET, GauntletWorkstationScreen::new);
 
         BlockEntityRenderers.register(ModBlockEntityTypes.POTION_INJECTOR, PotionInjectorRenderer::new);
 
@@ -154,38 +156,13 @@ public class ClientEvents {
         registerBlockingProperty(ModItems.GILDED_UMBRELLA);
     }
 
+    public static void overlay(RegisterGuiOverlaysEvent e) {
+        e.registerBelow(VanillaGuiOverlay.CHAT_PANEL.id(),DavesPotioneering.MODID,new GauntletHUD());
+    }
+
     private static void registerBlockingProperty(Item item) {
         ItemProperties.register(item, new ResourceLocation("blocking"),
                 (stack, world, entity,i) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
-    }
-
-    public static void gauntletHud(RenderGameOverlayEvent.Post e) {
-        // only renders when the hotbar renders
-        if (e.getType() == RenderGameOverlayEvent.ElementType.TEXT) {
-//            if (Minecraft.getInstance().currentScreen != null) return;
-            // get player from client
-            Player player = Minecraft.getInstance().player;
-            if (player == null) return;
-            ItemStack g = player.getMainHandItem();
-            // check if holding gauntlet
-            if (g.getItem() instanceof GauntletItem) {
-                // get nbt
-                CompoundTag info = player.getMainHandItem().getOrCreateTag().getCompound("info");
-                Potion[] potions = GauntletItem.getPotionsFromNBT(info);
-                if (Minecraft.getInstance().screen instanceof GauntletHUDMovementGui) return;
-                GauntletHUD.hudInstance.render(e.getMatrixStack());
-                if (potions == null) {
-                    // reset
-                    GauntletHUD.hudInstance.init(null, null, null);
-                    return;
-                }
-                GauntletHUD.hudInstance.init(potions[0], potions[1], potions[2]);
-            }
-        }
-    }
-
-    public static void gaun(RenderGameOverlayEvent.Pre e) {
-
     }
 
     public static void playerTick(TickEvent.PlayerTickEvent e) {

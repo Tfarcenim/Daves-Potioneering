@@ -1,6 +1,9 @@
 package tfar.davespotioneering;
 
+import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.inventory.MenuType;
@@ -23,6 +26,7 @@ import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import tfar.davespotioneering.block.ModCauldronInteractions;
 import tfar.davespotioneering.client.ClientEvents;
@@ -32,7 +36,9 @@ import tfar.davespotioneering.init.*;
 import tfar.davespotioneering.mixin.BlockEntityTypeAcces;
 import tfar.davespotioneering.net.PacketHandler;
 
+import java.lang.reflect.Field;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -46,15 +52,7 @@ public class DavesPotioneering {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 
         bus.addListener(ModDatagen::start);
-
-        bus.addGenericListener(Block.class, ModBlocks::register);
-        bus.addGenericListener(Item.class, ModItems::register);
-        bus.addGenericListener(MobEffect.class,ModEffects::register);
-        bus.addGenericListener(Potion.class,ModPotions::register);
-        bus.addGenericListener(BlockEntityType.class, ModBlockEntityTypes::register);
-        bus.addGenericListener(MenuType.class, ModContainerTypes::register);
-        bus.addGenericListener(SoundEvent.class, ModSoundEvents::register);
-        bus.addGenericListener(ParticleType.class,ModParticleTypes::register);
+        bus.addListener(this::register);
 
         ModLoadingContext.get().registerConfig(Type.CLIENT, CLIENT_SPEC);
         ModLoadingContext.get().registerConfig(Type.SERVER, SERVER_SPEC);
@@ -84,6 +82,29 @@ public class DavesPotioneering {
         SERVER = specPair2.getLeft();
     }
 
+    private void register(RegisterEvent e) {
+        superRegister(e, ModBlocks.class,Registry.BLOCK_REGISTRY,Block.class);
+        superRegister(e, ModItems.class,Registry.ITEM_REGISTRY,Item.class);
+        superRegister(e, ModBlockEntityTypes.class,Registry.BLOCK_ENTITY_TYPE_REGISTRY,BlockEntityType.class);
+        superRegister(e, ModMenuTypes.class,Registry.MENU_REGISTRY, MenuType.class);
+        superRegister(e, ModEffects.class,Registry.MOB_EFFECT_REGISTRY, MobEffect.class);
+        superRegister(e, ModParticleTypes.class,Registry.PARTICLE_TYPE_REGISTRY, ParticleType.class);
+        superRegister(e, ModPotions.class,Registry.POTION_REGISTRY,Potion.class);
+        superRegister(e, ModSoundEvents.class,Registry.SOUND_EVENT_REGISTRY,SoundEvent.class);
+    }
+
+    public static <T> void superRegister(RegisterEvent e, Class<?> clazz, ResourceKey<? extends  Registry<T>> resourceKey, Class<? extends T> filter) {
+        for (Field field : clazz.getFields()) {
+            try {
+                Object o = field.get(null);
+                if (filter.isInstance(o)) {
+                    e.register(resourceKey,new ResourceLocation(MODID,field.getName().toLowerCase(Locale.ROOT)),() -> (T)o);
+                }
+            } catch (IllegalAccessException illegalAccessException) {
+                illegalAccessException.printStackTrace();
+            }
+        }
+    }
 
     private void setup(final FMLCommonSetupEvent event) {
         Util.setStackSize(Items.POTION,16);

@@ -2,15 +2,16 @@ package tfar.davespotioneering.datagen.assets;
 
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
-import net.minecraft.server.packs.PackType;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
-import net.minecraftforge.client.model.generators.loaders.SeparatePerspectiveModelBuilder;
+import net.minecraftforge.client.model.generators.loaders.SeparateTransformsModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.init.ModItems;
@@ -76,7 +77,7 @@ public class ModItemModelProvider extends ItemModelProvider {
                 .texture("layer0", "item/sprite/" + name);
 
         getBuilder(name).guiLight(BlockModel.GuiLight.FRONT)
-                .customLoader(SeparatePerspectiveModelBuilder::begin).base(rSpriteFile)
+                .customLoader(SeparateTransformsModelBuilder::begin).base(rSpriteFile)
                 .perspective(ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, r3dFile)
                 .perspective(ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND, r3dFile)
                 .perspective(ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND, r3dFile)
@@ -86,7 +87,7 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     private void alchemicalGauntlet() {
 
-        String s = ModItems.POTIONEER_GAUNTLET.getRegistryName().getPath();
+        String s = "potioneer_gauntlet";
 
         ModelFile unlitFile = getExistingFile(modLoc("item/perspective/" + s));
 
@@ -98,7 +99,8 @@ public class ModItemModelProvider extends ItemModelProvider {
     }
 
     protected void makeSimpleBlockItem(Item item, ResourceLocation loc) {
-        getBuilder(item.getRegistryName().toString())
+        String s = Registry.ITEM.getKey(item).toString();
+        getBuilder(s)
                 .parent(getExistingFile(loc));
     }
 

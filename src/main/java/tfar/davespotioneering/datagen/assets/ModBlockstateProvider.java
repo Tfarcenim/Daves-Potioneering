@@ -1,6 +1,7 @@
 package tfar.davespotioneering.datagen.assets;
 
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -42,7 +43,8 @@ public class ModBlockstateProvider extends BlockStateProvider {
     }
 
     protected void blockstateFromExistingModel(Block block) {
-        ModelFile modelFile = models().getExistingFile(new ResourceLocation(DavesPotioneering.MODID, "block/" + block.getRegistryName().getPath()));
+        String s = Registry.BLOCK.getKey(block).getPath();
+        ModelFile modelFile = models().getExistingFile(new ResourceLocation(DavesPotioneering.MODID, "block/" + s));
         getVariantBuilder(block).forAllStates(state -> {
             ConfiguredModel.Builder<?> builder = ConfiguredModel.builder().modelFile(modelFile);
             if (state.hasProperty(HorizontalDirectionalBlock.FACING)) {

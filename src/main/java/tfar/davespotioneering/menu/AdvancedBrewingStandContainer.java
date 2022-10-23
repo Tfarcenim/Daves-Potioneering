@@ -19,7 +19,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
-import tfar.davespotioneering.init.ModContainerTypes;
+import tfar.davespotioneering.init.ModMenuTypes;
 import tfar.davespotioneering.inv.BrewingHandler;
 
 public class AdvancedBrewingStandContainer extends AbstractContainerMenu {
@@ -34,7 +34,7 @@ public class AdvancedBrewingStandContainer extends AbstractContainerMenu {
 
     //common
     public AdvancedBrewingStandContainer(int id, Inventory playerInventory, ItemStackHandler inventory, ContainerData data, AdvancedBrewingStandBlockEntity advancedBrewingStandBlockEntity) {
-        super(ModContainerTypes.ADVANCED_BREWING_STAND, id);
+        super(ModMenuTypes.ADVANCED_BREWING_STAND, id);
        // assertInventorySize(inventory, 5);
        // assertIntArraySize(data, 2);
         this.data = data;

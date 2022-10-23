@@ -5,15 +5,14 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import tfar.davespotioneering.ModConfig;
 
 public class GauntletHUDMovementGui extends Screen {
     private final GauntletHUD hud = new GauntletHUD();
 
     protected GauntletHUDMovementGui() {
-        super(new TextComponent(""));
+        super(Component.empty());
     }
 
     @Override

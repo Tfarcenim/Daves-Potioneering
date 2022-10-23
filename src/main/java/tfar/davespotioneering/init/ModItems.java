@@ -3,7 +3,6 @@ package tfar.davespotioneering.init;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.item.*;
-import net.minecraftforge.event.RegistryEvent;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.client.model.gecko.DoubleGeoItemStackRenderer;
 import tfar.davespotioneering.client.model.gecko.GeoItemStackRenderer;
@@ -13,7 +12,6 @@ import tfar.davespotioneering.item.SimpleGauntletItem;
 import tfar.davespotioneering.item.UmbrellaItem;
 
 import javax.annotation.Nonnull;
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -63,19 +61,6 @@ public class ModItems {
 
     public static Item.Properties baseUmbrella() {
         return new Item.Properties().tab(tab).durability(300);
-    }
-
-    public static void register(RegistryEvent.Register<Item> e) {
-        for (Field field : ModItems.class.getFields()) {
-            try {
-                Object o = field.get(null);
-                if (o instanceof Item) {
-                    e.getRegistry().register(((Item) o).setRegistryName(field.getName().toLowerCase(Locale.ROOT)));
-                }
-            } catch (IllegalAccessException illegalAccessException) {
-                illegalAccessException.printStackTrace();
-            }
-        }
     }
 
     public static class HideISTERsFromServer {

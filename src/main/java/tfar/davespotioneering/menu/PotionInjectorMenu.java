@@ -17,7 +17,7 @@ import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
-import tfar.davespotioneering.init.ModContainerTypes;
+import tfar.davespotioneering.init.ModMenuTypes;
 import tfar.davespotioneering.inv.PotionInjectorHandler;
 
 public class PotionInjectorMenu extends AbstractContainerMenu {
@@ -31,7 +31,7 @@ public class PotionInjectorMenu extends AbstractContainerMenu {
 
     //common
     public PotionInjectorMenu(int id, Inventory playerInventory, ItemStackHandler inventory) {
-        super(ModContainerTypes.ALCHEMICAL_GAUNTLET, id);
+        super(ModMenuTypes.ALCHEMICAL_GAUNTLET, id);
         this.inventory = inventory;
         // assertInventorySize(inventory, 5);
         // assertIntArraySize(data, 2);
