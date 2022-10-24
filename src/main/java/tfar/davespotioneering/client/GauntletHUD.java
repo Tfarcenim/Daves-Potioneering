@@ -128,14 +128,14 @@ public class GauntletHUD {
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
             matrixStack.translate(1, 1, mc.inGameHud.getZOffset()+1);
-            Tessellator tessellator1 = Tessellator.getInstance();
-            BufferBuilder bufferbuilder1 = tessellator1.getBuffer();
+            Tessellator tessellator = Tessellator.getInstance();
+            BufferBuilder bufferbuilder = tessellator.getBuffer();
             if (isActivePotion) {
                 int scale = getScaledCooldown(18, cooldown);
-                draw(bufferbuilder1, x, y + scale, 18, 18-scale, 255, 255, 255, 127);
+                draw(bufferbuilder, x, y + scale, 18, 18-scale, 255, 255, 255, 127);
             } else {
                 int scale = getScaledCooldown(16, cooldown);
-                draw(bufferbuilder1, x, y + scale, 17, 16-scale, 255, 255, 255, 127);
+                draw(bufferbuilder, x, y + scale, 17, 16-scale, 255, 255, 255, 127);
             }
             RenderSystem.enableTexture();
             RenderSystem.enableDepthTest();

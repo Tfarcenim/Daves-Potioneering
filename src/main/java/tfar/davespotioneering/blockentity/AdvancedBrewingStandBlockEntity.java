@@ -154,9 +154,9 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
     //searches 7 => 3
     public Pair<Integer,ItemStack> getPriorityIngredient() {
         for (int i = 7; i > 2;i--) {
-            ItemStack stack = brewingHandler.getStack(i);
-            if (!stack.isEmpty() && isThereARecipe(stack)) {
-                return Pair.of(i,stack);
+            ItemStack ing = brewingHandler.getStack(i);
+            if (!ing.isEmpty() && isThereARecipe(ing)) {
+                return Pair.of(i,ing);
             }
         }
         return Pair.of(-1,ItemStack.EMPTY);
@@ -164,12 +164,12 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
 
 
     public boolean isThereARecipe(ItemStack ingredient) {
-
-        if (!ingredient.isEmpty()) {
-            return BrewingRecipeRegistry.hasRecipe(ingredient,ingredient);
+        for (int i : POTIONS) {
+            ItemStack potion = brewingHandler.getStack(i);
+            if (BrewingRecipeRegistry.hasRecipe(potion,ingredient))
+                return true;
         }
         return false;
-
     }
 
     /**
@@ -189,16 +189,16 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
     }
 
     private boolean canBrew() {
-        ItemStack itemstack = getPriorityIngredient().getRight();
-        if (!itemstack.isEmpty()) {
+        ItemStack ing = getPriorityIngredient().getRight();
+        if (!ing.isEmpty()) {
 
-            if (itemstack.getItem() == Items.MILK_BUCKET) {
+            if (ing.getItem() == Items.MILK_BUCKET) {
                 if (canMilkify()) {
                     return true;
                 }
             }
 
-            return BrewingRecipeRegistry.hasRecipe(itemstack, itemstack);
+            return isThereARecipe(ing);
         }
         return false;
     }

@@ -36,10 +36,11 @@ public class Util {
         world.spawnEntity(new ExperienceOrbEntity(world, pos.x, pos.y, pos.z, (int) experience));
     }
 
-    public static void brewPotions(DefaultedList<ItemStack> inputs, ItemStack ingredient, int[] inputIndexes) {
-        for (int i : inputIndexes) {
-            ItemStack output = BrewingRecipeRegistry.craft(inputs.get(i), ingredient);
-            output.setCount(inputs.get(i).getCount());//the change from the forge version
+    public static void brewPotions(DefaultedList<ItemStack> inputs, ItemStack ingredient, int[] potionIndexes) {
+        for (int i : potionIndexes) {
+            ItemStack potion = inputs.get(i);
+            ItemStack output = BrewingRecipeRegistry.craft(ingredient, potion);
+            output.setCount(inputs.get(i).getCount());
             if (!output.isEmpty()) {
                 inputs.set(i, output);
             }

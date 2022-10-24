@@ -71,7 +71,7 @@ public class ClientEvents implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.COMPOUND_BREWING_STAND, RenderLayer.getCutoutMipped());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.POTION_INJECTOR,RenderLayer.getTranslucent());
         HandledScreens.register(ModContainerTypes.ADVANCED_BREWING_STAND, AdvancedBrewingStandScreen::new);
-        HandledScreens.register(ModContainerTypes.ALCHEMICAL_GAUNTLET, GauntletWorkstationScreen::new);
+        HandledScreens.register(ModContainerTypes.ALCHEMICAL_GAUNTLET, PotionInjectorScreen::new);
 
         BlockEntityRendererRegistry.register(ModBlockEntityTypes.POTION_INJECTOR, PotionInjectorRenderer::new);
 
