@@ -38,14 +38,13 @@ public class Util {
 
     public static void brewPotions(DefaultedList<ItemStack> inputs, ItemStack ingredient, int[] inputIndexes) {
         for (int i : inputIndexes) {
-            ItemStack output = BrewingRecipeRegistry.craft(inputs.get(i), ingredient);
-            output.setCount(inputs.get(i).getCount());//the change from the forge version
+            ItemStack output = BrewingRecipeRegistry.craft(ingredient, inputs.get(i));
+            output.setCount(inputs.get(i).getCount());
             if (!output.isEmpty()) {
                 inputs.set(i, output);
             }
         }
     }
-
 
     public static boolean isValidInputCountInsensitive(ItemStack stack) {
        return BrewingStandScreenHandler.PotionSlot.matches(stack);

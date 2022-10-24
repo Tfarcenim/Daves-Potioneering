@@ -16,8 +16,8 @@ import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.menu.PotionInjectorMenu;
 import tfar.davespotioneering.net.C2SPotionInjector;
 
-public class GauntletWorkstationScreen extends HandledScreen<PotionInjectorMenu> {
-    public GauntletWorkstationScreen(PotionInjectorMenu screenContainer, PlayerInventory inv, Text titleIn) {
+public class PotionInjectorScreen extends HandledScreen<PotionInjectorMenu> {
+    public PotionInjectorScreen(PotionInjectorMenu screenContainer, PlayerInventory inv, Text titleIn) {
         super(screenContainer, inv, titleIn);
         backgroundHeight+=30;
         playerInventoryTitleY += 26;
@@ -37,7 +37,7 @@ public class GauntletWorkstationScreen extends HandledScreen<PotionInjectorMenu>
         int x = this.x + 47;
         int y = this.y + 76;
         int w = 24;
-        addSelectableChild(new ButtonWidget(x,y,36,20,new LiteralText("Strip"),this::strip){
+        addDrawableChild(new ButtonWidget(x,y,36,20,new LiteralText("Strip"),this::strip){
             @Override
             public void playDownSound(SoundManager handler) {
 
@@ -54,7 +54,7 @@ public class GauntletWorkstationScreen extends HandledScreen<PotionInjectorMenu>
                 handler.play(PositionedSoundInstance.master(soundEvent, 1.0F));
             }
         });
-        addSelectableChild(new ButtonWidget(x + 46,y,36,20,new LiteralText("Inject"),this::inject){
+        addDrawableChild(new ButtonWidget(x + 46,y,36,20,new LiteralText("Inject"),this::inject){
             @Override
             public void playDownSound(SoundManager handler) {
 
@@ -85,7 +85,7 @@ public class GauntletWorkstationScreen extends HandledScreen<PotionInjectorMenu>
     @Override
     protected void drawBackground(MatrixStack matrixStack, float partialTicks, int x, int y) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        this.client.getTextureManager().bindTexture(BREWING_STAND_GUI_TEXTURES);
+        RenderSystem.setShaderTexture(0,BREWING_STAND_GUI_TEXTURES);
         int i = (this.width - this.backgroundWidth) / 2;
         int j = (this.height - this.backgroundHeight) / 2;
         this.drawTexture(matrixStack, i, j, 0, 0, this.backgroundWidth, this.backgroundHeight);

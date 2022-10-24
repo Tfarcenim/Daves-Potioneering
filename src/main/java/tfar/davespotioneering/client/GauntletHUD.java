@@ -53,7 +53,7 @@ public class GauntletHUD {
     public static void render(MatrixStack matrixStack) {
         matrixStack.push();
         RenderSystem.setShaderColor(1, 1, 1, 1);
-        mc.getTextureManager().bindTexture(hud_texture);
+        RenderSystem.setShaderTexture(0,hud_texture);
 
         InGameHud hud = mc.inGameHud;
 
@@ -106,17 +106,17 @@ public class GauntletHUD {
 
         if (potion.getEffects().size() > 1) {
             if (name.toString().contains("turtle_master")) {
-                mc.getTextureManager().bindTexture(getGauntletIconLoc("turtle_master"));
+                RenderSystem.setShaderTexture(0,getGauntletIconLoc("turtle_master"));
             } else if (mc.getResourceManager().containsResource(getGauntletIconLoc(name.toString()))) {
-                mc.getTextureManager().bindTexture(getGauntletIconLoc(name.toString()));
+                RenderSystem.setShaderTexture(0,getGauntletIconLoc(name.toString()));
             } else {
-                mc.getTextureManager().bindTexture(getGauntletIconLoc("unknown"));
+                RenderSystem.setShaderTexture(0,getGauntletIconLoc("unknown"));
             }
             DrawableHelper.drawTexture(matrixStack, x, y, mc.inGameHud.getZOffset(), 0, 0, 18, 18, 18, 18);
         } else {
             StatusEffect effect = potion.getEffects().get(0).getEffectType();
             Sprite sprite = mc.getStatusEffectSpriteManager().getSprite(effect);
-            mc.getTextureManager().bindTexture(sprite.getAtlas().getId());
+            RenderSystem.setShaderTexture(0,sprite.getAtlas().getId());
             DrawableHelper.drawSprite(matrixStack, x, y, 0, 18, 18, sprite);
         }
 

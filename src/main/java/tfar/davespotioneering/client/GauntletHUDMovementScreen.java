@@ -10,7 +10,6 @@ import net.minecraft.util.Formatting;
 import tfar.davespotioneering.config.ClothConfig;
 
 public class GauntletHUDMovementScreen extends Screen {
-    private final GauntletHUD hud = new GauntletHUD();
 
     private int x;
     private int y;
