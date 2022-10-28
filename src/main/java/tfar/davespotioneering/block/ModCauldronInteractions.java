@@ -5,7 +5,9 @@ import net.minecraft.block.cauldron.CauldronBehavior;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
+import net.minecraft.potion.Potions;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -34,7 +36,14 @@ public class ModCauldronInteractions {
         public static final Map<Item, CauldronBehavior> EMPTY = CauldronBehavior.createMap();
         static final Map<Item, CauldronBehavior> LAVA = CauldronBehavior.createMap();
         static final Map<Item, CauldronBehavior> POWDER_SNOW = CauldronBehavior.createMap();
-        static final CauldronBehavior FILL_WATER = (p_175683_, p_175684_, p_175685_, p_175686_, p_175687_, p_175688_) -> CauldronBehavior.fillCauldron(p_175684_, p_175685_, p_175686_, p_175687_, p_175688_, ModBlocks.REINFORCED_WATER_CAULDRON.getDefaultState().with(LeveledCauldronBlock.LEVEL, 3), SoundEvents.ITEM_BUCKET_EMPTY);
+        static final CauldronBehavior FILL_WATER = (state, world, pos, player, p_175687_, p_175688_) -> {
+            ActionResult actionResult = CauldronBehavior.fillCauldron(world, pos, player, p_175687_, p_175688_, ModBlocks.REINFORCED_WATER_CAULDRON.getDefaultState().with(LeveledCauldronBlock.LEVEL, 3), SoundEvents.ITEM_BUCKET_EMPTY);
+            BlockEntity blockEntity = world.getBlockEntity(pos);
+            if (blockEntity instanceof ReinforcedCauldronBlockEntity reinforcedCauldronBlock) {
+                reinforcedCauldronBlock.setPotion(Potions.WATER);
+            }
+            return actionResult;
+        };
         static final CauldronBehavior FILL_LAVA = (p_175676_, p_175677_, p_175678_, p_175679_, p_175680_, p_175681_) -> CauldronBehavior.fillCauldron(p_175677_, p_175678_, p_175679_, p_175680_, p_175681_, Blocks.LAVA_CAULDRON.getDefaultState().with(LeveledCauldronBlock.LEVEL, 3), SoundEvents.ITEM_BUCKET_EMPTY_LAVA);
         static final CauldronBehavior FILL_POWDER_SNOW = (p_175669_, p_175670_, p_175671_, p_175672_, p_175673_, p_175674_) -> CauldronBehavior.fillCauldron(p_175670_, p_175671_, p_175672_, p_175673_, p_175674_, Blocks.POWDER_SNOW_CAULDRON.getDefaultState().with(LeveledCauldronBlock.LEVEL, 3), SoundEvents.ITEM_BUCKET_EMPTY_POWDER_SNOW);
 
@@ -68,12 +77,15 @@ public class ModCauldronInteractions {
 
                     BlockEntity blockEntity = level.getBlockEntity(pos);
                     if (blockEntity instanceof ReinforcedCauldronBlockEntity reinforced) {
-                        player.setStackInHand(hand, ItemUsage.exchangeStack(stack, player, PotionUtil.setPotion(new ItemStack(Items.POTION), reinforced.getPotion())));
+                        Potion potion = reinforced.getPotion();
+                        player.setStackInHand(hand, ItemUsage.exchangeStack(stack, player, PotionUtil.setPotion(new ItemStack(Items.POTION), potion)));
+                        if (potion != Potions.WATER) {
+                            LayeredReinforcedCauldronBlock.lowerFillLevel0(state, level, pos);
+                        }
                     }
 
                     player.incrementStat(Stats.USE_CAULDRON);
                     player.incrementStat(Stats.USED.getOrCreateStat(item));
-                    LayeredReinforcedCauldronBlock.lowerFillLevel0(state, level, pos);
                     level.playSound(null, pos, SoundEvents.ITEM_BOTTLE_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     level.emitGameEvent(null, GameEvent.FLUID_PICKUP, pos);
                 }
@@ -89,7 +101,6 @@ public class ModCauldronInteractions {
 
                         BlockEntity blockEntity = level.getBlockEntity(pos);
                         if (blockEntity instanceof ReinforcedCauldronBlockEntity reinforced) {
-
                             if (reinforced.getPotion() != PotionUtil.getPotion(stack)) {
                                 LayeredReinforcedCauldronBlock.boom(level,pos);
                             } else {
