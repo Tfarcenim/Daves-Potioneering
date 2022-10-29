@@ -29,34 +29,34 @@ public class GauntletHUDMovementGui extends Screen {
     protected void init() {
         super.init();
         addRenderableWidget(new Button(5, 15, 75, 20, Component.translatable(KEY + GauntletHUD.HudPresets.TOP_LEFT.ordinal()), (button) -> {
-            hud.x = getFixedPositionValue(5, true);
-            hud.y = getFixedPositionValue(5, false);
-            hud.preset = GauntletHUD.HudPresets.TOP_LEFT;
+            GauntletHUD.x = getFixedPositionValue(5, true);
+            GauntletHUD.y = getFixedPositionValue(5, false);
+            GauntletHUD.preset = GauntletHUD.HudPresets.TOP_LEFT;
         }));
         addRenderableWidget(new Button(85, 15, 75, 20, Component.translatable(KEY + GauntletHUD.HudPresets.TOP_RIGHT.ordinal()), (button) -> {
-            hud.x = getFixedPositionValue(width - 120 - 5, true);
-            hud.y = getFixedPositionValue(5, false);
-            hud.preset = GauntletHUD.HudPresets.TOP_RIGHT;
+            GauntletHUD.x = getFixedPositionValue(width - 120 - 5, true);
+            GauntletHUD.y = getFixedPositionValue(5, false);
+            GauntletHUD.preset = GauntletHUD.HudPresets.TOP_RIGHT;
         }));
         addRenderableWidget(new Button(165, 15, 75, 20, Component.translatable(KEY + GauntletHUD.HudPresets.BTM_LEFT.ordinal()), (button) -> {
-            hud.x = getFixedPositionValue(5, true);
-            hud.y = getFixedPositionValue(height - 45 - 5, false);
-            hud.preset = GauntletHUD.HudPresets.BTM_LEFT;
+            GauntletHUD.x = getFixedPositionValue(5, true);
+            GauntletHUD.y = getFixedPositionValue(height - 45 - 5, false);
+            GauntletHUD.preset = GauntletHUD.HudPresets.BTM_LEFT;
         }));
         addRenderableWidget(new Button(245, 15, 75, 20, Component.translatable(KEY + GauntletHUD.HudPresets.BTM_RIGHT.ordinal()), (button) -> {
-            hud.x = getFixedPositionValue(width - 120 - 5, true);
-            hud.y = getFixedPositionValue(height - 45 - 5, false);
-            hud.preset = GauntletHUD.HudPresets.BTM_RIGHT;
+            GauntletHUD.x = getFixedPositionValue(width - 120 - 5, true);
+            GauntletHUD.y = getFixedPositionValue(height - 45 - 5, false);
+            GauntletHUD.preset = GauntletHUD.HudPresets.BTM_RIGHT;
         }));
         addRenderableWidget(new Button(325, 15, 75, 20, Component.translatable(KEY + GauntletHUD.HudPresets.ABOVE_HOTBAR.ordinal()), (button) -> {
             if (minecraft != null && minecraft.player != null && minecraft.player.isCreative()) {
-                hud.x = getFixedPositionValue((width - 120) / 2, true);
-                hud.y = getFixedPositionValue(height - 42 - 25, false);
+                GauntletHUD.x = getFixedPositionValue((width - 120) / 2, true);
+                GauntletHUD.y = getFixedPositionValue(height - 42 - 25, false);
             } else {
-                hud.x = getFixedPositionValue((width - 120) / 2, true);
-                hud.y = getFixedPositionValue(height - 42 - 40, false);
+                GauntletHUD.x = getFixedPositionValue((width - 120) / 2, true);
+                GauntletHUD.y = getFixedPositionValue(height - 42 - 40, false);
             }
-            hud.preset = GauntletHUD.HudPresets.ABOVE_HOTBAR;
+            GauntletHUD.preset = GauntletHUD.HudPresets.ABOVE_HOTBAR;
         }));
     }
 
@@ -67,9 +67,9 @@ public class GauntletHUDMovementGui extends Screen {
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
         if (button == 0) {
-            hud.x = getFixedPositionValue((int) mouseX, true);
-            hud.y = getFixedPositionValue((int) mouseY, false);
-            hud.preset = GauntletHUD.HudPresets.FREE_MOVE;
+            GauntletHUD.x = getFixedPositionValue((int) mouseX, true);
+            GauntletHUD.y = getFixedPositionValue((int) mouseY, false);
+            GauntletHUD.preset = GauntletHUD.HudPresets.FREE_MOVE;
         }
         return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
     }
@@ -77,9 +77,9 @@ public class GauntletHUDMovementGui extends Screen {
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int mouseButton) {
         if (mouseButton == 0) {
-            ModConfig.Client.gauntlet_hud_x.set(hud.x);
-            ModConfig.Client.gauntlet_hud_y.set(hud.y);
-            ModConfig.Client.gauntlet_hud_preset.set(hud.preset);
+            ModConfig.Client.gauntlet_hud_x.set(GauntletHUD.x);
+            ModConfig.Client.gauntlet_hud_y.set(GauntletHUD.y);
+            ModConfig.Client.gauntlet_hud_preset.set(GauntletHUD.preset);
             hud.refreshPosition();
             GauntletHUD.hudInstance.refreshPosition();
         }

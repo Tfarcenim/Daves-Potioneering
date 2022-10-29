@@ -2,6 +2,7 @@ package tfar.davespotioneering.blockentity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Containers;
@@ -24,9 +25,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
 import tfar.davespotioneering.Events;
@@ -255,8 +256,8 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements Menu
         }
 
         BlockPos blockpos = this.getBlockPos();
-        if (ingredient.hasContainerItem()) {
-            ItemStack ingredientContainerItem = ingredient.getContainerItem();
+        if (ingredient.hasCraftingRemainingItem()) {
+            ItemStack ingredientContainerItem = ingredient.getCraftingRemainingItem();
             ingredient.shrink(1);
             if (ingredient.isEmpty()) {
                 ingredient = ingredientContainerItem;
@@ -277,7 +278,7 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements Menu
             ItemStack potionStack = brewingHandler.getStackInSlot(i);
             if (potionStack.getItem() instanceof PotionItem) {
                 Potion potion = PotionUtils.getPotion(potionStack);
-                String name = potion.getRegistryName().toString();
+                String name = Registry.POTION.getKey(potion).toString();
                 if (name.contains("long") || name.contains("strong")) {
                     continue;
                 }
@@ -335,7 +336,7 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements Menu
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-        if (!this.remove && facing != null && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (!this.remove && facing != null && capability == ForgeCapabilities.ITEM_HANDLER) {
             return handlers.get(facing).cast();
         }
         return super.getCapability(capability, facing);

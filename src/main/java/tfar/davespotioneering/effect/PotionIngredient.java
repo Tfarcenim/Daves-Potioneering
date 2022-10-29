@@ -2,6 +2,7 @@ package tfar.davespotioneering.effect;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.minecraft.core.Registry;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.network.FriendlyByteBuf;
@@ -46,7 +47,7 @@ public class PotionIngredient extends Ingredient {
     public JsonElement toJson() {
         JsonObject json = new JsonObject();
         json.addProperty("type", CraftingHelper.getID(Serializer.INSTANCE).toString());
-        json.addProperty("item", stack.getItem().getRegistryName().toString());
+        json.addProperty("item", Registry.ITEM.getKey(stack.getItem()).toString());
         json.addProperty("count", stack.getCount());
         if (stack.hasTag())
             json.addProperty("nbt", stack.getTag().toString());

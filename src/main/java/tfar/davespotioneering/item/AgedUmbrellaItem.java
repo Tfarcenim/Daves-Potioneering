@@ -1,7 +1,7 @@
 package tfar.davespotioneering.item;
 
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.util.NonNullLazy;
 import tfar.davespotioneering.init.ModItems;
 
@@ -13,11 +13,11 @@ public class AgedUmbrellaItem extends UmbrellaItem {
     }
 
     @Override
-    public void initializeClient(Consumer<IItemRenderProperties> consumer) {
-        consumer.accept( new IItemRenderProperties() {
+    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+        consumer.accept( new IClientItemExtensions() {
             private final NonNullLazy<BlockEntityWithoutLevelRenderer> ister = NonNullLazy.of(ModItems.HideISTERsFromServer::createAgedUmbrellaItemStackRenderer);
             @Override
-            public BlockEntityWithoutLevelRenderer getItemStackRenderer()
+            public BlockEntityWithoutLevelRenderer getCustomRenderer()
             {
                 return ister.get();
             }

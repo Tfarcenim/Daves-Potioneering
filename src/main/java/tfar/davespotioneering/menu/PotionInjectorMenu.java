@@ -122,7 +122,7 @@ public class PotionInjectorMenu extends AbstractContainerMenu {
 
                 if (oldPotion == Potions.EMPTY) {
                     ItemStack potionStack = inventory.getStackInSlot(i);
-                    nbt1.add(StringTag.valueOf(PotionUtils.getPotion(potionStack).getRegistryName().toString()));
+                    nbt1.add(StringTag.valueOf(Registry.POTION.getKey(PotionUtils.getPotion(potionStack)).toString()));
                     inventory.extractItem(i, 1, false);
                     //copy old potion over
                 } else {
@@ -160,7 +160,7 @@ public class PotionInjectorMenu extends AbstractContainerMenu {
                         ItemStack stack = new ItemStack(Items.LINGERING_POTION);
                         PotionUtils.setPotion(stack, potion);
                         inventory.insertItem(i, stack, false);
-                        listNBT.set(i,StringTag.valueOf(Potions.EMPTY.getRegistryName().toString()));
+                        listNBT.set(i,StringTag.valueOf("minecraft:empty"));
                     } else {
                         allRemoved = false;
                     }

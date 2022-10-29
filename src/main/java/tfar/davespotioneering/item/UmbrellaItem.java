@@ -43,7 +43,7 @@ public class UmbrellaItem extends ShieldItem {
             private final NonNullLazy<BlockEntityWithoutLevelRenderer> ister = NonNullLazy.of(() -> ModItems.HideISTERsFromServer.createGeoClassicUmbrellaItemStackRenderer(model));
 
             @Override
-            public BlockEntityWithoutLevelRenderer getItemStackRenderer()
+            public BlockEntityWithoutLevelRenderer getCustomRenderer()
             {
                 return ister.get();
             }

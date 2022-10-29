@@ -1,5 +1,6 @@
 package tfar.davespotioneering.datagen.data;
 
+import net.minecraft.core.Registry;
 import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -22,7 +23,7 @@ public class ModBlockLoot extends BlockLoot {
     @Override
     protected Iterable<Block> getKnownBlocks() {
         return ForgeRegistries.BLOCKS.getValues().stream()
-                .filter(b -> b.getRegistryName().getNamespace().equals(DavesPotioneering.MODID))
+                .filter(b -> Registry.BLOCK.getKey(b).getNamespace().equals(DavesPotioneering.MODID))
                 .collect(Collectors.toList());
     }
 }

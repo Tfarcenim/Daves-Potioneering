@@ -2,7 +2,7 @@ package tfar.davespotioneering.datagen;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
+import net.minecraftforge.data.event.GatherDataEvent;
 import tfar.davespotioneering.datagen.assets.ModBlockstateProvider;
 import tfar.davespotioneering.datagen.assets.ModItemModelProvider;
 import tfar.davespotioneering.datagen.assets.ModLangProvider;
@@ -17,14 +17,14 @@ public class ModDatagen {
         ExistingFileHelper helper = e.getExistingFileHelper();
 
         if (e.includeClient()) {
-            generator.addProvider(new ModLangProvider(generator));
-            generator.addProvider(new ModBlockstateProvider(generator,helper));
-            generator.addProvider(new ModItemModelProvider(generator,helper));
+            generator.addProvider(true,new ModLangProvider(generator));
+            generator.addProvider(true,new ModBlockstateProvider(generator,helper));
+            generator.addProvider(true,new ModItemModelProvider(generator,helper));
         }
         if (e.includeServer()) {
-            generator.addProvider(new ModLootTableProvider(generator));
-            generator.addProvider(new ModRecipeProvider(generator));
-            generator.addProvider(new ModBlockTagsProvider(generator,helper));
+            generator.addProvider(true,new ModLootTableProvider(generator));
+            generator.addProvider(true,new ModRecipeProvider(generator));
+            generator.addProvider(true,new ModBlockTagsProvider(generator,helper));
         }
     }
 }

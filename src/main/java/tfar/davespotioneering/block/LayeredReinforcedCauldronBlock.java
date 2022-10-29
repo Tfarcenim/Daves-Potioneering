@@ -3,6 +3,7 @@ package tfar.davespotioneering.block;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -12,6 +13,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -32,8 +34,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.init.ModPotions;
@@ -41,7 +41,6 @@ import tfar.davespotioneering.init.ModPotions;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.function.Predicate;
 
 public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock implements EntityBlock {
@@ -200,7 +199,7 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
         if (stack.getItem() instanceof TieredItem) {
             CompoundTag nbt = stack.getOrCreateTag();
             nbt.putInt("uses", 25);
-            nbt.putString("Potion", potion.getRegistryName().toString());
+            nbt.putString("Potion", Registry.POTION.getKey(potion).toString());
         } else if (stack.getItem() == Items.TIPPED_ARROW) {
             PotionUtils.setPotion(stack, potion);
         }
@@ -228,11 +227,11 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
 
     /**
      * Called periodically clientside on blocks near the player to show effects (like furnace fire particles). Note that
-     * this method is unrelated to {@link #randomTick} and {@link #ticksRandomly(BlockState)}, and will always be called regardless
+     * this method is unrelated to {@link #randomTick} and {@link #isRandomlyTicking(BlockState)} (BlockState)}, and will always be called regardless
      * of whether the block can receive random update ticks
      */
-    @OnlyIn(Dist.CLIENT)
-    public void animateTick(BlockState stateIn, Level worldIn, BlockPos pos, Random rand) {
+    @Override
+    public void animateTick(BlockState stateIn, Level worldIn, BlockPos pos, RandomSource rand) {
         if (stateIn.getValue(DRAGONS_BREATH)) {
             double d0 = pos.getX();
             double d1 = (double) pos.getY() + 1D;
@@ -250,11 +249,9 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
         }
         super.entityInside(state, worldIn, pos, entityIn);
     }
-
-
     //this is used for the coating
     @Override
-    public void tick(BlockState state, ServerLevel world, BlockPos pos, Random rand) {
+    public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource rand) {
         int wLevel = state.getValue(LEVEL);
 
         if (wLevel > 1) {

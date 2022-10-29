@@ -30,6 +30,7 @@ import net.minecraftforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import tfar.davespotioneering.block.ModCauldronInteractions;
 import tfar.davespotioneering.client.ClientEvents;
+import tfar.davespotioneering.client.GauntletHUD;
 import tfar.davespotioneering.datagen.ModDatagen;
 import tfar.davespotioneering.effect.PotionIngredient;
 import tfar.davespotioneering.init.*;
@@ -64,6 +65,8 @@ public class DavesPotioneering {
             bus.addListener(ClientEvents::doClientStuff);
             bus.addListener(ClientEvents::registerLoader);
             bus.addListener(ClientEvents::particle);
+            bus.addListener(ClientEvents::overlay);
+            bus.addListener(GauntletHUD::bake);
         }
     }
 
@@ -93,7 +96,7 @@ public class DavesPotioneering {
         superRegister(e, ModSoundEvents.class,Registry.SOUND_EVENT_REGISTRY,SoundEvent.class);
     }
 
-    public static <T> void superRegister(RegisterEvent e, Class<?> clazz, ResourceKey<? extends  Registry<T>> resourceKey, Class<? extends T> filter) {
+    public static <T> void superRegister(RegisterEvent e, Class<?> clazz, ResourceKey<? extends  Registry<T>> resourceKey, Class<?> filter) {
         for (Field field : clazz.getFields()) {
             try {
                 Object o = field.get(null);

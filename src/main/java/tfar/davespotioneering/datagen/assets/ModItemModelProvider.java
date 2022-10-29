@@ -105,12 +105,12 @@ public class ModItemModelProvider extends ItemModelProvider {
     }
 
     protected void makeSimpleBlockItem(Item item) {
-        makeSimpleBlockItem(item, new ResourceLocation(DavesPotioneering.MODID, "block/" + item.getRegistryName().getPath()));
+        makeSimpleBlockItem(item, new ResourceLocation(DavesPotioneering.MODID, "block/" + Registry.ITEM.getKey(item).getPath()));
     }
 
 
     protected void makeOneLayerItem(Item item, ResourceLocation texture) {
-        String path = item.getRegistryName().getPath();
+        String path = Registry.ITEM.getKey(item).getPath();
         if (existingFileHelper.exists(new ResourceLocation(texture.getNamespace(), "item/" + texture.getPath())
                 , PackType.CLIENT_RESOURCES, ".png", "textures")) {
             getBuilder(path).parent(getExistingFile(mcLoc("item/generated")))
@@ -121,7 +121,7 @@ public class ModItemModelProvider extends ItemModelProvider {
     }
 
     protected void makeOneLayerItem(Item item) {
-        ResourceLocation texture = item.getRegistryName();
+        ResourceLocation texture = Registry.ITEM.getKey(item);
         makeOneLayerItem(item, texture);
     }
 }

@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
 import net.minecraftforge.event.brewing.PlayerBrewedPotionEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import net.minecraftforge.event.entity.living.PotionEvent;
+import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.Event;
@@ -45,7 +45,7 @@ public class Events {
 
     public static void potionCooldown(PlayerInteractEvent.RightClickItem e) {
         ItemStack stack = e.getItemStack();
-        Player player = e.getPlayer();
+        Player player = e.getEntity();
         if (!player.level.isClientSide && stack.getItem() instanceof ThrowablePotionItem) {
             player.getCooldowns().addCooldown(stack.getItem(), ModConfig.Server.potion_cooldown);
         }
@@ -53,9 +53,8 @@ public class Events {
 
     public static void milkCow(PlayerInteractEvent.EntityInteractSpecific e) {
         Entity clicked = e.getTarget();
-        Player player = e.getPlayer();
-        if (clicked instanceof Cow) {
-            Cow cowEntity = (Cow)clicked;
+        Player player = e.getEntity();
+        if (clicked instanceof Cow cowEntity) {
             ItemStack itemstack = player.getItemInHand(e.getHand());
             if (itemstack.getItem() == Items.GLASS_BOTTLE && !cowEntity.isBaby()) {
                 player.playSound(SoundEvents.COW_MILK, 1.0F, 1.0F);
@@ -68,14 +67,13 @@ public class Events {
     }
 
     public static void afterHit(LivingDamageEvent e) {
-        LivingEntity victim = e.getEntityLiving();
+        LivingEntity victim = e.getEntity();
 
         DamageSource source = e.getSource();
 
         Entity trueSource = source.getEntity();
 
-        if (trueSource instanceof LivingEntity) {
-            LivingEntity attacker = (LivingEntity)trueSource;
+        if (trueSource instanceof LivingEntity attacker) {
 
             ItemStack weapon = attacker.getMainHandItem();
 
@@ -107,7 +105,7 @@ public class Events {
 
     //this is called when the player takes a potion from the brewing stand
     public static void playerBrew(PlayerBrewedPotionEvent e) {
-        Player player = e.getPlayer();
+        Player player = e.getEntity();
         if (!player.level.isClientSide) {
             AbstractContainerMenu container = player.containerMenu;
             BlockEntity entity = null;
@@ -123,10 +121,9 @@ public class Events {
         }
     }
 
-    public static void canApplyEffect(PotionEvent.PotionApplicableEvent e) {
-        LivingEntity entity = e.getEntityLiving();
-        if (entity instanceof Player) {
-            Player player = (Player)entity;
+    public static void canApplyEffect(MobEffectEvent.Applicable e) {
+        LivingEntity entity = e.getEntity();
+        if (entity instanceof Player player) {
             if (player.getUseItem().getItem() instanceof UmbrellaItem) {
                 e.setResult(Event.Result.DENY);
             }

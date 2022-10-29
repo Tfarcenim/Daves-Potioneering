@@ -63,7 +63,7 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity {
 
     @Override
     public void saveAdditional(CompoundTag compound) {
-        compound.putString("potion", potion.getRegistryName().toString());
+        compound.putString("potion", Registry.POTION.getKey(potion).toString());
         super.saveAdditional(compound);
     }
 

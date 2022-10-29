@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.Registry;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -15,6 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.init.ModSoundEvents;
@@ -33,9 +35,9 @@ public class GauntletHUD implements IGuiOverlay {
     private Potion postPotion = null;
     private final ResourceLocation hud = getGauntletIconLoc("hud");
 
-    public int x = ModConfig.Client.gauntlet_hud_x.get();
-    public int y = ModConfig.Client.gauntlet_hud_y.get();
-    public HudPresets preset = ModConfig.Client.gauntlet_hud_preset.get();
+    public static int x;
+    public static int y;
+    public static HudPresets preset;
 
     public static final Minecraft mc = Minecraft.getInstance();
 
@@ -49,6 +51,14 @@ public class GauntletHUD implements IGuiOverlay {
         this.activePotion = activePotion;
         this.prePotion = prePotion;
         this.postPotion = postPotion;
+    }
+
+    public static void bake(ModConfigEvent e) {
+        if (e.getConfig().getModId().equals(DavesPotioneering.MODID)) {
+            x = ModConfig.Client.gauntlet_hud_x.get();
+            y = ModConfig.Client.gauntlet_hud_y.get();
+            preset = ModConfig.Client.gauntlet_hud_preset.get();
+        }
     }
 
     public void render(PoseStack matrixStack) {
@@ -101,13 +111,16 @@ public class GauntletHUD implements IGuiOverlay {
         RenderSystem.setShaderColor(1, 1, 1, 1);
 
         if (potion.getEffects().size() > 1) {
-      //      if (potion.getRegistryName().toString().contains("turtle_master")) {
-      //          bind(getGauntletIconLoc("turtle_master"));
-      //      } else if (mc.getResourceManager().hasResource(getGauntletIconLoc(potion.getRegistryName().toString()))) {
-       //         bind(getGauntletIconLoc(potion.getRegistryName().toString()));
-     //       } else {
-     //           bind(getGauntletIconLoc("unknown"));
-    //        }
+
+            String name = Registry.POTION.getKey(potion).toString();
+
+            if (name.contains("turtle_master")) {
+                bind(getGauntletIconLoc("turtle_master"));
+            } else if (mc.getResourceManager().getResource(getGauntletIconLoc(name)).isPresent()) {
+                bind(getGauntletIconLoc(name));
+            } else {
+                bind(getGauntletIconLoc("unknown"));
+            }
             GuiComponent.blit(matrixStack, x, y, mc.gui.getBlitOffset(), 0, 0, 18, 18, 18, 18);
         } else {
             MobEffect effect = potion.getEffects().get(0).getEffect();

@@ -82,7 +82,7 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends BlockEntityWith
 
     public void render(PoseStack matrices, MultiBufferSource bufferIn, int packedLightIn, ItemStack itemStack) {
         this.currentItemStack = itemStack;
-        GeoModel model = getGeoModelProvider().getModel(getGeoModelProvider().getModelLocation(ianimatable));
+        GeoModel model = getGeoModelProvider().getModel(getGeoModelProvider().getModelResource(ianimatable));
         Minecraft mc = Minecraft.getInstance();
         AnimationEvent<T> itemEvent = new AnimationEvent<>(ianimatable, 0, 0, mc.getFrameTime(),
                 false, Collections.singletonList(itemStack));
@@ -114,13 +114,23 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends BlockEntityWith
     }
 
     @Override
+    public void setCurrentRTB(MultiBufferSource rtb) {
+
+    }
+
+    @Override
+    public MultiBufferSource getCurrentRTB() {
+        return null;
+    }
+
+    @Override
     public AnimatedGeoModel<T> getGeoModelProvider() {
         return modelProvider;
     }
 
     @Override
     public ResourceLocation getTextureLocation(T instance) {
-        return this.getGeoModelProvider().getTextureLocation(instance);
+        return this.getGeoModelProvider().getTextureResource(instance);
     }
 
     public static class GeoItemModel<T extends IAnimatable> extends AnimatedGeoModel<T> {
@@ -173,17 +183,17 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends BlockEntityWith
         }
 
         @Override
-        public ResourceLocation getModelLocation(T object) {
+        public ResourceLocation getModelResource(T object) {
             return modelLoc;
         }
 
         @Override
-        public ResourceLocation getTextureLocation(T object) {
+        public ResourceLocation getTextureResource(T object) {
             return textureLoc;
         }
 
         @Override
-        public ResourceLocation getAnimationFileLocation(T animatable) {
+        public ResourceLocation getAnimationResource(T animatable) {
             return animation;
         }
     }

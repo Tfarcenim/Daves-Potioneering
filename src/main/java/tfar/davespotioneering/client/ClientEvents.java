@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -20,7 +19,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.TieredItem;
-import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -46,8 +44,6 @@ import tfar.davespotioneering.item.GauntletItem;
 import tfar.davespotioneering.mixin.ParticleManagerAccess;
 import tfar.davespotioneering.net.GauntletCyclePacket;
 import tfar.davespotioneering.net.PacketHandler;
-
-import static tfar.davespotioneering.DavesPotioneering.MODID;
 
 public class ClientEvents {
 
