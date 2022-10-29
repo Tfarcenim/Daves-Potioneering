@@ -11,7 +11,9 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
@@ -37,7 +39,14 @@ public class ModCauldronInteractions {
      public static final Map<Item, CauldronInteraction> EMPTY = CauldronInteraction.newInteractionMap();
     static final Map<Item, CauldronInteraction> LAVA = CauldronInteraction.newInteractionMap();
     static final Map<Item, CauldronInteraction> POWDER_SNOW = CauldronInteraction.newInteractionMap();
-    static final CauldronInteraction FILL_WATER = (p_175683_, p_175684_, p_175685_, p_175686_, p_175687_, p_175688_) -> CauldronInteraction.emptyBucket(p_175684_, p_175685_, p_175686_, p_175687_, p_175688_, ModBlocks.REINFORCED_WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3), SoundEvents.BUCKET_EMPTY);
+    static final CauldronInteraction FILL_WATER = (state, level, pos, player, p_175687_, p_175688_) -> {
+        InteractionResult interactionResult = CauldronInteraction.emptyBucket(level, pos, player, p_175687_, p_175688_, ModBlocks.REINFORCED_WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3), SoundEvents.BUCKET_EMPTY);
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (blockEntity instanceof ReinforcedCauldronBlockEntity reinforcedCauldronBlock) {
+            reinforcedCauldronBlock.setPotion(Potions.WATER);
+        }
+        return interactionResult;
+    };
     static final CauldronInteraction FILL_LAVA = (p_175676_, p_175677_, p_175678_, p_175679_, p_175680_, p_175681_) -> CauldronInteraction.emptyBucket(p_175677_, p_175678_, p_175679_, p_175680_, p_175681_, Blocks.LAVA_CAULDRON.defaultBlockState(), SoundEvents.BUCKET_EMPTY_LAVA);
     static final CauldronInteraction FILL_POWDER_SNOW = (p_175669_, p_175670_, p_175671_, p_175672_, p_175673_, p_175674_) -> CauldronInteraction.emptyBucket(p_175670_, p_175671_, p_175672_, p_175673_, p_175674_, Blocks.POWDER_SNOW_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3), SoundEvents.BUCKET_EMPTY_POWDER_SNOW);
 
@@ -71,12 +80,14 @@ public class ModCauldronInteractions {
 
                 BlockEntity blockEntity = level.getBlockEntity(pos);
                 if (blockEntity instanceof ReinforcedCauldronBlockEntity reinforced) {
-                    player.setItemInHand(hand, ItemUtils.createFilledResult(stack, player, PotionUtils.setPotion(new ItemStack(Items.POTION), reinforced.getPotion())));
+                    Potion potion = reinforced.getPotion();
+                    player.setItemInHand(hand, ItemUtils.createFilledResult(stack, player, PotionUtils.setPotion(new ItemStack(Items.POTION), potion)));
+                    if (potion != Potions.WATER)
+                        LayeredReinforcedCauldronBlock.lowerFillLevel0(state, level, pos);
                 }
 
                 player.awardStat(Stats.USE_CAULDRON);
                 player.awardStat(Stats.ITEM_USED.get(item));
-                LayeredReinforcedCauldronBlock.lowerFillLevel0(state, level, pos);
                 level.playSound(null, pos, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
                 level.gameEvent(null, GameEvent.FLUID_PICKUP, pos);
             }
