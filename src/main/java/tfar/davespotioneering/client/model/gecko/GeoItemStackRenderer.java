@@ -15,7 +15,6 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -27,13 +26,11 @@ import software.bernie.geckolib3.core.util.Color;
 import software.bernie.geckolib3.geo.render.built.GeoModel;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 import tfar.davespotioneering.DavesPotioneering;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 public class GeoItemStackRenderer<T extends IAnimatable> extends BlockEntityWithoutLevelRenderer implements IGeoRenderer<T> {
@@ -42,8 +39,6 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends BlockEntityWith
     protected ItemStack currentItemStack;
     protected final Function<ResourceLocation, RenderType> renderTypeGetter;
     private final T ianimatable;
-
-    private static final Map<Item, GeoItemStackRenderer<?>> animatedRenderers = new ConcurrentHashMap<>();
 
     public GeoItemStackRenderer(AnimatedGeoModel<T> modelProvider, T ianimatable, BlockEntityRenderDispatcher p_172550_, EntityModelSet p_172551_) {
         this(modelProvider, RenderType::entityCutout, ianimatable,p_172550_,p_172551_);
@@ -54,10 +49,6 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends BlockEntityWith
         this.modelProvider = modelProvider;
         this.renderTypeGetter = renderTypeGetter;
         this.ianimatable = ianimatable;
-    }
-
-    public static void registerAnimatedItem(Item item, GeoItemStackRenderer<?> renderer) {
-        animatedRenderers.put(item, renderer);
     }
 
     //render
@@ -83,10 +74,6 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends BlockEntityWith
     public void render(PoseStack matrices, MultiBufferSource bufferIn, int packedLightIn, ItemStack itemStack) {
         this.currentItemStack = itemStack;
         GeoModel model = getGeoModelProvider().getModel(getGeoModelProvider().getModelResource(ianimatable));
-        Minecraft mc = Minecraft.getInstance();
-        AnimationEvent<T> itemEvent = new AnimationEvent<>(ianimatable, 0, 0, mc.getFrameTime(),
-                false, Collections.singletonList(itemStack));
-        getGeoModelProvider().setLivingAnimations(ianimatable, this.getUniqueID(ianimatable), itemEvent);
         matrices.pushPose();
         matrices.translate(0, 0.01f, 0);
         matrices.translate(0.5, 0.5, 0.5);
@@ -202,7 +189,7 @@ public class GeoItemStackRenderer<T extends IAnimatable> extends BlockEntityWith
 
     public static class DummyAnimations implements IAnimatable {
 
-        AnimationFactory factory = new AnimationFactory(this);
+        AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
         private DummyAnimations() {
         }

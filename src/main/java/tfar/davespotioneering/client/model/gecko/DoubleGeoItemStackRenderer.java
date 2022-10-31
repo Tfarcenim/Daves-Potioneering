@@ -25,7 +25,7 @@ public class DoubleGeoItemStackRenderer<T extends IAnimatable> extends GeoItemSt
         this.renderTypeGetter = renderTypeGetter;
     }
 
-    public static final ThreadLocal<Float> override = ThreadLocal.withInitial(() -> 0f);
+    public static final ThreadLocal<Float> override = ThreadLocal.withInitial(() -> 1f);
 
     @Override
     public AnimatedGeoModel<T> getGeoModelProvider() {

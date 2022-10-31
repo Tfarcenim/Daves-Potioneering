@@ -1,14 +1,14 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aaa",
-    "aaa"
-  ],
   "key": {
     "a": {
       "item": "minecraft:copper_ingot"
     }
   },
+  "pattern": [
+    "aaa",
+    "aaa"
+  ],
   "result": {
     "item": "davespotioneering:rudimentary_gauntlet"
   }

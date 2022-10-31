@@ -2,16 +2,16 @@
   "parent": "minecraft:item/generated",
   "overrides": [
     {
+      "model": "davespotioneering:item/perspective/potioneer_gauntlet",
       "predicate": {
         "minecraft:active": 0.0
-      },
-      "model": "davespotioneering:item/perspective/potioneer_gauntlet"
+      }
     },
     {
+      "model": "davespotioneering:item/perspective/lit_potioneer_gauntlet",
       "predicate": {
         "minecraft:active": 1.0
-      },
-      "model": "davespotioneering:item/perspective/lit_potioneer_gauntlet"
+      }
     }
   ]
 }

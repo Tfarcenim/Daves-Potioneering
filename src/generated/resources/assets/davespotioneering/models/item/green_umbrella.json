@@ -1,21 +1,21 @@
 {
   "parent": "minecraft:builtin/entity",
   "gui_light": "front",
-  "textures": {
-    "particle": "minecraft:block/dark_oak_planks"
-  },
   "overrides": [
     {
+      "model": "davespotioneering:item/open_green_umbrella",
       "predicate": {
         "minecraft:blocking": 0.0
-      },
-      "model": "davespotioneering:item/open_green_umbrella"
+      }
     },
     {
+      "model": "davespotioneering:item/closed_green_umbrella",
       "predicate": {
         "minecraft:blocking": 1.0
-      },
-      "model": "davespotioneering:item/closed_green_umbrella"
+      }
     }
-  ]
+  ],
+  "textures": {
+    "particle": "minecraft:block/dark_oak_planks"
+  }
 }
