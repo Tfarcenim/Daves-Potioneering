@@ -10,7 +10,6 @@
     "LayeredCauldronBlockMixin",
     "LivingEntityMixin",
     "PlayerEntityMixin",
-    "PlayerInfoMixin",
     "PotionBrewingAccess",
     "PotionBrewingMixin",
     "PotionItemMixin",
@@ -18,20 +17,21 @@
     "PotionUtilsMixin",
     "ServerPlayNetHandlerMixin",
     "SimpleContainerAccess",
-    "ThrowablePotionItemMixin"
+    "ThrowablePotionItemMixin",
+    "ItemAccess"
   ],
   "client": [
     "BakedModelManagerAccess",
     "BakedModelManagerMixin",
     "BakedQuadAccess",
     "IngameGuiMixin",
-    "ItemAccess",
     "ItemOverrideListMixin",
     "ItemRendererMixin",
     "ModelBakeryMixin",
     "ModelOverrideListMixin",
     "MouseHelperMixin",
     "ParticleManagerAccess",
+    "PlayerInfoMixin",
     "ScreenMixin"
   ],
   "injectors": {
