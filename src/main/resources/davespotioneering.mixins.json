@@ -9,17 +9,16 @@
     "BrewingStandBlockEntityMixin",
     "BrewingStandContainerAccess",
     "BrewingStandContainerMixin",
+    "ItemAccess",
     "LayeredCauldronBlockMixin",
     "PlayerEntityMixin",
     "PotionEntityMixin",
     "PotionItemMixin",
     "PotionUtilsMixin",
-    "ItemAccess",
     "ServerPlayNetHandlerMixin",
     "ThrowablePotionItemMixin"
   ],
   "client": [
-    "IngameGuiMixin",
     "ItemOverrideListMixin",
     "ParticleManagerAccess"
   ],

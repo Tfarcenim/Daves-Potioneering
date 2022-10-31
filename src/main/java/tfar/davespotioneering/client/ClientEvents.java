@@ -67,7 +67,7 @@ public class ClientEvents {
         if (held.isEmpty()) return;
         if (held.getItem() instanceof GauntletItem && player.isShiftKeyDown()) {
             if (e.getButton() == 2) {
-                GauntletHUDMovementGui.open();
+                GauntletHUDMovementScreen.open();
             }
         }
     }
@@ -209,5 +209,4 @@ public class ClientEvents {
 
         //world.addParticle(particleDataIn,blockPosIn.x,blockPosIn.y,blockPosIn.z,0,-.10,0);
     }
-
 }

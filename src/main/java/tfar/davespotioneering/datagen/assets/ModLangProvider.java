@@ -10,7 +10,7 @@ import org.codehaus.plexus.util.StringUtils;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.block.PotionInjectorBlock;
 import tfar.davespotioneering.client.GauntletHUD;
-import tfar.davespotioneering.client.GauntletHUDMovementGui;
+import tfar.davespotioneering.client.GauntletHUDMovementScreen;
 import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.init.ModEffects;
 import tfar.davespotioneering.init.ModItems;
@@ -36,11 +36,11 @@ public class ModLangProvider extends LanguageProvider {
         addItem(() -> ModItems.NETHERITE_GAUNTLET,getNameFromItem(ModItems.NETHERITE_GAUNTLET));
 
         add("davespotioneering.gui.moveGauntletHUD", "Use your mouse to drag the Gauntlet HUD wherever you would like or use one of these default positions.");
-        add(GauntletHUDMovementGui.KEY+ GauntletHUD.HudPresets.TOP_LEFT.ordinal(), "Left Top");
-        add(GauntletHUDMovementGui.KEY+ GauntletHUD.HudPresets.TOP_RIGHT.ordinal(), "Right Top");
-        add(GauntletHUDMovementGui.KEY+ GauntletHUD.HudPresets.BTM_LEFT.ordinal(), "Left Bottom");
-        add(GauntletHUDMovementGui.KEY+ GauntletHUD.HudPresets.BTM_RIGHT.ordinal(), "Right Bottom");
-        add(GauntletHUDMovementGui.KEY+ GauntletHUD.HudPresets.ABOVE_HOTBAR.ordinal(), "Above Hotbar");
+        add(GauntletHUDMovementScreen.KEY+ GauntletHUD.HudPresets.TOP_LEFT.ordinal(), "Left Top");
+        add(GauntletHUDMovementScreen.KEY+ GauntletHUD.HudPresets.TOP_RIGHT.ordinal(), "Right Top");
+        add(GauntletHUDMovementScreen.KEY+ GauntletHUD.HudPresets.BTM_LEFT.ordinal(), "Left Bottom");
+        add(GauntletHUDMovementScreen.KEY+ GauntletHUD.HudPresets.BTM_RIGHT.ordinal(), "Right Bottom");
+        add(GauntletHUDMovementScreen.KEY+ GauntletHUD.HudPresets.ABOVE_HOTBAR.ordinal(), "Above Hotbar");
         add("davespotioneering.tooltip.gauntlet", "%s %s");
         add("davespotioneering.tooltip.gauntlet.withDuration", "%s %s (%s)");
         addGroup(ModItems.tab,"Dave's Potioneering");

@@ -116,7 +116,6 @@ public class DavesPotioneering {
         MinecraftForge.EVENT_BUS.addListener(Events::potionCooldown);
         MinecraftForge.EVENT_BUS.addListener(Events::milkCow);
         MinecraftForge.EVENT_BUS.addListener(Events::afterHit);
-        MinecraftForge.EVENT_BUS.addListener(Events::switchGameMode);
 
         MinecraftForge.EVENT_BUS.addListener(Events::playerBrew);
         MinecraftForge.EVENT_BUS.addListener(Events::canApplyEffect);

@@ -8,10 +8,9 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import tfar.davespotioneering.ModConfig;
 
-public class GauntletHUDMovementGui extends Screen {
-    private final GauntletHUD hud = new GauntletHUD();
+public class GauntletHUDMovementScreen extends Screen {
 
-    protected GauntletHUDMovementGui() {
+    protected GauntletHUDMovementScreen() {
         super(Component.empty());
     }
 
@@ -20,7 +19,6 @@ public class GauntletHUDMovementGui extends Screen {
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
         minecraft.font.drawShadow(matrixStack, Component.translatable("davespotioneering.gui.moveGauntletHUD"), 6, 5, ChatFormatting.WHITE.getColor());
-        hud.render(matrixStack);
     }
 
     public static final String KEY = "davespotioneering.gui.moveGauntletHUD.preset";
@@ -29,46 +27,33 @@ public class GauntletHUDMovementGui extends Screen {
     protected void init() {
         super.init();
         addRenderableWidget(new Button(5, 15, 75, 20, Component.translatable(KEY + GauntletHUD.HudPresets.TOP_LEFT.ordinal()), (button) -> {
-            GauntletHUD.x = getFixedPositionValue(5, true);
-            GauntletHUD.y = getFixedPositionValue(5, false);
+            GauntletHUD.x = 5;
+            GauntletHUD.y = 5;
             GauntletHUD.preset = GauntletHUD.HudPresets.TOP_LEFT;
         }));
         addRenderableWidget(new Button(85, 15, 75, 20, Component.translatable(KEY + GauntletHUD.HudPresets.TOP_RIGHT.ordinal()), (button) -> {
-            GauntletHUD.x = getFixedPositionValue(width - 120 - 5, true);
-            GauntletHUD.y = getFixedPositionValue(5, false);
+            GauntletHUD.x = width - GauntletHUD.TEX_WIDTH - 5;
+            GauntletHUD.y = 5;
             GauntletHUD.preset = GauntletHUD.HudPresets.TOP_RIGHT;
         }));
         addRenderableWidget(new Button(165, 15, 75, 20, Component.translatable(KEY + GauntletHUD.HudPresets.BTM_LEFT.ordinal()), (button) -> {
-            GauntletHUD.x = getFixedPositionValue(5, true);
-            GauntletHUD.y = getFixedPositionValue(height - 45 - 5, false);
+            GauntletHUD.x = 5;
+            GauntletHUD.y = height - GauntletHUD.TEX_HEIGHT - 5;
             GauntletHUD.preset = GauntletHUD.HudPresets.BTM_LEFT;
         }));
         addRenderableWidget(new Button(245, 15, 75, 20, Component.translatable(KEY + GauntletHUD.HudPresets.BTM_RIGHT.ordinal()), (button) -> {
-            GauntletHUD.x = getFixedPositionValue(width - 120 - 5, true);
-            GauntletHUD.y = getFixedPositionValue(height - 45 - 5, false);
+            GauntletHUD.x = width - GauntletHUD.TEX_WIDTH - 5;
+            GauntletHUD.y = height - GauntletHUD.TEX_HEIGHT - 5;
             GauntletHUD.preset = GauntletHUD.HudPresets.BTM_RIGHT;
         }));
-        addRenderableWidget(new Button(325, 15, 75, 20, Component.translatable(KEY + GauntletHUD.HudPresets.ABOVE_HOTBAR.ordinal()), (button) -> {
-            if (minecraft != null && minecraft.player != null && minecraft.player.isCreative()) {
-                GauntletHUD.x = getFixedPositionValue((width - 120) / 2, true);
-                GauntletHUD.y = getFixedPositionValue(height - 42 - 25, false);
-            } else {
-                GauntletHUD.x = getFixedPositionValue((width - 120) / 2, true);
-                GauntletHUD.y = getFixedPositionValue(height - 42 - 40, false);
-            }
-            GauntletHUD.preset = GauntletHUD.HudPresets.ABOVE_HOTBAR;
-        }));
-    }
-
-    public static int getFixedPositionValue(int value, boolean isWidth) {
-        return isWidth ? value*2-Minecraft.getInstance().getWindow().getGuiScaledWidth() : value-Minecraft.getInstance().getWindow().getGuiScaledHeight();
+        addRenderableWidget(new Button(325, 15, 75, 20, Component.translatable(KEY + GauntletHUD.HudPresets.ABOVE_HOTBAR.ordinal()), (button) -> GauntletHUD.preset = GauntletHUD.HudPresets.ABOVE_HOTBAR));
     }
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        if (button == 0) {
-            GauntletHUD.x = getFixedPositionValue((int) mouseX, true);
-            GauntletHUD.y = getFixedPositionValue((int) mouseY, false);
+        if (button == 0 && getChildAt(mouseX,mouseY).isEmpty()) {// do not attempt to drag when hovering over a button!
+            GauntletHUD.x = (int) mouseX;
+            GauntletHUD.y = (int) mouseY;
             GauntletHUD.preset = GauntletHUD.HudPresets.FREE_MOVE;
         }
         return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
@@ -80,14 +65,13 @@ public class GauntletHUDMovementGui extends Screen {
             ModConfig.Client.gauntlet_hud_x.set(GauntletHUD.x);
             ModConfig.Client.gauntlet_hud_y.set(GauntletHUD.y);
             ModConfig.Client.gauntlet_hud_preset.set(GauntletHUD.preset);
-            hud.refreshPosition();
-            GauntletHUD.hudInstance.refreshPosition();
+            GauntletHUD.refreshPosition();
         }
         return super.mouseReleased(mouseX, mouseY, mouseButton);
     }
 
     public static void open() {
         Minecraft.getInstance().setScreen(null);
-        Minecraft.getInstance().setScreen(new GauntletHUDMovementGui());
+        Minecraft.getInstance().setScreen(new GauntletHUDMovementScreen());
     }
 }
