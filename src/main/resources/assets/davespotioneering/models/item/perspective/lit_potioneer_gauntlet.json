@@ -1,27 +1,12 @@
 {
   "gui_light": "front",
-  "loader": "forge:separate-perspective",
+  "loader": "forge:separate_transforms",
   "base": {
-    "parent": "minecraft:item/generated",
-    "textures": {
-      "layer0": "davespotioneering:item/sprite/lit_potioneer_gauntlet"
-    }
+    "parent": "davespotioneering:item/3d/lit_potioneer_gauntlet_2"
   },
   "perspectives": {
-    "first_person_right_hand": {
-      "parent": "davespotioneering:item/3d/lit_potioneer_gauntlet"
-    },
-    "first_person_left_hand": {
-      "parent": "davespotioneering:item/3d/lit_potioneer_gauntlet"
-    },
-    "third_person_right_hand": {
-      "parent": "davespotioneering:item/3d/lit_potioneer_gauntlet"
-    },
-    "third_person_left_hand": {
-      "parent": "davespotioneering:item/3d/lit_potioneer_gauntlet"
-    },
-    "fixed": {
-      "parent": "davespotioneering:item/3d/lit_potioneer_gauntlet"
+    "gui": {
+      "parent": "davespotioneering:item/sprite/lit_potioneer_gauntlet"
     }
   }
 }

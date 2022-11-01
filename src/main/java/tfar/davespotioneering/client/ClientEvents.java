@@ -57,7 +57,7 @@ public class ClientEvents {
     }
 
     public static void registerLoader(final ModelEvent.RegisterGeometryLoaders event) {
-        event.register("fullbright", ModelLoader.INSTANCE);
+      //  event.register("fullbright", ModelLoader.INSTANCE);
     }
 
     public static void onMouseInput(InputEvent.MouseButton e) {
@@ -105,9 +105,6 @@ public class ClientEvents {
     }
 
     public static void doClientStuff(final FMLClientSetupEvent event) {
-
-
-
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::tooltips);
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::onMouseInput);
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::onMouseScroll);
@@ -207,6 +204,6 @@ public class ClientEvents {
 
         Minecraft.getInstance().particleEngine.add(particle);
 
-        //world.addParticle(particleDataIn,blockPosIn.x,blockPosIn.y,blockPosIn.z,0,-.10,0);
+        world.addParticle(particleDataIn,blockPosIn.x,blockPosIn.y,blockPosIn.z,0,-.10,0);
     }
 }
