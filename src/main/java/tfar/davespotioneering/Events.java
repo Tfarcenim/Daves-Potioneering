@@ -24,7 +24,7 @@ import tfar.davespotioneering.block.LayeredReinforcedCauldronBlock;
 import tfar.davespotioneering.duck.BrewingStandDuck;
 import tfar.davespotioneering.init.ModPotions;
 import tfar.davespotioneering.item.UmbrellaItem;
-import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
+import tfar.davespotioneering.menu.AdvancedBrewingStandMenu;
 import tfar.davespotioneering.mixin.BrewingStandContainerAccess;
 
 public class Events {
@@ -97,8 +97,8 @@ public class Events {
             BlockEntity entity = null;
             if (container instanceof BrewingStandMenu) {
                 entity = (BrewingStandBlockEntity)((BrewingStandContainerAccess)container).getBrewingStand();
-            } else if (container instanceof AdvancedBrewingStandContainer) {
-                entity = ((AdvancedBrewingStandContainer)container).blockEntity;
+            } else if (container instanceof AdvancedBrewingStandMenu advancedBrewingStandMenu) {
+                entity = advancedBrewingStandMenu.blockEntity;
             }
 
             if (entity != null) {

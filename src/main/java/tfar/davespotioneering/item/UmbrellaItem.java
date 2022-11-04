@@ -9,13 +9,20 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.util.NonNullLazy;
-import tfar.davespotioneering.init.ModItems;
+import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.core.manager.AnimationData;
+import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.util.GeckoLibUtil;
+import tfar.davespotioneering.client.HideISTERsFromServer;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class UmbrellaItem extends ShieldItem {
+public class UmbrellaItem extends ShieldItem implements IAnimatable {
     private final String model;
     private final String style;
 
@@ -40,7 +47,7 @@ public class UmbrellaItem extends ShieldItem {
     @Override
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept( new IClientItemExtensions() {
-            private final NonNullLazy<BlockEntityWithoutLevelRenderer> ister = NonNullLazy.of(() -> ModItems.HideISTERsFromServer.createGeoClassicUmbrellaItemStackRenderer(model));
+            private final NonNullLazy<BlockEntityWithoutLevelRenderer> ister = NonNullLazy.of(() -> HideISTERsFromServer.createGeoClassicUmbrellaItemStackRenderer(model));
 
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer()
@@ -48,5 +55,23 @@ public class UmbrellaItem extends ShieldItem {
                 return ister.get();
             }
         });
+    }
+
+    AnimationFactory factory = GeckoLibUtil.createFactory(this);
+
+    @Override
+    public void registerControllers(AnimationData data) {
+        data.addAnimationController(
+                new AnimationController<>(this, "null", 0, this::predicate)
+        );
+    }
+
+    protected <P extends IAnimatable> PlayState predicate(AnimationEvent<P> event) {
+        return PlayState.STOP;
+    }
+
+    @Override
+    public AnimationFactory getFactory() {
+        return factory;
     }
 }

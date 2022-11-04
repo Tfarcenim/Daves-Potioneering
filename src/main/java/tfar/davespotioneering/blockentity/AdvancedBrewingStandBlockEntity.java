@@ -36,7 +36,7 @@ import tfar.davespotioneering.duck.BrewingStandDuck;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
 import tfar.davespotioneering.inv.BrewingHandler;
 import tfar.davespotioneering.inv.SidedItemHandler;
-import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
+import tfar.davespotioneering.menu.AdvancedBrewingStandMenu;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -315,7 +315,7 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements Menu
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player player) {
-        return new AdvancedBrewingStandContainer(id, playerInventory, brewingHandler, this.data,this);
+        return new AdvancedBrewingStandMenu(id, playerInventory, brewingHandler, this.data,this);
     }
 
     @Override

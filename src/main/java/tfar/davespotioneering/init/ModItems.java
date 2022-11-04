@@ -1,20 +1,14 @@
 package tfar.davespotioneering.init;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.item.*;
 import tfar.davespotioneering.DavesPotioneering;
-import tfar.davespotioneering.client.model.gecko.DoubleGeoItemStackRenderer;
-import tfar.davespotioneering.client.model.gecko.GeoItemStackRenderer;
 import tfar.davespotioneering.item.AgedUmbrellaItem;
 import tfar.davespotioneering.item.GauntletItem;
 import tfar.davespotioneering.item.SimpleGauntletItem;
 import tfar.davespotioneering.item.UmbrellaItem;
 
-import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class ModItems {
@@ -61,29 +55,6 @@ public class ModItems {
 
     public static Item.Properties baseUmbrella() {
         return new Item.Properties().tab(tab).durability(300);
-    }
-
-    public static class HideISTERsFromServer {
-
-        public static BlockEntityWithoutLevelRenderer createGeoClassicUmbrellaItemStackRenderer(DyeColor color) {
-            return createGeoClassicUmbrellaItemStackRenderer(color.name().toLowerCase(Locale.ROOT));
-        }
-
-        public static BlockEntityWithoutLevelRenderer createGeoClassicUmbrellaItemStackRenderer(String itemName) {
-            return new DoubleGeoItemStackRenderer<>(
-                    GeoItemStackRenderer.GeoItemModel.makeClosedUmbrella(itemName),
-                    GeoItemStackRenderer.GeoItemModel.makeOpenUmbrella(itemName)
-                    ,GeoItemStackRenderer.NOTHING,Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
-        }
-
-        @Nonnull
-        public static BlockEntityWithoutLevelRenderer createAgedUmbrellaItemStackRenderer() {
-            return new DoubleGeoItemStackRenderer<>(
-                    GeoItemStackRenderer.GeoItemModel.makeClosedUmbrella("aged"),
-                    GeoItemStackRenderer.GeoItemModel.makeOpenAgedUmbrella()
-                    ,GeoItemStackRenderer.NOTHING, Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
-        }
-
     }
 
     public static List<Item> getAllItems() {
