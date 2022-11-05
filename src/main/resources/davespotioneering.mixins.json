@@ -14,12 +14,12 @@
     "PotionEntityMixin",
     "PotionItemMixin",
     "PotionUtilsMixin",
+    "ItemAccess",
     "ServerPlayNetHandlerMixin",
     "ThrowablePotionItemMixin"
   ],
   "client": [
     "IngameGuiMixin",
-    "ItemAccess",
     "ItemOverrideListMixin",
     "ParticleManagerAccess"
   ],
