@@ -20,15 +20,7 @@ public class PotionUtilsMixin {
             for(MobEffectInstance effectinstance : instances) {
                 if (effectinstance.equals(ModPotions.INVIS_2)) {
                     int k = effectinstance.getEffect().getColor();
-                    int l = 1;
-                    float r = (float)(l * (k >> 16 & 255)) / 255.0F;
-                    float g = (float)(l * (k >> 8 & 255)) / 255.0F;
-                    float b = (float)(l * (k & 255)) / 255.0F;
-
-                    r = r * 255.0F;
-                    g = g * 255.0F;
-                    b = b * 255.0F;
-                    cir.setReturnValue((int)r << 16 | (int)g << 8 | (int)b);
+                    cir.setReturnValue(k);
                 }
             }
         }

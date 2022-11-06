@@ -13,8 +13,6 @@ public class DoubleGeoItemStackRenderer<T extends IAnimatable> extends GeoItemSt
 
     private final AnimatedGeoModel<T> modelProvider2;
 
-    protected final Function<ResourceLocation, RenderType> renderTypeGetter;
-
     public DoubleGeoItemStackRenderer(AnimatedGeoModel<T> modelProvider1,AnimatedGeoModel<T> modelProvider2, T ianimatable,BlockEntityRenderDispatcher p_172550_, EntityModelSet p_172551_) {
         this(modelProvider1, RenderType::entityCutout, ianimatable,p_172550_,p_172551_,modelProvider2);
     }
@@ -22,10 +20,9 @@ public class DoubleGeoItemStackRenderer<T extends IAnimatable> extends GeoItemSt
     public DoubleGeoItemStackRenderer(AnimatedGeoModel<T> modelProvider1,  Function<ResourceLocation, RenderType> renderTypeGetter, T ianimatable, BlockEntityRenderDispatcher p_172550_, EntityModelSet p_172551_,AnimatedGeoModel<T> modelProvider2) {
         super(modelProvider1,renderTypeGetter,ianimatable,p_172550_,p_172551_);
         this.modelProvider2 = modelProvider2;
-        this.renderTypeGetter = renderTypeGetter;
     }
 
-    public static final ThreadLocal<Float> override = ThreadLocal.withInitial(() -> 0f);
+    public static final ThreadLocal<Float> override = ThreadLocal.withInitial(() -> 1f);
 
     @Override
     public AnimatedGeoModel<T> getGeoModelProvider() {

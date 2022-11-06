@@ -16,7 +16,7 @@ import tfar.davespotioneering.client.model.gecko.DoubleGeoItemStackRenderer;
 @Mixin(ItemOverrides.class)
 public class ItemOverrideListMixin {
 
-    @Inject(method = "resolve",at = @At(value = "RETURN",ordinal = 1),locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "resolve",at = @At(value = "RETURN",ordinal = 1),locals = LocalCapture.CAPTURE_FAILSOFT,require = 0)
     private void validModel(BakedModel itempropertyfunction, ItemStack j, ClientLevel level, LivingEntity entity, int i1, CallbackInfoReturnable<BakedModel> cir, Item item, int i, float[] afloat, ItemOverrides.BakedOverride[] var9, int var10, int var11, ItemOverrides.BakedOverride itemoverrides$bakedoverride, BakedModel bakedmodel) {
         DoubleGeoItemStackRenderer.override.set(afloat[0]);
     }
