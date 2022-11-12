@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -20,7 +19,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.TieredItem;
-import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -28,7 +26,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.gui.ForgeIngameGui;
+import net.minecraftforge.client.gui.OverlayRegistry;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -111,8 +110,6 @@ public class ClientEvents {
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::tooltips);
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::onMouseInput);
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::onMouseScroll);
-        MinecraftForge.EVENT_BUS.addListener(ClientEvents::gauntletHud);
-        MinecraftForge.EVENT_BUS.addListener(ClientEvents::gaun);
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::playerTick);
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.COMPOUND_BREWING_STAND, RenderType.cutoutMipped());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.POTION_INJECTOR,RenderType.translucent());
@@ -152,40 +149,13 @@ public class ClientEvents {
 
         registerBlockingProperty(ModItems.AGED_UMBRELLA);
         registerBlockingProperty(ModItems.GILDED_UMBRELLA);
+
+        OverlayRegistry.registerOverlayBelow(ForgeIngameGui.CHAT_PANEL_ELEMENT, MODID,new GauntletHUD());
     }
 
     private static void registerBlockingProperty(Item item) {
         ItemProperties.register(item, new ResourceLocation("blocking"),
                 (stack, world, entity,i) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
-    }
-
-    public static void gauntletHud(RenderGameOverlayEvent.Post e) {
-        // only renders when the hotbar renders
-        if (e.getType() == RenderGameOverlayEvent.ElementType.TEXT) {
-//            if (Minecraft.getInstance().currentScreen != null) return;
-            // get player from client
-            Player player = Minecraft.getInstance().player;
-            if (player == null) return;
-            ItemStack g = player.getMainHandItem();
-            // check if holding gauntlet
-            if (g.getItem() instanceof GauntletItem) {
-                // get nbt
-                CompoundTag info = player.getMainHandItem().getOrCreateTag().getCompound("info");
-                Potion[] potions = GauntletItem.getPotionsFromNBT(info);
-                if (Minecraft.getInstance().screen instanceof GauntletHUDMovementGui) return;
-                GauntletHUD.hudInstance.render(e.getMatrixStack());
-                if (potions == null) {
-                    // reset
-                    GauntletHUD.hudInstance.init(null, null, null);
-                    return;
-                }
-                GauntletHUD.hudInstance.init(potions[0], potions[1], potions[2]);
-            }
-        }
-    }
-
-    public static void gaun(RenderGameOverlayEvent.Pre e) {
-
     }
 
     public static void playerTick(TickEvent.PlayerTickEvent e) {

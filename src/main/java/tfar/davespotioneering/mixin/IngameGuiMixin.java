@@ -22,7 +22,7 @@ public class IngameGuiMixin {
         Minecraft minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
         if (player != null) {
-            if (GauntletHUD.hudInstance.preset == GauntletHUD.HudPresets.ABOVE_HOTBAR &&
+            if (GauntletHUD.preset == GauntletHUD.HudPresets.ABOVE_HOTBAR &&
                     this.minecraft.player.getMainHandItem().getItem() instanceof GauntletItem) {
                 ci.cancel();
             }

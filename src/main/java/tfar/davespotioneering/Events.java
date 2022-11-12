@@ -1,6 +1,5 @@
 package tfar.davespotioneering;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -14,18 +13,14 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
 import net.minecraftforge.event.brewing.PlayerBrewedPotionEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.PotionEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.Event;
 import tfar.davespotioneering.block.LayeredReinforcedCauldronBlock;
-import tfar.davespotioneering.client.GauntletHUD;
-import tfar.davespotioneering.client.GauntletHUDMovementGui;
 import tfar.davespotioneering.duck.BrewingStandDuck;
 import tfar.davespotioneering.init.ModPotions;
 import tfar.davespotioneering.item.UmbrellaItem;
@@ -33,15 +28,6 @@ import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
 import tfar.davespotioneering.mixin.BrewingStandContainerAccess;
 
 public class Events {
-
-    public static void switchGameMode(PlayerEvent.PlayerChangeGameModeEvent event) {
-        if (event.getNewGameMode() == GameType.SURVIVAL && GauntletHUD.hudInstance.preset == GauntletHUD.HudPresets.ABOVE_HOTBAR) {
-            GauntletHUD.hudInstance.y = GauntletHUDMovementGui.getFixedPositionValue(Minecraft.getInstance().getWindow().getGuiScaledHeight() - 42 - 40, false);
-        }
-        if (event.getNewGameMode() == GameType.CREATIVE && GauntletHUD.hudInstance.preset == GauntletHUD.HudPresets.ABOVE_HOTBAR) {
-            GauntletHUD.hudInstance.y = GauntletHUDMovementGui.getFixedPositionValue(Minecraft.getInstance().getWindow().getGuiScaledHeight() - 42 - 25, false);
-        }
-    }
 
     public static void potionCooldown(PlayerInteractEvent.RightClickItem e) {
         ItemStack stack = e.getItemStack();
@@ -54,10 +40,9 @@ public class Events {
     public static void milkCow(PlayerInteractEvent.EntityInteractSpecific e) {
         Entity clicked = e.getTarget();
         Player player = e.getPlayer();
-        if (clicked instanceof Cow) {
-            Cow cowEntity = (Cow)clicked;
+        if (clicked instanceof Cow cow) {
             ItemStack itemstack = player.getItemInHand(e.getHand());
-            if (itemstack.getItem() == Items.GLASS_BOTTLE && !cowEntity.isBaby()) {
+            if (itemstack.getItem() == Items.GLASS_BOTTLE && !cow.isBaby()) {
                 player.playSound(SoundEvents.COW_MILK, 1.0F, 1.0F);
                 itemstack.shrink(1);
                 ItemStack milkBottle = new ItemStack(Items.POTION);
