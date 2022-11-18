@@ -3,7 +3,6 @@ package tfar.davespotioneering.init;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.Material;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import tfar.davespotioneering.DavesPotioneering;
@@ -17,11 +16,9 @@ public class ModBlocks {
 
     private static List<Block> MOD_BLOCKS;
 
-    public static final Block COMPOUND_BREWING_STAND = new AdvancedBrewingStandBlock(AbstractBlock.Settings.of(Material.METAL)
-            .requiresTool().strength(0.5F).luminance(state -> 1).nonOpaque());
+    public static final Block COMPOUND_BREWING_STAND = new AdvancedBrewingStandBlock(AbstractBlock.Settings.copy(Blocks.BREWING_STAND));
 
-    public static final Block REINFORCED_CAULDRON = new ReinforcedCauldronBlock(AbstractBlock.Settings.of(Material.METAL)
-            .requiresTool().strength(0.5F).luminance(state -> 1).nonOpaque(),ModCauldronInteractions.EMPTY);
+    public static final Block REINFORCED_CAULDRON = new ReinforcedCauldronBlock(AbstractBlock.Settings.copy(Blocks.CAULDRON),ModCauldronInteractions.EMPTY);
 
     public static final Block REINFORCED_WATER_CAULDRON = new LayeredReinforcedCauldronBlock(AbstractBlock.Settings.copy(REINFORCED_CAULDRON));
 
