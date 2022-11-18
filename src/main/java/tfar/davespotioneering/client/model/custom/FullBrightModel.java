@@ -6,7 +6,6 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
-import tfar.davespotioneering.mixin.BakedQuadAccess;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -66,7 +65,7 @@ public class FullBrightModel extends ForwardingBakedModel {
                 vertexData,
                 quad.getColorIndex(),
                 quad.getFace(),
-                ((BakedQuadAccess)quad).getSprite(),
+                null,//((BakedQuadAccess)quad).getSprite(),
                 quad.hasShade()
         );
     }

@@ -23,16 +23,13 @@
   "client": [
     "BakedModelManagerAccess",
     "BakedModelManagerMixin",
-    "BakedQuadAccess",
     "IngameGuiMixin",
     "PlayerInfoMixin",
     "ItemOverrideListMixin",
     "ItemRendererMixin",
     "ModelBakeryMixin",
-    "ModelOverrideListMixin",
     "MouseHelperMixin",
-    "ParticleManagerAccess",
-    "ScreenMixin"
+    "ParticleManagerAccess"
   ],
   "injectors": {
     "defaultRequire": 1
