@@ -18,12 +18,14 @@ public class GauntletHUDMovementScreen extends Screen {
         super(Text.empty());
     }
 
+    private static final Text info =Text.translatable("davespotioneering.gui.moveGauntletHUD");
+
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
-        client.textRenderer.drawWithShadow(matrixStack, Text.translatable("davespotioneering.gui.moveGauntletHUD"), 6, 5, Formatting.WHITE.getColorValue());
         GauntletHUD.render(matrixStack);
+        client.textRenderer.drawWithShadow(matrixStack, info, 6, 5, Formatting.WHITE.getColorValue());
     }
 
     public static final String KEY = "davespotioneering.gui.moveGauntletHUD.preset";
@@ -31,27 +33,36 @@ public class GauntletHUDMovementScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        addSelectableChild(new ButtonWidget(5, 15, 75, 20, Text.translatable(KEY + GauntletHUD.HudPreset.TOP_LEFT.ordinal()), (button) -> {
+
+        int y1 = 20;
+
+        int x1 = width / 2 - 40;
+
+        int dist = 80;
+
+        addDrawableChild(new ButtonWidget(x1 - 2 * dist, y1, 75, 20, Text.translatable(KEY + GauntletHUD.HudPreset.TOP_LEFT.ordinal()), (button) -> {
             x = getFixedPositionValue(5, true);
             y = getFixedPositionValue(5, false);
             preset = GauntletHUD.HudPreset.TOP_LEFT;
         }));
-        addSelectableChild(new ButtonWidget(85, 15, 75, 20, Text.translatable(KEY + GauntletHUD.HudPreset.TOP_RIGHT.ordinal()), (button) -> {
+        addDrawableChild(new ButtonWidget(x1 - dist, y1, 75, 20, Text.translatable(KEY + GauntletHUD.HudPreset.TOP_RIGHT.ordinal()), (button) -> {
             x = getFixedPositionValue(width - 120 - 5, true);
             y = getFixedPositionValue(5, false);
             preset = GauntletHUD.HudPreset.TOP_RIGHT;
         }));
-        addSelectableChild(new ButtonWidget(165, 15, 75, 20, Text.translatable(KEY + GauntletHUD.HudPreset.BTM_LEFT.ordinal()), (button) -> {
+        addDrawableChild(new ButtonWidget(x1, y1, 75, 20, Text.translatable(KEY + GauntletHUD.HudPreset.BTM_LEFT.ordinal()), (button) -> {
             x = getFixedPositionValue(5, true);
             y = getFixedPositionValue(height - 45 - 5, false);
             preset = GauntletHUD.HudPreset.BTM_LEFT;
         }));
-        addSelectableChild(new ButtonWidget(245, 15, 75, 20, Text.translatable(KEY + GauntletHUD.HudPreset.BTM_RIGHT.ordinal()), (button) -> {
+
+        addDrawableChild(new ButtonWidget(x1 + dist, y1, 75, 20, Text.translatable(KEY + GauntletHUD.HudPreset.BTM_RIGHT.ordinal()), (button) -> {
             x = getFixedPositionValue(width - 120 - 5, true);
             y = getFixedPositionValue(height - 45 - 5, false);
             preset = GauntletHUD.HudPreset.BTM_RIGHT;
         }));
-        addSelectableChild(new ButtonWidget(325, 15, 75, 20, Text.translatable(KEY + GauntletHUD.HudPreset.ABOVE_HOTBAR.ordinal()), (button) -> {
+
+        addDrawableChild(new ButtonWidget(x1 + 2 * dist, y1, 75, 20, Text.translatable(KEY + GauntletHUD.HudPreset.ABOVE_HOTBAR.ordinal()), (button) -> {
             if (client != null && client.player != null && client.player.isCreative()) {
                 x = getFixedPositionValue((width - 120) / 2, true);
                 y = getFixedPositionValue(height - 42 - 25, false);

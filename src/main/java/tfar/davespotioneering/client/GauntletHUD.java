@@ -23,9 +23,12 @@ import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.config.ClothConfig;
 import tfar.davespotioneering.init.ModSoundEvents;
 import tfar.davespotioneering.item.GauntletItem;
+import tfar.davespotioneering.mixin.IngameGuiAccess;
 
 public class GauntletHUD {
     public static final Identifier GAUNTLET_ICON_LOC = new Identifier(DavesPotioneering.MODID, "textures/gauntlet_icons/");
+
+    private static final int TEX_H = 41;
 
     public static Identifier getGauntletIconLoc(String fileName) {
         return new Identifier(GAUNTLET_ICON_LOC.getNamespace(), GAUNTLET_ICON_LOC.getPath() + fileName + ".png");
@@ -57,15 +60,26 @@ public class GauntletHUD {
 
         InGameHud hud = mc.inGameHud;
 
+        int fade = ((IngameGuiAccess)hud).getHeldItemTooltipFade();
+
         int windowW = mc.getWindow().getScaledWidth();
         int windowH = mc.getWindow().getScaledHeight();
 
         int xFixed = MathHelper.clamp((windowW + ClothConfig.gauntlet_hud_x)/2, 0, windowW-120);
-        int yFixed = MathHelper.clamp(windowH+ClothConfig.gauntlet_hud_y, 0, windowH-41);
+        int yFixed = MathHelper.clamp(windowH+ClothConfig.gauntlet_hud_y, 0, windowH-TEX_H);
+
+
+        if(ClothConfig.gauntlet_hud_preset == HudPreset.ABOVE_HOTBAR) {
+            int height = TEX_H + 50;
+            if (fade > 0) {
+                height += 10;
+            }
+            yFixed = windowH - height;
+        }
 
         if (forwardCycle) {
             cooldown--;
-            DrawableHelper.drawTexture(matrixStack, xFixed, yFixed, hud.getZOffset(), 0, 87, 120, 41, 128, 128);
+            DrawableHelper.drawTexture(matrixStack, xFixed, yFixed, hud.getZOffset(), 0, 87, 120, TEX_H, 128, 128);
             if (cooldown <= 0) {
                mc.getSoundManager().play(PositionedSoundInstance.master(ModSoundEvents.GAUNTLET_SCROLL, 1.0F));
                 forwardCycle = false;
@@ -73,14 +87,14 @@ public class GauntletHUD {
             }
         } else if (backwardCycle) {
             cooldown--;
-            DrawableHelper.drawTexture(matrixStack, xFixed, yFixed, hud.getZOffset(), 0, 44, 120, 41, 128, 128);
+            DrawableHelper.drawTexture(matrixStack, xFixed, yFixed, hud.getZOffset(), 0, 44, 120, TEX_H, 128, 128);
             if (cooldown <= 0) {
                 mc.getSoundManager().play(PositionedSoundInstance.master(ModSoundEvents.GAUNTLET_SCROLL, 1.0F));
                 backwardCycle = false;
                 cooldown = maxCooldown;
             }
         } else {
-            DrawableHelper.drawTexture(matrixStack, xFixed, yFixed, hud.getZOffset(), 0, 1, 120, 41, 128, 128);
+            DrawableHelper.drawTexture(matrixStack, xFixed, yFixed, hud.getZOffset(), 0, 1, 120, TEX_H, 128, 128);
         }
 
         PlayerEntity player = MinecraftClient.getInstance().player;

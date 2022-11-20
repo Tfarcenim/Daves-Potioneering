@@ -10,3 +10,5 @@ accessible method net/minecraft/screen/ScreenHandlerType <init> (Lnet/minecraft/
 
 accessible class net/minecraft/screen/BrewingStandScreenHandler$PotionSlot
 accessible class net/minecraft/screen/BrewingStandScreenHandler$FuelSlot
+
+accessible method net/minecraft/recipe/BrewingRecipeRegistry registerPotionRecipe (Lnet/minecraft/potion/Potion;Lnet/minecraft/item/Item;Lnet/minecraft/potion/Potion;)V

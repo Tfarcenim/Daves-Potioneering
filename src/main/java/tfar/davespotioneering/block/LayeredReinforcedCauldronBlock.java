@@ -26,12 +26,13 @@ import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
+import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.init.ModPotions;
@@ -46,6 +47,8 @@ public class LayeredReinforcedCauldronBlock extends LeveledCauldronBlock impleme
 
 
     public static int brew_speed = 12;
+
+    public static final String LAYERS = DavesPotioneering.MODID+":layers";
 
     public LayeredReinforcedCauldronBlock(Settings properties) {
         super(properties,LeveledCauldronBlock.RAIN_PREDICATE, ModCauldronInteractions.WATER);
@@ -93,7 +96,7 @@ public class LayeredReinforcedCauldronBlock extends LeveledCauldronBlock impleme
         level.createExplosion(null, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, 1, false, Explosion.DestructionType.NONE);
     }
 
-    public static void handleWeaponCoating(BlockState state, World level, BlockPos pos, @Nullable PlayerEntity player, Hand p_175715_, ItemStack stack) {
+    public static void handleWeaponCoating(BlockState state, World level, BlockPos pos, @Nullable PlayerEntity player, ItemStack stack) {
         if (state.get(DRAGONS_BREATH)) {
             ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) level.getBlockEntity(pos);
             Potion potion = reinforcedCauldronBlockEntity.getPotion();
@@ -108,7 +111,24 @@ public class LayeredReinforcedCauldronBlock extends LeveledCauldronBlock impleme
         }
     }
 
-    public static void handleArrowCoating(BlockState state, World level, BlockPos pos, @Nullable PlayerEntity player, Hand p_175715_, ItemStack stack) {
+    public static void handleWeaponCoatingEntity(BlockState state, World level, BlockPos pos, @Nullable PlayerEntity player, ItemEntity stack) {
+        if (state.get(DRAGONS_BREATH)) {
+            ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) level.getBlockEntity(pos);
+            Potion potion = reinforcedCauldronBlockEntity.getPotion();
+            if (!level.isClient) {
+                if (player != null && !player.getAbilities().creativeMode) {
+                    player.incrementStat(Stats.USE_CAULDRON);
+                }
+                ItemStack copy = stack.getStack().copy();
+                addCoating(copy,potion);
+                stack.setStack(copy);
+                level.playSound(null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                level.setBlockState(pos,ModBlocks.REINFORCED_CAULDRON.getDefaultState());
+            }
+        }
+    }
+
+    public static void handleArrowCoating(BlockState state, World level, BlockPos pos, @Nullable PlayerEntity player, ItemStack stack) {
         int wLevel = state.get(LEVEL);
         if (state.get(DRAGONS_BREATH)) {
             //can't tip arrows if there's less than 8
@@ -215,7 +235,19 @@ public class LayeredReinforcedCauldronBlock extends LeveledCauldronBlock impleme
 
         world.playSound(null,pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.8F, 1);
 
-        world.createAndScheduleBlockTick(pos, this, brew_speed);
+        if (state.get(LEVEL) > 1) {
+            lowerFillLevel0(state,world,pos);
+            world.createAndScheduleBlockTick(pos, this, brew_speed);
+        } else {
+            List<ItemEntity> items = world.getEntitiesByClass(ItemEntity.class,
+                    new Box(pos),a -> true);
+
+            if (items.size() == 1) {
+                handleWeaponCoating(state, world, pos, null, items.get(0).getStack());
+            } else {
+                boom(world,pos);
+            }
+        }
     }
 
     public static final int S_LINES = 2;

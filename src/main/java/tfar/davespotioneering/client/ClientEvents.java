@@ -9,11 +9,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.client.item.TooltipContext;
@@ -32,7 +29,6 @@ import net.minecraft.particle.ParticleEffect;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
-import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
@@ -212,7 +208,7 @@ public class ClientEvents implements ClientModInitializer {
     }
 
     private static void registerBlockingProperty(Item item) {
-        FabricModelPredicateProviderRegistry.register(item, new Identifier("blocking"),
+        ModelPredicateProviderRegistry.register(item, new Identifier("blocking"),
                 (stack, world, entity,i) -> entity != null && entity.isUsingItem() && entity.getActiveItem() == stack ? 1.0F : 0.0F);
     }
 
@@ -228,7 +224,6 @@ public class ClientEvents implements ClientModInitializer {
             // get nbt
             NbtCompound info = player.getMainHandStack().getOrCreateNbt().getCompound("info");
             Potion[] potions = GauntletItem.getPotionsFromNBT(info);
-            if (MinecraftClient.getInstance().currentScreen instanceof GauntletHUDMovementScreen) return;
             GauntletHUD.render(matrixStack);
             if (potions == null) {
                 // reset
@@ -288,7 +283,4 @@ public class ClientEvents implements ClientModInitializer {
         //world.addParticle(particleDataIn,blockPosIn.x,blockPosIn.y,blockPosIn.z,0,-.10,0);
     }
 
-    public static void renderWrappedToolTip(Screen screen, ItemStack stack,MatrixStack matrixStack, List<? extends StringVisitable> tooltips, int mouseX, int mouseY, TextRenderer font) {
-        GuiUtils.drawWrappedHoveringText(stack,matrixStack, tooltips, mouseX, mouseY, screen.width, screen.height, -1, font);
-    }
 }

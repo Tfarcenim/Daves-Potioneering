@@ -13,11 +13,11 @@ import net.minecraft.item.Items;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
+import net.minecraft.recipe.BrewingRecipeRegistry;
 import tfar.davespotioneering.block.ModCauldronInteractions;
 import tfar.davespotioneering.config.ClothConfig;
 import tfar.davespotioneering.init.*;
 import tfar.davespotioneering.mixin.BlockEntityTypeAcces;
-import tfar.davespotioneering.mixin.PotionBrewingAccess;
 import tfar.davespotioneering.net.PacketHandler;
 
 import java.util.HashSet;
@@ -63,19 +63,19 @@ public class DavesPotioneering implements ModInitializer {
     }
 
     protected static void strongRecipe(Potion potion,Potion strong) {
-        PotionBrewingAccess.$addMix(potion, Items.GLOWSTONE_DUST, strong);
+        BrewingRecipeRegistry.registerPotionRecipe(potion, Items.GLOWSTONE_DUST, strong);
     }
 
     protected static void extendedRecipe(Potion potion,Potion extended) {
-        PotionBrewingAccess.$addMix(potion, Items.REDSTONE, extended);
+        BrewingRecipeRegistry.registerPotionRecipe(potion, Items.REDSTONE, extended);
     }
 
     protected static void splashRecipe(Potion potion,Potion splash) {
-        PotionBrewingAccess.$addMix(potion, Items.GUNPOWDER, splash);
+        BrewingRecipeRegistry.registerPotionRecipe(potion, Items.GUNPOWDER, splash);
     }
 
     protected static void lingerRecipe(Potion potion,Potion splash) {
-        PotionBrewingAccess.$addMix(potion, Items.DRAGON_BREATH, splash);
+        BrewingRecipeRegistry.registerPotionRecipe(potion, Items.DRAGON_BREATH, splash);
     }
 
     public static void addPotions() {

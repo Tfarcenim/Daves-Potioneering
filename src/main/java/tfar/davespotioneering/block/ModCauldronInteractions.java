@@ -156,11 +156,11 @@ public class ModCauldronInteractions {
 
             //custom//
             WATER.put(Items.DRAGON_BREATH, ModCauldronInteractions::dragonsBreath);
-            WATER.put(Items.ARROW, ModCauldronInteractions::arrowCoating);
+            WATER.put(Items.ARROW, (state, level, pos, player, stack, stack2) -> arrowCoating(state, level, pos, player, stack2));
 
             for (Item item : Registry.ITEM) {
                 if (item instanceof ToolItem) {
-                    WATER.put(item, ModCauldronInteractions::weaponCoating);
+                    WATER.put(item, (state, level, pos, player, hand, stack) -> weaponCoating(state, level, pos, player, stack));
                 }
             }
             //end//
@@ -217,14 +217,14 @@ public class ModCauldronInteractions {
         }
 
         @Nonnull
-        static ActionResult arrowCoating(BlockState state, World level, BlockPos pos, PlayerEntity player, Hand p_175715_, ItemStack stack) {
-            LayeredReinforcedCauldronBlock.handleArrowCoating(state,level,pos,player,p_175715_,stack);
+        static ActionResult arrowCoating(BlockState state, World level, BlockPos pos, PlayerEntity player, ItemStack stack) {
+            LayeredReinforcedCauldronBlock.handleArrowCoating(state,level,pos,player, stack);
             return ActionResult.success(level.isClient);
         }
 
         @Nonnull
-        static ActionResult weaponCoating(BlockState state, World level, BlockPos pos, PlayerEntity player, Hand p_175715_, ItemStack stack) {
-            LayeredReinforcedCauldronBlock.handleWeaponCoating(state,level,pos,player,p_175715_,stack);
+        static ActionResult weaponCoating(BlockState state, World level, BlockPos pos, PlayerEntity player, ItemStack stack) {
+            LayeredReinforcedCauldronBlock.handleWeaponCoating(state,level,pos,player, stack);
             return ActionResult.success(level.isClient);
         }
     }
