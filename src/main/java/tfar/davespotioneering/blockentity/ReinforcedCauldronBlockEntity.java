@@ -67,9 +67,7 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity {
     @Nonnull
     @Override
     public NbtCompound toInitialChunkDataNbt() {
-        NbtCompound tag = super.toInitialChunkDataNbt();
-        writeNbt(tag);
-        return tag;    // okay to send entire inventory on chunk load
+        return createNbt();
     }
 
 
@@ -85,18 +83,19 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity {
     //}
 
     public void onEntityCollision(Entity entity) {
-        if (entity instanceof ItemEntity && getCachedState().get(LayeredReinforcedCauldronBlock.DRAGONS_BREATH)) {
-            ItemStack stack =  ((ItemEntity) entity).getStack();
+        if (entity instanceof ItemEntity itemEntity && getCachedState().get(LayeredReinforcedCauldronBlock.DRAGONS_BREATH)) {
+            ItemStack stack =  itemEntity.getStack();
             BlockState blockState = getCachedState();
             int fluidLevel = blockState.get(LeveledCauldronBlock.LEVEL);
             if (potion == ModPotions.MILK && PotionUtil.getPotion(stack) != Potions.EMPTY) {
                 LayeredReinforcedCauldronBlock.removeCoating(blockState,this.world,pos,null,stack);
             } else if (stack.getItem() == Items.ARROW && fluidLevel > 0) {
-              LayeredReinforcedCauldronBlock.handleArrowCoating(blockState,this.world,pos,null,null,stack);
+              LayeredReinforcedCauldronBlock.handleArrowCoating(blockState,this.world,pos,null, stack);
             } else if (fluidLevel == 3) {
                 //burn off a layer, then schedule the rest of the ticks
                 this.world.playSound(null,pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.8F, 1);
                 LayeredReinforcedCauldronBlock.lowerFillLevel0(blockState, this.world, pos);
+                stack.getOrCreateNbt().putInt(LayeredReinforcedCauldronBlock.LAYERS,1);
                 scheduleTick();
             }
         }

@@ -10,7 +10,6 @@
     "LayeredCauldronBlockMixin",
     "LivingEntityMixin",
     "PlayerEntityMixin",
-    "PotionBrewingAccess",
     "PotionBrewingMixin",
     "PotionItemMixin",
     "PotionSlotMixin",
@@ -23,7 +22,7 @@
   "client": [
     "BakedModelManagerAccess",
     "BakedModelManagerMixin",
-    "IngameGuiMixin",
+    "IngameGuiAccess",
     "PlayerInfoMixin",
     "ItemOverrideListMixin",
     "ItemRendererMixin",
