@@ -30,8 +30,7 @@
     "ModelOverrideListMixin",
     "MouseHelperMixin",
     "ParticleManagerAccess",
-    "PlayerInfoMixin",
-    "ScreenMixin"
+    "PlayerInfoMixin"
   ],
   "injectors": {
     "defaultRequire": 1
