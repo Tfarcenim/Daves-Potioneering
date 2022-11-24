@@ -20,6 +20,7 @@ import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.init.ModSoundEvents;
 import tfar.davespotioneering.item.GauntletItem;
+import tfar.davespotioneering.mixin.GuiAccess;
 
 public class GauntletHUD implements IGuiOverlay {
     public static final ResourceLocation GAUNTLET_ICON_LOC = new ResourceLocation(DavesPotioneering.MODID, "textures/gauntlet_icons/");
@@ -178,6 +179,9 @@ public class GauntletHUD implements IGuiOverlay {
             if (preset == HudPresets.ABOVE_HOTBAR) {
                 x = (screenWidth-TEX_WIDTH) / 2;
                 y = screenHeight - Math.min(gui.leftHeight,gui.rightHeight) - TEX_HEIGHT;
+                if (((GuiAccess)gui).getToolHighlightTimer() > 0) {
+                    y -= 10;
+                }
             }
 
             int yOffset;

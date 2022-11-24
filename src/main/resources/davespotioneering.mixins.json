@@ -19,6 +19,7 @@
     "ThrowablePotionItemMixin"
   ],
   "client": [
+    "GuiAccess",
     "ItemOverrideListMixin",
     "ParticleManagerAccess"
   ],
