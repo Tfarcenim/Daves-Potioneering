@@ -63,7 +63,7 @@ public class GauntletItem extends SwordItem {
     }
 
     public MutableComponent getCtrlDescriptions(int i) {
-        return Component.translatable(this.getDescriptionId() + i +".ctrl.desc");
+        return new TranslatableComponent(this.getDescriptionId() + i +".ctrl.desc");
     }
 
     @Override
