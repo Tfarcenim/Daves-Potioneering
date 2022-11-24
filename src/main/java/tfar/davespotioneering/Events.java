@@ -33,7 +33,7 @@ public class Events {
         ItemStack stack = e.getItemStack();
         Player player = e.getPlayer();
         if (!player.level.isClientSide && stack.getItem() instanceof ThrowablePotionItem) {
-            player.getCooldowns().addCooldown(stack.getItem(), ModConfig.Server.potion_cooldown);
+            player.getCooldowns().addCooldown(stack.getItem(), ModConfig.Server.potion_throw_cooldown.get());
         }
     }
 
@@ -85,8 +85,8 @@ public class Events {
     public static void heldItemChangeEvent(Player player) {
         ItemStack stack = player.getMainHandItem();
         if ((stack.getItem() instanceof LingeringPotionItem || stack.getItem() instanceof SplashPotionItem)) {
-            player.getCooldowns().addCooldown(Items.SPLASH_POTION, ModConfig.Server.potion_cooldown);
-            player.getCooldowns().addCooldown(Items.LINGERING_POTION, ModConfig.Server.potion_cooldown);
+            player.getCooldowns().addCooldown(Items.SPLASH_POTION, ModConfig.Server.potion_switch_cooldown.get());
+            player.getCooldowns().addCooldown(Items.LINGERING_POTION, ModConfig.Server.potion_switch_cooldown.get());
         }
     }
 

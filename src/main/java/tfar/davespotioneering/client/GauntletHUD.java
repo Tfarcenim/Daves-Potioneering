@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -19,6 +20,7 @@ import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.init.ModSoundEvents;
 import tfar.davespotioneering.item.GauntletItem;
+import tfar.davespotioneering.mixin.GuiAccess;
 
 public class GauntletHUD implements IIngameOverlay {
     public static final ResourceLocation GAUNTLET_ICON_LOC = new ResourceLocation(DavesPotioneering.MODID, "textures/gauntlet_icons/");
@@ -27,6 +29,7 @@ public class GauntletHUD implements IIngameOverlay {
         return new ResourceLocation(GAUNTLET_ICON_LOC.getNamespace(), GAUNTLET_ICON_LOC.getPath() + fileName + ".png");
     }
     static final int TEX_HEIGHT = 41;
+    static final int TEX_WIDTH = 121;
 
     private static Potion activePotion = null;
     private static Potion prePotion = null;
@@ -98,17 +101,17 @@ public class GauntletHUD implements IIngameOverlay {
     }
 
     private static void renderPotion(Potion potion, PoseStack matrixStack, int x, int y, int cooldown, boolean isActivePotion) {
-        if (potion == null || potion.getRegistryName() == null) return;
+        if (potion == null) return;
         if (potion.getEffects().isEmpty()) return;
 
         matrixStack.pushPose();
         RenderSystem.setShaderColor(1, 1, 1, 1);
 
         if (potion.getEffects().size() > 1) {
-            if (potion.getRegistryName().toString().contains("turtle_master")) {
+            if (Registry.POTION.getKey(potion).toString().contains("turtle_master")) {
                 bind(getGauntletIconLoc("turtle_master"));
-            } else if (mc.getResourceManager().hasResource(getGauntletIconLoc(potion.getRegistryName().toString()))) {
-                bind(getGauntletIconLoc(potion.getRegistryName().toString()));
+            } else if (mc.getResourceManager().hasResource(getGauntletIconLoc(Registry.POTION.getKey(potion).toString()))) {
+                bind(getGauntletIconLoc(Registry.POTION.getKey(potion).toString()));
             } else {
                 bind(getGauntletIconLoc("unknown"));
             }
@@ -187,7 +190,7 @@ public class GauntletHUD implements IIngameOverlay {
     }
 
     @Override
-    public void render(ForgeIngameGui gui, PoseStack poseStack, float partialTick, int width, int height) {
+    public void render(ForgeIngameGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
         // only renders when the hotbar renders
         //            if (Minecraft.getInstance().currentScreen != null) return;
         // get player from client
@@ -199,7 +202,51 @@ public class GauntletHUD implements IIngameOverlay {
             // get nbt
             CompoundTag info = player.getMainHandItem().getOrCreateTag().getCompound("info");
             Potion[] potions = GauntletItem.getPotionsFromNBT(info);
-            GauntletHUD.render(gui,poseStack,height);
+            GauntletHUD.render(gui,poseStack,screenHeight);
+
+
+
+            RenderSystem.setShaderColor(1, 1, 1, 1);
+            bind(hud);
+
+            if (preset == HudPresets.ABOVE_HOTBAR) {
+                x = (screenWidth-TEX_WIDTH) / 2;
+                y = screenHeight - Math.min(gui.left_height,gui.right_height) - TEX_HEIGHT;
+                if (((GuiAccess)gui).getToolHighlightTimer() > 0) {
+                    y -= 10;
+                }
+            }
+
+            int yOffset;
+
+            int xFixed = x;
+            int yFixed = y;
+
+            if (forwardCycle) {
+                cooldown--;
+                yOffset = 2;
+                if (cooldown <= 0) {
+                    mc.getSoundManager().play(SimpleSoundInstance.forUI(ModSoundEvents.GAUNTLET_SCROLL, 1.0F));
+                    forwardCycle = false;
+                    cooldown = maxCooldown;
+                }
+            } else if (backwardCycle) {
+                cooldown--;
+                yOffset = 1;
+                if (cooldown <= 0) {
+                    mc.getSoundManager().play(SimpleSoundInstance.forUI(ModSoundEvents.GAUNTLET_SCROLL, 1.0F));
+                    backwardCycle = false;
+                    cooldown = maxCooldown;
+                }
+            } else {
+                yOffset = 0;
+            }
+            GuiComponent.blit(poseStack, xFixed, yFixed, gui.getBlitOffset(), 0, 1 + 43 * yOffset, TEX_WIDTH, TEX_HEIGHT, 128, 128);
+            renderPotion(prePotion, poseStack, xFixed + 3, yFixed + 21, GauntletItem.getCooldownFromPotionByIndex(info.getInt("activePotionIndex")-1, g), false);
+            renderPotion(activePotion, poseStack, xFixed + 51, yFixed + 5, GauntletItem.getCooldownFromPotionByIndex(info.getInt("activePotionIndex"), g), true);
+            renderPotion(postPotion, poseStack, xFixed + 99, yFixed + 21, GauntletItem.getCooldownFromPotionByIndex(info.getInt("activePotionIndex")+1, g), false);
+
+
             if (potions == null) {
                 // reset
                 GauntletHUD.init(null, null, null);

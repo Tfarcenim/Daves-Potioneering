@@ -62,6 +62,10 @@ public class GauntletItem extends SwordItem {
         return InteractionResultHolder.pass(stack);
     }
 
+    public MutableComponent getCtrlDescriptions(int i) {
+        return Component.translatable(this.getDescriptionId() + i +".ctrl.desc");
+    }
+
     @Override
     public int getDamage(ItemStack stack) {
         CompoundTag tag = stack.getTag();
@@ -135,6 +139,8 @@ public class GauntletItem extends SwordItem {
         return super.hurtEnemy(stack, victim, attacker);
     }
 
+    public static final int C_LINES = 3;
+
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
@@ -145,7 +151,9 @@ public class GauntletItem extends SwordItem {
 
         tooltip.add(new TranslatableComponent(getDescriptionId()+".hold_ctrl.desc"));
         if (Screen.hasControlDown())
-            tooltip.add(this.getCtrlDescription().withStyle(ChatFormatting.GRAY));
+            for (int i = 0; i < C_LINES;i++) {
+                tooltip.add(this.getCtrlDescriptions(i).withStyle(ChatFormatting.GRAY));
+            }
 
         Tuple<List<MobEffectInstance>, List<Potion>> tuple = getEffectsFromGauntlet(stack);
         if (tuple == null) return;

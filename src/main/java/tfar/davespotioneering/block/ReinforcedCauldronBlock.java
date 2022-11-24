@@ -24,6 +24,10 @@ public class ReinforcedCauldronBlock extends AbstractCauldronBlock {
         return false;
     }
 
+    public static final int S_LINES = 2;
+    public static final int C_LINES = 3;
+    public static final int A_LINES = 3;
+
     @Override
     public void handlePrecipitation(BlockState p_152935_, Level level, BlockPos pos, Biome.Precipitation precipitation) {
         if (shouldHandlePrecipitation(level, precipitation)) {

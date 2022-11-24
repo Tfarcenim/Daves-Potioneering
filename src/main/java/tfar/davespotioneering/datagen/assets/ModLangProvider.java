@@ -50,6 +50,10 @@ public class ModLangProvider extends LanguageProvider {
                     addItem(() -> item, "Umbrella");
                     addDesc(item,"Keeps you from getting wet!");
                 });
+        detailedDescriptions();
+    }
+
+    public void detailedDescriptions() {
         addShiftDesc(ModBlocks.COMPOUND_BREWING_STAND,"An upgraded stand that eases the tedium of brewing.");
         addHoldSDesc(ModBlocks.COMPOUND_BREWING_STAND,"Summary: Hold [Shift]");
         addCtrlDescs(ModBlocks.COMPOUND_BREWING_STAND,"- Potions brew at 2x speed",
@@ -63,19 +67,26 @@ public class ModLangProvider extends LanguageProvider {
                 "It also has some small benefits.");
 
         addHoldCDesc(ModBlocks.REINFORCED_CAULDRON,"Features: Hold [CTRL]");
-        addCtrlDescs(ModBlocks.REINFORCED_CAULDRON,"- Water is not depleted when filling empty bottles",
-                "- Can be filled with potions and Milk");
+        addCtrlDescs(ModBlocks.REINFORCED_CAULDRON,
+                "- Water is not depleted when filling empty bottles.",
+                "- Can be filled with potions, and will have colored liquid that reflects the potion placed inside.",
+                "- If filled with two different Potions, an explosion is caused.",
+                "- Can be filled with potions and Milk.",
+                "- Unlocks Coating"
+        );
 
         addHoldADesc(ModBlocks.REINFORCED_CAULDRON,"Coating: Hold [Alt]");
-        addAltDescs(ModBlocks.REINFORCED_CAULDRON,"Fill the cauldron with any potion and Dragon's Breath.",
-                        "Then, toss your weapon of choice into the concoction.");
+        addAltDescs(ModBlocks.REINFORCED_CAULDRON,"Once the Reinforced Cauldron is filled with 3 similar potions and Dragon's Breath, a mixture is made.",
+                "Next, throw the item/weapon/tool/arrows you would like to coat into the cauldron.",
+                "The liquid will sizzle and evaporate until there is nothing left but the newly coated item.");
 
 
         addShiftDesc(ModItems.POTIONEER_GAUNTLET,"An alchemical weapon that utilizes potions and brute force in a Netherite knuckle sandwich!");
         addHoldSDesc(ModItems.POTIONEER_GAUNTLET,"Summary: Hold [Shift]");
-        addCtrlDesc(ModItems.POTIONEER_GAUNTLET,"Shift+RMB - Ignites or extinguishes the internal blaze. (toggles potion usage)\n" +
-                "Shift+Scroll wheel up/down - cycles through one of six potions injected into the gauntlet.");
         addHoldCDesc(ModItems.POTIONEER_GAUNTLET,"Controls: Hold [Ctrl]");
+        addCtrlDescs(ModItems.POTIONEER_GAUNTLET,"Shift+RMB - Ignites or extinguishes the internal blaze. (toggles potion usage)",
+                "Shift+Scroll wheel up/down - cycles through one of six potions injected into the gauntlet.",
+                "Shift+Middle Mouse Button = customize Gauntlet HUD");
 
 
         addShiftDesc(ModBlocks.POTION_INJECTOR,"A workstation necessary for preparing the Potioneer Gauntlet.");
