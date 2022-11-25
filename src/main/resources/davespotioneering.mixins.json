@@ -7,6 +7,7 @@
     "BrewingStandBlockEntityMixin",
     "BrewingStandContainerAccess",
     "BrewingStandContainerMixin",
+    "ItemAccess",
     "LayeredCauldronBlockMixin",
     "LivingEntityMixin",
     "PlayerEntityMixin",
@@ -14,21 +15,21 @@
     "PotionItemMixin",
     "PotionSlotMixin",
     "PotionUtilsMixin",
+    "ServerPlayerInteractionManagerMixin",
     "ServerPlayNetHandlerMixin",
     "SimpleContainerAccess",
-    "ItemAccess",
     "ThrowablePotionItemMixin"
   ],
   "client": [
     "BakedModelManagerAccess",
     "BakedModelManagerMixin",
     "IngameGuiAccess",
-    "PlayerInfoMixin",
     "ItemOverrideListMixin",
     "ItemRendererMixin",
     "ModelBakeryMixin",
     "MouseHelperMixin",
-    "ParticleManagerAccess"
+    "ParticleManagerAccess",
+    "PlayerInfoMixin"
   ],
   "injectors": {
     "defaultRequire": 1
