@@ -5,7 +5,6 @@ import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
-import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
@@ -50,7 +49,7 @@ public class DavesPotioneering implements ModInitializer {
         ((BlockEntityTypeAcces)BlockEntityType.LECTERN).setBlocks(newSet);
 
 
-        UseItemCallback.EVENT.register(Events::potionCooldown);
+      //  UseItemCallback.EVENT.register(Events::potionCooldown);
         UseEntityCallback.EVENT.register(Events::milkCow);
         AttackEntityCallback.EVENT.register(Events::afterHit);
 

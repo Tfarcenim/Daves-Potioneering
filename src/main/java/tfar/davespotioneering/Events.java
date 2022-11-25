@@ -16,7 +16,6 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -30,14 +29,12 @@ import tfar.davespotioneering.mixin.BrewingStandContainerAccess;
 
 public class Events {
 
-    public static TypedActionResult<ItemStack> potionCooldown(PlayerEntity player, World level, Hand interactionHand) {
+    public static void potionCooldown(PlayerEntity player, World level, Hand interactionHand) {
         ItemStack stack = player.getStackInHand(interactionHand);
 
         if (!player.world.isClient && stack.getItem() instanceof ThrowablePotionItem) {
             player.getItemCooldownManager().set(stack.getItem(), ClothConfig.potion_cooldown);
         }
-
-        return TypedActionResult.pass(stack);
     }
 
     public static ActionResult milkCow(PlayerEntity player, World e2, Hand hand, Entity clicked, @Nullable EntityHitResult e5) {

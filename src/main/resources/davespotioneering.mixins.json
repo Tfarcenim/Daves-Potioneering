@@ -7,6 +7,7 @@
     "BrewingStandBlockEntityMixin",
     "BrewingStandContainerAccess",
     "BrewingStandContainerMixin",
+    "ItemAccess",
     "LayeredCauldronBlockMixin",
     "LivingEntityMixin",
     "PlayerEntityMixin",
@@ -14,10 +15,10 @@
     "PotionItemMixin",
     "PotionSlotMixin",
     "PotionUtilsMixin",
+    "ServerPlayerInteractionManagerMixin",
     "ServerPlayNetHandlerMixin",
     "SimpleContainerAccess",
-    "ThrowablePotionItemMixin",
-    "ItemAccess"
+    "ThrowablePotionItemMixin"
   ],
   "client": [
     "BakedModelManagerAccess",
