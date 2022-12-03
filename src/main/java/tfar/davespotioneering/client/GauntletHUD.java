@@ -9,7 +9,6 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -23,10 +22,10 @@ import tfar.davespotioneering.item.GauntletItem;
 import tfar.davespotioneering.mixin.GuiAccess;
 
 public class GauntletHUD implements IIngameOverlay {
-    public static final ResourceLocation GAUNTLET_ICON_LOC = new ResourceLocation(DavesPotioneering.MODID, "textures/gauntlet_icons/");
+    public static final String GAUNTLET_ICON_LOC = "textures/gauntlet_icons/";
 
     public static ResourceLocation getGauntletIconLoc(String fileName) {
-        return new ResourceLocation(GAUNTLET_ICON_LOC.getNamespace(), GAUNTLET_ICON_LOC.getPath() + fileName + ".png");
+        return new ResourceLocation(DavesPotioneering.MODID, GAUNTLET_ICON_LOC + fileName + ".png");
     }
     static final int TEX_HEIGHT = 41;
     static final int TEX_WIDTH = 121;
@@ -35,6 +34,8 @@ public class GauntletHUD implements IIngameOverlay {
     private static Potion prePotion = null;
     private static Potion postPotion = null;
     private static final ResourceLocation hud = getGauntletIconLoc("hud");
+    private static final ResourceLocation unknown = getGauntletIconLoc("unknown");
+    private static final ResourceLocation turtle_master = getGauntletIconLoc("turtle_master");
 
     public static int x = ModConfig.Client.gauntlet_hud_x.get();
     public static int y = ModConfig.Client.gauntlet_hud_y.get();
@@ -54,52 +55,6 @@ public class GauntletHUD implements IIngameOverlay {
         GauntletHUD.postPotion = postPotion;
     }
 
-    public static void render(ForgeIngameGui gui, PoseStack matrixStack, int height) {
-        matrixStack.pushPose();
-        RenderSystem.setShaderColor(1, 1, 1, 1);
-        bind(hud);
-
-        int yFixed = Mth.clamp(height+y, 0, height-41);
-        if (preset == HudPresets.ABOVE_HOTBAR) {
-            yFixed = height - Math.min(gui.right_height, gui.left_height) - TEX_HEIGHT;
-        }
-
-        int windowW = mc.getWindow().getGuiScaledWidth();
-
-        int xFixed = Mth.clamp((windowW + x)/2, 0, windowW-120);
-
-
-        if (forwardCycle) {
-            cooldown--;
-            GuiComponent.blit(matrixStack, xFixed, yFixed, mc.gui.getBlitOffset(), 0, 87, 120, 41, 128, 128);
-            if (cooldown <= 0) {
-               mc.getSoundManager().play(SimpleSoundInstance.forUI(ModSoundEvents.GAUNTLET_SCROLL, 1.0F));
-                forwardCycle = false;
-                cooldown = maxCooldown;
-            }
-        } else if (backwardCycle) {
-            cooldown--;
-            GuiComponent.blit(matrixStack, xFixed, yFixed, mc.gui.getBlitOffset(), 0, 44, 120, 41, 128, 128);
-            if (cooldown <= 0) {
-                mc.getSoundManager().play(SimpleSoundInstance.forUI(ModSoundEvents.GAUNTLET_SCROLL, 1.0F));
-                backwardCycle = false;
-                cooldown = maxCooldown;
-            }
-        } else {
-            GuiComponent.blit(matrixStack, xFixed, yFixed, mc.gui.getBlitOffset(), 0, 1, 120, 41, 128, 128);
-        }
-
-        Player player = Minecraft.getInstance().player;
-        if (player == null) return;
-        ItemStack g = player.getMainHandItem();
-
-        CompoundTag info = g.getOrCreateTag().getCompound("info");
-        renderPotion(prePotion, matrixStack, xFixed + 3, yFixed + 21, GauntletItem.getCooldownFromPotionByIndex(info.getInt("activePotionIndex")-1, g), false);
-        renderPotion(activePotion, matrixStack, xFixed + 51, yFixed + 5, GauntletItem.getCooldownFromPotionByIndex(info.getInt("activePotionIndex"), g), true);
-        renderPotion(postPotion, matrixStack, xFixed + 99, yFixed + 21, GauntletItem.getCooldownFromPotionByIndex(info.getInt("activePotionIndex")+1, g), false);
-        matrixStack.popPose();
-    }
-
     private static void renderPotion(Potion potion, PoseStack matrixStack, int x, int y, int cooldown, boolean isActivePotion) {
         if (potion == null) return;
         if (potion.getEffects().isEmpty()) return;
@@ -109,11 +64,11 @@ public class GauntletHUD implements IIngameOverlay {
 
         if (potion.getEffects().size() > 1) {
             if (Registry.POTION.getKey(potion).toString().contains("turtle_master")) {
-                bind(getGauntletIconLoc("turtle_master"));
-            } else if (mc.getResourceManager().hasResource(getGauntletIconLoc(Registry.POTION.getKey(potion).toString()))) {
+                bind(turtle_master);
+            } else if (mc.getResourceManager().hasResource(getGauntletIconLoc(Registry.POTION.getKey(potion).getPath()))) {
                 bind(getGauntletIconLoc(Registry.POTION.getKey(potion).toString()));
             } else {
-                bind(getGauntletIconLoc("unknown"));
+                bind(unknown);
             }
             GuiComponent.blit(matrixStack, x, y, mc.gui.getBlitOffset(), 0, 0, 18, 18, 18, 18);
         } else {
@@ -202,7 +157,7 @@ public class GauntletHUD implements IIngameOverlay {
             // get nbt
             CompoundTag info = player.getMainHandItem().getOrCreateTag().getCompound("info");
             Potion[] potions = GauntletItem.getPotionsFromNBT(info);
-            GauntletHUD.render(gui,poseStack,screenHeight);
+           // GauntletHUD.render(gui,poseStack,screenHeight);
 
 
 

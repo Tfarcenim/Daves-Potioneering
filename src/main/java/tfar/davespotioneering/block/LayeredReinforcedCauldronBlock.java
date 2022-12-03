@@ -1,14 +1,9 @@
 package tfar.davespotioneering.block;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -17,11 +12,13 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
@@ -272,58 +269,6 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
                 boom(world,pos);
             }
         }
-    }
-
-    public static final int S_LINES = 2;
-    public static final int C_LINES = 2;
-    public static final int A_LINES = 2;
-
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-
-        tooltip.add(new TranslatableComponent(getDescriptionId()+".hold_shift.desc"));
-        if (Screen.hasShiftDown())
-            for (int i = 0; i < S_LINES;i++) {
-
-                tooltip.add(this.getShiftDescriptions(i).withStyle(ChatFormatting.GRAY));
-            }
-
-        tooltip.add(new TranslatableComponent(getDescriptionId()+".hold_ctrl.desc"));
-        if (Screen.hasControlDown())
-            for (int i = 0; i < C_LINES;i++) {
-                tooltip.add(this.getCtrlDescriptions(i).withStyle(ChatFormatting.GRAY));
-            }
-
-        tooltip.add(new TranslatableComponent(getDescriptionId()+".hold_alt.desc"));
-        if (Screen.hasAltDown()) {
-            for (int i = 0; i < A_LINES;i++) {
-                tooltip.add(this.getAltDescriptions(i).withStyle(ChatFormatting.GRAY));
-            }
-        }
-    }
-
-    public MutableComponent getShiftDescription() {
-        return new TranslatableComponent(this.getDescriptionId() + ".shift.desc");
-    }
-
-    public MutableComponent getShiftDescriptions(int i) {
-        return new TranslatableComponent(this.getDescriptionId() + i +".shift.desc");
-    }
-
-    public MutableComponent getCtrlDescription() {
-        return new TranslatableComponent(this.getDescriptionId() + ".ctrl.desc");
-    }
-
-    public MutableComponent getCtrlDescriptions(int i) {
-        return new TranslatableComponent(this.getDescriptionId() + i +".ctrl.desc");
-    }
-
-    public MutableComponent getAltDescription() {
-        return new TranslatableComponent(this.getDescriptionId() + ".alt.desc");
-    }
-
-    public MutableComponent getAltDescriptions(int i) {
-        return new TranslatableComponent(this.getDescriptionId() + i+".alt.desc");
     }
 
     @org.jetbrains.annotations.Nullable
