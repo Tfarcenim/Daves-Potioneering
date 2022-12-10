@@ -29,6 +29,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.PotionInjectorBlockEntity;
 
 import javax.annotation.Nullable;
@@ -104,6 +105,18 @@ public class PotionInjectorBlock extends Block implements BlockEntityProvider {
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         super.appendProperties(builder);
         builder.add(HAS_GAUNTLET,FACING);
+    }
+
+    @Override
+    public void onStateReplaced(BlockState blockState, World world, BlockPos blockPos, BlockState blockState2, boolean bl) {
+        if (!blockState.isOf(blockState2.getBlock())) {
+            BlockEntity blockEntity = world.getBlockEntity(blockPos);
+            if (blockEntity instanceof PotionInjectorBlockEntity potionInjectorBlockEntity) {
+                Util.dropContents(world, blockPos,potionInjectorBlockEntity.handler.stacks);
+                world.updateComparators(blockPos, this);
+            }
+            super.onStateReplaced(blockState, world, blockPos, blockState2, bl);
+        }
     }
 
     @Override

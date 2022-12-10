@@ -5,11 +5,15 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.BrewingRecipeRegistry;
 import net.minecraft.screen.BrewingStandScreenHandler;
+import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import tfar.davespotioneering.mixin.ItemAccess;
+
+import java.util.List;
 
 public class Util {
 
@@ -47,6 +51,9 @@ public class Util {
         }
     }
 
+    public static void dropContents(World pLevel, BlockPos pPos, List<ItemStack> pStackList) {
+        pStackList.forEach(stack -> ItemScatterer.spawn(pLevel, pPos.getX(), pPos.getY(), pPos.getZ(), stack));
+    }
 
     public static boolean isValidInputCountInsensitive(ItemStack stack) {
        return BrewingStandScreenHandler.PotionSlot.matches(stack);

@@ -296,6 +296,10 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
         }
     }
 
+    public BrewingHandler getBrewingHandler() {
+        return brewingHandler;
+    }
+
     @Nullable
     public static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> checkType(BlockEntityType<A> blockEntityType, BlockEntityType<E> blockEntityType2, BlockEntityTicker<? super E> blockEntityTicker) {
         return blockEntityType2 == blockEntityType ? (BlockEntityTicker<A>) blockEntityTicker : null;

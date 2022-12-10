@@ -19,6 +19,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
 
@@ -74,6 +75,18 @@ public class AdvancedBrewingStandBlock extends BrewingStandBlock {
     @Override
     public BlockEntity createBlockEntity(BlockPos blockPos, BlockState blockState) {
         return new AdvancedBrewingStandBlockEntity(blockPos,blockState);
+    }
+
+    @Override
+    public void onStateReplaced(BlockState blockState, World world, BlockPos blockPos, BlockState blockState2, boolean bl) {
+        if (!blockState.isOf(blockState2.getBlock())) {
+            BlockEntity blockEntity = world.getBlockEntity(blockPos);
+            if (blockEntity instanceof AdvancedBrewingStandBlockEntity brewingStandBlockEntity) {
+                Util.dropContents(world, blockPos,brewingStandBlockEntity.getBrewingHandler().stacks);
+                world.updateComparators(blockPos, this);
+            }
+            super.onStateReplaced(blockState, world, blockPos, blockState2, bl);
+        }
     }
 
     @Override
