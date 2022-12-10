@@ -11,7 +11,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.ItemStackHandler;
 import tfar.davespotioneering.block.PotionInjectorBlock;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
 import tfar.davespotioneering.inv.PotionInjectorHandler;
@@ -21,7 +20,7 @@ import javax.annotation.Nullable;
 
 public class PotionInjectorBlockEntity extends BlockEntity implements MenuProvider {
 
-    public ItemStackHandler handler = new PotionInjectorHandler(8) {
+    public PotionInjectorHandler handler = new PotionInjectorHandler(8) {
         @Override
         protected void onContentsChanged(int slot) {
             super.onContentsChanged(slot);

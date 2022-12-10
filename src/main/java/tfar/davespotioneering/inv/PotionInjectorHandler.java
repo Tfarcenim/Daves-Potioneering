@@ -1,5 +1,6 @@
 package tfar.davespotioneering.inv;
 
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.items.ItemStackHandler;
@@ -14,6 +15,10 @@ public class PotionInjectorHandler extends ItemStackHandler {
 
     public PotionInjectorHandler(int slots) {
         super(slots);
+    }
+
+    public NonNullList<ItemStack> getStacks() {
+        return stacks;
     }
 
     @Override

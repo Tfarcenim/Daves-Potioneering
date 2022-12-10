@@ -63,22 +63,19 @@ public class ModLangProvider extends LanguageProvider {
 
 
         addHoldSDesc(ModBlocks.REINFORCED_CAULDRON,"Summary: Hold [Shift]");
-        addShiftDescs(ModBlocks.REINFORCED_CAULDRON,"An upgraded cauldron that enables the coating of melee weapons in potion effects.",
-                "It also has some small benefits.");
+        addShiftDesc(ModBlocks.REINFORCED_CAULDRON,"A new cauldron that has some mechanical differences/benefits over the Vanilla one.");
 
         addHoldCDesc(ModBlocks.REINFORCED_CAULDRON,"Features: Hold [CTRL]");
         addCtrlDescs(ModBlocks.REINFORCED_CAULDRON,
                 "- Water is not depleted when filling empty bottles.",
-                "- Can be filled with potions, and will have colored liquid that reflects the potion placed inside.",
-                "- If filled with two different Potions, an explosion is caused.",
-                "- Can be filled with potions and Milk.",
-                "- Unlocks Coating"
+                "- Can be filled with potions. Don't mix different flavors!",
+                "- Can be filled with milk"
         );
 
         addHoldADesc(ModBlocks.REINFORCED_CAULDRON,"Coating: Hold [Alt]");
-        addAltDescs(ModBlocks.REINFORCED_CAULDRON,"Once the Reinforced Cauldron is filled with 3 similar potions and Dragon's Breath, a mixture is made.",
-                "Next, throw the item/weapon/tool/arrows you would like to coat into the cauldron.",
-                "The liquid will sizzle and evaporate until there is nothing left but the newly coated item.");
+        addAltDescs(ModBlocks.REINFORCED_CAULDRON,"1. Once the Reinforced Cauldron is filled with 3 similar potions and Dragon's Breath, a mixture is made.",
+                "2. Next, throw the item/weapon/tool/arrows you would like to coat into the cauldron.",
+                "3. The liquid will sizzle and evaporate until there is nothing left but the newly coated item.");
 
 
         addShiftDesc(ModItems.POTIONEER_GAUNTLET,"An alchemical weapon that utilizes potions and brute force in a Netherite knuckle sandwich!");
@@ -86,7 +83,7 @@ public class ModLangProvider extends LanguageProvider {
         addHoldCDesc(ModItems.POTIONEER_GAUNTLET,"Controls: Hold [Ctrl]");
         addCtrlDescs(ModItems.POTIONEER_GAUNTLET,"Shift+RMB - Ignites or extinguishes the internal blaze. (toggles potion usage)",
                 "Shift+Scroll wheel up/down - cycles through one of six potions injected into the gauntlet.",
-                "Shift+Middle Mouse Button = customize Gauntlet HUD");
+                "Shift+Middle Mouse Button - customize Gauntlet HUD");
 
 
         addShiftDesc(ModBlocks.POTION_INJECTOR,"A workstation necessary for preparing the Potioneer Gauntlet.");

@@ -1,5 +1,7 @@
 package tfar.davespotioneering;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.Containers;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -10,6 +12,8 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.brewing.IBrewingRecipe;
 import tfar.davespotioneering.mixin.ItemAccess;
+
+import java.util.List;
 
 public class Util {
 
@@ -46,7 +50,6 @@ public class Util {
         }
     }
 
-
     public static boolean isValidInputCountInsensitive(ItemStack stack) {
         for (IBrewingRecipe recipe : BrewingRecipeRegistry.getRecipes()) {
             if (recipe.isInput(stack)) {
@@ -56,4 +59,7 @@ public class Util {
         return false;
     }
 
+    public static void dropContents(Level pLevel, BlockPos pPos, List<ItemStack> pStackList) {
+        pStackList.forEach(stack -> Containers.dropItemStack(pLevel, pPos.getX(), pPos.getY(), pPos.getZ(), stack));
+    }
 }

@@ -273,6 +273,10 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements Menu
         this.level.levelEvent(1035, blockpos, 0);
     }
 
+    public BrewingHandler getBrewingHandler() {
+        return brewingHandler;
+    }
+
     private boolean canMilkify() {
         for (int i : POTIONS) {
             ItemStack potionStack = brewingHandler.getStackInSlot(i);

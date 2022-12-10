@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
 
@@ -73,6 +74,18 @@ public class AdvancedBrewingStandBlock extends BrewingStandBlock {
 
     public BlockEntity newBlockEntity(BlockPos p_152698_, BlockState p_152699_) {
         return new AdvancedBrewingStandBlockEntity(p_152698_, p_152699_);
+    }
+
+    @Override
+    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
+        if (!pState.is(pNewState.getBlock())) {
+            BlockEntity blockentity = pLevel.getBlockEntity(pPos);
+            if (blockentity instanceof AdvancedBrewingStandBlockEntity advancedBrewingStandBlockEntity) {
+                Util.dropContents(pLevel, pPos, advancedBrewingStandBlockEntity.getBrewingHandler().getStacks());
+            }
+
+            super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
+        }
     }
 
     @Nullable
