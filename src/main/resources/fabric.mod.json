@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "davespotioneering",
   "version": "${version}",
   "accessWidener": "davespotioneering.aw",
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Dave's Potioneering",
+  "description": "Dave’s Potioneering is a mod that makes changes to how potions and alchemy work",
   "authors": [
     "Me!"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/daves-potioneering/",
+    "sources": "https://github.com/Tfarcenim/Daves-Potioneering"
   },
 
   "license": "CC0-1.0",

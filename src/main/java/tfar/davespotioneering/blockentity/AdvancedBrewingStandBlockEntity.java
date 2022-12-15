@@ -304,4 +304,8 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements Name
             markDirty();
         }
     }
+
+    public BrewingHandler getBrewingHandler() {
+        return brewingHandler;
+    }
 }
