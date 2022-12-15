@@ -342,6 +342,10 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements Menu
         return super.getCapability(capability, facing);
     }
 
+    public BrewingHandler getBrewingHandler() {
+        return brewingHandler;
+    }
+
     @Override
     public void invalidateCaps() {
         super.invalidateCaps();

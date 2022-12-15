@@ -30,6 +30,7 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.PotionInjectorBlockEntity;
 
 import javax.annotation.Nullable;
@@ -125,6 +126,17 @@ public class PotionInjectorBlock extends Block implements EntityBlock {
 
     public MutableComponent getCtrlDescription() {
         return new TranslatableComponent(this.getDescriptionId() + ".ctrl.desc");
+    }
+
+    @Override
+    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
+        if (!pState.is(pNewState.getBlock())) {
+            BlockEntity blockentity = pLevel.getBlockEntity(pPos);
+            if (blockentity instanceof PotionInjectorBlockEntity potionInjectorBlockEntity) {
+                Util.dropContents(pLevel, pPos, potionInjectorBlockEntity.handler.getStacks());
+            }
+            super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
+        }
     }
 
     @org.jetbrains.annotations.Nullable

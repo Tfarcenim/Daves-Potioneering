@@ -6,6 +6,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import tfar.davespotioneering.item.GauntletItem;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 public class PotionInjectorHandler extends ItemStackHandler {
 
@@ -14,6 +15,10 @@ public class PotionInjectorHandler extends ItemStackHandler {
 
     public PotionInjectorHandler(int slots) {
         super(slots);
+    }
+
+    public List<ItemStack> getStacks() {
+        return stacks;
     }
 
     @Override
