@@ -226,7 +226,7 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
 
     /**
      * Called periodically clientside on blocks near the player to show effects (like furnace fire particles). Note that
-     * this method is unrelated to {@link #randomTick} and {@link #ticksRandomly(BlockState)}, and will always be called regardless
+     * this method is unrelated to {@link #randomTick} and {@link #isRandomlyTicking(BlockState)} (BlockState)}, and will always be called regardless
      * of whether the block can receive random update ticks
      */
     @OnlyIn(Dist.CLIENT)

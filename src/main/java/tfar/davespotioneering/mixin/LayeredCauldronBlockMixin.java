@@ -16,7 +16,7 @@ public class LayeredCauldronBlockMixin {
 
     @Inject(method = "lowerFillLevel",at = @At("HEAD"),cancellable = true)
     private static void handleThis(BlockState p_153560_, Level p_153561_, BlockPos p_153562_, CallbackInfo ci) {
-        if (p_153560_.getBlock() instanceof LayeredCauldronBlock) {
+        if (p_153560_.getBlock() instanceof LayeredReinforcedCauldronBlock) {
             LayeredReinforcedCauldronBlock.lowerFillLevel0(p_153560_,p_153561_,p_153562_);
             ci.cancel();
         }

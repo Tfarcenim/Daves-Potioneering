@@ -51,9 +51,9 @@ public class ReinforcedCauldronBlock extends AbstractCauldronBlock {
 
         tooltip.add(new TranslatableComponent(getDescriptionId()+".hold_ctrl.desc"));
         if (Screen.hasControlDown())
-         //   for (int i = 0; i < C_LINES;i++) {
-                tooltip.add(this.getCtrlDescription().withStyle(ChatFormatting.GRAY));
-           // }
+            for (int i = 0; i < C_LINES;i++) {
+                tooltip.add(this.getCtrlDescriptions(i).withStyle(ChatFormatting.GRAY));
+            }
 
         tooltip.add(new TranslatableComponent(getDescriptionId()+".hold_alt.desc"));
         if (Screen.hasAltDown()) {
