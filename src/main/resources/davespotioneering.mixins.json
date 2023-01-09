@@ -15,11 +15,11 @@
     "PotionUtilsMixin",
     "ProtectionEnchantmentMixin",
     "ServerPlayNetHandlerMixin",
-    "ThrowablePotionItemMixin"
+    "ThrowablePotionItemMixin",
+    "ItemAccess"
   ],
   "client": [
     "IngameGuiMixin",
-    "ItemAccess",
     "ItemOverrideListMixin",
     "ParticleManagerAccess"
   ],
