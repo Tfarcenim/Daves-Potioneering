@@ -16,6 +16,7 @@ import net.minecraft.potion.Effect;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.client.gui.ForgeIngameGui;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.init.ModSoundEvents;
@@ -24,6 +25,8 @@ import tfar.davespotioneering.item.GauntletItem;
 public class GauntletHUD extends AbstractGui {
     public static final ResourceLocation GAUNTLET_ICON_LOC = new ResourceLocation(DavesPotioneering.MODID, "textures/gauntlet_icons/");
     public final static GauntletHUD hudInstance = new GauntletHUD();
+
+    public static final int TEX_Y = 41;
 
     public static ResourceLocation getGauntletIconLoc(String fileName) {
         return new ResourceLocation(GAUNTLET_ICON_LOC.getNamespace(), GAUNTLET_ICON_LOC.getPath() + fileName + ".png");
@@ -61,11 +64,15 @@ public class GauntletHUD extends AbstractGui {
         int windowH = mc.getMainWindow().getScaledHeight();
 
         int xFixed = MathHelper.clamp((windowW + x)/2, 0, windowW-120);
-        int yFixed = MathHelper.clamp(windowH+y, 0, windowH-41);
+        int yFixed = MathHelper.clamp(windowH+y, 0, windowH-TEX_Y);
+
+        if (preset == HudPresets.ABOVE_HOTBAR) {
+            yFixed = windowH - Math.max(ForgeIngameGui.left_height,ForgeIngameGui.right_height) - TEX_Y;
+        }
 
         if (forwardCycle) {
             cooldown--;
-            blit(matrixStack, xFixed, yFixed, getBlitOffset(), 0, 87, 120, 41, 128, 128);
+            blit(matrixStack, xFixed, yFixed, getBlitOffset(), 0, 87, 120, TEX_Y, 128, 128);
             if (cooldown <= 0) {
                mc.getSoundHandler().play(SimpleSound.master(ModSoundEvents.GAUNTLET_SCROLL, 1.0F));
                 forwardCycle = false;
@@ -73,14 +80,14 @@ public class GauntletHUD extends AbstractGui {
             }
         } else if (backwardCycle) {
             cooldown--;
-            blit(matrixStack, xFixed, yFixed, getBlitOffset(), 0, 44, 120, 41, 128, 128);
+            blit(matrixStack, xFixed, yFixed, getBlitOffset(), 0, 44, 120, TEX_Y, 128, 128);
             if (cooldown <= 0) {
                 mc.getSoundHandler().play(SimpleSound.master(ModSoundEvents.GAUNTLET_SCROLL, 1.0F));
                 backwardCycle = false;
                 cooldown = maxCooldown;
             }
         } else {
-            blit(matrixStack, xFixed, yFixed, getBlitOffset(), 0, 1, 120, 41, 128, 128);
+            blit(matrixStack, xFixed, yFixed, getBlitOffset(), 0, 1, 120, TEX_Y, 128, 128);
         }
 
         PlayerEntity player = Minecraft.getInstance().player;

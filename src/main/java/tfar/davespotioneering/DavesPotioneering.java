@@ -15,7 +15,6 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.brewing.BrewingRecipe;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -92,7 +91,6 @@ public class DavesPotioneering {
         MinecraftForge.EVENT_BUS.addListener(Events::potionCooldown);
         MinecraftForge.EVENT_BUS.addListener(Events::milkCow);
         MinecraftForge.EVENT_BUS.addListener(Events::afterHit);
-        MinecraftForge.EVENT_BUS.addListener(Events::switchGameMode);
 
         MinecraftForge.EVENT_BUS.addListener(Events::playerBrew);
         MinecraftForge.EVENT_BUS.addListener(Events::canApplyEffect);
