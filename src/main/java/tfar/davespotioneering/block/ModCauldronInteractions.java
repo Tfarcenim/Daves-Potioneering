@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.init.ModBlocks;
 
@@ -166,7 +167,7 @@ public class ModCauldronInteractions {
         WATER.put(Items.ARROW,ModCauldronInteractions::arrowCoating);
 
         for (Item item : Registry.ITEM) {
-            if (item instanceof TieredItem) {
+            if (item instanceof TieredItem || (ModConfig.Server.coat_all.get() && !WATER.containsKey(item))) {
                 WATER.put(item,ModCauldronInteractions::weaponCoating);
             }
         }
