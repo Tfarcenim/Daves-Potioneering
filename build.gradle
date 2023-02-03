@@ -20,7 +20,10 @@ plugins {
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
-version = "${mc_version}-${mod_version}"
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.parchmentmc.librarian.forgegradle'
+
+version = "$mc_version-$mod_version"
 group = 'tfar' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = project.modid
 
@@ -42,9 +45,9 @@ minecraft {
     //
     // Use non-default mappings at your own risk. They may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: 'parchment', version: '2022.10.09-1.19.2'
+    mappings channel: 'parchment', version: parch_mapping+"-"+mc_version
 
-     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
 
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.
@@ -156,7 +159,6 @@ repositories{
         name = "Progwml6 maven"
         url = "https://dvs1.progwml6.com/files/maven/"
     }
-    mavenCentral()
 }
 
 dependencies {

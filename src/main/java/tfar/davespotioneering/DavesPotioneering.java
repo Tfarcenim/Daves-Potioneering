@@ -48,6 +48,7 @@ public class DavesPotioneering {
     // Directly reference a log4j logger.
 
     public static final String MODID = "davespotioneering";
+    public static final boolean DEBUG = !FMLEnvironment.production;
 
     public DavesPotioneering() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
