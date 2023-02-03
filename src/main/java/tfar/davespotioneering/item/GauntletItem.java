@@ -30,6 +30,14 @@ import java.util.function.Function;
 
 public class GauntletItem extends SwordItem {
 
+    public static final String ACTIVE = "active";
+    public static final String ACTIVE_POTION = "activePotionIndex";
+    public static final String BLAZE = "blaze";
+    public static final String INFO = "info";
+    public static final String COOLDOWNS = "potionCooldownMap";
+    public static final String POTIONS = "potions";
+    public static final int SLOTS = 6;
+
     public GauntletItem(Properties properties) {
         super(ItemTier.NETHERITE, 4, -2.8f, properties);
     }
@@ -41,13 +49,14 @@ public class GauntletItem extends SwordItem {
 //                PacketHandler.sendToClient(new GauntletHUDMovementGuiPacket(), (ServerPlayerEntity) playerIn);
 
 
-            boolean active = stack.getOrCreateTag().getBoolean("active");
+            boolean active = stack.getOrCreateTag().getBoolean(ACTIVE);
 
             int blaze = getBlaze(stack);
 
             if (!world.isRemote && (blaze > 0 || active)) {
-                stack.getOrCreateTag().putBoolean("active", !active);
+                stack.getOrCreateTag().putBoolean(ACTIVE, !active);
                 world.playSound(null,playerIn.getPosX(),playerIn.getPosY(),playerIn.getPosZ(),active ? ModSoundEvents.GAUNTLET_TURNING_OFF : ModSoundEvents.GAUNTLET_TURNING_ON, SoundCategory.PLAYERS,.5f,1);
+
             } else {
             }
             return ActionResult.resultSuccess(stack);
@@ -60,8 +69,8 @@ public class GauntletItem extends SwordItem {
         CompoundNBT tag = stack.getTag();
         double blaze = 0;
         if (tag != null) {
-            CompoundNBT info = tag.getCompound("info");
-            blaze = info.getInt("blaze");
+            CompoundNBT info = tag.getCompound(INFO);
+            blaze = info.getInt(BLAZE);
         }
         return PotionInjectorMenu.BLAZE_CAP - (int) blaze;
     }
@@ -83,8 +92,8 @@ public class GauntletItem extends SwordItem {
 
     @Override
     public boolean showDurabilityBar(ItemStack stack) {
-        CompoundNBT info = stack.getOrCreateTag().getCompound("info");
-        double blaze = info.getInt("blaze");
+        CompoundNBT info = stack.getOrCreateTag().getCompound(INFO);
+        double blaze = info.getInt(BLAZE);
         return blaze > 0;
     }
 
@@ -96,32 +105,33 @@ public class GauntletItem extends SwordItem {
     @Override
     public boolean hitEntity(ItemStack stack, LivingEntity victim, LivingEntity attacker) {
         if (stack.getItem() instanceof GauntletItem) {
-            CompoundNBT info = stack.getOrCreateTag().getCompound("info");
+            CompoundNBT info = stack.getOrCreateTag().getCompound(INFO);
             Potion[] potions = getPotionsFromNBT(info);
             if (attacker instanceof PlayerEntity) {
 
-                boolean active = stack.getTag().getBoolean("active");
+                boolean active = stack.getTag().getBoolean(ACTIVE);
 
-                if (potions != null && getCooldownFromPotionByIndex(info.getInt("activePotionIndex"), stack) <= 0 && info.getInt("blaze") > 0 && active) {
+                if (potions != null && getCooldownFromPotionByIndex(info.getInt(INFO), stack) <= 0 && info.getInt(BLAZE) > 0 && active) {
                     Potion potion = potions[0];
                     for (EffectInstance effectInstance : potion.getEffects()) {
                         victim.addPotionEffect(new EffectInstance(effectInstance));
                     }
-                    info.putInt("blaze", info.getInt("blaze") - 1);
+                    info.putInt(BLAZE, info.getInt(BLAZE) - 1);
 
-                    if (info.getInt("blaze") == 0) {
-                        stack.getTag().putBoolean("active",false);
+                    if (info.getInt(BLAZE) == 0) {
+                        stack.getTag().putBoolean(ACTIVE,false);
                     }
 
                     ListNBT cooldownMap;
-                    if (info.get("potionCooldownMap") instanceof ListNBT) {
-                        cooldownMap = (ListNBT) info.get("potionCooldownMap");
+                    if (info.get(COOLDOWNS) instanceof ListNBT) {
+                        cooldownMap = (ListNBT) info.get(COOLDOWNS);
+
                     } else {
                         cooldownMap = new ListNBT();
                         cooldownMap.add(0, new IntArrayNBT(new ArrayList<>()));
                         cooldownMap.add(1, new IntArrayNBT(new ArrayList<>()));
                     }
-                    addPotionCooldownByIndex(info.getInt("activePotionIndex"), ModConfig.Server.gauntlet_cooldown.get(), stack, cooldownMap);
+                    addPotionCooldownByIndex(info.getInt(ACTIVE_POTION), ModConfig.Server.gauntlet_cooldown.get(), stack, cooldownMap);
                 }
             }
         }
@@ -171,7 +181,10 @@ public class GauntletItem extends SwordItem {
     @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
         super.inventoryTick(stack, world, entity, itemSlot, isSelected);
+
         if (entity instanceof PlayerEntity && !entity.getEntityWorld().isRemote()) {
+
+
             PlayerEntity player = (PlayerEntity) entity;
             ItemStack gauntletInstance = new ItemStack(ModItems.POTIONEER_GAUNTLET);
             if (player.inventory.hasItemStack(gauntletInstance)) {
@@ -197,8 +210,9 @@ public class GauntletItem extends SwordItem {
     @Nullable
     public static Tuple<List<EffectInstance>, List<Potion>> getEffectsFromGauntlet(ItemStack stack) {
         if (!stack.hasTag()) return null;
-        ListNBT nbts = stack.getTag().getCompound("info").getList("potions", Constants.NBT.TAG_STRING);
+        ListNBT nbts = stack.getTag().getCompound(INFO).getList(POTIONS, Constants.NBT.TAG_STRING);
         List<EffectInstance> effects = new ArrayList<>();
+
         List<Potion> potions = new ArrayList<>();
         for (INBT inbt : nbts) {
             if (inbt instanceof StringNBT) {
@@ -215,36 +229,37 @@ public class GauntletItem extends SwordItem {
 
     public static void cycleGauntletForward(PlayerEntity player) {
         if (player == null) return;
-        CompoundNBT info = player.getHeldItemMainhand().getOrCreateTag().getCompound("info");
-        ListNBT nbts = info.getList("potions", Constants.NBT.TAG_STRING);
+        CompoundNBT info = player.getHeldItemMainhand().getOrCreateTag().getCompound(INFO);
+        ListNBT nbts = info.getList(POTIONS, Constants.NBT.TAG_STRING);
+
         if (nbts.isEmpty()) return;
-        int index = info.getInt("activePotionIndex");
+        int index = info.getInt(ACTIVE_POTION);
         index++;
         if (index > 5) {
             index = 0;
         }
-        info.putInt("activePotionIndex", index);
+        info.putInt(ACTIVE_POTION, index);
     }
 
     public static void cycleGauntletBackward(PlayerEntity player) {
         if (player == null) return;
-        CompoundNBT info = player.getHeldItemMainhand().getOrCreateTag().getCompound("info");
-        ListNBT nbts = info.getList("potions", Constants.NBT.TAG_STRING);
+        CompoundNBT info = player.getHeldItemMainhand().getOrCreateTag().getCompound(INFO);
+        ListNBT nbts = info.getList(POTIONS, Constants.NBT.TAG_STRING);
         if (nbts.isEmpty()) return;
-        int index = info.getInt("activePotionIndex");
+        int index = info.getInt(ACTIVE_POTION);
         index--;
         if (index < 0) {
             index = 5;
         }
-        info.putInt("activePotionIndex", index);
+        info.putInt(ACTIVE_POTION, index);
     }
 
     public static Potion[] getPotionsFromNBT(CompoundNBT info) {
-        ListNBT nbts = info.getList("potions", Constants.NBT.TAG_STRING);
+        ListNBT nbts = info.getList(POTIONS, Constants.NBT.TAG_STRING);
         if (nbts.isEmpty()) return null;
 
         // get active potion
-        int index = info.getInt("activePotionIndex");
+        int index = info.getInt(ACTIVE_POTION);
         index--;
         if (index < 0) {
             index = 5;
@@ -261,15 +276,14 @@ public class GauntletItem extends SwordItem {
         INBT post = nbts.get(index);
         if (post == null) return null;
 
-        Potion activePotion = ForgeRegistries.POTION_TYPES.getValue(new ResourceLocation(nbts.get(info.getInt("activePotionIndex")).getString()));
+        Potion activePotion = ForgeRegistries.POTION_TYPES.getValue(new ResourceLocation(nbts.get(info.getInt(ACTIVE_POTION)).getString()));
         Potion prePotion = ForgeRegistries.POTION_TYPES.getValue(new ResourceLocation(pre.getString()));
         Potion postPotion = ForgeRegistries.POTION_TYPES.getValue(new ResourceLocation(post.getString()));
-
         return new Potion[]{activePotion, prePotion, postPotion};
     }
 
     public static ListNBT addPotionCooldownByIndex(int index, int cooldown, ItemStack stack, ListNBT cooldownMap) {
-        CompoundNBT info = stack.getOrCreateTag().getCompound("info");
+        CompoundNBT info = stack.getOrCreateTag().getCompound(INFO);
         if (cooldownMap.get(0) instanceof IntArrayNBT) {
             if (cooldownMap.get(1) instanceof IntArrayNBT) {
                 IntArrayNBT indexArray = (IntArrayNBT) cooldownMap.get(0);
@@ -282,7 +296,7 @@ public class GauntletItem extends SwordItem {
                 list.add(0, indexArray);
                 list.add(1, cooldownArray);
 
-                info.put("potionCooldownMap", list);
+                info.put(COOLDOWNS, list);
                 return list;
             }
         }
@@ -290,14 +304,15 @@ public class GauntletItem extends SwordItem {
     }
 
     public static int getCooldownFromPotionByIndex(int indexOfPotion, ItemStack stack) {
-        CompoundNBT info = stack.getOrCreateTag().getCompound("info");
-        INBT inbt = info.get("potionCooldownMap");
+        CompoundNBT info = stack.getOrCreateTag().getCompound(INFO);
+        INBT inbt = info.get(COOLDOWNS);
         if (inbt instanceof ListNBT) {
             ListNBT cooldownMap = (ListNBT) inbt;
             if (cooldownMap.get(0) instanceof IntArrayNBT) {
                 if (cooldownMap.get(1) instanceof IntArrayNBT) {
                     IntArrayNBT indexArray = (IntArrayNBT) cooldownMap.get(0);
                     IntArrayNBT cooldownArray = (IntArrayNBT) cooldownMap.get(1);
+
                     try {
                         int indexOfPotionIndex = toList(indexArray.getIntArray()).indexOf(indexOfPotion);
                         return toList(cooldownArray.getIntArray()).get(indexOfPotionIndex);
@@ -311,8 +326,8 @@ public class GauntletItem extends SwordItem {
     }
 
     public static void modifyCooldowns(ItemStack gauntlet, Function<Integer, Integer> modifier) {
-        CompoundNBT info = gauntlet.getOrCreateTag().getCompound("info");
-        INBT inbt = info.get("potionCooldownMap");
+        CompoundNBT info = gauntlet.getOrCreateTag().getCompound(INFO);
+        INBT inbt = info.get(COOLDOWNS);
         if (inbt instanceof ListNBT) {
             ListNBT map = (ListNBT) inbt;
             if (map.get(0) instanceof IntArrayNBT && map.get(1) instanceof IntArrayNBT) {
@@ -364,8 +379,8 @@ public class GauntletItem extends SwordItem {
         CompoundNBT tag = stack.getTag();
         int blaze = 0;
         if (tag != null) {
-            CompoundNBT info = tag.getCompound("info");
-            blaze = info.getInt("blaze");
+            CompoundNBT info = tag.getCompound(INFO);
+            blaze = info.getInt(BLAZE);
         }
         return blaze;
     }
