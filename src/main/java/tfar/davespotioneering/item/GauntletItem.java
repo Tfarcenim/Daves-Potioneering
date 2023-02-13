@@ -21,7 +21,6 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.config.ClothConfig;
-import tfar.davespotioneering.init.ModItems;
 import tfar.davespotioneering.init.ModSoundEvents;
 import tfar.davespotioneering.menu.PotionInjectorMenu;
 
@@ -30,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public class GauntletItem extends SwordItem implements Perspective{
+public class GauntletItem extends SwordItem implements Perspective {
 
     public GauntletItem(Settings properties) {
         super(ToolMaterials.NETHERITE, 4, -2.8f, properties);
@@ -49,7 +48,7 @@ public class GauntletItem extends SwordItem implements Perspective{
 
             if (!world.isClient && (blaze > 0 || active)) {
                 stack.getOrCreateNbt().putBoolean("active", !active);
-                world.playSound(null,playerIn.getX(),playerIn.getY(),playerIn.getZ(),active ? ModSoundEvents.GAUNTLET_TURNING_OFF : ModSoundEvents.GAUNTLET_TURNING_ON, SoundCategory.PLAYERS,.5f,1);
+                world.playSound(null, playerIn.getX(), playerIn.getY(), playerIn.getZ(), active ? ModSoundEvents.GAUNTLET_TURNING_OFF : ModSoundEvents.GAUNTLET_TURNING_ON, SoundCategory.PLAYERS, .5f, 1);
             } else {
             }
             return TypedActionResult.success(stack);
@@ -67,10 +66,10 @@ public class GauntletItem extends SwordItem implements Perspective{
         return stack.getCount() == 1;
     }
 
-   // @Override
-  //  public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-  //      return oldStack.getItem() != newStack.getItem();
-  //  }
+    // @Override
+    //  public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+    //      return oldStack.getItem() != newStack.getItem();
+    //  }
 
     //  @Override
     public int getRGBDurabilityForDisplay(ItemStack stack) {
@@ -92,10 +91,11 @@ public class GauntletItem extends SwordItem implements Perspective{
                         victim.addStatusEffect(new StatusEffectInstance(effectInstance));
                     }
 
-                    stack.damage(1,attacker,livingEntity -> {});
+                    stack.damage(1, attacker, livingEntity -> {
+                    });
 
                     if (stack.getDamage() == stack.getMaxDamage()) {
-                        stack.getNbt().putBoolean("active",false);
+                        stack.getNbt().putBoolean("active", false);
                     }
 
                     NbtList cooldownMap;
@@ -117,11 +117,11 @@ public class GauntletItem extends SwordItem implements Perspective{
     public void appendTooltip(ItemStack stack, @Nullable World worldIn, List<Text> tooltip, TooltipContext flagIn) {
         super.appendTooltip(stack, worldIn, tooltip, flagIn);
 
-        tooltip.add(Text.translatable(getTranslationKey()+".hold_shift.desc"));
+        tooltip.add(Text.translatable(getTranslationKey() + ".hold_shift.desc"));
         if (Screen.hasShiftDown())
             tooltip.add(this.getShiftDescription().formatted(Formatting.GRAY));
 
-        tooltip.add(Text.translatable(getTranslationKey()+".hold_ctrl.desc"));
+        tooltip.add(Text.translatable(getTranslationKey() + ".hold_ctrl.desc"));
         if (Screen.hasControlDown())
             tooltip.add(this.getCtrlDescription().formatted(Formatting.GRAY));
 
@@ -148,7 +148,7 @@ public class GauntletItem extends SwordItem implements Perspective{
 
             tooltip.add(product);
 
-            }
+        }
 
 
     }
@@ -157,17 +157,10 @@ public class GauntletItem extends SwordItem implements Perspective{
     public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
         super.inventoryTick(stack, world, entity, itemSlot, isSelected);
         if (entity instanceof PlayerEntity && !entity.getEntityWorld().isClient()) {
-            PlayerEntity player = (PlayerEntity) entity;
-            ItemStack gauntletInstance = new ItemStack(ModItems.POTIONEER_GAUNTLET);
-            if (player.getInventory().contains(gauntletInstance)) {
-                List<ItemStack> gauntlets = getItemsFromInventory(gauntletInstance, player.getInventory());
-                for (ItemStack gauntlet : gauntlets) {
-                    modifyCooldowns(gauntlet, (cd) -> {
-                        if (cd > 0) cd -= 1;
-                        return cd;
-                    });
-                }
-            }
+            modifyCooldowns(stack, (cd) -> {
+                if (cd > 0) cd -= 1;
+                return cd;
+            });
         }
     }
 
@@ -343,8 +336,8 @@ public class GauntletItem extends SwordItem implements Perspective{
         return list;
     }
 
-    public static final Identifier ALC_ID = new Identifier(DavesPotioneering.MODID,"item/sprite/potioneer_gauntlet");
-    public static final Identifier LIT_ALC_ID = new Identifier(DavesPotioneering.MODID,"item/sprite/lit_potioneer_gauntlet");
+    public static final Identifier ALC_ID = new Identifier(DavesPotioneering.MODID, "item/sprite/potioneer_gauntlet");
+    public static final Identifier LIT_ALC_ID = new Identifier(DavesPotioneering.MODID, "item/sprite/lit_potioneer_gauntlet");
 
     @Override
     public Identifier getGuiModel(boolean active) {
