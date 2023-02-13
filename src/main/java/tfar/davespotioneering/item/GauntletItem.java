@@ -5,7 +5,6 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTier;
 import net.minecraft.item.SwordItem;
@@ -19,7 +18,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.registries.ForgeRegistries;
 import tfar.davespotioneering.ModConfig;
-import tfar.davespotioneering.init.ModItems;
 import tfar.davespotioneering.init.ModSoundEvents;
 import tfar.davespotioneering.menu.PotionInjectorMenu;
 
@@ -181,21 +179,11 @@ public class GauntletItem extends SwordItem {
     @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
         super.inventoryTick(stack, world, entity, itemSlot, isSelected);
-
         if (entity instanceof PlayerEntity && !entity.getEntityWorld().isRemote()) {
-
-
-            PlayerEntity player = (PlayerEntity) entity;
-            ItemStack gauntletInstance = new ItemStack(ModItems.POTIONEER_GAUNTLET);
-            if (player.inventory.hasItemStack(gauntletInstance)) {
-                List<ItemStack> gauntlets = getItemsFromInventory(gauntletInstance, player.inventory);
-                for (ItemStack gauntlet : gauntlets) {
-                    modifyCooldowns(gauntlet, (cd) -> {
-                        if (cd > 0) cd -= 1;
-                        return cd;
-                    });
-                }
-            }
+            modifyCooldowns(stack,(cd) -> {
+                if (cd > 0) cd -= 1;
+                return cd;
+            });
         }
     }
 
@@ -351,20 +339,6 @@ public class GauntletItem extends SwordItem {
                 map.set(0, newArrayIndex);
             }
         }
-    }
-
-    public static List<ItemStack> getItemsFromInventory(ItemStack item, PlayerInventory inventory) {
-        List<ItemStack> items = new ArrayList<>();
-        for (ItemStack stack : inventory.mainInventory) {
-            if (stack.isItemEqual(item)) items.add(stack);
-        }
-        for (ItemStack stack : inventory.offHandInventory) {
-            if (stack.isItemEqual(item)) items.add(stack);
-        }
-        for (ItemStack stack : inventory.armorInventory) {
-            if (stack.isItemEqual(item)) items.add(stack);
-        }
-        return items;
     }
 
     public static List<Integer> toList(int... in) {

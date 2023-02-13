@@ -10,9 +10,6 @@ buildscript {
         classpath 'org.parchmentmc:librarian:1.+'
     }
 }
-plugins {
-    id "com.wynprice.cursemaven" version "2.1.5"
-}
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
@@ -106,7 +103,7 @@ dependencies {
     // You may put jars on which you depend on in ./libs or you may define them like so..
     // compile "some.group:artifact:version:classifier"
     // compile "some.group:artifact:version"
-    compile fg.deobf("software.bernie.geckolib:geckolib-forge-1.16.5:${geckolib}")
+    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-1.16.5:${geckolib}")
 
     // Real examples
     // compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env

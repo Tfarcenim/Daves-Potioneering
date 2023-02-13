@@ -5,10 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -165,75 +162,6 @@ public class GauntletHUD extends AbstractGui {
 
     public static void backwardCycle() {
         backwardCycle = true;
-    }
-
-    @Override
-    public void render(ForgeIngameGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
-        // only renders when the hotbar renders
-        //            if (Minecraft.getInstance().currentScreen != null) return;
-        // get player from client
-        Player player = Minecraft.getInstance().player;
-        if (player == null) return;
-        ItemStack g = player.getMainHandItem();
-        // check if holding gauntlet
-        if (g.getItem() instanceof GauntletItem) {
-            // get nbt
-            CompoundTag info = player.getMainHandItem().getOrCreateTag().getCompound(GauntletItem.INFO);
-            Potion[] potions = GauntletItem.getPotionsFromNBT(info);
-
-            RenderSystem.setShaderColor(1, 1, 1, 1);
-            bind(hud);
-
-            if (preset == HudPresets.ABOVE_HOTBAR) {
-                x = (screenWidth - TEX_WIDTH) / 2;
-                y = screenHeight - Math.min(ForgeIngameGui.left_height, ForgeIngameGui.right_height) - TEX_HEIGHT;
-                if (((GuiAccess) gui).getToolHighlightTimer() > 0) {
-                    y -= 10;
-                }
-            }
-
-            int yOffset;
-
-            int xFixed = x;
-            int yFixed = y;
-
-            if (forwardCycle) {
-                cooldown--;
-                yOffset = 2;
-                if (cooldown <= 0) {
-                    mc.getSoundManager().play(SimpleSoundInstance.forUI(ModSoundEvents.GAUNTLET_SCROLL, 1.0F));
-                    forwardCycle = false;
-                    cooldown = maxCooldown;
-                }
-            } else if (backwardCycle) {
-                cooldown--;
-                yOffset = 1;
-                if (cooldown <= 0) {
-                    mc.getSoundManager().play(SimpleSoundInstance.forUI(ModSoundEvents.GAUNTLET_SCROLL, 1.0F));
-                    backwardCycle = false;
-                    cooldown = maxCooldown;
-                }
-            } else {
-                yOffset = 0;
-            }
-            GuiComponent.blit(poseStack, xFixed, yFixed, gui.getBlitOffset(), 0, 1 + 43 * yOffset, TEX_WIDTH, TEX_HEIGHT, 128, 128);
-
-            int active = info.getInt(GauntletItem.ACTIVE_POTION);
-
-            int prev = active > 0 ? active - 1 : GauntletItem.SLOTS - 1;
-            int next = active < GauntletItem.SLOTS - 1 ? active + 1 : 0;
-
-            renderPotion(prePotion, poseStack, xFixed + 3, yFixed + 21, GauntletItem.getCooldownFromPotionByIndex(prev, g));
-            renderPotion(activePotion, poseStack, xFixed + 51, yFixed + 5, GauntletItem.getCooldownFromPotionByIndex(active, g));
-            renderPotion(postPotion, poseStack, xFixed + 99, yFixed + 21, GauntletItem.getCooldownFromPotionByIndex(next, g));
-
-            if (potions == null) {
-                // reset
-                GauntletHUD.init(null, null, null);
-                return;
-            }
-            GauntletHUD.init(potions[0], potions[1], potions[2]);
-        }
     }
 
     public enum HudPresets {
