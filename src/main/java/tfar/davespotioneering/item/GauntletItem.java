@@ -33,6 +33,14 @@ import java.util.function.Function;
 
 public class GauntletItem extends SwordItem implements Perspective {
 
+    public static final String ACTIVE = "active";
+    public static final String ACTIVE_POTION = "activePotionIndex";
+    public static final String BLAZE = "blaze";
+    public static final String INFO = "info";
+    public static final String COOLDOWNS = "potionCooldownMap";
+    public static final String POTIONS = "potions";
+    public static final int SLOTS = 6;
+
     public GauntletItem(Settings properties) {
         super(ToolMaterials.NETHERITE, 4, -2.8f, properties);
     }
@@ -43,12 +51,12 @@ public class GauntletItem extends SwordItem implements Perspective {
         if (playerIn.isSneaking()) {
 
 
-            boolean active = stack.getOrCreateTag().getBoolean("active");
+            boolean active = stack.getOrCreateTag().getBoolean(ACTIVE);
 
             int blaze = stack.getMaxDamage() - stack.getDamage();
 
             if (!world.isClient && (blaze > 0 || active)) {
-                stack.getOrCreateTag().putBoolean("active", !active);
+                stack.getOrCreateTag().putBoolean(ACTIVE, !active);
                 world.playSound(null, playerIn.getX(), playerIn.getY(), playerIn.getZ(), active ? ModSoundEvents.GAUNTLET_TURNING_OFF : ModSoundEvents.GAUNTLET_TURNING_ON, SoundCategory.PLAYERS, .5f, 1);
             } else {
             }
@@ -80,13 +88,13 @@ public class GauntletItem extends SwordItem implements Perspective {
     @Override
     public boolean postHit(ItemStack stack, LivingEntity victim, LivingEntity attacker) {
         if (stack.getItem() instanceof GauntletItem) {
-            CompoundTag info = stack.getOrCreateTag().getCompound("info");
+            CompoundTag info = stack.getOrCreateTag().getCompound(INFO);
             Potion[] potions = getPotionsFromNBT(info);
             if (attacker instanceof PlayerEntity) {
 
-                boolean active = stack.getTag().getBoolean("active");
+                boolean active = stack.getTag().getBoolean(ACTIVE);
 
-                if (potions != null && getCooldownFromPotionByIndex(info.getInt("activePotionIndex"), stack) <= 0 && (stack.getMaxDamage() - stack.getDamage()) > 0 && active) {
+                if (potions != null && getCooldownFromPotionByIndex(info.getInt(ACTIVE_POTION), stack) <= 0 && (stack.getMaxDamage() - stack.getDamage()) > 0 && active) {
                     Potion potion = potions[0];
                     for (StatusEffectInstance effectInstance : potion.getEffects()) {
                         victim.addStatusEffect(new StatusEffectInstance(effectInstance));
@@ -96,18 +104,18 @@ public class GauntletItem extends SwordItem implements Perspective {
                     });
 
                     if (stack.getDamage() == stack.getMaxDamage()) {
-                        stack.getTag().putBoolean("active", false);
+                        stack.getTag().putBoolean(ACTIVE, false);
                     }
 
                     ListTag cooldownMap;
-                    if (info.get("potionCooldownMap") instanceof ListTag) {
-                        cooldownMap = (ListTag) info.get("potionCooldownMap");
+                    if (info.get(COOLDOWNS) instanceof ListTag) {
+                        cooldownMap = (ListTag) info.get(COOLDOWNS);
                     } else {
                         cooldownMap = new ListTag();
                         cooldownMap.add(0, new IntArrayTag(new ArrayList<>()));
                         cooldownMap.add(1, new IntArrayTag(new ArrayList<>()));
                     }
-                    addPotionCooldownByIndex(info.getInt("activePotionIndex"), ClothConfig.gauntlet_cooldown, stack, cooldownMap);
+                    addPotionCooldownByIndex(info.getInt(ACTIVE_POTION), ClothConfig.gauntlet_cooldown, stack, cooldownMap);
                 }
             }
         }
@@ -176,7 +184,7 @@ public class GauntletItem extends SwordItem implements Perspective {
     @Nullable
     public static Pair<List<StatusEffectInstance>, List<Potion>> getEffectsFromGauntlet(ItemStack stack) {
         if (!stack.hasTag()) return null;
-        ListTag nbts = stack.getTag().getCompound("info").getList("potions", PotionInjectorMenu.TAG_STRING);//StringTag?
+        ListTag nbts = stack.getTag().getCompound(INFO).getList(POTIONS, PotionInjectorMenu.TAG_STRING);//StringTag?
         List<StatusEffectInstance> effects = new ArrayList<>();
         List<Potion> potions = new ArrayList<>();
         for (Tag inbt : nbts) {
@@ -192,36 +200,36 @@ public class GauntletItem extends SwordItem implements Perspective {
 
     public static void cycleGauntletForward(PlayerEntity player) {
         if (player == null) return;
-        CompoundTag info = player.getMainHandStack().getOrCreateTag().getCompound("info");
-        ListTag nbts = info.getList("potions", PotionInjectorMenu.TAG_STRING);
+        CompoundTag info = player.getMainHandStack().getOrCreateTag().getCompound(INFO);
+        ListTag nbts = info.getList(POTIONS, PotionInjectorMenu.TAG_STRING);
         if (nbts.isEmpty()) return;
-        int index = info.getInt("activePotionIndex");
+        int index = info.getInt(ACTIVE_POTION);
         index++;
         if (index > 5) {
             index = 0;
         }
-        info.putInt("activePotionIndex", index);
+        info.putInt(ACTIVE_POTION, index);
     }
 
     public static void cycleGauntletBackward(PlayerEntity player) {
         if (player == null) return;
-        CompoundTag info = player.getMainHandStack().getOrCreateTag().getCompound("info");
-        ListTag nbts = info.getList("potions", PotionInjectorMenu.TAG_STRING);
+        CompoundTag info = player.getMainHandStack().getOrCreateTag().getCompound(INFO);
+        ListTag nbts = info.getList(POTIONS, PotionInjectorMenu.TAG_STRING);
         if (nbts.isEmpty()) return;
-        int index = info.getInt("activePotionIndex");
+        int index = info.getInt(ACTIVE_POTION);
         index--;
         if (index < 0) {
             index = 5;
         }
-        info.putInt("activePotionIndex", index);
+        info.putInt(ACTIVE_POTION, index);
     }
 
     public static Potion[] getPotionsFromNBT(CompoundTag info) {
-        ListTag nbts = info.getList("potions", PotionInjectorMenu.TAG_STRING);
+        ListTag nbts = info.getList(POTIONS, PotionInjectorMenu.TAG_STRING);
         if (nbts.isEmpty()) return null;
 
         // get active potion
-        int index = info.getInt("activePotionIndex");
+        int index = info.getInt(ACTIVE_POTION);
         index--;
         if (index < 0) {
             index = 5;
@@ -238,7 +246,7 @@ public class GauntletItem extends SwordItem implements Perspective {
         Tag post = nbts.get(index);
         if (post == null) return null;
 
-        Potion activePotion = Registry.POTION.get(new Identifier(nbts.get(info.getInt("activePotionIndex")).asString()));
+        Potion activePotion = Registry.POTION.get(new Identifier(nbts.get(info.getInt(ACTIVE_POTION)).asString()));
         Potion prePotion = Registry.POTION.get(new Identifier(pre.asString()));
         Potion postPotion = Registry.POTION.get(new Identifier(post.asString()));
 
@@ -246,7 +254,7 @@ public class GauntletItem extends SwordItem implements Perspective {
     }
 
     public static ListTag addPotionCooldownByIndex(int index, int cooldown, ItemStack stack, ListTag cooldownMap) {
-        CompoundTag info = stack.getOrCreateTag().getCompound("info");
+        CompoundTag info = stack.getOrCreateTag().getCompound(INFO);
         if (cooldownMap.get(0) instanceof IntArrayTag) {
             if (cooldownMap.get(1) instanceof IntArrayTag) {
                 IntArrayTag indexArray = (IntArrayTag) cooldownMap.get(0);
@@ -259,7 +267,7 @@ public class GauntletItem extends SwordItem implements Perspective {
                 list.add(0, indexArray);
                 list.add(1, cooldownArray);
 
-                info.put("potionCooldownMap", list);
+                info.put(COOLDOWNS, list);
                 return list;
             }
         }
@@ -267,8 +275,8 @@ public class GauntletItem extends SwordItem implements Perspective {
     }
 
     public static int getCooldownFromPotionByIndex(int indexOfPotion, ItemStack stack) {
-        CompoundTag info = stack.getOrCreateTag().getCompound("info");
-        Tag inbt = info.get("potionCooldownMap");
+        CompoundTag info = stack.getOrCreateTag().getCompound(INFO);
+        Tag inbt = info.get(COOLDOWNS);
         if (inbt instanceof ListTag) {
             ListTag cooldownMap = (ListTag) inbt;
             if (cooldownMap.get(0) instanceof IntArrayTag) {
@@ -288,8 +296,8 @@ public class GauntletItem extends SwordItem implements Perspective {
     }
 
     public static void modifyCooldowns(ItemStack gauntlet, Function<Integer, Integer> modifier) {
-        CompoundTag info = gauntlet.getOrCreateTag().getCompound("info");
-        Tag inbt = info.get("potionCooldownMap");
+        CompoundTag info = gauntlet.getOrCreateTag().getCompound(INFO);
+        Tag inbt = info.get(COOLDOWNS);
         if (inbt instanceof ListTag) {
             ListTag map = (ListTag) inbt;
             if (map.get(0) instanceof IntArrayTag && map.get(1) instanceof IntArrayTag) {
