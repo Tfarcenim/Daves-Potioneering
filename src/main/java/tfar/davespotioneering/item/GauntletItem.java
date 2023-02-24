@@ -120,7 +120,7 @@ public class GauntletItem extends SwordItem {
 
                 boolean active = stack.getTag().getBoolean(ACTIVE);
 
-                if (potions != null && getCooldownFromPotionByIndex(info.getInt(INFO), stack) <= 0 && info.getInt(BLAZE) > 0 && active) {
+                if (active && potions != null && getCooldownFromPotionByIndex(info.getInt(INFO), stack) <= 0 && info.getInt(BLAZE) > 0) {
                     Potion potion = potions[0];
                     for (MobEffectInstance effectInstance : potion.getEffects()) {
                         victim.addEffect(new MobEffectInstance(effectInstance));
@@ -139,7 +139,7 @@ public class GauntletItem extends SwordItem {
                         cooldownMap.add(0, new IntArrayTag(new ArrayList<>()));
                         cooldownMap.add(1, new IntArrayTag(new ArrayList<>()));
                     }
-                    addPotionCooldownByIndex(info.getInt(ACTIVE_POTION), ModConfig.Server.gauntlet_cooldown.get(), stack, cooldownMap);
+                    setPotionCooldownByIndex(info.getInt(ACTIVE_POTION), ModConfig.Server.gauntlet_cooldown.get(), stack, cooldownMap);
                 }
             }
         }
@@ -280,7 +280,7 @@ public class GauntletItem extends SwordItem {
         return new Potion[]{activePotion, prePotion, postPotion};
     }
 
-    public static ListTag addPotionCooldownByIndex(int index, int cooldown, ItemStack stack, ListTag cooldownMap) {
+    public static void setPotionCooldownByIndex(int index, int cooldown, ItemStack stack, ListTag cooldownMap) {
         CompoundTag info = stack.getOrCreateTag().getCompound(INFO);
         if (cooldownMap.get(0) instanceof IntArrayTag) {
             if (cooldownMap.get(1) instanceof IntArrayTag cooldownArray) {
@@ -294,10 +294,8 @@ public class GauntletItem extends SwordItem {
                 list.add(1, cooldownArray);
 
                 info.put(COOLDOWNS, list);
-                return list;
             }
         }
-        return cooldownMap;
     }
 
     public static int getCooldownFromPotionByIndex(int indexOfPotion, ItemStack stack) {
