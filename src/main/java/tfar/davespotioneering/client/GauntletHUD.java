@@ -42,6 +42,8 @@ public class GauntletHUD implements IIngameOverlay {
     public static int y = ModConfig.Client.gauntlet_hud_y.get();
     public static HudPresets preset = ModConfig.Client.gauntlet_hud_preset.get();
 
+    public static int[] cooldowns = new int[6];
+
     public static final Minecraft mc = Minecraft.getInstance();
 
     private static boolean forwardCycle = false;
@@ -81,7 +83,7 @@ public class GauntletHUD implements IIngameOverlay {
         // render cooldown
         if (cooldown > 0) {
 
-            if (DavesPotioneering.DEBUG)
+            if (mc.options.advancedItemTooltips)
                 Minecraft.getInstance().font.drawShadow(matrixStack, cooldown + "", x, y - 20, 0xff0000);
 
             int w = 18;
@@ -176,9 +178,9 @@ public class GauntletHUD implements IIngameOverlay {
             int prev = active > 0 ? active - 1 : GauntletItem.SLOTS - 1;
             int next = active < GauntletItem.SLOTS - 1 ? active + 1 : 0;
 
-            renderPotion(prePotion, poseStack, xFixed + 3, yFixed + 21, GauntletItem.getCooldownFromPotionByIndex(prev, g));
-            renderPotion(activePotion, poseStack, xFixed + 51, yFixed + 5, GauntletItem.getCooldownFromPotionByIndex(active, g));
-            renderPotion(postPotion, poseStack, xFixed + 99, yFixed + 21, GauntletItem.getCooldownFromPotionByIndex(next, g));
+            renderPotion(prePotion, poseStack, xFixed + 3, yFixed + 21, cooldowns[prev]);
+            renderPotion(activePotion, poseStack, xFixed + 51, yFixed + 5, cooldowns[active]);
+            renderPotion(postPotion, poseStack, xFixed + 99, yFixed + 21, cooldowns[next]);
 
             if (potions == null) {
                 // reset

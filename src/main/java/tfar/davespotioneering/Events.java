@@ -15,6 +15,7 @@ import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.brewing.PlayerBrewedPotionEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.PotionEvent;
@@ -23,6 +24,7 @@ import net.minecraftforge.eventbus.api.Event;
 import tfar.davespotioneering.block.LayeredReinforcedCauldronBlock;
 import tfar.davespotioneering.duck.BrewingStandDuck;
 import tfar.davespotioneering.init.ModPotions;
+import tfar.davespotioneering.item.GauntletItem;
 import tfar.davespotioneering.item.UmbrellaItem;
 import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
 import tfar.davespotioneering.mixin.BrewingStandContainerAccess;
@@ -59,15 +61,14 @@ public class Events {
 
         Entity trueSource = source.getEntity();
 
-        if (trueSource instanceof LivingEntity) {
-            LivingEntity attacker = (LivingEntity)trueSource;
+        if (trueSource instanceof LivingEntity attacker) {
 
             ItemStack weapon = attacker.getMainHandItem();
 
             if (weapon.getItem() instanceof TieredItem) {
                 Potion potion = PotionUtils.getPotion(weapon);
                 if (potion != Potions.EMPTY) {
-                    for(MobEffectInstance effectinstance : potion.getEffects()) {
+                    for (MobEffectInstance effectinstance : potion.getEffects()) {
                         victim.addEffect(new MobEffectInstance(effectinstance.getEffect(), Math.max(effectinstance.getDuration() / 8, 1), effectinstance.getAmplifier(), effectinstance.isAmbient(), effectinstance.isVisible()));
                     }
                     LayeredReinforcedCauldronBlock.useCharge(weapon);
@@ -79,7 +80,7 @@ public class Events {
     //this is called when the potion is done brewing, we use this instead of the forge event because it has a reference
     // to the blockentity that created the potions
     public static void potionBrew(BlockEntity brewingStandTileEntity, ItemStack ingredient) {
-        ((BrewingStandDuck)brewingStandTileEntity).addXp(Util.getBrewXp(ingredient));
+        ((BrewingStandDuck) brewingStandTileEntity).addXp(Util.getBrewXp(ingredient));
     }
 
     public static void heldItemChangeEvent(Player player) {
@@ -97,24 +98,27 @@ public class Events {
             AbstractContainerMenu container = player.containerMenu;
             BlockEntity entity = null;
             if (container instanceof BrewingStandMenu) {
-                entity = (BrewingStandBlockEntity)((BrewingStandContainerAccess)container).getBrewingStand();
+                entity = (BrewingStandBlockEntity) ((BrewingStandContainerAccess) container).getBrewingStand();
             } else if (container instanceof AdvancedBrewingStandContainer) {
-                entity = ((AdvancedBrewingStandContainer)container).blockEntity;
+                entity = ((AdvancedBrewingStandContainer) container).blockEntity;
             }
 
             if (entity != null) {
-                ((BrewingStandDuck)entity).dump(player);
+                ((BrewingStandDuck) entity).dump(player);
             }
         }
     }
 
     public static void canApplyEffect(PotionEvent.PotionApplicableEvent e) {
         LivingEntity entity = e.getEntityLiving();
-        if (entity instanceof Player) {
-            Player player = (Player)entity;
-            if (player.getUseItem().getItem() instanceof UmbrellaItem) {
-                e.setResult(Event.Result.DENY);
-            }
+        if (entity.getUseItem().getItem() instanceof UmbrellaItem) {
+            e.setResult(Event.Result.DENY);
+        }
+    }
+
+    public static void tick(TickEvent.PlayerTickEvent e) {
+        if (e.phase == TickEvent.Phase.START && e.side.isServer()) {
+            GauntletItem.tickCooldowns(e.player);
         }
     }
 }

@@ -14,7 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.menu.PotionInjectorMenu;
-import tfar.davespotioneering.net.C2SPotionInjector;
+import tfar.davespotioneering.net.C2SPotionInjectorPacket;
 import tfar.davespotioneering.net.PacketHandler;
 
 public class GauntletWorkstationScreen extends AbstractContainerScreen<PotionInjectorMenu> {
@@ -73,11 +73,11 @@ public class GauntletWorkstationScreen extends AbstractContainerScreen<PotionInj
     }
 
     private void inject(Button b) {
-        PacketHandler.INSTANCE.sendToServer(new C2SPotionInjector(0));
+        PacketHandler.INSTANCE.sendToServer(new C2SPotionInjectorPacket(0));
     }
 
     private void strip(Button b) {
-        PacketHandler.INSTANCE.sendToServer(new C2SPotionInjector(1));
+        PacketHandler.INSTANCE.sendToServer(new C2SPotionInjectorPacket(1));
     }
 
     @Override

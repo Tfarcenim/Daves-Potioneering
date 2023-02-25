@@ -3,21 +3,23 @@ package tfar.davespotioneering.item;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Registry;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffectUtil;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
@@ -25,14 +27,16 @@ import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.Level;
+import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.init.ModSoundEvents;
 import tfar.davespotioneering.menu.PotionInjectorMenu;
+import tfar.davespotioneering.net.PacketHandler;
+import tfar.davespotioneering.net.S2CCooldownPacket;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 public class GauntletItem extends SwordItem {
 
@@ -120,7 +124,7 @@ public class GauntletItem extends SwordItem {
 
                 boolean active = stack.getTag().getBoolean(ACTIVE);
 
-                if (active && potions != null && getCooldownFromPotionByIndex(info.getInt(INFO), stack) <= 0 && info.getInt(BLAZE) > 0) {
+                if (active && potions != null && getCooldownFromPotionByIndex(info.getInt(INFO), stack,attacker) <= 0 && info.getInt(BLAZE) > 0) {
                     Potion potion = potions[0];
                     for (MobEffectInstance effectInstance : potion.getEffects()) {
                         victim.addEffect(new MobEffectInstance(effectInstance));
@@ -131,15 +135,7 @@ public class GauntletItem extends SwordItem {
                         stack.getTag().putBoolean(ACTIVE,false);
                     }
 
-                    ListTag cooldownMap;
-                    if (info.get(COOLDOWNS) instanceof ListTag) {
-                        cooldownMap = (ListTag) info.get(COOLDOWNS);
-                    } else {
-                        cooldownMap = new ListTag();
-                        cooldownMap.add(0, new IntArrayTag(new ArrayList<>()));
-                        cooldownMap.add(1, new IntArrayTag(new ArrayList<>()));
-                    }
-                    setPotionCooldownByIndex(info.getInt(ACTIVE_POTION), ModConfig.Server.gauntlet_cooldown.get(), stack, cooldownMap);
+                    setPotionCooldownByIndex(info.getInt(ACTIVE_POTION), ModConfig.Server.gauntlet_cooldown.get(), stack, attacker);
                 }
             }
         }
@@ -152,13 +148,13 @@ public class GauntletItem extends SwordItem {
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
 
-        tooltip.add(new TranslatableComponent(getDescriptionId()+".hold_shift.desc"));
+        tooltip.add(new TranslatableComponent(getDescriptionId() + ".hold_shift.desc"));
         if (Screen.hasShiftDown())
             tooltip.add(this.getShiftDescription().withStyle(ChatFormatting.GRAY));
 
-        tooltip.add(new TranslatableComponent(getDescriptionId()+".hold_ctrl.desc"));
+        tooltip.add(new TranslatableComponent(getDescriptionId() + ".hold_ctrl.desc"));
         if (Screen.hasControlDown())
-            for (int i = 0; i < C_LINES;i++) {
+            for (int i = 0; i < C_LINES; i++) {
                 tooltip.add(this.getCtrlDescriptions(i).withStyle(ChatFormatting.GRAY));
             }
 
@@ -185,19 +181,6 @@ public class GauntletItem extends SwordItem {
 
             tooltip.add(product);
 
-            }
-
-
-    }
-
-    @Override
-    public void inventoryTick(ItemStack stack, Level world, Entity entity, int itemSlot, boolean isSelected) {
-        super.inventoryTick(stack, world, entity, itemSlot, isSelected);
-        if (entity instanceof Player && !entity.getCommandSenderWorld().isClientSide()) {
-            modifyCooldowns(stack, (cd) -> {
-                if (cd > 0) cd -= 1;
-                return cd;
-            });
         }
     }
 
@@ -280,88 +263,48 @@ public class GauntletItem extends SwordItem {
         return new Potion[]{activePotion, prePotion, postPotion};
     }
 
-    public static void setPotionCooldownByIndex(int index, int cooldown, ItemStack stack, ListTag cooldownMap) {
-        CompoundTag info = stack.getOrCreateTag().getCompound(INFO);
-        if (cooldownMap.get(0) instanceof IntArrayTag) {
-            if (cooldownMap.get(1) instanceof IntArrayTag cooldownArray) {
-                IntArrayTag indexArray = (IntArrayTag) cooldownMap.get(0);
+    public static void setPotionCooldownByIndex(int index, int cooldown, ItemStack stack, LivingEntity living) {
+        CompoundTag persistent = living.getPersistentData();
+        CompoundTag tag;
+        if (!persistent.contains(DavesPotioneering.MODID)) {
+            tag = new CompoundTag();
+        } else {
+            tag = persistent.getCompound(DavesPotioneering.MODID);
+        }
 
-                indexArray.add(IntTag.valueOf(index));
-                cooldownArray.add(IntTag.valueOf(cooldown));
+        persistent.put(DavesPotioneering.MODID,tag);
 
-                ListTag list = new ListTag();
-                list.add(0, indexArray);
-                list.add(1, cooldownArray);
+        int[] cooldowns = tag.getIntArray(COOLDOWNS);
 
-                info.put(COOLDOWNS, list);
+        if (cooldowns.length == 0) {
+            cooldowns = new int[6];
+        }
+        cooldowns[index] = cooldown;
+        tag.putIntArray(COOLDOWNS,cooldowns);
+    }
+
+    private static int getCooldownFromPotionByIndex(int indexOfPotion, ItemStack stack,LivingEntity living) {
+        CompoundTag tag = living.getPersistentData().getCompound(DavesPotioneering.MODID);
+        int[] cooldowns = tag.getIntArray(COOLDOWNS);
+        if (cooldowns.length == 0) return 0;
+        return cooldowns[indexOfPotion];
+    }
+
+    public static void tickCooldowns(LivingEntity living) {
+        CompoundTag tag = living.getPersistentData().getCompound(DavesPotioneering.MODID);
+        int[] cooldowns = tag.getIntArray(COOLDOWNS);
+        if (cooldowns.length == 0) return;
+        boolean sync = false;
+        for (int i = 0; i < cooldowns.length;i++) {
+            if (cooldowns[i] > 0) {
+                cooldowns[i]--;
+                sync = true;
             }
         }
-    }
-
-    public static int getCooldownFromPotionByIndex(int indexOfPotion, ItemStack stack) {
-        CompoundTag info = stack.getOrCreateTag().getCompound(INFO);
-        Tag inbt = info.get(COOLDOWNS);
-        if (inbt instanceof ListTag cooldownMap) {
-            if (cooldownMap.get(0) instanceof IntArrayTag) {
-                if (cooldownMap.get(1) instanceof IntArrayTag cooldownArray) {
-                    IntArrayTag indexArray = (IntArrayTag) cooldownMap.get(0);
-                    try {
-                        int indexOfPotionIndex = toList(indexArray.getAsIntArray()).indexOf(indexOfPotion);
-                        return toList(cooldownArray.getAsIntArray()).get(indexOfPotionIndex);
-                    } catch (Exception ignore) {
-                        // if the potion doesn't have cooldown an IndexOutOfBounds exception will be thrown, but it is not an actual problem, so we are just ignoring it
-                    }
-                }
-            }
+        if (sync) {
+            tag.putIntArray(COOLDOWNS, cooldowns);
+            PacketHandler.sendToClient(new S2CCooldownPacket(cooldowns),(ServerPlayer)living);
         }
-        return 0;
-    }
-
-    public static void modifyCooldowns(ItemStack gauntlet, Function<Integer, Integer> modifier) {
-        CompoundTag info = gauntlet.getOrCreateTag().getCompound(INFO);
-        Tag inbt = info.get(COOLDOWNS);
-        if (inbt instanceof ListTag map) {
-            if (map.get(0) instanceof IntArrayTag indexArray && map.get(1) instanceof IntArrayTag cooldownArray) {
-                if (cooldownArray.isEmpty() || indexArray.isEmpty()) return;
-                if (cooldownArray.getAsIntArray().length != indexArray.getAsIntArray().length) return;
-                List<Integer> cooldownList = new ArrayList<>();
-                List<Integer> indexList = new ArrayList<>();
-                for (int i = 0; i < cooldownArray.getAsIntArray().length; i++) {
-                    int modified = modifier.apply(cooldownArray.getAsIntArray()[i]);
-                    // copying over the cooldown and index to a new list, remove ones that are already expired
-                    if (modified > 0) {
-                        cooldownList.add(modified);
-                        indexList.add(indexArray.getAsIntArray()[i]);
-                    }
-                }
-                IntArrayTag newArray = new IntArrayTag(cooldownList);
-                IntArrayTag newArrayIndex = new IntArrayTag(indexList);
-                map.set(1, newArray);
-                map.set(0, newArrayIndex);
-            }
-        }
-    }
-
-    public static List<ItemStack> getItemsFromInventory(ItemStack item, Inventory inventory) {
-        List<ItemStack> items = new ArrayList<>();
-        for (ItemStack stack : inventory.items) {
-            if (stack.sameItem(item)) items.add(stack);
-        }
-        for (ItemStack stack : inventory.offhand) {
-            if (stack.sameItem(item)) items.add(stack);
-        }
-        for (ItemStack stack : inventory.armor) {
-            if (stack.sameItem(item)) items.add(stack);
-        }
-        return items;
-    }
-
-    public static List<Integer> toList(int... in) {
-        List<Integer> list = new ArrayList<>();
-        for (int i : in) {
-            list.add(i);
-        }
-        return list;
     }
 
     public static int getBlaze(ItemStack stack) {

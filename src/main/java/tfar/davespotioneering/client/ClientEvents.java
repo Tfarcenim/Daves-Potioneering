@@ -42,7 +42,7 @@ import tfar.davespotioneering.client.particle.TintedSplashParticle;
 import tfar.davespotioneering.init.*;
 import tfar.davespotioneering.item.GauntletItem;
 import tfar.davespotioneering.mixin.ParticleManagerAccess;
-import tfar.davespotioneering.net.GauntletCyclePacket;
+import tfar.davespotioneering.net.C2SGauntletCyclePacket;
 import tfar.davespotioneering.net.PacketHandler;
 
 import static tfar.davespotioneering.DavesPotioneering.MODID;
@@ -81,10 +81,10 @@ public class ClientEvents {
         if (held.isEmpty()) return;
         if (held.getItem() instanceof GauntletItem && player.isShiftKeyDown()) {
             if (event.getScrollDelta() == 1.f) {
-                PacketHandler.sendToServer(new GauntletCyclePacket(true));
+                PacketHandler.sendToServer(new C2SGauntletCyclePacket(true));
                 GauntletHUD.backwardCycle();
             } else {
-                PacketHandler.sendToServer(new GauntletCyclePacket(false));
+                PacketHandler.sendToServer(new C2SGauntletCyclePacket(false));
                 GauntletHUD.forwardCycle();
             }
             event.setCanceled(true);

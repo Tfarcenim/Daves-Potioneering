@@ -9,16 +9,16 @@ import tfar.davespotioneering.menu.PotionInjectorMenu;
 import java.util.function.Supplier;
 
 
-public class C2SPotionInjector {
+public class C2SPotionInjectorPacket {
 
   int button;
 
-  public C2SPotionInjector(){}
+  public C2SPotionInjectorPacket(){}
 
-  public C2SPotionInjector(int button){ this.button = button;}
+  public C2SPotionInjectorPacket(int button){ this.button = button;}
 
   //decode
-  public C2SPotionInjector(FriendlyByteBuf buf) {
+  public C2SPotionInjectorPacket(FriendlyByteBuf buf) {
     this.button = buf.readInt();
   }
 

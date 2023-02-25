@@ -15,20 +15,20 @@ public class PacketHandler {
 
         INSTANCE = NetworkRegistry.newSimpleChannel(new ResourceLocation(DavesPotioneering.MODID, DavesPotioneering.MODID), () -> "1.0", s -> true, s -> true);
 
-        INSTANCE.registerMessage(id++, C2SPotionInjector.class,
-                C2SPotionInjector::encode,
-                C2SPotionInjector::new,
-                C2SPotionInjector::handle);
+        INSTANCE.registerMessage(id++, C2SPotionInjectorPacket.class,
+                C2SPotionInjectorPacket::encode,
+                C2SPotionInjectorPacket::new,
+                C2SPotionInjectorPacket::handle);
 
-        INSTANCE.registerMessage(id++, GauntletCyclePacket.class,
-                GauntletCyclePacket::encode,
-                GauntletCyclePacket::new,
-                GauntletCyclePacket::handle);
+        INSTANCE.registerMessage(id++, C2SGauntletCyclePacket.class,
+                C2SGauntletCyclePacket::encode,
+                C2SGauntletCyclePacket::new,
+                C2SGauntletCyclePacket::handle);
 
-        INSTANCE.registerMessage(id++, GauntletHUDMovementGuiPacket.class,
-                (packetOpenGui, packetBuffer) -> {},
-                buf -> new GauntletHUDMovementGuiPacket(),
-                GauntletHUDMovementGuiPacket::handle);
+        INSTANCE.registerMessage(id++, S2CCooldownPacket.class,
+                S2CCooldownPacket::encode,
+                S2CCooldownPacket::new,
+                S2CCooldownPacket::handle);
     }
 
     public static void sendToClient(Object packet, ServerPlayer player) {

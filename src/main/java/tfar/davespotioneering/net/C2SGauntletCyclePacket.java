@@ -7,14 +7,14 @@ import tfar.davespotioneering.item.GauntletItem;
 
 import java.util.function.Supplier;
 
-public class GauntletCyclePacket {
+public class C2SGauntletCyclePacket {
     private final boolean up;
 
-    public GauntletCyclePacket(boolean up) {
+    public C2SGauntletCyclePacket(boolean up) {
         this.up = up;
     }
 
-    public GauntletCyclePacket(FriendlyByteBuf buffer) {
+    public C2SGauntletCyclePacket(FriendlyByteBuf buffer) {
         this.up = buffer.readBoolean();
     }
 

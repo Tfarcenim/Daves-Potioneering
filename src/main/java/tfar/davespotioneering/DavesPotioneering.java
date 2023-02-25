@@ -96,6 +96,7 @@ public class DavesPotioneering {
 
         MinecraftForge.EVENT_BUS.addListener(Events::playerBrew);
         MinecraftForge.EVENT_BUS.addListener(Events::canApplyEffect);
+        MinecraftForge.EVENT_BUS.addListener(Events::tick);
 
         ItemStack milkPot = new ItemStack(Items.POTION);
         PotionUtils.setPotion(milkPot,ModPotions.MILK);
