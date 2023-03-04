@@ -15,8 +15,10 @@ import net.minecraft.tileentity.BrewingStandTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvents;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.brewing.PlayerBrewedPotionEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.PotionColorCalculationEvent;
 import net.minecraftforge.event.entity.living.PotionEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.Event;
@@ -116,5 +118,36 @@ public class Events {
                 e.setResult(Event.Result.DENY);
             }
         }
+    }
+
+    public static void effectColor(PotionColorCalculationEvent e) {
+        int old = e.getColor();
+        if (old == 0) {
+            for(EffectInstance effectinstance : e.getEffects()) {
+                if (effectinstance.equals(ModPotions.INVIS_2)) {
+                    int k = effectinstance.getPotion().getLiquidColor();
+                    int l = 1;
+                    float r = (float)(l * (k >> 16 & 255)) / 255.0F;
+                    float g = (float)(l * (k >> 8 & 255)) / 255.0F;
+                    float b = (float)(l * (k & 255)) / 255.0F;
+
+                    r = r * 255.0F;
+                    g = g * 255.0F;
+                    b = b * 255.0F;
+                    e.setColor((int)r << 16 | (int)g << 8 | (int)b);
+                }
+            }
+        }
+    }
+
+    public static void register() {
+        MinecraftForge.EVENT_BUS.addListener(Events::potionCooldown);
+        MinecraftForge.EVENT_BUS.addListener(Events::milkCow);
+        MinecraftForge.EVENT_BUS.addListener(Events::afterHit);
+
+        MinecraftForge.EVENT_BUS.addListener(Events::playerBrew);
+        MinecraftForge.EVENT_BUS.addListener(Events::canApplyEffect);
+
+        MinecraftForge.EVENT_BUS.addListener(Events::effectColor);
     }
 }
