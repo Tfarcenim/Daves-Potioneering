@@ -14,7 +14,6 @@
     "PlayerEntityMixin",
     "PotionEntityMixin",
     "PotionItemMixin",
-    "PotionUtilsMixin",
     "ServerPlayNetHandlerMixin",
     "ThrowablePotionItemMixin"
   ],

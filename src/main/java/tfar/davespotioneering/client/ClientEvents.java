@@ -111,6 +111,7 @@ public class ClientEvents {
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::playerTick);
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.COMPOUND_BREWING_STAND, RenderType.cutoutMipped());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.POTION_INJECTOR,RenderType.translucent());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.REINFORCED_WATER_CAULDRON,RenderType.translucent());
         MenuScreens.register(ModMenuTypes.ADVANCED_BREWING_STAND, AdvancedBrewingStandScreen::new);
         MenuScreens.register(ModMenuTypes.ALCHEMICAL_GAUNTLET, GauntletWorkstationScreen::new);
 
