@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -39,7 +40,6 @@ import tfar.davespotioneering.init.ModSoundEvents;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.function.Predicate;
 
 public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock implements EntityBlock {
@@ -177,7 +177,7 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
      * of whether the block can receive random update ticks
      */
     @Override
-    public void animateTick(BlockState stateIn, Level world, BlockPos pos, Random rand) {
+    public void animateTick(BlockState stateIn, Level world, BlockPos pos, RandomSource rand) {
         if (stateIn.getValue(DRAGONS_BREATH)) {
             double d0 = pos.getX();
             double d1 = (double) pos.getY() + 1D;
@@ -198,7 +198,7 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
     }
     //this is used for the coating
     @Override
-    public void tick(BlockState state, ServerLevel world, BlockPos pos, Random rand) {
+    public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource rand) {
         int wLevel = state.getValue(LEVEL);
 
         if (wLevel > 1) {
