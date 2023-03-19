@@ -6,7 +6,7 @@
   "name": "Dave's Potioneering",
   "description": "Dave’s Potioneering is a mod that makes changes to how potions and alchemy work",
   "authors": [
-    "Me!"
+    "Tfarcenim"
   ],
   "contact": {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/daves-potioneering/",
@@ -37,8 +37,5 @@
   "depends": {
     "fabricloader": ">=0.7.4",
     "fabric": "*"
-  },
-  "suggests": {
-    "flamingo": "*"
   }
 }
