@@ -37,6 +37,7 @@ import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.init.ModPotions;
+import tfar.davespotioneering.init.ModSoundEvents;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -218,6 +219,7 @@ public class LayeredReinforcedCauldronBlock extends LeveledCauldronBlock impleme
             for (int i = 0; i < 5; i++) {
                 worldIn.addImportantParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, d0 + (double) rand.nextFloat(), d1 + (double) rand.nextFloat(), d2 + (double) rand.nextFloat(), 0.0D, 0.04D, 0.0D);
             }
+            worldIn.playSound(pos.getX(),pos.getY(),pos.getZ(), ModSoundEvents.BUBBLING_WATER_CAULDRON, SoundCategory.BLOCKS,.5f,1,false);
         }
     }
 
