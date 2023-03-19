@@ -15,6 +15,11 @@ public class ModSoundEvents {
     public static final SoundEvent GAUNTLET_TURNING_OFF = createSound("gauntlet_turning_off");
     public static final SoundEvent GAUNTLET_EQUIP = createSound("gauntlet_equip");
 
+    public static final SoundEvent BUBBLING_WATER_CAULDRON = createSound("bubbling_water_cauldron");
+    public static final SoundEvent UMBRELLA_OPEN = createSound("umbrella_open");
+    public static final SoundEvent UMBRELLA_CLOSE = createSound("umbrella_close");
+
+
 
     private static SoundEvent createSound(String name) {
         return new SoundEvent(new Identifier(DavesPotioneering.MODID, name));
@@ -24,8 +29,8 @@ public class ModSoundEvents {
         for (Field field : ModSoundEvents.class.getFields()) {
             try {
                 Object o = field.get(null);
-                if (o instanceof SoundEvent) {
-                    Registry.register(Registry.SOUND_EVENT,new Identifier(DavesPotioneering.MODID,field.getName().toLowerCase(Locale.ROOT)),(SoundEvent)o);
+                if (o instanceof SoundEvent soundEvent) {
+                    Registry.register(Registry.SOUND_EVENT,new Identifier(DavesPotioneering.MODID,field.getName().toLowerCase(Locale.ROOT)),soundEvent);
                 }
             } catch (IllegalAccessException illegalAccessException) {
                 illegalAccessException.printStackTrace();
