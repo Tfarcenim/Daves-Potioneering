@@ -54,7 +54,12 @@ public class UmbrellaItem extends ShieldItem implements IAnimatable {
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept( new IClientItemExtensions() {
             private final NonNullLazy<BlockEntityWithoutLevelRenderer> ister = NonNullLazy.of(() -> HideISTERsFromServer.createGeoClassicUmbrellaItemStackRenderer(model));
+            @Override
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                return ister.get();
+            }
         });
+
     }
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pHand) {
         pLevel.playLocalSound(pPlayer.getX(),pPlayer.getY(),pPlayer.getZ(), ModSoundEvents.UMBRELLA_OPEN, SoundSource.BLOCKS,.5f,1,false);
