@@ -42,7 +42,7 @@ public class Events {
     public static void milkCow(PlayerInteractEvent.EntityInteractSpecific e) {
         Entity clicked = e.getTarget();
         Player player = e.getEntity();
-        if (clicked instanceof Cow cowEntity) {
+        if (ModConfig.Server.milk.get() && clicked instanceof Cow cowEntity) {
             ItemStack itemstack = player.getItemInHand(e.getHand());
             if (itemstack.getItem() == Items.GLASS_BOTTLE && !cowEntity.isBaby()) {
                 player.playSound(SoundEvents.COW_MILK, 1.0F, 1.0F);
