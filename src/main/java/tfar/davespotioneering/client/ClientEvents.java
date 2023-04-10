@@ -205,6 +205,6 @@ public class ClientEvents {
 
         Minecraft.getInstance().particleEngine.add(particle);
 
-        world.addParticle(particleDataIn,blockPosIn.x,blockPosIn.y,blockPosIn.z,0,-.10,0);
+        //world.addParticle(particleDataIn,blockPosIn.x,blockPosIn.y,blockPosIn.z,0,-.10,0);
     }
 }
