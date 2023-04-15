@@ -35,6 +35,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
+import tfar.davespotioneering.config.ClothConfig;
 import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.init.ModPotions;
 import tfar.davespotioneering.init.ModSoundEvents;
@@ -179,7 +180,7 @@ public class LayeredReinforcedCauldronBlock extends LeveledCauldronBlock impleme
     public static void addCoating(ItemStack stack,Potion potion) {
         if (stack.getItem() instanceof ToolItem) {
             NbtCompound nbt = stack.getOrCreateNbt();
-            nbt.putInt("uses", 25);
+            nbt.putInt("uses", ClothConfig.coating_uses);
             nbt.putString("Potion", Registry.POTION.getId(potion).toString());
         } else if (stack.getItem() == Items.TIPPED_ARROW) {
             PotionUtil.setPotion(stack, potion);
