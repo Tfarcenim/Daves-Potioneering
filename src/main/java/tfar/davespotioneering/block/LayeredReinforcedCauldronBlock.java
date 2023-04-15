@@ -32,6 +32,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.AABB;
+import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.init.ModPotions;
@@ -144,7 +145,7 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
     public static void addCoating(ItemStack stack,Potion potion) {
         if (stack.getItem() instanceof TieredItem) {
             CompoundTag nbt = stack.getOrCreateTag();
-            nbt.putInt("uses", 25);
+            nbt.putInt("uses", ModConfig.Server.coating_uses.get());
             nbt.putString("Potion", Registry.POTION.getKey(potion).toString());
         } else if (stack.getItem() == Items.TIPPED_ARROW) {
             PotionUtils.setPotion(stack, potion);

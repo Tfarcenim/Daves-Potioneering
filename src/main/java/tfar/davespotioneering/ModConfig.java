@@ -33,6 +33,7 @@ public class ModConfig {
         public static ForgeConfigSpec.BooleanValue milkification;
         public static ForgeConfigSpec.BooleanValue milk;
         public static ForgeConfigSpec.IntValue gauntlet_cooldown;
+        public static ForgeConfigSpec.IntValue coating_uses;
         public static final String pot_throw_key = "config.davespotioneering.potion_throw_cooldown";
         public static final String pot_switch_key = "config.davespotioneering.potion_switch_cooldown";
 
@@ -46,6 +47,7 @@ public class ModConfig {
                     .defineInRange("potion_switch_cooldown", 30, 0, 20000);
             potion_throw_cooldown = builder.comment("Cooldown in ticks when throwing potions").translation(pot_throw_key)
                     .defineInRange("potion_throw_cooldown", 30, 0, 20000);
+            coating_uses = builder.comment("Uses from coating").defineInRange("coating_uses",25,1,Integer.MAX_VALUE);
             builder.pop();
         }
     }
