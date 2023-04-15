@@ -19,7 +19,7 @@ public class ClothConfig implements ConfigData {
 
     public static int potion_cooldown = 30;
     public static boolean milkification;
-    public static boolean magic_protection;
     public static int gauntlet_cooldown = 30;
+    public static int coating_uses = 25;
     public static int particle_drip_rate = 10;
 }
