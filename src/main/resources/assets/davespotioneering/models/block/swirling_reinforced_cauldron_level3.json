@@ -5,6 +5,7 @@
 	"textures": {
 		"0": "davespotioneering:block/reinforced_cauldron",
 		"2": "davespotioneering:block/swirl",
+		"3": "davespotioneering:block/swirl_overlay",
 		"particle": "davespotioneering:block/reinforced_cauldron"
 	},
 	"elements": [
@@ -149,6 +150,13 @@
 			"to": [14, 15, 14],
 			"faces": {
 				"up": {"uv": [2, 2, 14, 14], "texture": "#2", "tintindex": 0}
+			}
+		},
+		{
+			"from": [2, 4, 2],
+			"to": [14, 15, 14],
+			"faces": {
+				"up": {"uv": [2, 2, 14, 14], "texture": "#3"}
 			}
 		}
 	]
