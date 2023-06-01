@@ -62,8 +62,8 @@ public class Events {
                 for(StatusEffectInstance effectinstance : potion.getEffects()) {
                     ((LivingEntity)victim).addStatusEffect(new StatusEffectInstance(effectinstance.getEffectType(), Math.max(effectinstance.getDuration() / 8, 1), effectinstance.getAmplifier(), effectinstance.isAmbient(), effectinstance.shouldShowParticles()));
                 }
-                LayeredReinforcedCauldronBlock.useCharge(weapon);
-                return ActionResult.SUCCESS;
+                if (!player.getAbilities().creativeMode)
+                    LayeredReinforcedCauldronBlock.useCharge(weapon);
             }
         }
         return ActionResult.PASS;

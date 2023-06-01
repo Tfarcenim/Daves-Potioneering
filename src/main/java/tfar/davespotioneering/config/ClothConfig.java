@@ -18,7 +18,6 @@ public class ClothConfig implements ConfigData {
     public static GauntletHUD.HudPreset gauntlet_hud_preset = GauntletHUD.HudPreset.ABOVE_HOTBAR;
 
     public static int potion_cooldown = 30;
-    public static boolean milkification;
     public static int gauntlet_cooldown = 30;
     public static int coating_uses = 25;
     public static int particle_drip_rate = 10;

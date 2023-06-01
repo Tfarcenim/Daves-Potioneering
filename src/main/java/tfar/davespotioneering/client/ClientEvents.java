@@ -194,12 +194,6 @@ public class ClientEvents implements ClientModInitializer {
     }
 
     public static void tooltips(ItemStack stack, TooltipContext e2, List<Text> tooltip) {
-        if (stack.getItem() instanceof PotionItem) {
-            if (Util.isMilkified(stack)) {
-                tooltip.add(Text.literal("Milkified"));
-            }
-        }
-
         if (stack.getItem() instanceof ToolItem && PotionUtil.getPotion(stack) != Potions.EMPTY) {
             tooltip.add(Text.literal("Coated with"));
             PotionUtil.buildTooltip(stack, tooltip, 0.125F);

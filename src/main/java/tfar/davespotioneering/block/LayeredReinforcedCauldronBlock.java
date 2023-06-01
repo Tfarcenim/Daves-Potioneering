@@ -28,6 +28,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
@@ -41,7 +42,6 @@ import tfar.davespotioneering.init.ModSoundEvents;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Random;
 
 public class LayeredReinforcedCauldronBlock extends LeveledCauldronBlock implements BlockEntityProvider {
 
@@ -211,6 +211,7 @@ public class LayeredReinforcedCauldronBlock extends LeveledCauldronBlock impleme
      * this method is unrelated to {@link #randomTick} and {@link #randomDisplayTick(BlockState)}, and will always be called regardless
      * of whether the block can receive random update ticks
      */
+    @Override
     public void randomDisplayTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand) {
         if (stateIn.get(DRAGONS_BREATH)) {
             double d0 = pos.getX();
@@ -219,7 +220,8 @@ public class LayeredReinforcedCauldronBlock extends LeveledCauldronBlock impleme
             for (int i = 0; i < 5; i++) {
                 worldIn.addImportantParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, d0 + (double) rand.nextFloat(), d1 + (double) rand.nextFloat(), d2 + (double) rand.nextFloat(), 0.0D, 0.04D, 0.0D);
             }
-            worldIn.playSound(pos.getX(),pos.getY(),pos.getZ(), ModSoundEvents.BUBBLING_WATER_CAULDRON, SoundCategory.BLOCKS,.5f,1,false);
+            if (worldIn.getTime() % 5 == 0)
+                worldIn.playSound(pos.getX(),pos.getY(),pos.getZ(), ModSoundEvents.BUBBLING_WATER_CAULDRON, SoundCategory.BLOCKS,.5f,1,false);
         }
     }
 
