@@ -1,13 +1,22 @@
 {
   "variants": {
-    "level=1": {
-      "model": "davespotioneering:block/reinforced_cauldron_level1"
+    "dragons_breath=false,level=1": {
+      "model": "davespotioneering:block/swirling_reinforced_cauldron_level1"
     },
-    "level=2": {
-      "model": "davespotioneering:block/reinforced_cauldron_level2"
+    "dragons_breath=true,level=1": {
+      "model": "davespotioneering:block/bubbling_reinforced_cauldron_level1"
     },
-    "level=3": {
-      "model": "davespotioneering:block/reinforced_cauldron_level3"
+    "dragons_breath=false,level=2": {
+      "model": "davespotioneering:block/swirling_reinforced_cauldron_level2"
+    },
+    "dragons_breath=true,level=2": {
+      "model": "davespotioneering:block/bubbling_reinforced_cauldron_level2"
+    },
+    "dragons_breath=false,level=3": {
+      "model": "davespotioneering:block/swirling_reinforced_cauldron_level3"
+    },
+    "dragons_breath=true,level=3": {
+      "model": "davespotioneering:block/bubbling_reinforced_cauldron_level3"
     }
   }
 }

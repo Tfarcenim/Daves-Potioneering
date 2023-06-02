@@ -29,9 +29,11 @@ public class ModBlockstateProvider extends BlockStateProvider {
         simpleBlock(ModBlocks.REINFORCED_CAULDRON,models().getExistingFile(modLoc("block/reinforced_cauldron_level0")));
 
         getVariantBuilder(ModBlocks.REINFORCED_WATER_CAULDRON).forAllStatesExcept(state -> {
-            ModelFile modelFile = models().getExistingFile(modLoc("block/reinforced_cauldron_level" + state.getValue(LayeredCauldronBlock.LEVEL)));
+            boolean dragon = state.getValue(LayeredReinforcedCauldronBlock.DRAGONS_BREATH);
+            String s = dragon ? "bubbling_":"swirling_";
+            ModelFile modelFile = models().getExistingFile(modLoc("block/"+s+"reinforced_cauldron_level" + state.getValue(LayeredCauldronBlock.LEVEL)));
             return ConfiguredModel.builder().modelFile(modelFile).build();
-        },LayeredReinforcedCauldronBlock.DRAGONS_BREATH);
+        });
 
         getVariantBuilder(ModBlocks.MAGIC_LECTERN).forAllStatesExcept(state -> {
             Direction facing = state.getValue(LecternBlock.FACING);
