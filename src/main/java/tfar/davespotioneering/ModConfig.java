@@ -7,9 +7,6 @@ public class ModConfig {
 
     public static class Client {
 
-        //couldn't this be a resource pack?
-      //  public static ForgeConfigSpec.BooleanValue play_block_brewing_stand_brew;
-
         public static ForgeConfigSpec.IntValue gauntlet_hud_x;
         public static ForgeConfigSpec.IntValue gauntlet_hud_y;
         public static ForgeConfigSpec.EnumValue<GauntletHUD.HudPresets> gauntlet_hud_preset;
@@ -30,7 +27,6 @@ public class ModConfig {
 
         public static ForgeConfigSpec.IntValue potion_switch_cooldown;
         public static ForgeConfigSpec.IntValue potion_throw_cooldown;
-        public static ForgeConfigSpec.BooleanValue milkification;
         public static ForgeConfigSpec.BooleanValue milk;
         public static ForgeConfigSpec.IntValue gauntlet_cooldown;
         public static ForgeConfigSpec.IntValue coating_uses;
@@ -40,7 +36,6 @@ public class ModConfig {
 
         public Server(ForgeConfigSpec.Builder builder) {
             builder.push("general");
-            milkification = builder.define("milkification",false);
             milk = builder.define("milk",true);
             gauntlet_cooldown = builder.defineInRange("gauntlet_cooldown", 600, 1, Integer.MAX_VALUE);
             potion_switch_cooldown = builder.comment("Cooldown in ticks when switching to potions").translation(pot_switch_key)
