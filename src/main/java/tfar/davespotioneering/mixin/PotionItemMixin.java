@@ -1,16 +1,13 @@
 package tfar.davespotioneering.mixin;
 
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.PotionItem;
 import net.minecraft.potion.PotionUtils;
-import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import tfar.davespotioneering.Util;
 import tfar.davespotioneering.init.ModEffects;
 
 @Mixin(PotionItem.class)
@@ -31,14 +28,6 @@ public class PotionItemMixin {
     private void removeGlintFromMilk(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
         if (PotionUtils.getEffectsFromStack(stack).stream().anyMatch(effectInstance -> effectInstance.getPotion() == ModEffects.MILK)) {
             cir.setReturnValue(false);
-        }
-    }
-
-
-    @Inject(method = "onItemUseFinish",at = @At("HEAD"))
-    private void milkifyEffect(ItemStack potion, World pLevel, LivingEntity entityLiving, CallbackInfoReturnable<ItemStack> cir) {
-        if (Util.isMilkified(potion)) {
-            entityLiving.clearActivePotions();
         }
     }
 }

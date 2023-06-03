@@ -30,14 +30,12 @@ public class ModConfig {
 
         public static int potion_cooldown = 30;
         public static ForgeConfigSpec.BooleanValue return_empty_bottles;
-        public static ForgeConfigSpec.BooleanValue milkification;
         public static ForgeConfigSpec.BooleanValue magic_protection;
         public static ForgeConfigSpec.IntValue gauntlet_cooldown;
 
         public Server(ForgeConfigSpec.Builder builder) {
             builder.push("general");
             return_empty_bottles = builder.define("return_empty_bottles",true);
-            milkification = builder.define("milkification",false);
             magic_protection = builder.define("magic_protection",false);
             gauntlet_cooldown = builder.defineInRange("gauntlet_cooldown", 600, 1, Integer.MAX_VALUE);
             builder.pop();

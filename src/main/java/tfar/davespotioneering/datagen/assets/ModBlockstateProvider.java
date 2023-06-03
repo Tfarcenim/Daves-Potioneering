@@ -13,6 +13,7 @@ import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.block.AdvancedBrewingStandBlock;
+import tfar.davespotioneering.block.ReinforcedCauldronBlock;
 import tfar.davespotioneering.init.ModBlocks;
 
 public class ModBlockstateProvider extends BlockStateProvider {
@@ -24,9 +25,21 @@ public class ModBlockstateProvider extends BlockStateProvider {
     protected void registerStatesAndModels() {
         brewingStand();
 
-        getVariantBuilder(ModBlocks.REINFORCED_CAULDRON).forAllStates(state -> {
-            ModelFile modelFile = models().getExistingFile(modLoc("block/reinforced_cauldron_level" + state.get(CauldronBlock.LEVEL)));
+        getVariantBuilder(ModBlocks.REINFORCED_CAULDRON).forAllStatesExcept(state -> {
+
+            int level = state.get(CauldronBlock.LEVEL);
+
+            String s;
+            if (level > 0) {
+                boolean dragon = state.get(ReinforcedCauldronBlock.DRAGONS_BREATH);
+                String s1 = dragon ? "bubbling_" : "swirling_";
+                s = "block/" + s1 + "reinforced_cauldron_level" + state.get(CauldronBlock.LEVEL);
+            } else {
+                s = "block/reinforced_cauldron_level" + state.get(CauldronBlock.LEVEL);
+            }
+            ModelFile modelFile = models().getExistingFile(modLoc(s));
             return ConfiguredModel.builder().modelFile(modelFile).build();
+
         });
 
         getVariantBuilder(ModBlocks.MAGIC_LECTERN).forAllStatesExcept(state -> {

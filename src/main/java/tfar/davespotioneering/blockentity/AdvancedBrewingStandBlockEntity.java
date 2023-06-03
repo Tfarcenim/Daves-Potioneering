@@ -241,19 +241,10 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
         Pair<Integer,ItemStack> pair = getPriorityIngredient();
         ItemStack ingredient = pair.getRight();
 
-        boolean canMilkify = ingredient.getItem() == Items.MILK_BUCKET;
-
         //note: this is changed from the BrewingRecipeRegistry version to allow for >1 potion in a stack
         Util.brewPotions(brewingHandler.getStacks(), ingredient, POTIONS);
         ForgeEventFactory.onPotionBrewed(brewingHandler.getStacks());
         Events.potionBrew(this,ingredient);
-
-        if (canMilkify) {
-            for (int i = 0; i < POTIONS.length; i++) {
-                ItemStack potion = brewingHandler.getStackInSlot(i);
-                Util.milkifyPotion(potion);
-            }
-        }
 
         BlockPos blockpos = this.getPos();
         if (ingredient.hasContainerItem()) {

@@ -90,11 +90,6 @@ public class ClientEvents {
 
     public static void tooltips(ItemTooltipEvent e) {
         ItemStack stack = e.getItemStack();
-        if (stack.getItem() instanceof PotionItem) {
-            if (Util.isMilkified(stack)) {
-                e.getToolTip().add(new StringTextComponent("Milkified"));
-            }
-        }
 
         if (stack.getItem() instanceof TieredItem && PotionUtils.getPotionFromItem(stack) != Potions.EMPTY) {
             e.getToolTip().add(new StringTextComponent("Coated with"));
