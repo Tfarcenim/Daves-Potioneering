@@ -13,6 +13,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
@@ -87,19 +88,21 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity {
     }
 
     public void onEntityCollision(Entity entity) {
-        if (entity instanceof ItemEntity && getBlockState().getValue(LayeredReinforcedCauldronBlock.DRAGONS_BREATH)) {
-            ItemStack stack =  ((ItemEntity) entity).getItem();
+        if (entity instanceof ItemEntity) {
+            ItemStack stack = ((ItemEntity) entity).getItem();
             BlockState blockState = getBlockState();
-            int waterLevel = blockState.getValue(LayeredCauldronBlock.LEVEL);
-            if (potion == ModPotions.MILK && PotionUtils.getPotion(stack) != Potions.EMPTY) {
-                LayeredReinforcedCauldronBlock.removeCoating(blockState,level,worldPosition,null,stack);
-            } else if (stack.getItem() == Items.ARROW && waterLevel > 0) {
-              LayeredReinforcedCauldronBlock.handleArrowCoating(blockState,level,worldPosition,null,null,stack);
-            } else if (waterLevel == 3) {
-                //burn off a layer, then schedule the rest of the ticks
-                entity.level.playSound(null,worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.8F, 1);
-                LayeredReinforcedCauldronBlock.setWaterLevel(level,worldPosition,blockState,2);
-                scheduleTick();
+            if (potion == ModPotions.MILK && PotionUtils.getPotion(stack) != Potions.EMPTY && LayeredReinforcedCauldronBlock.canStripEffects(stack)) {
+                LayeredReinforcedCauldronBlock.removeCoating(blockState, level, worldPosition, null, stack);
+            } else if (blockState.getValue(LayeredReinforcedCauldronBlock.DRAGONS_BREATH)) {
+                int waterLevel = blockState.getValue(LayeredCauldronBlock.LEVEL);
+                 if (stack.getItem() == Items.ARROW && waterLevel > 0) {
+                    LayeredReinforcedCauldronBlock.handleArrowCoating(blockState, level, worldPosition, null, null, stack);
+                } else if (waterLevel == 3) {
+                    //burn off a layer, then schedule the rest of the ticks
+                    entity.level.playSound(null, worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.8F, 1);
+                    LayeredReinforcedCauldronBlock.setWaterLevel(level, worldPosition, blockState, 2);
+                    scheduleTick();
+                }
             }
         }
     }

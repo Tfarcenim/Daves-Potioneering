@@ -14,10 +14,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
@@ -37,6 +34,7 @@ import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.init.ModPotions;
 import tfar.davespotioneering.init.ModSoundEvents;
+import tfar.davespotioneering.item.GauntletItem;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -112,6 +110,10 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
         }
     }
 
+    public static boolean canStripEffects(ItemStack stack) {
+        return !(stack.getItem() instanceof PotionItem);
+    }
+
     public static void removeCoating(BlockState state, Level world, BlockPos pos,@Nullable Player player, ItemStack stack) {
         ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) world.getBlockEntity(pos);
         Potion potion = reinforcedCauldronBlockEntity.getPotion();
@@ -121,7 +123,7 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
             }
             removeCoating(stack);
             world.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
-            setWaterLevel(world,pos,state,state.getValue(LEVEL) - 1);
+            //setWaterLevel(world,pos,state,state.getValue(LEVEL) - 1);
         }
     }
 
@@ -136,16 +138,18 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
         }
     }
 
+    public static final String USES = "uses";
+
     public static void removeCoating(ItemStack stack) {
         CompoundTag nbt = stack.getTag();
-        nbt.remove("uses");
+        nbt.remove(USES);
         nbt.remove("Potion");
     }
 
     public static void addCoating(ItemStack stack,Potion potion) {
         if (stack.getItem() instanceof TieredItem) {
             CompoundTag nbt = stack.getOrCreateTag();
-            nbt.putInt("uses", ModConfig.Server.coating_uses.get());
+            nbt.putInt(USES, ModConfig.Server.coating_uses.get());
             nbt.putString("Potion", Registry.POTION.getKey(potion).toString());
         } else if (stack.getItem() == Items.TIPPED_ARROW) {
             PotionUtils.setPotion(stack, potion);
@@ -156,10 +160,10 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
         CompoundTag nbt = stack.getTag();
         if (nbt != null) {
 
-            int uses = nbt.getInt("uses");
+            int uses = nbt.getInt(USES);
             uses--;
             if (uses > 0) {
-                nbt.putInt("uses",uses);
+                nbt.putInt(USES,uses);
             } else {
                 removeCoating(stack);
             }
@@ -180,13 +184,7 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
     @Override
     public void animateTick(BlockState stateIn, Level world, BlockPos pos, RandomSource rand) {
         if (stateIn.getValue(DRAGONS_BREATH)) {
-            double d0 = pos.getX();
-            double d1 = (double) pos.getY() + 1D;
-            double d2 = pos.getZ();
-            for (int i = 0; i < 5; i++) {
-                world.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, d0 + (double) rand.nextFloat(), d1 + (double) rand.nextFloat(), d2 + (double) rand.nextFloat(), 0.0D, 0.04D, 0.0D);
-            }
-            world.playLocalSound(pos.getX(),pos.getY(),pos.getZ(), ModSoundEvents.BUBBLING_WATER_CAULDRON, SoundSource.BLOCKS,.5f,1,false);
+            world.playLocalSound(pos.getX(),pos.getY(),pos.getZ(), ModSoundEvents.BUBBLING_WATER_CAULDRON, SoundSource.BLOCKS,.25f,1,false);
         }
     }
 
