@@ -72,6 +72,8 @@ public class ClientEvents implements ClientModInitializer {
 
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.COMPOUND_BREWING_STAND, RenderLayer.getCutoutMipped());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.POTION_INJECTOR,RenderLayer.getTranslucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.REINFORCED_CAULDRON,RenderLayer.getTranslucent());
+
         ScreenRegistry.register(ModContainerTypes.ADVANCED_BREWING_STAND, AdvancedBrewingStandScreen::new);
         ScreenRegistry.register(ModContainerTypes.ALCHEMICAL_GAUNTLET, GauntletWorkstationScreen::new);
 
@@ -117,6 +119,8 @@ public class ClientEvents implements ClientModInitializer {
         BuiltinItemRendererRegistry.INSTANCE.register(ModItems.MAGENTA_UMBRELLA,classicUmbrella(DyeColor.MAGENTA));
         BuiltinItemRendererRegistry.INSTANCE.register(ModItems.LIGHT_BLUE_UMBRELLA,classicUmbrella(DyeColor.LIGHT_BLUE));
         BuiltinItemRendererRegistry.INSTANCE.register(ModItems.YELLOW_UMBRELLA,classicUmbrella(DyeColor.YELLOW));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.LIME_UMBRELLA,classicUmbrella(DyeColor.LIME));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.PINK_UMBRELLA,classicUmbrella(DyeColor.PINK));
         BuiltinItemRendererRegistry.INSTANCE.register(ModItems.GRAY_UMBRELLA,classicUmbrella(DyeColor.GRAY));
         BuiltinItemRendererRegistry.INSTANCE.register(ModItems.LIGHT_GRAY_UMBRELLA,classicUmbrella(DyeColor.LIGHT_GRAY));
         BuiltinItemRendererRegistry.INSTANCE.register(ModItems.CYAN_UMBRELLA,classicUmbrella(DyeColor.CYAN));
@@ -167,10 +171,6 @@ public class ClientEvents implements ClientModInitializer {
         }
     }
 
-  //  public static void registerLoader(final ModelRegistryEvent event) {
-  //      ModelLoaderRegistry.registerLoader(new ResourceLocation(MODID, "fullbright"), ModelLoader.INSTANCE);
- //   }
-
     public static void onMouseInput(long handle, int button, int action, int mods) {
         PlayerEntity player = MinecraftClient.getInstance().player;
         if (player == null) return;
@@ -202,12 +202,6 @@ public class ClientEvents implements ClientModInitializer {
     }
 
     public static void tooltips(ItemStack stack, TooltipContext e2, List<Text> tooltip) {
-        if (stack.getItem() instanceof PotionItem) {
-            if (Util.isMilkified(stack)) {
-                tooltip.add(new LiteralText("Milkified"));
-            }
-        }
-
         if (stack.getItem() instanceof ToolItem && PotionUtil.getPotion(stack) != Potions.EMPTY) {
             tooltip.add(new LiteralText("Coated with"));
             PotionUtil.buildTooltip(stack, tooltip, 0.125F);

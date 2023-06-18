@@ -12,11 +12,9 @@
     "PlayerInfoMixin",
     "PotionBrewingAccess",
     "PotionBrewingMixin",
-    "PotionEntityMixin",
     "PotionItemMixin",
     "PotionSlotMixin",
     "PotionUtilsMixin",
-    "ProtectionEnchantmentMixin",
     "ServerPlayNetHandlerMixin",
     "SimpleContainerAccess",
     "ThrowablePotionItemMixin"

@@ -22,6 +22,9 @@
   "block.davespotioneering.reinforced_cauldron1.ctrl.desc": "Can be filled with potions and Milk",
   "block.davespotioneering.reinforced_cauldron1.shift.desc": "It also has some small benefits.",
   "container.davespotioneering.compound_brewing": "Compound Brewing Stand",
+  "config.gauntlet_hud_preset": "You shouldn't change this. Just don't",
+  "config.gauntlet_hud_x": "The X Position of the gauntlet hud (left top). You should be using the in-game gui to change this though",
+  "config.gauntlet_hud_y": "The y Position of the gauntlet hud (left top). You should be using the in-game gui to change this though",
   "davespotioneering.container.potion_injector": "Potion Injector",
   "davespotioneering.gui.moveGauntletHUD": "Use your mouse to drag the Gauntlet HUD wherever you would like or use one of these default positions.",
   "davespotioneering.gui.moveGauntletHUD.preset0": "Left Top",
@@ -78,5 +81,8 @@
   "item.minecraft.lingering_potion.effect.milk": "Lingering Milk Bottle",
   "item.minecraft.potion.effect.milk": "Milk Bottle",
   "item.minecraft.splash_potion.effect.milk": "Splash Milk Bottle",
-  "itemGroup.davespotioneering": "Dave's Potioneering"
+  "itemGroup.davespotioneering": "Dave's Potioneering",
+  "config.hud_x" : "The X Position of the gauntlet hud (left top). You should be using the in-game gui to change this though",
+  "config.hud_y" : "The X Position of the gauntlet hud (left top). You should be using the in-game gui to change this though"
+
 }
