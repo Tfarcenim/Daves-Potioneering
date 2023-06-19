@@ -67,6 +67,8 @@ public class ClientEvents implements ClientModInitializer {
 
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.COMPOUND_BREWING_STAND, RenderLayer.getCutoutMipped());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.POTION_INJECTOR,RenderLayer.getTranslucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.REINFORCED_WATER_CAULDRON,RenderLayer.getTranslucent());
+
         HandledScreens.register(ModContainerTypes.ADVANCED_BREWING_STAND, AdvancedBrewingStandScreen::new);
         HandledScreens.register(ModContainerTypes.ALCHEMICAL_GAUNTLET, PotionInjectorScreen::new);
 
@@ -195,12 +197,6 @@ public class ClientEvents implements ClientModInitializer {
     }
 
     public static void tooltips(ItemStack stack, TooltipContext e2, List<Text> tooltip) {
-        if (stack.getItem() instanceof PotionItem) {
-            if (Util.isMilkified(stack)) {
-                tooltip.add(new LiteralText("Milkified"));
-            }
-        }
-
         if (stack.getItem() instanceof ToolItem && PotionUtil.getPotion(stack) != Potions.EMPTY) {
             tooltip.add(new LiteralText("Coated with"));
             PotionUtil.buildTooltip(stack, tooltip, 0.125F);

@@ -214,12 +214,6 @@ public class LayeredReinforcedCauldronBlock extends LeveledCauldronBlock impleme
      */
     public void randomDisplayTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand) {
         if (stateIn.get(DRAGONS_BREATH)) {
-            double d0 = pos.getX();
-            double d1 = (double) pos.getY() + 1D;
-            double d2 = pos.getZ();
-            for (int i = 0; i < 5; i++) {
-                worldIn.addImportantParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, d0 + (double) rand.nextFloat(), d1 + (double) rand.nextFloat(), d2 + (double) rand.nextFloat(), 0.0D, 0.04D, 0.0D);
-            }
             worldIn.playSound(pos.getX(),pos.getY(),pos.getZ(), ModSoundEvents.BUBBLING_WATER_CAULDRON, SoundCategory.BLOCKS,.5f,1,false);
         }
     }

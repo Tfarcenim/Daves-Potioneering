@@ -21,16 +21,6 @@ public class Util {
         ((ItemAccess) item).setMaxCount(count);
     }
 
-    public static final String MILKIFY = "milkified";
-
-    public static void milkifyPotion(ItemStack potion) {
-        potion.getOrCreateNbt().putBoolean(MILKIFY, true);
-    }
-
-    public static boolean isMilkified(ItemStack potion) {
-        return potion.hasNbt() && potion.getNbt().getBoolean(MILKIFY);
-    }
-
     //brewing xp is determined by the ingredient used, more valuable ingredients should give more xp
     public static double getBrewXp(ItemStack stack) {
         return stack.getRarity() == Rarity.RARE ? 10 : 7;
