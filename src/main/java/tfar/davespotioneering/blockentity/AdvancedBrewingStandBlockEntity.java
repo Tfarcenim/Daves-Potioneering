@@ -192,13 +192,6 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements Tick
     private boolean canBrew() {
         ItemStack itemstack = getPriorityIngredient().getRight();
         if (!itemstack.isEmpty()) {
-
-            if (itemstack.getItem() == Items.MILK_BUCKET) {
-                if (canMilkify()) {
-                    return true;
-                }
-            }
-
             return BrewingRecipeRegistry.hasRecipe(itemstack, itemstack);
         }
         return false;
@@ -228,21 +221,6 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements Tick
         this.brewingHandler.setStack(pair.getLeft(), ingredient);
         //plays brewing stand block brewing finished sound
         this.world.syncWorldEvent(1035, blockpos, 0);
-    }
-
-    private boolean canMilkify() {
-        for (int i : POTIONS) {
-            ItemStack potionStack = brewingHandler.getStack(i);
-            if (potionStack.getItem() instanceof PotionItem) {
-                Potion potion = PotionUtil.getPotion(potionStack);
-                String name = Registry.POTION.getId(potion).toString();
-                if (name.contains("long") || name.contains("strong")) {
-                    continue;
-                }
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override

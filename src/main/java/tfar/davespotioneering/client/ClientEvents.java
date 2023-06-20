@@ -61,9 +61,9 @@ public class ClientEvents implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
 
-        ParticleFactoryRegistry.getInstance().register(ModParticleTypes.FAST_DRIPPING_WATER,FastDripParticle.DrippingWaterFactory::new);
+        ParticleFactoryRegistry.getInstance().register(ModParticleTypes.FAST_DRIPPING_WATER, FastDripParticle.DrippingWaterFactory::new);
         ParticleFactoryRegistry.getInstance().register(ModParticleTypes.FAST_FALLING_WATER, FastDripParticle.FallingWaterFactory::new);
-       ParticleFactoryRegistry.getInstance().register(ModParticleTypes.TINTED_SPLASH, TintedSplashParticle.Factory::new);
+        ParticleFactoryRegistry.getInstance().register(ModParticleTypes.TINTED_SPLASH, TintedSplashParticle.Factory::new);
 
         ItemTooltipCallback.EVENT.register(ClientEvents::tooltips);
         HudRenderCallback.EVENT.register(ClientEvents::gauntletHud);
@@ -71,8 +71,8 @@ public class ClientEvents implements ClientModInitializer {
 
 
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.COMPOUND_BREWING_STAND, RenderLayer.getCutoutMipped());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.POTION_INJECTOR,RenderLayer.getTranslucent());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.REINFORCED_CAULDRON,RenderLayer.getTranslucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.POTION_INJECTOR, RenderLayer.getTranslucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.REINFORCED_CAULDRON, RenderLayer.getTranslucent());
 
         ScreenRegistry.register(ModContainerTypes.ADVANCED_BREWING_STAND, AdvancedBrewingStandScreen::new);
         ScreenRegistry.register(ModContainerTypes.ALCHEMICAL_GAUNTLET, GauntletWorkstationScreen::new);
@@ -89,8 +89,8 @@ public class ClientEvents implements ClientModInitializer {
             return 0xffffff;
         }, ModBlocks.REINFORCED_CAULDRON);
 
-        FabricModelPredicateProviderRegistry.register(ModItems.POTIONEER_GAUNTLET, new Identifier("active"),GAUNTLET
-                );
+        FabricModelPredicateProviderRegistry.register(ModItems.POTIONEER_GAUNTLET, new Identifier("active"), GAUNTLET
+        );
 
         registerBlockingProperty(ModItems.WHITE_UMBRELLA);
         registerBlockingProperty(ModItems.ORANGE_UMBRELLA);
@@ -112,24 +112,24 @@ public class ClientEvents implements ClientModInitializer {
         registerBlockingProperty(ModItems.AGED_UMBRELLA);
         registerBlockingProperty(ModItems.GILDED_UMBRELLA);
 
-        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.AGED_UMBRELLA,createAgedUmbrellaItemStackRenderer());
-        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.GILDED_UMBRELLA,umbrella("gilded"));
-        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.WHITE_UMBRELLA,classicUmbrella(DyeColor.WHITE));
-        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.ORANGE_UMBRELLA,classicUmbrella(DyeColor.ORANGE));
-        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.MAGENTA_UMBRELLA,classicUmbrella(DyeColor.MAGENTA));
-        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.LIGHT_BLUE_UMBRELLA,classicUmbrella(DyeColor.LIGHT_BLUE));
-        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.YELLOW_UMBRELLA,classicUmbrella(DyeColor.YELLOW));
-        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.LIME_UMBRELLA,classicUmbrella(DyeColor.LIME));
-        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.PINK_UMBRELLA,classicUmbrella(DyeColor.PINK));
-        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.GRAY_UMBRELLA,classicUmbrella(DyeColor.GRAY));
-        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.LIGHT_GRAY_UMBRELLA,classicUmbrella(DyeColor.LIGHT_GRAY));
-        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.CYAN_UMBRELLA,classicUmbrella(DyeColor.CYAN));
-        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.PURPLE_UMBRELLA,classicUmbrella(DyeColor.PURPLE));
-        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.BLUE_UMBRELLA,classicUmbrella(DyeColor.BLUE));
-        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.BROWN_UMBRELLA,classicUmbrella(DyeColor.BROWN));
-        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.GREEN_UMBRELLA,classicUmbrella(DyeColor.GREEN));
-        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.RED_UMBRELLA,classicUmbrella(DyeColor.RED));
-        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.BLACK_UMBRELLA,classicUmbrella(DyeColor.BLACK));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.AGED_UMBRELLA, createAgedUmbrellaItemStackRenderer());
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.GILDED_UMBRELLA, umbrella("gilded"));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.WHITE_UMBRELLA, classicUmbrella(DyeColor.WHITE));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.ORANGE_UMBRELLA, classicUmbrella(DyeColor.ORANGE));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.MAGENTA_UMBRELLA, classicUmbrella(DyeColor.MAGENTA));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.LIGHT_BLUE_UMBRELLA, classicUmbrella(DyeColor.LIGHT_BLUE));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.YELLOW_UMBRELLA, classicUmbrella(DyeColor.YELLOW));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.LIME_UMBRELLA, classicUmbrella(DyeColor.LIME));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.PINK_UMBRELLA, classicUmbrella(DyeColor.PINK));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.GRAY_UMBRELLA, classicUmbrella(DyeColor.GRAY));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.LIGHT_GRAY_UMBRELLA, classicUmbrella(DyeColor.LIGHT_GRAY));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.CYAN_UMBRELLA, classicUmbrella(DyeColor.CYAN));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.PURPLE_UMBRELLA, classicUmbrella(DyeColor.PURPLE));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.BLUE_UMBRELLA, classicUmbrella(DyeColor.BLUE));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.BROWN_UMBRELLA, classicUmbrella(DyeColor.BROWN));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.GREEN_UMBRELLA, classicUmbrella(DyeColor.GREEN));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.RED_UMBRELLA, classicUmbrella(DyeColor.RED));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.BLACK_UMBRELLA, classicUmbrella(DyeColor.BLACK));
 
     }
 
@@ -144,22 +144,22 @@ public class ClientEvents implements ClientModInitializer {
         return umbrella(dyeColor.name().toLowerCase(Locale.ROOT));
     }
 
-    private static BuiltinItemRendererRegistry.DynamicItemRenderer  createGeoClassicUmbrellaItemStackRenderer(String itemName) {
+    private static BuiltinItemRendererRegistry.DynamicItemRenderer createGeoClassicUmbrellaItemStackRenderer(String itemName) {
         return new DoubleGeoItemStackRenderer<>(
                 GeoItemStackRenderer.GeoItemModel.makeClosedUmbrella(itemName),
                 GeoItemStackRenderer.GeoItemModel.makeOpenUmbrella(itemName)
-                ,GeoItemStackRenderer.NOTHING);
+                , GeoItemStackRenderer.NOTHING);
     }
 
-    private static BuiltinItemRendererRegistry.DynamicItemRenderer  createAgedUmbrellaItemStackRenderer() {
+    private static BuiltinItemRendererRegistry.DynamicItemRenderer createAgedUmbrellaItemStackRenderer() {
         return new DoubleGeoItemStackRenderer<>(
                 GeoItemStackRenderer.GeoItemModel.makeClosedUmbrella("aged"),
                 GeoItemStackRenderer.GeoItemModel.makeOpenAgedUmbrella()
-                ,GeoItemStackRenderer.NOTHING);
+                , GeoItemStackRenderer.NOTHING);
     }
 
     private static BuiltinModelItemRenderer createGeoItemStackRendererTransparent(Identifier itemName) {
-        return new GeoItemStackRenderer<>(new GeoItemStackRenderer.GeoItemModel<>(itemName), RenderLayer::getEntityTranslucent,GeoItemStackRenderer.NOTHING);
+        return new GeoItemStackRenderer<>(new GeoItemStackRenderer.GeoItemModel<>(itemName), RenderLayer::getEntityTranslucent, GeoItemStackRenderer.NOTHING);
     }
 
     public static void switchGameMode(GameMode oldGameType, GameMode newGameType) {
@@ -202,11 +202,14 @@ public class ClientEvents implements ClientModInitializer {
     }
 
     public static void tooltips(ItemStack stack, TooltipContext e2, List<Text> tooltip) {
-        if (stack.getItem() instanceof ToolItem && PotionUtil.getPotion(stack) != Potions.EMPTY) {
-            tooltip.add(new LiteralText("Coated with"));
-            PotionUtil.buildTooltip(stack, tooltip, 0.125F);
-            tooltip.add(new LiteralText("Uses: " + stack.getTag().getInt("uses")));
-        }
+        if (PotionUtil.getPotion(stack) != Potions.EMPTY)
+            if (stack.getItem() instanceof ToolItem) {
+                tooltip.add(new LiteralText("Coated with"));
+                PotionUtil.buildTooltip(stack, tooltip, 0.125F);
+                tooltip.add(new LiteralText("Uses: " + stack.getTag().getInt("uses")));
+            } else if (stack.getItem().isFood()) {
+                PotionUtil.buildTooltip(stack, tooltip, 0.125F);
+            }
     }
 
     private static void registerBlockingProperty(Item item) {
@@ -286,7 +289,7 @@ public class ClientEvents implements ClientModInitializer {
         //world.addParticle(particleDataIn,blockPosIn.x,blockPosIn.y,blockPosIn.z,0,-.10,0);
     }
 
-    public static void renderWrappedToolTip(Screen screen, ItemStack stack,MatrixStack matrixStack, List<? extends StringVisitable> tooltips, int mouseX, int mouseY, TextRenderer font) {
-        GuiUtils.drawWrappedHoveringText(stack,matrixStack, tooltips, mouseX, mouseY, screen.width, screen.height, -1, font);
+    public static void renderWrappedToolTip(Screen screen, ItemStack stack, MatrixStack matrixStack, List<? extends StringVisitable> tooltips, int mouseX, int mouseY, TextRenderer font) {
+        GuiUtils.drawWrappedHoveringText(stack, matrixStack, tooltips, mouseX, mouseY, screen.width, screen.height, -1, font);
     }
 }

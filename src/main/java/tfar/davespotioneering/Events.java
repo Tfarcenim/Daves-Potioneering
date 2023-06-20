@@ -87,6 +87,13 @@ public class Events {
         }
     }
 
+    public static void onEat(PlayerEntity player, ItemStack stack) {
+        Potion potion = PotionUtil.getPotion(stack);
+        for (StatusEffectInstance effectInstance : potion.getEffects()) {
+            player.addStatusEffect(new StatusEffectInstance(effectInstance.getEffectType(), Math.max(effectInstance.getDuration() / 8, 1), effectInstance.getAmplifier(), effectInstance.isAmbient(), effectInstance.shouldShowParticles()));
+        }
+    }
+
     //this is called when the player takes a potion from the brewing stand
     public static void playerTakedBrewedPotion(PlayerEntity player) {
         if (!player.world.isClient) {
@@ -107,9 +114,7 @@ public class Events {
     public static boolean canApplyEffect(LivingEntity entity) {
         if (entity instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity)entity;
-            if (player.getActiveItem().getItem() instanceof UmbrellaItem) {
-                return false;
-            }
+            return !(player.getActiveItem().getItem() instanceof UmbrellaItem);
         }
         return true;
     }
