@@ -91,6 +91,13 @@ public class Events {
         }
     }
 
+    public static void onEat(Player player, ItemStack stack) {
+        Potion potion = PotionUtils.getPotion(stack);
+        for (MobEffectInstance effectInstance : potion.getEffects()) {
+            player.addEffect(new MobEffectInstance(effectInstance.getEffect(), Math.max(effectInstance.getDuration() / 8, 1), effectInstance.getAmplifier(), effectInstance.isAmbient(), effectInstance.showIcon()));
+        }
+    }
+
     //this is called when the player takes a potion from the brewing stand
     public static void playerBrew(PlayerBrewedPotionEvent e) {
         Player player = e.getPlayer();

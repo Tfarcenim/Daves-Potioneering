@@ -94,10 +94,14 @@ public class ClientEvents {
     public static void tooltips(ItemTooltipEvent e) {
         ItemStack stack = e.getItemStack();
 
-        if (stack.getItem() instanceof TieredItem && PotionUtils.getPotion(stack) != Potions.EMPTY) {
-            e.getToolTip().add(new TextComponent("Coated with"));
-            PotionUtils.addPotionTooltip(stack, e.getToolTip(), 0.125F);
-            e.getToolTip().add(new TextComponent("Uses: " + stack.getTag().getInt("uses")));
+        if (PotionUtils.getPotion(stack) != Potions.EMPTY) {
+            if (stack.getItem() instanceof TieredItem) {
+                e.getToolTip().add(new TextComponent("Coated with"));
+                PotionUtils.addPotionTooltip(stack, e.getToolTip(), 0.125F);
+                e.getToolTip().add(new TextComponent("Uses: " + stack.getTag().getInt("uses")));
+            } else if (stack.getItem().isEdible()) {
+                PotionUtils.addPotionTooltip(stack, e.getToolTip(), 0.125F);
+            }
         }
     }
 
@@ -111,7 +115,6 @@ public class ClientEvents {
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.REINFORCED_WATER_CAULDRON,RenderType.translucent());
         MenuScreens.register(ModContainerTypes.ADVANCED_BREWING_STAND, AdvancedBrewingStandScreen::new);
         MenuScreens.register(ModContainerTypes.ALCHEMICAL_GAUNTLET, GauntletWorkstationScreen::new);
-
         BlockEntityRenderers.register(ModBlockEntityTypes.POTION_INJECTOR, PotionInjectorRenderer::new);
 
         Minecraft.getInstance().getBlockColors().register((state, reader, pos, index) -> {

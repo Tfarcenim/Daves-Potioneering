@@ -95,8 +95,8 @@ public class ReinforcedCauldronBlock extends AbstractCauldronBlock {
                 level.setBlockAndUpdate(pos, ModBlocks.REINFORCED_WATER_CAULDRON.defaultBlockState());
                 level.gameEvent(null, GameEvent.FLUID_PLACE, pos);
             } else if (precipitation == Biome.Precipitation.SNOW) {
-             //   level.setBlockAndUpdate(pos, Blocks.POWDER_SNOW_CAULDRON.defaultBlockState());
-              //  level.gameEvent(null, GameEvent.FLUID_PLACE, pos);
+                //   level.setBlockAndUpdate(pos, Blocks.POWDER_SNOW_CAULDRON.defaultBlockState());
+                //  level.gameEvent(null, GameEvent.FLUID_PLACE, pos);
             }
 
         }
@@ -119,9 +119,9 @@ public class ReinforcedCauldronBlock extends AbstractCauldronBlock {
             level.levelEvent(1047, pos, 0);
             level.gameEvent(null, GameEvent.FLUID_PLACE, pos);
         } else if (fluid == Fluids.LAVA) {
-         //   level.setBlockAndUpdate(pos, Blocks.LAVA_CAULDRON.defaultBlockState());
-         //   level.levelEvent(1046, pos, 0);
-        //    level.gameEvent(null, GameEvent.FLUID_PLACE, pos);
+            //   level.setBlockAndUpdate(pos, Blocks.LAVA_CAULDRON.defaultBlockState());
+            //   level.levelEvent(1046, pos, 0);
+            //    level.gameEvent(null, GameEvent.FLUID_PLACE, pos);
         }
     }
 }
