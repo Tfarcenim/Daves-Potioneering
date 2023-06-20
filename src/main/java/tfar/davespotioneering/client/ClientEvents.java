@@ -91,10 +91,14 @@ public class ClientEvents {
     public static void tooltips(ItemTooltipEvent e) {
         ItemStack stack = e.getItemStack();
 
-        if (stack.getItem() instanceof TieredItem && PotionUtils.getPotionFromItem(stack) != Potions.EMPTY) {
-            e.getToolTip().add(new StringTextComponent("Coated with"));
-            PotionUtils.addPotionTooltip(stack, e.getToolTip(), 0.125F);
-            e.getToolTip().add(new StringTextComponent("Uses: " + stack.getTag().getInt("uses")));
+        if (PotionUtils.getPotionFromItem(stack) != Potions.EMPTY) {
+            if (stack.getItem() instanceof TieredItem) {
+                e.getToolTip().add(new StringTextComponent("Coated with"));
+                PotionUtils.addPotionTooltip(stack, e.getToolTip(), 0.125F);
+                e.getToolTip().add(new StringTextComponent("Uses: " + stack.getTag().getInt("uses")));
+            } else if (stack.getItem().isFood()) {
+                PotionUtils.addPotionTooltip(stack, e.getToolTip(), 0.125F);
+            }
         }
     }
 
@@ -107,6 +111,7 @@ public class ClientEvents {
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::playerTick);
         RenderTypeLookup.setRenderLayer(ModBlocks.COMPOUND_BREWING_STAND, RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(ModBlocks.POTION_INJECTOR,RenderType.getTranslucent());
+        RenderTypeLookup.setRenderLayer(ModBlocks.REINFORCED_CAULDRON,RenderType.getTranslucent());
         ScreenManager.registerFactory(ModContainerTypes.ADVANCED_BREWING_STAND, AdvancedBrewingStandScreen::new);
         ScreenManager.registerFactory(ModContainerTypes.ALCHEMICAL_GAUNTLET, GauntletWorkstationScreen::new);
 

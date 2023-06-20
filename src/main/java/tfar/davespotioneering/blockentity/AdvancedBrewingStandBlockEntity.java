@@ -211,13 +211,6 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
     private boolean canBrew() {
         ItemStack itemstack = getPriorityIngredient().getRight();
         if (!itemstack.isEmpty()) {
-
-            if (itemstack.getItem() == Items.MILK_BUCKET) {
-                if (canMilkify()) {
-                    return true;
-                }
-            }
-
             return BrewingRecipeRegistry.canBrew(brewingHandler.getStacks(), itemstack, POTIONS); // divert to VanillaBrewingRegistry
         }
         if (itemstack.isEmpty()) {
@@ -262,21 +255,6 @@ public class AdvancedBrewingStandBlockEntity extends TileEntity implements ITick
         this.brewingHandler.setStackInSlot(pair.getLeft(), ingredient);
         //plays brewing stand block brewing finished sound
         this.world.playEvent(1035, blockpos, 0);
-    }
-
-    private boolean canMilkify() {
-        for (int i : POTIONS) {
-            ItemStack potionStack = brewingHandler.getStackInSlot(i);
-            if (potionStack.getItem() instanceof PotionItem) {
-                Potion potion = PotionUtils.getPotionFromItem(potionStack);
-                String name = potion.getRegistryName().toString();
-                if (name.contains("long") || name.contains("strong")) {
-                    continue;
-                }
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override

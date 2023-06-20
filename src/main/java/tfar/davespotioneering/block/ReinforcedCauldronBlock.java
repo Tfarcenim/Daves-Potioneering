@@ -55,7 +55,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
 
     public ReinforcedCauldronBlock(Properties properties) {
         super(properties);
-        this.setDefaultState(this.stateContainer.getBaseState().with(DRAGONS_BREATH,false));
+        this.setDefaultState(this.stateContainer.getBaseState().with(DRAGONS_BREATH, false));
     }
 
     @Override
@@ -69,15 +69,36 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
             handleEmptyBottle(state, world, pos, player, hand, stack, level);
             return ActionResultType.func_233537_a_(world.isRemote);
         } else if (stack.getItem() == Items.DRAGON_BREATH && level == 3) {
-            handleDragonBreath(state,world, pos, player, stack);
-        } else if (stack.getItem() instanceof TieredItem && level == 3 ) {
-            handleWeaponCoating(state,world, pos, player, stack);
+            handleDragonBreath(state, world, pos, player, stack);
+        } else if (stack.getItem() instanceof TieredItem && level == 3) {
+            handleWeaponCoating(state, world, pos, player, stack);
         } else if (stack.getItem() == Items.ARROW && level > 0) {
-            handleArrowCoating(state,world, pos, player, stack,level);
+            handleArrowCoating(state, world, pos, player, stack, level);
         } else if (PotionUtils.getPotionFromItem(stack) != Potions.EMPTY && level > 0) {
-            removeCoating(state,world, pos, player, stack);
+            removeCoating(state, world, pos, player, stack);
+        } else if (stack.getItem().getFood() != null) {
+            spikedFood(state, world, pos, player, stack, level);
         }
         return super.onBlockActivated(state, world, pos, player, hand, hit);
+    }
+
+    public static void spikedFood(BlockState state, World world, BlockPos pos, @Nullable PlayerEntity player, ItemStack stack, int level) {
+        if (stack.getCount() < 8) {
+            return;
+        }
+        ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) world.getTileEntity(pos);
+        Potion potion = reinforcedCauldronBlockEntity.getPotion();
+        if (!world.isRemote) {
+            if (player != null && !player.abilities.isCreativeMode) {
+                player.addStat(Stats.USE_CAULDRON);
+            }
+            ItemStack stack1 = stack.split(8);
+            addCoating(stack1, potion);
+            world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+
+            world.addEntity(new ItemEntity(world, pos.getX(), pos.getY() + 1, pos.getZ(), stack1));
+            ((CauldronBlock) state.getBlock()).setWaterLevel(world, pos, state, level - 1);
+        }
     }
 
     private void handlePotionBottle(BlockState state, World world, BlockPos pos, PlayerEntity player, ItemStack stack, int level) {
@@ -111,9 +132,9 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
         }
     }
 
-    public void boom(World world,BlockPos pos,BlockState state) {
+    public void boom(World world, BlockPos pos, BlockState state) {
         this.setWaterLevel(world, pos, state, 0);
-        world.createExplosion(null, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, 1, false, Explosion.Mode.NONE);
+        world.createExplosion(null, pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5, 1, false, Explosion.Mode.NONE);
     }
 
     private void handleDragonBreath(BlockState state, World world, BlockPos pos, PlayerEntity player, ItemStack stack) {
@@ -131,7 +152,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
                 }
             }
             world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
-            world.setBlockState(pos,state.with(DRAGONS_BREATH,true));
+            world.setBlockState(pos, state.with(DRAGONS_BREATH, true));
         }
     }
 
@@ -165,15 +186,15 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
                 if (player != null && !player.abilities.isCreativeMode) {
                     player.addStat(Stats.USE_CAULDRON);
                 }
-                addCoating(stack,potion);
+                addCoating(stack, potion);
                 world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 state = state.with(DRAGONS_BREATH, false);
-                ((CauldronBlock)state.getBlock()).setWaterLevel(world,pos,state,0);
+                ((CauldronBlock) state.getBlock()).setWaterLevel(world, pos, state, 0);
             }
         }
     }
 
-    public static void handleArrowCoating(BlockState state, World world, BlockPos pos,@Nullable PlayerEntity player, ItemStack stack,int level) {
+    public static void handleArrowCoating(BlockState state, World world, BlockPos pos, @Nullable PlayerEntity player, ItemStack stack, int level) {
         if (state.get(DRAGONS_BREATH)) {
             //can't tip arrows if there's less than 8
             if (stack.getCount() < 8) {
@@ -185,20 +206,20 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
                 if (player != null && !player.abilities.isCreativeMode) {
                     player.addStat(Stats.USE_CAULDRON);
                 }
-                ItemStack tippedArrows = new ItemStack(Items.TIPPED_ARROW,8);
-                addCoating(tippedArrows,potion);
+                ItemStack tippedArrows = new ItemStack(Items.TIPPED_ARROW, 8);
+                addCoating(tippedArrows, potion);
                 stack.shrink(8);
                 world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
 
-                world.addEntity(new ItemEntity(world,pos.getX(),pos.getY()+1,pos.getZ(),tippedArrows));
+                world.addEntity(new ItemEntity(world, pos.getX(), pos.getY() + 1, pos.getZ(), tippedArrows));
                 if (level <= 1)
-                state = state.with(DRAGONS_BREATH, false);
-                ((CauldronBlock)state.getBlock()).setWaterLevel(world,pos,state,level - 1);
+                    state = state.with(DRAGONS_BREATH, false);
+                ((CauldronBlock) state.getBlock()).setWaterLevel(world, pos, state, level - 1);
             }
         }
     }
 
-    public static void removeCoating(BlockState state, World world, BlockPos pos,@Nullable PlayerEntity player, ItemStack stack) {
+    public static void removeCoating(BlockState state, World world, BlockPos pos, @Nullable PlayerEntity player, ItemStack stack) {
         ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) world.getTileEntity(pos);
         Potion potion = reinforcedCauldronBlockEntity.getPotion();
         if (potion == ModPotions.MILK && !world.isRemote) {
@@ -207,7 +228,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
             }
             removeCoating(stack);
             world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
-            ((CauldronBlock)state.getBlock()).setWaterLevel(world,pos,state,state.get(LEVEL) - 1);
+            ((CauldronBlock) state.getBlock()).setWaterLevel(world, pos, state, state.get(LEVEL) - 1);
         }
     }
 
@@ -230,12 +251,12 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
         nbt.remove("Potion");
     }
 
-    public static void addCoating(ItemStack stack,Potion potion) {
+    public static void addCoating(ItemStack stack, Potion potion) {
         if (stack.getItem() instanceof TieredItem) {
             CompoundNBT nbt = stack.getOrCreateTag();
             nbt.putInt("uses", 25);
             nbt.putString("Potion", potion.getRegistryName().toString());
-        } else if (stack.getItem() == Items.TIPPED_ARROW) {
+        } else {
             PotionUtils.addPotionToItemStack(stack, potion);
         }
     }
@@ -247,7 +268,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
             int uses = nbt.getInt("uses");
             uses--;
             if (uses > 0) {
-                nbt.putInt("uses",uses);
+                nbt.putInt("uses", uses);
             } else {
                 removeCoating(stack);
             }
@@ -297,10 +318,10 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
     public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
         int level = state.get(LEVEL);
 
-        world.playSound(null,pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.8F, 1);
+        world.playSound(null, pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.8F, 1);
 
         if (state.get(LEVEL) > 1) {
-            setWaterLevel(world,pos,state,level - 1);
+            setWaterLevel(world, pos, state, level - 1);
             world.getPendingBlockTicks().scheduleTick(pos, this, brew_speed);
         } else {
             List<ItemEntity> items = world.getEntitiesWithinAABB(ItemEntity.class,
@@ -309,7 +330,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
             if (items.size() == 1) {
                 handleWeaponCoating(state, world, pos, null, items.get(0).getItem());
             } else {
-                boom(world,pos,state);
+                boom(world, pos, state);
             }
         }
     }
@@ -321,22 +342,22 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
     @Override
     public void addInformation(ItemStack stack, @Nullable IBlockReader worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
 
-        tooltip.add(new TranslationTextComponent(getTranslationKey()+".hold_shift.desc"));
+        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".hold_shift.desc"));
         if (Screen.hasShiftDown())
-            for (int i = 0; i < S_LINES;i++) {
+            for (int i = 0; i < S_LINES; i++) {
 
                 tooltip.add(this.getShiftDescriptions(i).mergeStyle(TextFormatting.GRAY));
             }
 
-        tooltip.add(new TranslationTextComponent(getTranslationKey()+".hold_ctrl.desc"));
+        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".hold_ctrl.desc"));
         if (Screen.hasControlDown())
-            for (int i = 0; i < C_LINES;i++) {
+            for (int i = 0; i < C_LINES; i++) {
                 tooltip.add(this.getCtrlDescriptions(i).mergeStyle(TextFormatting.GRAY));
             }
 
-        tooltip.add(new TranslationTextComponent(getTranslationKey()+".hold_alt.desc"));
+        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".hold_alt.desc"));
         if (Screen.hasAltDown()) {
-            for (int i = 0; i < A_LINES;i++) {
+            for (int i = 0; i < A_LINES; i++) {
                 tooltip.add(this.getAltDescriptions(i).mergeStyle(TextFormatting.GRAY));
             }
         }
@@ -347,7 +368,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
     }
 
     public IFormattableTextComponent getShiftDescriptions(int i) {
-        return new TranslationTextComponent(this.getTranslationKey() + i +".shift.desc");
+        return new TranslationTextComponent(this.getTranslationKey() + i + ".shift.desc");
     }
 
     public IFormattableTextComponent getCtrlDescription() {
@@ -355,7 +376,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
     }
 
     public IFormattableTextComponent getCtrlDescriptions(int i) {
-        return new TranslationTextComponent(this.getTranslationKey() + i +".ctrl.desc");
+        return new TranslationTextComponent(this.getTranslationKey() + i + ".ctrl.desc");
     }
 
     public IFormattableTextComponent getAltDescription() {
@@ -363,6 +384,6 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
     }
 
     public IFormattableTextComponent getAltDescriptions(int i) {
-        return new TranslationTextComponent(this.getTranslationKey() + i+".alt.desc");
+        return new TranslationTextComponent(this.getTranslationKey() + i + ".alt.desc");
     }
 }
