@@ -211,13 +211,6 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements Menu
     private boolean canBrew() {
         ItemStack itemstack = getPriorityIngredient().getRight();
         if (!itemstack.isEmpty()) {
-
-            if (itemstack.getItem() == Items.MILK_BUCKET) {
-                if (canMilkify()) {
-                    return true;
-                }
-            }
-
             return BrewingRecipeRegistry.canBrew(brewingHandler.getStacks(), itemstack, POTIONS); // divert to VanillaBrewingRegistry
         }
         if (itemstack.isEmpty()) {
@@ -268,20 +261,6 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements Menu
         return brewingHandler;
     }
 
-    private boolean canMilkify() {
-        for (int i : POTIONS) {
-            ItemStack potionStack = brewingHandler.getStackInSlot(i);
-            if (potionStack.getItem() instanceof PotionItem) {
-                Potion potion = PotionUtils.getPotion(potionStack);
-                String name = Registry.POTION.getKey(potion).toString();
-                if (name.contains("long") || name.contains("strong")) {
-                    continue;
-                }
-                return true;
-            }
-        }
-        return false;
-    }
 
     @Override
     public void load(CompoundTag nbt) {

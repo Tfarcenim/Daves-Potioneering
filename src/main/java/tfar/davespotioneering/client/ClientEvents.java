@@ -17,7 +17,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
@@ -35,7 +34,6 @@ import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.ModConfig;
-import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.client.particle.FastDripParticle;
 import tfar.davespotioneering.client.particle.TintedSplashParticle;
@@ -92,10 +90,14 @@ public class ClientEvents {
     public static void tooltips(ItemTooltipEvent e) {
         ItemStack stack = e.getItemStack();
 
-        if (stack.getItem() instanceof TieredItem && PotionUtils.getPotion(stack) != Potions.EMPTY) {
-            e.getToolTip().add(Component.literal("Coated with"));
-            PotionUtils.addPotionTooltip(stack, e.getToolTip(), 0.125F);
-            e.getToolTip().add(Component.literal("Uses: " + stack.getTag().getInt("uses")));
+        if (PotionUtils.getPotion(stack) != Potions.EMPTY) {
+            if (stack.getItem() instanceof TieredItem) {
+                e.getToolTip().add(Component.literal("Coated with"));
+                PotionUtils.addPotionTooltip(stack, e.getToolTip(), 0.125F);
+                e.getToolTip().add(Component.literal("Uses: " + stack.getTag().getInt("uses")));
+            } else if (stack.getItem().isEdible()) {
+                PotionUtils.addPotionTooltip(stack, e.getToolTip(), 0.125F);
+            }
         }
     }
 
