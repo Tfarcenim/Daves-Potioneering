@@ -164,6 +164,8 @@ public class ModCauldronInteractions {
         for (Item item : Registry.ITEM) {
             if (item instanceof TieredItem) {
                 WATER.put(item,ModCauldronInteractions::weaponCoating);
+            } else if (item.isEdible()) {
+                WATER.put(item,ModCauldronInteractions::spikedFood);
             }
         }
         //end//
@@ -222,6 +224,12 @@ public class ModCauldronInteractions {
     @Nonnull
     static InteractionResult arrowCoating(BlockState state, Level level, BlockPos pos, Player player, InteractionHand p_175715_, ItemStack stack) {
         LayeredReinforcedCauldronBlock.handleArrowCoating(state,level,pos,player,p_175715_,stack);
+        return InteractionResult.sidedSuccess(level.isClientSide);
+    }
+
+    @Nonnull
+    static InteractionResult spikedFood(BlockState state, Level level, BlockPos pos, Player player, InteractionHand p_175715_, ItemStack stack) {
+        LayeredReinforcedCauldronBlock.handleFoodSpiking(state,level,pos,player,p_175715_,stack);
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
 

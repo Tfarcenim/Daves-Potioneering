@@ -113,6 +113,29 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
     public static boolean canStripEffects(ItemStack stack) {
         return !(stack.getItem() instanceof PotionItem);
     }
+    public static void handleFoodSpiking(BlockState state, Level level, BlockPos pos, @Nullable Player player, InteractionHand p_175715_, ItemStack stack) {
+        int wLevel = state.getValue(LEVEL);
+        if (stack.getCount() < 8) {
+            return;
+        }
+        ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) level.getBlockEntity(pos);
+        Potion potion = reinforcedCauldronBlockEntity.getPotion();
+        if (!level.isClientSide) {
+            if (player != null && !player.getAbilities().instabuild) {
+                player.awardStat(Stats.USE_CAULDRON);
+            }
+            ItemStack tippedArrows = stack.split(8);
+            addCoating(tippedArrows, potion);
+            level.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
+
+            level.addFreshEntity(new ItemEntity(level, pos.getX(), pos.getY() + 1, pos.getZ(), tippedArrows));
+            if (wLevel <= 1) {
+                level.setBlockAndUpdate(pos, ModBlocks.REINFORCED_CAULDRON.defaultBlockState());
+            } else {
+                level.setBlockAndUpdate(pos,ModBlocks.REINFORCED_WATER_CAULDRON.defaultBlockState().setValue(LEVEL,wLevel - 1));
+            }
+        }
+    }
 
     public static void removeCoating(BlockState state, Level world, BlockPos pos,@Nullable Player player, ItemStack stack) {
         ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) world.getBlockEntity(pos);
@@ -151,7 +174,7 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
             CompoundTag nbt = stack.getOrCreateTag();
             nbt.putInt(USES, ModConfig.Server.coating_uses.get());
             nbt.putString("Potion", Registry.POTION.getKey(potion).toString());
-        } else if (stack.getItem() == Items.TIPPED_ARROW) {
+        } else {
             PotionUtils.setPotion(stack, potion);
         }
     }
