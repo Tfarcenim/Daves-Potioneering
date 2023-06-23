@@ -163,6 +163,8 @@ public class ModCauldronInteractions {
             for (Item item : Registry.ITEM) {
                 if (item instanceof ToolItem) {
                     WATER.put(item, (state, level, pos, player, hand, stack) -> weaponCoating(state, level, pos, player, stack));
+                } else if (item.isFood()) {
+                    WATER.put(item,ModCauldronInteractions::spikedFood);
                 }
             }
             //end//
@@ -178,6 +180,12 @@ public class ModCauldronInteractions {
             p_175648_.put(Items.WATER_BUCKET, FILL_WATER);
             //       p_175648_.put(Items.POWDER_SNOW_BUCKET, FILL_POWDER_SNOW);
         }
+
+    @Nonnull
+    static ActionResult spikedFood(BlockState state, World level, BlockPos pos, PlayerEntity player, Hand p_175715_, ItemStack stack) {
+        LayeredReinforcedCauldronBlock.handleFoodSpiking(state,level,pos,player,p_175715_,stack);
+        return ActionResult.success(level.isClient);
+    }
 
         static ActionResult fillBucket(BlockState p_175636_, World p_175637_, BlockPos p_175638_, PlayerEntity player, Hand p_175640_, ItemStack p_175641_, ItemStack p_175642_, Predicate<BlockState> p_175643_, SoundEvent p_175644_) {
             if (!p_175643_.test(p_175636_)) {
