@@ -26,6 +26,7 @@ import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.random.Random;
@@ -158,6 +159,31 @@ public class LayeredReinforcedCauldronBlock extends LeveledCauldronBlock impleme
         }
     }
 
+    public static void handleFoodSpiking(BlockState state, World level, BlockPos pos, @Nullable PlayerEntity player, Hand p_175715_, ItemStack stack) {
+        int wLevel = state.get(LEVEL);
+        if (stack.getCount() < 8) {
+            return;
+        }
+        ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) level.getBlockEntity(pos);
+        Potion potion = reinforcedCauldronBlockEntity.getPotion();
+        if (!level.isClient) {
+            if (player != null && !player.getAbilities().creativeMode) {
+                player.incrementStat(Stats.USE_CAULDRON);
+            }
+            ItemStack tippedArrows = stack.split(8);
+            addCoating(tippedArrows, potion);
+            level.playSound(null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+
+            level.spawnEntity(new ItemEntity(level, pos.getX(), pos.getY() + 1, pos.getZ(), tippedArrows));
+            if (wLevel <= 1) {
+                level.setBlockState(pos, ModBlocks.REINFORCED_CAULDRON.getDefaultState());
+            } else {
+                level.setBlockState(pos,ModBlocks.REINFORCED_WATER_CAULDRON.getDefaultState().with(LEVEL,wLevel - 1));
+            }
+        }
+    }
+
+
     public static void removeCoating(BlockState state, World world, BlockPos pos,@Nullable PlayerEntity player, ItemStack stack) {
         ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) world.getBlockEntity(pos);
         Potion potion = reinforcedCauldronBlockEntity.getPotion();
@@ -181,7 +207,7 @@ public class LayeredReinforcedCauldronBlock extends LeveledCauldronBlock impleme
             NbtCompound nbt = stack.getOrCreateNbt();
             nbt.putInt("uses", ClothConfig.coating_uses);
             nbt.putString("Potion", Registry.POTION.getId(potion).toString());
-        } else if (stack.getItem() == Items.TIPPED_ARROW) {
+        } else if (stack.getItem() == Items.TIPPED_ARROW || stack.getItem().isFood()) {
             PotionUtil.setPotion(stack, potion);
         }
     }

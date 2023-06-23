@@ -52,6 +52,13 @@ public class Events {
         return ActionResult.PASS;
     }
 
+    public static void onEat(PlayerEntity player, ItemStack stack) {
+        Potion potion = PotionUtil.getPotion(stack);
+        for (StatusEffectInstance effectInstance : potion.getEffects()) {
+            player.addStatusEffect(new StatusEffectInstance(effectInstance.getEffectType(), Math.max(effectInstance.getDuration() / 8, 1), effectInstance.getAmplifier(), effectInstance.isAmbient(), effectInstance.shouldShowParticles()));
+        }
+    }
+
     public static ActionResult afterHit(PlayerEntity player, World e2, Hand e3, Entity victim, @Nullable EntityHitResult e5) {
 
         ItemStack weapon = player.getMainHandStack();
