@@ -196,10 +196,14 @@ public class ClientEvents implements ClientModInitializer {
     }
 
     public static void tooltips(ItemStack stack, TooltipContext e2, List<Text> tooltip) {
-        if (stack.getItem() instanceof ToolItem && PotionUtil.getPotion(stack) != Potions.EMPTY) {
-            tooltip.add(Text.literal("Coated with"));
-            PotionUtil.buildTooltip(stack, tooltip, 0.125F);
-            tooltip.add(Text.literal("Uses: " + stack.getNbt().getInt("uses")));
+        if (PotionUtil.getPotion(stack) != Potions.EMPTY) {
+            if (stack.getItem() instanceof ToolItem) {
+                tooltip.add(Text.literal("Coated with"));
+                PotionUtil.buildTooltip(stack, tooltip, 0.125F);
+                tooltip.add(Text.literal("Uses: " + stack.getNbt().getInt("uses")));
+            } else if (stack.getItem().isFood()) {
+                PotionUtil.buildTooltip(stack, tooltip, 0.125F);
+            }
         }
     }
 
