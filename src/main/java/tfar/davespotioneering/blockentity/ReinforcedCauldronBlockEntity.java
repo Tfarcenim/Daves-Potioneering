@@ -13,7 +13,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
@@ -21,8 +20,11 @@ import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import tfar.davespotioneering.ModConfig;
+import tfar.davespotioneering.Util;
 import tfar.davespotioneering.block.LayeredReinforcedCauldronBlock;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
+import tfar.davespotioneering.init.ModItems;
 import tfar.davespotioneering.init.ModPotions;
 
 import javax.annotation.Nonnull;
@@ -88,21 +90,32 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity {
     }
 
     public void onEntityCollision(Entity entity) {
-        if (entity instanceof ItemEntity) {
+        if (entity instanceof ItemEntity && getBlockState().getValue(LayeredReinforcedCauldronBlock.DRAGONS_BREATH)) {
             ItemStack stack = ((ItemEntity) entity).getItem();
+
+            if (stack.is(ModItems.BLACKLISTED)) return;
+
+            Util.CoatingType coatingType = Util.CoatingType.getCoatingType(stack);
+
             BlockState blockState = getBlockState();
-            if (potion == ModPotions.MILK && PotionUtils.getPotion(stack) != Potions.EMPTY && LayeredReinforcedCauldronBlock.canStripEffects(stack)) {
-                LayeredReinforcedCauldronBlock.removeCoating(blockState, level, worldPosition, null, stack);
-            } else if (blockState.getValue(LayeredReinforcedCauldronBlock.DRAGONS_BREATH)) {
-                int waterLevel = blockState.getValue(LayeredCauldronBlock.LEVEL);
-                 if (stack.getItem() == Items.ARROW && waterLevel > 0) {
-                    LayeredReinforcedCauldronBlock.handleArrowCoating(blockState, level, worldPosition, null, null, stack);
-                } else if (waterLevel == 3) {
-                    //burn off a layer, then schedule the rest of the ticks
-                    entity.level.playSound(null, worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.8F, 1);
-                    LayeredReinforcedCauldronBlock.setWaterLevel(level, worldPosition, blockState, 2);
-                    scheduleTick();
-                }
+            int cLevel = blockState.getValue(LayeredCauldronBlock.LEVEL);
+            if (potion == ModPotions.MILK && PotionUtils.getPotion(stack) != Potions.EMPTY && !Util.isPotion(stack)) {
+                LayeredReinforcedCauldronBlock.removeCoating(blockState,level,worldPosition,null,stack);
+            } else if (stack.getItem() == Items.ARROW && cLevel > 0) {
+              LayeredReinforcedCauldronBlock.handleArrowCoating(blockState,level,worldPosition,null,null,stack);
+            } else if (cLevel == 3) {
+
+                if (coatingType == Util.CoatingType.TOOL && !ModConfig.Server.coat_tools.get()) return;//check if tools can be coated
+
+                if (coatingType == Util.CoatingType.FOOD && !ModConfig.Server.spike_food.get()) return;//check if food can be coated
+
+                if (coatingType == Util.CoatingType.ANY && !ModConfig.Server.coat_all.get() && !stack.is(ModItems.WHITELISTED)) return;
+                //check if anything can be coated AND the item is not in a whitelist
+
+                //burn off a layer, then schedule the rest of the ticks
+                entity.level.playSound(null,worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.8F, 1);
+                LayeredReinforcedCauldronBlock.setWaterLevel(level,worldPosition,blockState,2);
+                scheduleTick();
             }
         }
     }

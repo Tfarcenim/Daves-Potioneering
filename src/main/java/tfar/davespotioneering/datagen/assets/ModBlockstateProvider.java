@@ -31,8 +31,9 @@ public class ModBlockstateProvider extends BlockStateProvider {
 
         getVariantBuilder(ModBlocks.REINFORCED_WATER_CAULDRON).forAllStatesExcept(state -> {
             boolean dragon = state.getValue(LayeredReinforcedCauldronBlock.DRAGONS_BREATH);
-            String s = !dragon ? "swirling_" : "bubbling_";
+            String s = dragon ? "swirling_" : "bubbling_";
             ModelFile modelFile = models().getExistingFile(modLoc("block/"+s+"reinforced_cauldron_level" + state.getValue(LayeredCauldronBlock.LEVEL)));
+
             return ConfiguredModel.builder().modelFile(modelFile).build();
         });
 

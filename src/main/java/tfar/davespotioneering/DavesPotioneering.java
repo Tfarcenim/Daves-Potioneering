@@ -22,6 +22,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig.Type;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -60,6 +61,7 @@ public class DavesPotioneering {
 
         // Register the setup method for modloading
         bus.addListener(this::setup);
+        bus.addListener(this::stackAdj);
         if (FMLEnvironment.dist.isClient()) {
             // Register the doClientStuff method for modloading
             bus.addListener(ClientEvents::doClientStuff);
@@ -139,6 +141,14 @@ public class DavesPotioneering {
 
         ModCauldronInteractions.bootStrap();
 
+    }
+
+    private void stackAdj(ModConfigEvent e) {
+        if (e.getConfig().getModId().equals(MODID)) {
+            Util.setStackSize(Items.POTION,ModConfig.Server.potion_stack_size.get());
+            Util.setStackSize(Items.SPLASH_POTION,ModConfig.Server.splash_potion_stack_size.get());
+            Util.setStackSize(Items.LINGERING_POTION,ModConfig.Server.lingering_potion_stack_size.get());
+        }
     }
 
     protected static void strongRecipe(Potion potion,Potion strong) {

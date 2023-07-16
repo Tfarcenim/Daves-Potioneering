@@ -1,5 +1,8 @@
 package tfar.davespotioneering.init;
 
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.*;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.item.AgedUmbrellaItem;
@@ -52,6 +55,8 @@ public class ModItems {
     public static final Item AGED_UMBRELLA = new AgedUmbrellaItem(baseUmbrella(),"aged");
 
 
+    public static final TagKey<Item> BLACKLISTED = ItemTags.create(new ResourceLocation(DavesPotioneering.MODID,"blacklisted"));
+    public static final TagKey<Item> WHITELISTED = ItemTags.create(new ResourceLocation(DavesPotioneering.MODID,"whitelisted"));
 
     public static Item.Properties baseUmbrella() {
         return new Item.Properties().tab(tab).durability(300);
