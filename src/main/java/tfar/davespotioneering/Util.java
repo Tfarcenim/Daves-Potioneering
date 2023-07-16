@@ -1,9 +1,7 @@
 package tfar.davespotioneering;
 
 import net.minecraft.entity.item.ExperienceOrbEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
+import net.minecraft.item.*;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
@@ -46,4 +44,21 @@ public class Util {
         return false;
     }
 
+    public enum CoatingType {
+        TOOL,FOOD,ANY;
+
+        public static CoatingType getCoatingType(ItemStack stack) {
+            if (stack.getItem() instanceof TieredItem) {
+                return TOOL;
+            }
+            else if (stack.getItem().isFood()) {
+                return FOOD;
+            }
+            return ANY;
+        }
+    }
+
+    public static boolean isPotion(ItemStack stack) {
+        return stack.getItem() instanceof PotionItem;
+    }
 }

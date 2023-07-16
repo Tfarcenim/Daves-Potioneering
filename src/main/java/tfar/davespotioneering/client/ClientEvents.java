@@ -20,6 +20,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
@@ -31,6 +32,7 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
@@ -41,8 +43,6 @@ import tfar.davespotioneering.item.GauntletItem;
 import tfar.davespotioneering.mixin.ParticleManagerAccess;
 import tfar.davespotioneering.net.GauntletCyclePacket;
 import tfar.davespotioneering.net.PacketHandler;
-
-import static tfar.davespotioneering.DavesPotioneering.MODID;
 
 public class ClientEvents {
 
@@ -56,7 +56,7 @@ public class ClientEvents {
     }
 
     public static void registerLoader(final ModelRegistryEvent event) {
-        ModelLoaderRegistry.registerLoader(new ResourceLocation(MODID, "fullbright"), ModelLoader.INSTANCE);
+        ModelLoaderRegistry.registerLoader(new ResourceLocation(DavesPotioneering.MODID, "fullbright"), ModelLoader.INSTANCE);
     }
 
     public static void onMouseInput(InputEvent.MouseInputEvent e) {
@@ -91,12 +91,14 @@ public class ClientEvents {
     public static void tooltips(ItemTooltipEvent e) {
         ItemStack stack = e.getItemStack();
 
-        if (PotionUtils.getPotionFromItem(stack) != Potions.EMPTY) {
-            if (stack.getItem() instanceof TieredItem) {
-                e.getToolTip().add(new StringTextComponent("Coated with"));
+        if (ModConfig.Server.show_spiked_food.get() && !Util.isPotion(stack)&& PotionUtils.getPotionFromItem(stack) != Potions.EMPTY) {
+            Util.CoatingType coatingType = Util.CoatingType.getCoatingType(stack);
+            if (coatingType != Util.CoatingType.FOOD) {
+                e.getToolTip().add(new TranslationTextComponent(DavesPotioneering.MODID+".coated_with.tooltip"));
                 PotionUtils.addPotionTooltip(stack, e.getToolTip(), 0.125F);
                 e.getToolTip().add(new StringTextComponent("Uses: " + stack.getTag().getInt("uses")));
             } else if (stack.getItem().isFood()) {
+                e.getToolTip().add(new TranslationTextComponent(DavesPotioneering.MODID+".spiked_with.tooltip"));
                 PotionUtils.addPotionTooltip(stack, e.getToolTip(), 0.125F);
             }
         }
@@ -173,10 +175,10 @@ public class ClientEvents {
                 GauntletHUD.hudInstance.render(e.getMatrixStack());
                 if (potions == null) {
                     // reset
-                    GauntletHUD.hudInstance.init(null, null, null);
+                    GauntletHUD.init(null, null, null);
                     return;
                 }
-                GauntletHUD.hudInstance.init(potions[0], potions[1], potions[2]);
+                GauntletHUD.init(potions[0], potions[1], potions[2]);
             }
         }
     }

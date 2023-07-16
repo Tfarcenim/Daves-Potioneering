@@ -24,13 +24,12 @@ public class GauntletHUD extends AbstractGui {
     public final static GauntletHUD hudInstance = new GauntletHUD();
 
     public static final int TEX_Y = 41;
+    static final int TEX_X = 121;
 
     public static ResourceLocation getGauntletIconLoc(String fileName) {
         return new ResourceLocation(GAUNTLET_ICON_LOC.getNamespace(), GAUNTLET_ICON_LOC.getPath() + fileName + ".png");
     }
 
-    static final int TEX_HEIGHT = 41;
-    static final int TEX_WIDTH = 121;
 
     private static Potion activePotion = null;
     private static Potion prePotion = null;
@@ -63,7 +62,7 @@ public class GauntletHUD extends AbstractGui {
         int windowW = mc.getMainWindow().getScaledWidth();
         int windowH = mc.getMainWindow().getScaledHeight();
 
-        int xFixed = MathHelper.clamp((windowW + x)/2, 0, windowW-120);
+        int xFixed = MathHelper.clamp((windowW + x)/2, 0, windowW-TEX_X);
         int yFixed = MathHelper.clamp(windowH+y, 0, windowH-TEX_Y);
 
         if (preset == HudPresets.ABOVE_HOTBAR) {
@@ -72,7 +71,7 @@ public class GauntletHUD extends AbstractGui {
 
         if (forwardCycle) {
             cooldown--;
-            blit(matrixStack, xFixed, yFixed, getBlitOffset(), 0, 87, 120, TEX_Y, 128, 128);
+            blit(matrixStack, xFixed, yFixed, getBlitOffset(), 0, 87, TEX_X, TEX_Y, 128, 128);
             if (cooldown <= 0) {
                mc.getSoundHandler().play(SimpleSound.master(ModSoundEvents.GAUNTLET_SCROLL, 1.0F));
                 forwardCycle = false;
@@ -80,14 +79,14 @@ public class GauntletHUD extends AbstractGui {
             }
         } else if (backwardCycle) {
             cooldown--;
-            blit(matrixStack, xFixed, yFixed, getBlitOffset(), 0, 44, 120, TEX_Y, 128, 128);
+            blit(matrixStack, xFixed, yFixed, getBlitOffset(), 0, 44, TEX_X, TEX_Y, 128, 128);
             if (cooldown <= 0) {
                 mc.getSoundHandler().play(SimpleSound.master(ModSoundEvents.GAUNTLET_SCROLL, 1.0F));
                 backwardCycle = false;
                 cooldown = maxCooldown;
             }
         } else {
-            blit(matrixStack, xFixed, yFixed, getBlitOffset(), 0, 1, 120, TEX_Y, 128, 128);
+            blit(matrixStack, xFixed, yFixed, getBlitOffset(), 0, 1, TEX_X, TEX_Y, 128, 128);
         }
 
         PlayerEntity player = Minecraft.getInstance().player;
@@ -110,17 +109,17 @@ public class GauntletHUD extends AbstractGui {
 
         if (potion.getEffects().size() > 1) {
             if (potion.getRegistryName().toString().contains("turtle_master")) {
-                mc.getTextureManager().bindTexture(getGauntletIconLoc("turtle_master"));
+                bind(getGauntletIconLoc("turtle_master"));
             } else if (mc.getResourceManager().hasResource(getGauntletIconLoc(potion.getRegistryName().toString()))) {
-                mc.getTextureManager().bindTexture(getGauntletIconLoc(potion.getRegistryName().toString()));
+                bind(getGauntletIconLoc(potion.getRegistryName().toString()));
             } else {
-                mc.getTextureManager().bindTexture(getGauntletIconLoc("unknown"));
+                bind(getGauntletIconLoc("unknown"));
             }
             blit(matrixStack, x, y, getBlitOffset(), 0, 0, 18, 18, 18, 18);
         } else {
             Effect effect = potion.getEffects().get(0).getPotion();
             TextureAtlasSprite sprite = mc.getPotionSpriteUploader().getSprite(effect);
-            mc.getTextureManager().bindTexture(sprite.getAtlasTexture().getTextureLocation());
+            bind(sprite.getAtlasTexture().getTextureLocation());
             blit(matrixStack, x, y, 0, 18, 18, sprite);
         }
         // render cooldown
@@ -139,7 +138,7 @@ public class GauntletHUD extends AbstractGui {
         Minecraft.getInstance().getTextureManager().bindTexture(res);
     }
 
-    private int getScaledCooldown(float pixels, float cooldown) {
+    private static int getScaledCooldown(float pixels, float cooldown) {
         float totalCooldown = ModConfig.Server.gauntlet_cooldown.get();
 
         if (totalCooldown != 0) {

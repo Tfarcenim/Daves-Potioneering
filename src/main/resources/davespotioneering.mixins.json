@@ -11,7 +11,6 @@
     "BrewingStandContainerMixin",
     "PlayerEntityMixin",
     "PotionItemMixin",
-    "ProtectionEnchantmentMixin",
     "ServerPlayNetHandlerMixin",
     "ThrowablePotionItemMixin",
     "ItemAccess"

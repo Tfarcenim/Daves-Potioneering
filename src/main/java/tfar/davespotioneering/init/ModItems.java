@@ -3,6 +3,9 @@ package tfar.davespotioneering.init;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.item.*;
+import net.minecraft.tags.ITag;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import tfar.davespotioneering.DavesPotioneering;
@@ -60,6 +63,8 @@ public class ModItems {
             baseUmbrella().setISTER(() -> HideISTERsFromServer::createAgedUmbrellaItemStackRenderer),"aged");
 
 
+    public static final ITag.INamedTag<Item> BLACKLISTED = ItemTags.makeWrapperTag(DavesPotioneering.MODID+":blacklisted");
+    public static final ITag.INamedTag<Item> WHITELISTED = ItemTags.makeWrapperTag(DavesPotioneering.MODID+":whitelisted");
 
     public static Item.Properties baseUmbrella() {
         return new Item.Properties().group(tab).maxDamage(300);

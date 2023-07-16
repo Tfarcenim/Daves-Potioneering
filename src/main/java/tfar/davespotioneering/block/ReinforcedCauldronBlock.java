@@ -39,7 +39,10 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import tfar.davespotioneering.ModConfig;
+import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
+import tfar.davespotioneering.init.ModItems;
 import tfar.davespotioneering.init.ModPotions;
 
 import javax.annotation.Nullable;
@@ -71,13 +74,18 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
         } else if (stack.getItem() == Items.DRAGON_BREATH && level == 3) {
             handleDragonBreath(state, world, pos, player, stack);
         } else if (stack.getItem() instanceof TieredItem && level == 3) {
-            handleWeaponCoating(state, world, pos, player, stack);
+            if (ModConfig.Server.coat_tools.get())
+                handleWeaponCoating(state, world, pos, player, stack);
         } else if (stack.getItem() == Items.ARROW && level > 0) {
             handleArrowCoating(state, world, pos, player, stack, level);
         } else if (PotionUtils.getPotionFromItem(stack) != Potions.EMPTY && level > 0) {
             removeCoating(state, world, pos, player, stack);
         } else if (stack.getItem().getFood() != null) {
-            spikedFood(state, world, pos, player, stack, level);
+            if (ModConfig.Server.spike_food.get())
+                spikedFood(state, world, pos, player, stack, level);
+        } else {
+            if (ModConfig.Server.coat_anything.get() || stack.getItem().isIn(ModItems.WHITELISTED))
+                handleWeaponCoating(state, world, pos, player, stack);
         }
         return super.onBlockActivated(state, world, pos, player, hand, hit);
     }
@@ -252,12 +260,10 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
     }
 
     public static void addCoating(ItemStack stack, Potion potion) {
-        if (stack.getItem() instanceof TieredItem) {
-            CompoundNBT nbt = stack.getOrCreateTag();
+        PotionUtils.addPotionToItemStack(stack, potion);
+        if (!stack.getItem().isFood()) {
+            CompoundNBT nbt = stack.getTag();
             nbt.putInt("uses", 25);
-            nbt.putString("Potion", potion.getRegistryName().toString());
-        } else {
-            PotionUtils.addPotionToItemStack(stack, potion);
         }
     }
 
@@ -320,7 +326,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
 
         world.playSound(null, pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.8F, 1);
 
-        if (state.get(LEVEL) > 1) {
+        if (level > 1) {
             setWaterLevel(world, pos, state, level - 1);
             world.getPendingBlockTicks().scheduleTick(pos, this, brew_speed);
         } else {
@@ -328,7 +334,15 @@ public class ReinforcedCauldronBlock extends CauldronBlock {
                     new AxisAlignedBB(pos));
 
             if (items.size() == 1) {
-                handleWeaponCoating(state, world, pos, null, items.get(0).getItem());
+                ItemStack itemStack = items.get(0).getItem();
+
+                Util.CoatingType coatingType = Util.CoatingType.getCoatingType(itemStack);
+                switch (coatingType) {
+                    case FOOD:spikedFood(state,world,pos,null,itemStack,level);
+                    case ANY:case TOOL:
+                        handleWeaponCoating(state, world, pos, null, itemStack);
+                }
+
             } else {
                 boom(world, pos, state);
             }

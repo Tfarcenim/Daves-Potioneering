@@ -32,7 +32,7 @@ public class ModBlockstateProvider extends BlockStateProvider {
             String s;
             if (level > 0) {
                 boolean dragon = state.get(ReinforcedCauldronBlock.DRAGONS_BREATH);
-                String s1 = dragon ? "bubbling_" : "swirling_";
+                String s1 = dragon ? "swirling_" : "bubbling_";
                 s = "block/" + s1 + "reinforced_cauldron_level" + state.get(CauldronBlock.LEVEL);
             } else {
                 s = "block/reinforced_cauldron_level" + state.get(CauldronBlock.LEVEL);

@@ -86,6 +86,8 @@ public class ModLangProvider extends LanguageProvider {
         addConfig("gauntlet_hud_x","The X Position of the gauntlet hud (left top). You should be using the in-game gui to change this though");
         addConfig("gauntlet_hud_y","The y Position of the gauntlet hud (left top). You should be using the in-game gui to change this though");
         addConfig("gauntlet_hud_preset","You shouldn't change this. Just don't");
+        addTooltip("coated_with","Coated with:");
+        addTooltip("spiked_with","Spiked with:");
     }
 
     protected void addConfig(String value,String trans) {
@@ -94,6 +96,10 @@ public class ModLangProvider extends LanguageProvider {
 
     protected void addDesc(IItemProvider item, String desc) {
         add(item.asItem().getTranslationKey()+".desc",desc);
+    }
+
+    protected void addTooltip(String code,String tip) {
+        add(DavesPotioneering.MODID+"."+code+"."+"tooltip",tip);
     }
 
     protected void addShiftDesc(IItemProvider item, String desc) {

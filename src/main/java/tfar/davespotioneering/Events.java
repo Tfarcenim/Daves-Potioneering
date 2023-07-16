@@ -34,14 +34,14 @@ public class Events {
         ItemStack stack = e.getItemStack();
         PlayerEntity player = e.getPlayer();
         if (!player.world.isRemote && stack.getItem() instanceof ThrowablePotionItem) {
-            player.getCooldownTracker().setCooldown(stack.getItem(), ModConfig.Server.potion_cooldown);
+            player.getCooldownTracker().setCooldown(stack.getItem(), ModConfig.Server.potion_throw_cooldown.get());
         }
     }
 
     public static void milkCow(PlayerInteractEvent.EntityInteractSpecific e) {
         Entity clicked = e.getTarget();
         PlayerEntity player = e.getPlayer();
-        if (clicked instanceof CowEntity) {
+        if (clicked instanceof CowEntity && ModConfig.Server.milk.get()) {
             CowEntity cowEntity = (CowEntity)clicked;
             ItemStack itemstack = player.getHeldItem(e.getHand());
             if (itemstack.getItem() == Items.GLASS_BOTTLE && !cowEntity.isChild()) {
@@ -87,8 +87,8 @@ public class Events {
     public static void heldItemChangeEvent(PlayerEntity player) {
         ItemStack stack = player.getHeldItemMainhand();
         if ((stack.getItem() instanceof LingeringPotionItem || stack.getItem() instanceof SplashPotionItem)) {
-            player.getCooldownTracker().setCooldown(Items.SPLASH_POTION, ModConfig.Server.potion_cooldown);
-            player.getCooldownTracker().setCooldown(Items.LINGERING_POTION, ModConfig.Server.potion_cooldown);
+            player.getCooldownTracker().setCooldown(Items.SPLASH_POTION, ModConfig.Server.potion_switch_cooldown.get());
+            player.getCooldownTracker().setCooldown(Items.LINGERING_POTION, ModConfig.Server.potion_switch_cooldown.get());
         }
     }
 

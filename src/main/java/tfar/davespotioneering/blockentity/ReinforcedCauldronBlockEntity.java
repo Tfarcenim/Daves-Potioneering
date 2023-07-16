@@ -19,8 +19,11 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.BiomeColors;
+import tfar.davespotioneering.ModConfig;
+import tfar.davespotioneering.Util;
 import tfar.davespotioneering.block.ReinforcedCauldronBlock;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
+import tfar.davespotioneering.init.ModItems;
 import tfar.davespotioneering.init.ModPotions;
 
 import javax.annotation.Nonnull;
@@ -86,14 +89,28 @@ public class ReinforcedCauldronBlockEntity extends TileEntity {
 
     public void onEntityCollision(Entity entity) {
         if (entity instanceof ItemEntity && getBlockState().get(ReinforcedCauldronBlock.DRAGONS_BREATH)) {
-            ItemStack stack =  ((ItemEntity) entity).getItem();
+            ItemStack stack = ((ItemEntity) entity).getItem();
+
+            if (stack.getItem().isIn(ModItems.BLACKLISTED)) return;
+
+            Util.CoatingType coatingType = Util.CoatingType.getCoatingType(stack);
+
             BlockState blockState = getBlockState();
             int level = blockState.get(CauldronBlock.LEVEL);
-            if (potion == ModPotions.MILK && PotionUtils.getPotionFromItem(stack) != Potions.EMPTY) {
+            if (potion == ModPotions.MILK && PotionUtils.getPotionFromItem(stack) != Potions.EMPTY && !Util.isPotion(stack)) {
                 ReinforcedCauldronBlock.removeCoating(blockState,world,pos,null,stack);
             } else if (stack.getItem() == Items.ARROW && level > 0) {
               ReinforcedCauldronBlock.handleArrowCoating(blockState,world,pos,null,stack,level);
             } else if (level == 3) {
+
+                if (coatingType == Util.CoatingType.TOOL && !ModConfig.Server.coat_tools.get()) return;//check if tools can be coated
+
+                if (coatingType == Util.CoatingType.FOOD && !ModConfig.Server.spike_food.get()) return;//check if food can be coated
+
+                if (coatingType == Util.CoatingType.ANY && !ModConfig.Server.coat_anything.get() && !stack.getItem().isIn(ModItems.WHITELISTED)) return;
+                //check if anything can be coated AND the item is not in a whitelist
+
+
                 //burn off a layer, then schedule the rest of the ticks
                 world.playSound(null,pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.8F, 1);
                 ((CauldronBlock)blockState.getBlock()).setWaterLevel(world,pos,blockState,2);
