@@ -6,6 +6,8 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -32,6 +34,7 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import org.lwjgl.glfw.GLFW;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.Util;
@@ -45,6 +48,9 @@ import tfar.davespotioneering.net.GauntletCyclePacket;
 import tfar.davespotioneering.net.PacketHandler;
 
 public class ClientEvents {
+
+    public static final KeyBinding HUD = new KeyBinding("key.davespotioneering.open_config",
+            InputMappings.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_3,"key.categories."+DavesPotioneering.MODID);
 
     public static void particle(ParticleFactoryRegisterEvent e) {
 
@@ -65,9 +71,12 @@ public class ClientEvents {
         ItemStack held = player.getHeldItemMainhand();
         if (held.isEmpty()) return;
         if (held.getItem() instanceof GauntletItem && player.isSneaking()) {
-            if (e.getButton() == 2) {
-                GauntletHUDMovementGui.open();
-            }
+        }
+    }
+
+    public static void onKeyboardEvent(InputEvent.KeyInputEvent e) {
+        while (HUD.isPressed()) {
+            GauntletHUDMovementGui.open();
         }
     }
 
@@ -107,15 +116,17 @@ public class ClientEvents {
     public static void doClientStuff(final FMLClientSetupEvent event) {
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::tooltips);
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::onMouseInput);
+        MinecraftForge.EVENT_BUS.addListener(ClientEvents::onKeyboardEvent);
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::onMouseScroll);
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::gauntletHud);
-        MinecraftForge.EVENT_BUS.addListener(ClientEvents::gaun);
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::playerTick);
         RenderTypeLookup.setRenderLayer(ModBlocks.COMPOUND_BREWING_STAND, RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(ModBlocks.POTION_INJECTOR,RenderType.getTranslucent());
         RenderTypeLookup.setRenderLayer(ModBlocks.REINFORCED_CAULDRON,RenderType.getTranslucent());
         ScreenManager.registerFactory(ModContainerTypes.ADVANCED_BREWING_STAND, AdvancedBrewingStandScreen::new);
         ScreenManager.registerFactory(ModContainerTypes.ALCHEMICAL_GAUNTLET, GauntletWorkstationScreen::new);
+
+        ClientRegistry.registerKeyBinding(HUD);
 
         ClientRegistry.bindTileEntityRenderer(ModBlockEntityTypes.POTION_INJECTOR, PotionInjectorRenderer::new);
 
@@ -183,15 +194,17 @@ public class ClientEvents {
         }
     }
 
-    public static void gaun(RenderGameOverlayEvent.Pre e) {
-
-    }
-
     public static void playerTick(TickEvent.PlayerTickEvent e) {
         PlayerEntity player = e.player;
         if (e.phase == TickEvent.Phase.END && e.side == LogicalSide.CLIENT && player.world.getGameTime() % ModConfig.Client.particle_drip_rate.get() == 0) {
 
             ItemStack stack = player.getHeldItemMainhand();
+
+            if (player.isSneaking() && stack.getItem() instanceof GauntletItem) {
+                if (HUD.isKeyDown()) {
+                    GauntletHUDMovementGui.open();
+                }
+            }
 
             if (stack.getItem() instanceof TieredItem && PotionUtils.getPotionFromItem(stack) != Potions.EMPTY) {
 

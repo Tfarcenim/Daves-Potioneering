@@ -88,6 +88,8 @@ public class ModLangProvider extends LanguageProvider {
         addConfig("gauntlet_hud_preset","You shouldn't change this. Just don't");
         addTooltip("coated_with","Coated with:");
         addTooltip("spiked_with","Spiked with:");
+        add("key.davespotioneering.open_config","Open Config");
+        add("key.categories."+DavesPotioneering.MODID,"Dave's Potioneering");
     }
 
     protected void addConfig(String value,String trans) {
