@@ -17,6 +17,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
+import net.minecraft.potion.Potions;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -52,6 +53,7 @@ public class LayeredReinforcedCauldronBlock extends LeveledCauldronBlock impleme
     public static int brew_speed = 12;
 
     public static final String LAYERS = DavesPotioneering.MODID+":layers";
+    public static final String USES = "uses";
 
     public LayeredReinforcedCauldronBlock(Settings properties) {
         super(properties,LeveledCauldronBlock.RAIN_PREDICATE, ModCauldronInteractions.WATER);
@@ -167,14 +169,22 @@ public class LayeredReinforcedCauldronBlock extends LeveledCauldronBlock impleme
         ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) level.getBlockEntity(pos);
         Potion potion = reinforcedCauldronBlockEntity.getPotion();
         if (!level.isClient) {
+            boolean milk = potion == ModPotions.MILK;
+
+            if (milk && PotionUtil.getPotion(stack) == Potions.EMPTY) return;
+
             if (player != null && !player.getAbilities().creativeMode) {
                 player.incrementStat(Stats.USE_CAULDRON);
             }
-            ItemStack tippedArrows = stack.split(8);
-            addCoating(tippedArrows, potion);
+            ItemStack spikedFood = stack.split(8);
+
+            if (milk)
+                removeCoating(spikedFood);
+            else
+                addCoating(spikedFood, potion);
             level.playSound(null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
 
-            level.spawnEntity(new ItemEntity(level, pos.getX(), pos.getY() + 1, pos.getZ(), tippedArrows));
+            level.spawnEntity(new ItemEntity(level, pos.getX(), pos.getY() + 1, pos.getZ(), spikedFood));
             if (wLevel <= 1) {
                 level.setBlockState(pos, ModBlocks.REINFORCED_CAULDRON.getDefaultState());
             } else {
@@ -198,14 +208,14 @@ public class LayeredReinforcedCauldronBlock extends LeveledCauldronBlock impleme
 
     public static void removeCoating(ItemStack stack) {
         NbtCompound nbt = stack.getNbt();
-        nbt.remove("uses");
+        nbt.remove(USES);
         nbt.remove("Potion");
     }
 
     public static void addCoating(ItemStack stack,Potion potion) {
         if (stack.getItem() instanceof ToolItem) {
             NbtCompound nbt = stack.getOrCreateNbt();
-            nbt.putInt("uses", ClothConfig.coating_uses);
+            nbt.putInt(USES, ClothConfig.coating_uses);
             nbt.putString("Potion", Registry.POTION.getId(potion).toString());
         } else if (stack.getItem() == Items.TIPPED_ARROW || stack.getItem().isFood()) {
             PotionUtil.setPotion(stack, potion);
@@ -216,10 +226,10 @@ public class LayeredReinforcedCauldronBlock extends LeveledCauldronBlock impleme
         NbtCompound nbt = stack.getNbt();
         if (nbt != null) {
 
-            int uses = nbt.getInt("uses");
+            int uses = nbt.getInt(USES);
             uses--;
             if (uses > 0) {
-                nbt.putInt("uses",uses);
+                nbt.putInt(USES,uses);
             } else {
                 removeCoating(stack);
             }
