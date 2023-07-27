@@ -1,6 +1,7 @@
 package tfar.davespotioneering.blockentity;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.CauldronBlock;
 import net.minecraft.block.LeveledCauldronBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -9,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.PotionItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.potion.Potion;
@@ -19,7 +21,10 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
+import tfar.davespotioneering.Util;
 import tfar.davespotioneering.block.LayeredReinforcedCauldronBlock;
+import tfar.davespotioneering.block.ReinforcedCauldronBlock;
+import tfar.davespotioneering.config.ClothConfig;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
 import tfar.davespotioneering.init.ModPotions;
 
@@ -83,19 +88,37 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity {
     //}
 
     public void onEntityCollision(Entity entity) {
-        if (entity instanceof ItemEntity itemEntity && getCachedState().get(LayeredReinforcedCauldronBlock.DRAGONS_BREATH)) {
-            ItemStack stack =  itemEntity.getStack();
+        if (entity instanceof ItemEntity) {
+            boolean dragon = getCachedState().get(LayeredReinforcedCauldronBlock.DRAGONS_BREATH);
+            ItemStack stack =  ((ItemEntity) entity).getStack();
+            Util.CoatingType coatingType = Util.CoatingType.getCoatingType(stack);
+
             BlockState blockState = getCachedState();
-            int fluidLevel = blockState.get(LeveledCauldronBlock.LEVEL);
-            if (potion == ModPotions.MILK && PotionUtil.getPotion(stack) != Potions.EMPTY) {
-                LayeredReinforcedCauldronBlock.removeCoating(blockState,this.world,pos,null,stack);
-            } else if (stack.getItem() == Items.ARROW && fluidLevel > 0) {
-              LayeredReinforcedCauldronBlock.handleArrowCoating(blockState,this.world,pos,null, stack);
-            } else if (fluidLevel == 3) {
+            int level = blockState.get(LeveledCauldronBlock.LEVEL);
+            if (potion == ModPotions.MILK && PotionUtil.getPotion(stack) != Potions.EMPTY && !(stack.getItem() instanceof PotionItem)) {
+                LayeredReinforcedCauldronBlock.removeCoating(blockState,world,pos,null,stack);
+            } else if (stack.getItem() == Items.ARROW && level > 0) {
+                if (dragon)
+                    LayeredReinforcedCauldronBlock.handleArrowCoating(blockState,world,pos,null,stack);
+            }
+
+            else if (coatingType == Util.CoatingType.FOOD && level > 0) {
+                if (ClothConfig.spike_food && stack.getCount() >= 8) {
+                    LayeredReinforcedCauldronBlock.handleFoodSpiking(blockState,world,pos,null,null,stack);
+                }
+            }
+
+            else if (level == 3 && dragon) {
+
+                if (coatingType == Util.CoatingType.TOOL && !ClothConfig.coat_tools) return;//check if tools can be coated
+
+                if (coatingType == Util.CoatingType.ANY && !ClothConfig.coat_anything) return;
+                //check if anything can be coated AND the item is not in a whitelist
+
+
                 //burn off a layer, then schedule the rest of the ticks
-                this.world.playSound(null,pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.8F, 1);
-                LayeredReinforcedCauldronBlock.lowerFillLevel0(blockState, this.world, pos);
-                stack.getOrCreateNbt().putInt(LayeredReinforcedCauldronBlock.LAYERS,1);
+                world.playSound(null,pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.8F, 1);
+                LeveledCauldronBlock.decrementFluidLevel(blockState, world, pos);
                 scheduleTick();
             }
         }

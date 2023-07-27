@@ -3,6 +3,7 @@ package tfar.davespotioneering;
 import net.minecraft.entity.ExperienceOrbEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ToolItem;
 import net.minecraft.recipe.BrewingRecipeRegistry;
 import net.minecraft.screen.BrewingStandScreenHandler;
 import net.minecraft.util.ItemScatterer;
@@ -47,5 +48,20 @@ public class Util {
     public static boolean isValidInputCountInsensitive(ItemStack stack) {
        return BrewingStandScreenHandler.PotionSlot.matches(stack);
     }
+
+    public enum CoatingType {
+        TOOL,FOOD,ANY;
+
+        public static CoatingType getCoatingType(ItemStack stack) {
+            if (stack.getItem() instanceof ToolItem) {
+                return TOOL;
+            }
+            else if (stack.getItem().isFood()) {
+                return FOOD;
+            }
+            return ANY;
+        }
+    }
+
 
 }

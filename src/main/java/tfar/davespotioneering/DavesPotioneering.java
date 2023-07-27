@@ -39,9 +39,9 @@ public class DavesPotioneering implements ModInitializer {
         ModSoundEvents.register();
         ModParticleTypes.register();
 
-        Util.setStackSize(Items.POTION,16);
-        Util.setStackSize(Items.SPLASH_POTION,4);
-        Util.setStackSize(Items.LINGERING_POTION,4);
+        Util.setStackSize(Items.POTION,ClothConfig.potion_stack_size);
+        Util.setStackSize(Items.SPLASH_POTION,ClothConfig.splash_potion_stack_size);
+        Util.setStackSize(Items.LINGERING_POTION,ClothConfig.lingering_potion_stack_size);
 
 
         Set<Block> newSet = new HashSet<>(((BlockEntityTypeAcces)BlockEntityType.LECTERN).getBlocks());
