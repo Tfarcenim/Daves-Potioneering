@@ -30,8 +30,7 @@
     "ModelBakeryMixin",
     "ModelOverrideListMixin",
     "MouseHelperMixin",
-    "ParticleManagerAccess",
-    "ScreenMixin"
+    "ParticleManagerAccess"
   ],
   "injectors": {
     "defaultRequire": 1

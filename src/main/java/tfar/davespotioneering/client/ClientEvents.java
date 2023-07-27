@@ -4,6 +4,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
@@ -17,17 +18,16 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.ModelPredicateProvider;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.item.BuiltinModelItemRenderer;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.PotionItem;
-import net.minecraft.item.ToolItem;
+import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.potion.Potion;
@@ -42,7 +42,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import org.lwjgl.glfw.GLFW;
-import tfar.davespotioneering.Util;
+import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.client.model.gecko.DoubleGeoItemStackRenderer;
 import tfar.davespotioneering.client.model.gecko.GeoItemStackRenderer;
@@ -58,12 +58,17 @@ import java.util.List;
 import java.util.Locale;
 
 public class ClientEvents implements ClientModInitializer {
+
+    public static KeyBinding CONFIG = new KeyBinding("key.davespotioneering.open_config",
+            InputUtil.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_3,"key.categories."+ DavesPotioneering.MODID);
     @Override
     public void onInitializeClient() {
 
         ParticleFactoryRegistry.getInstance().register(ModParticleTypes.FAST_DRIPPING_WATER, FastDripParticle.DrippingWaterFactory::new);
         ParticleFactoryRegistry.getInstance().register(ModParticleTypes.FAST_FALLING_WATER, FastDripParticle.FallingWaterFactory::new);
         ParticleFactoryRegistry.getInstance().register(ModParticleTypes.TINTED_SPLASH, TintedSplashParticle.Factory::new);
+
+        KeyBindingHelper.registerKeyBinding(CONFIG);
 
         ItemTooltipCallback.EVENT.register(ClientEvents::tooltips);
         HudRenderCallback.EVENT.register(ClientEvents::gauntletHud);
@@ -202,14 +207,22 @@ public class ClientEvents implements ClientModInitializer {
     }
 
     public static void tooltips(ItemStack stack, TooltipContext e2, List<Text> tooltip) {
-        if (PotionUtil.getPotion(stack) != Potions.EMPTY)
-            if (stack.getItem() instanceof ToolItem) {
+        if (!dontTooltip(stack) && PotionUtil.getPotion(stack) != Potions.EMPTY) {
+            if (stack.getItem().isFood()) {
+                if (ClothConfig.show_spiked_food) {
+                    tooltip.add(new LiteralText("Spiked with"));
+                    PotionUtil.buildTooltip(stack, tooltip, 0.125F);
+                }
+            } else {
                 tooltip.add(new LiteralText("Coated with"));
                 PotionUtil.buildTooltip(stack, tooltip, 0.125F);
                 tooltip.add(new LiteralText("Uses: " + stack.getTag().getInt("uses")));
-            } else if (stack.getItem().isFood()) {
-                PotionUtil.buildTooltip(stack, tooltip, 0.125F);
             }
+        }
+    }
+
+    public static boolean dontTooltip(ItemStack stack) {
+        return stack.getItem() instanceof PotionItem || stack.getItem() instanceof ArrowItem;
     }
 
     private static void registerBlockingProperty(Item item) {
@@ -289,7 +302,4 @@ public class ClientEvents implements ClientModInitializer {
         //world.addParticle(particleDataIn,blockPosIn.x,blockPosIn.y,blockPosIn.z,0,-.10,0);
     }
 
-    public static void renderWrappedToolTip(Screen screen, ItemStack stack, MatrixStack matrixStack, List<? extends StringVisitable> tooltips, int mouseX, int mouseY, TextRenderer font) {
-        GuiUtils.drawWrappedHoveringText(stack, matrixStack, tooltips, mouseX, mouseY, screen.width, screen.height, -1, font);
-    }
 }

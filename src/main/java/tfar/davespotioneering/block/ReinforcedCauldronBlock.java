@@ -39,7 +39,9 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
+import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
+import tfar.davespotioneering.config.ClothConfig;
 import tfar.davespotioneering.init.ModPotions;
 
 import javax.annotation.Nullable;
@@ -55,7 +57,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock implements BlockEntit
 
     public ReinforcedCauldronBlock(Settings properties) {
         super(properties);
-        this.setDefaultState(this.stateManager.getDefaultState().with(DRAGONS_BREATH,false));
+        this.setDefaultState(this.stateManager.getDefaultState().with(DRAGONS_BREATH, false));
     }
 
     @Override
@@ -69,15 +71,20 @@ public class ReinforcedCauldronBlock extends CauldronBlock implements BlockEntit
             handleEmptyBottle(state, world, pos, player, hand, stack, level);
             return ActionResult.success(world.isClient);
         } else if (stack.getItem() == Items.DRAGON_BREATH && level == 3) {
-            handleDragonBreath(state,world, pos, player, stack);
-        } else if (stack.getItem() instanceof ToolItem && level == 3 ) {
-            handleWeaponCoating(state,world, pos, player, stack);
+            handleDragonBreath(state, world, pos, player, stack);
+        } else if (stack.getItem() instanceof ToolItem && level == 3) {
+            if (ClothConfig.coat_tools)
+                handleWeaponCoating(state, world, pos, player, stack);
         } else if (stack.getItem() == Items.ARROW && level > 0) {
-            handleArrowCoating(state,world, pos, player, stack,level);
+            handleArrowCoating(state, world, pos, player, stack, level);
         } else if (stack.getItem().isFood() && level > 0) {
-            spikedFood(state,world, pos, player, stack,level);
+            if (ClothConfig.spike_food)
+                spikedFood(state, world, pos, player, stack, level);
         } else if (PotionUtil.getPotion(stack) != Potions.EMPTY && level > 0) {
-            removeCoating(state,world, pos, player, stack);
+            removeCoating(state, world, pos, player, stack);
+        } else {
+            if (ClothConfig.coat_anything)
+                handleWeaponCoating(state, world, pos, player, stack);
         }
         return super.onUse(state, world, pos, player, hand, hit);
     }
@@ -132,7 +139,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock implements BlockEntit
         }
     }
 
-    public void boom(World world,BlockPos pos,BlockState state) {
+    public void boom(World world, BlockPos pos, BlockState state) {
         this.setLevel(world, pos, state, 0);
         world.createExplosion(null, pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5, 1, false, Explosion.DestructionType.NONE);
     }
@@ -190,7 +197,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock implements BlockEntit
                 addCoating(stack, potion);
                 world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 state = state.with(DRAGONS_BREATH, false);
-                ((CauldronBlock)state.getBlock()).setLevel(world,pos,state,0);
+                ((CauldronBlock) state.getBlock()).setLevel(world, pos, state, 0);
             }
         }
     }
@@ -207,20 +214,20 @@ public class ReinforcedCauldronBlock extends CauldronBlock implements BlockEntit
                 if (player != null && !player.abilities.creativeMode) {
                     player.incrementStat(Stats.USE_CAULDRON);
                 }
-                ItemStack tippedArrows = new ItemStack(Items.TIPPED_ARROW,8);
-                addCoating(tippedArrows,potion);
+                ItemStack tippedArrows = new ItemStack(Items.TIPPED_ARROW, 8);
+                addCoating(tippedArrows, potion);
                 stack.decrement(8);
                 world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
 
-                world.spawnEntity(new ItemEntity(world,pos.getX(),pos.getY()+1,pos.getZ(),tippedArrows));
+                world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY() + 1, pos.getZ(), tippedArrows));
                 if (level <= 1)
                     state = state.with(DRAGONS_BREATH, false);
-                ((CauldronBlock)state.getBlock()).setLevel(world,pos,state,level - 1);
+                ((CauldronBlock) state.getBlock()).setLevel(world, pos, state, level - 1);
             }
         }
     }
 
-    public static void removeCoating(BlockState state, World world, BlockPos pos,@Nullable PlayerEntity player, ItemStack stack) {
+    public static void removeCoating(BlockState state, World world, BlockPos pos, @Nullable PlayerEntity player, ItemStack stack) {
         ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) world.getBlockEntity(pos);
         Potion potion = reinforcedCauldronBlockEntity.getPotion();
         if (potion == ModPotions.MILK && !world.isClient) {
@@ -229,7 +236,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock implements BlockEntit
             }
             removeCoating(stack);
             world.playSound(null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
-            ((CauldronBlock)state.getBlock()).setLevel(world,pos,state,state.get(LEVEL) - 1);
+            ((CauldronBlock) state.getBlock()).setLevel(world, pos, state, state.get(LEVEL) - 1);
         }
     }
 
@@ -252,13 +259,11 @@ public class ReinforcedCauldronBlock extends CauldronBlock implements BlockEntit
         nbt.remove("Potion");
     }
 
-    public static void addCoating(ItemStack stack,Potion potion) {
-        if (stack.getItem() instanceof ToolItem) {
-            CompoundTag nbt = stack.getOrCreateTag();
+    public static void addCoating(ItemStack stack, Potion potion) {
+        PotionUtil.setPotion(stack, potion);
+        CompoundTag nbt = stack.getTag();
+        if (!stack.getItem().isFood()) {
             nbt.putInt("uses", 25);
-            nbt.putString("Potion", Registry.POTION.getId(potion).toString());
-        } else if (stack.getItem() == Items.TIPPED_ARROW || stack.getItem().isFood()) {
-            PotionUtil.setPotion(stack, potion);
         }
     }
 
@@ -309,16 +314,23 @@ public class ReinforcedCauldronBlock extends CauldronBlock implements BlockEntit
         world.playSound(null, pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.8F, 1);
 
         if (state.get(LEVEL) > 1) {
-            setLevel(world,pos,state,level - 1);
+            setLevel(world, pos, state, level - 1);
             world.getBlockTickScheduler().schedule(pos, this, brew_speed);
         } else {
             List<ItemEntity> items = world.getNonSpectatingEntities(ItemEntity.class,
                     new Box(pos));
 
             if (items.size() == 1) {
-                handleWeaponCoating(state, world, pos, null, items.get(0).getStack());
-            } else {
-                boom(world, pos, state);
+                ItemStack itemStack = items.get(0).getStack();
+
+                Util.CoatingType coatingType = Util.CoatingType.getCoatingType(itemStack);
+                switch (coatingType) {
+                    case FOOD:
+                        spikedFood(state, world, pos, null, itemStack, level);
+                    case ANY:
+                    case TOOL:
+                        handleWeaponCoating(state, world, pos, null, itemStack);
+                }
             }
         }
     }
@@ -329,22 +341,22 @@ public class ReinforcedCauldronBlock extends CauldronBlock implements BlockEntit
 
     @Override
     public void appendTooltip(ItemStack stack, @Nullable BlockView worldIn, List<Text> tooltip, TooltipContext flagIn) {
-        tooltip.add(new TranslatableText(getTranslationKey()+".hold_shift.desc"));
+        tooltip.add(new TranslatableText(getTranslationKey() + ".hold_shift.desc"));
         if (Screen.hasShiftDown())
             for (int i = 0; i < S_LINES; i++) {
 
                 tooltip.add(this.getShiftDescriptions(i).formatted(Formatting.GRAY));
             }
 
-        tooltip.add(new TranslatableText(getTranslationKey()+".hold_ctrl.desc"));
+        tooltip.add(new TranslatableText(getTranslationKey() + ".hold_ctrl.desc"));
         if (Screen.hasControlDown())
-            for (int i = 0; i < C_LINES;i++) {
+            for (int i = 0; i < C_LINES; i++) {
                 tooltip.add(this.getCtrlDescriptions(i).formatted(Formatting.GRAY));
             }
 
-        tooltip.add(new TranslatableText(getTranslationKey()+".hold_alt.desc"));
+        tooltip.add(new TranslatableText(getTranslationKey() + ".hold_alt.desc"));
         if (Screen.hasAltDown()) {
-            for (int i = 0; i < A_LINES;i++) {
+            for (int i = 0; i < A_LINES; i++) {
                 tooltip.add(this.getAltDescriptions(i).formatted(Formatting.GRAY));
             }
         }
@@ -355,7 +367,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock implements BlockEntit
     }
 
     public MutableText getShiftDescriptions(int i) {
-        return new TranslatableText(this.getTranslationKey() + i +".shift.desc");
+        return new TranslatableText(this.getTranslationKey() + i + ".shift.desc");
     }
 
     public MutableText getCtrlDescription() {
@@ -363,7 +375,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock implements BlockEntit
     }
 
     public MutableText getCtrlDescriptions(int i) {
-        return new TranslatableText(this.getTranslationKey() + i +".ctrl.desc");
+        return new TranslatableText(this.getTranslationKey() + i + ".ctrl.desc");
     }
 
     public MutableText getAltDescription() {
@@ -371,7 +383,7 @@ public class ReinforcedCauldronBlock extends CauldronBlock implements BlockEntit
     }
 
     public MutableText getAltDescriptions(int i) {
-        return new TranslatableText(this.getTranslationKey() + i+".alt.desc");
+        return new TranslatableText(this.getTranslationKey() + i + ".alt.desc");
     }
 
     @org.jetbrains.annotations.Nullable

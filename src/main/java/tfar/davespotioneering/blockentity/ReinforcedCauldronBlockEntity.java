@@ -10,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.PotionItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
@@ -18,7 +19,9 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import tfar.davespotioneering.Util;
 import tfar.davespotioneering.block.ReinforcedCauldronBlock;
+import tfar.davespotioneering.config.ClothConfig;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
 import tfar.davespotioneering.init.ModPotions;
 
@@ -85,18 +88,37 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity implements BlockE
     //}
 
     public void onEntityCollision(Entity entity) {
-        if (entity instanceof ItemEntity && getCachedState().get(ReinforcedCauldronBlock.DRAGONS_BREATH)) {
+        if (entity instanceof ItemEntity) {
+            boolean dragon = getCachedState().get(ReinforcedCauldronBlock.DRAGONS_BREATH);
             ItemStack stack =  ((ItemEntity) entity).getStack();
+            Util.CoatingType coatingType = Util.CoatingType.getCoatingType(stack);
+
             BlockState blockState = getCachedState();
-            int fluidLevel = blockState.get(CauldronBlock.LEVEL);
-            if (potion == ModPotions.MILK && PotionUtil.getPotion(stack) != Potions.EMPTY) {
-                ReinforcedCauldronBlock.removeCoating(blockState,this.world,pos,null,stack);
-            } else if (stack.getItem() == Items.ARROW && fluidLevel > 0) {
-              ReinforcedCauldronBlock.handleArrowCoating(blockState,this.world,pos,null,stack,fluidLevel);
-            } else if (fluidLevel == 3) {
+            int level = blockState.get(CauldronBlock.LEVEL);
+            if (potion == ModPotions.MILK && PotionUtil.getPotion(stack) != Potions.EMPTY && !(stack.getItem() instanceof PotionItem)) {
+                ReinforcedCauldronBlock.removeCoating(blockState,world,pos,null,stack);
+            } else if (stack.getItem() == Items.ARROW && level > 0) {
+                if (dragon)
+                    ReinforcedCauldronBlock.handleArrowCoating(blockState,world,pos,null,stack,level);
+            }
+
+            else if (coatingType == Util.CoatingType.FOOD && level > 0) {
+                if (ClothConfig.spike_food && stack.getCount() >= 8) {
+                    ReinforcedCauldronBlock.spikedFood(blockState,world,pos,null,stack,level);
+                }
+            }
+
+            else if (level == 3 && dragon) {
+
+                if (coatingType == Util.CoatingType.TOOL && !ClothConfig.coat_tools) return;//check if tools can be coated
+
+                if (coatingType == Util.CoatingType.ANY && !ClothConfig.coat_anything) return;
+                //check if anything can be coated AND the item is not in a whitelist
+
+
                 //burn off a layer, then schedule the rest of the ticks
-                this.world.playSound(null,pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.8F, 1);
-                ((CauldronBlock)blockState.getBlock()).setLevel(this.world,pos,blockState,2);
+                world.playSound(null,pos, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 0.8F, 1);
+                ((CauldronBlock)blockState.getBlock()).setLevel(world,pos,blockState,2);
                 scheduleTick();
             }
         }
