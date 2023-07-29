@@ -30,6 +30,7 @@ public class ModLangProvider extends LanguageProvider {
         add(PotionInjectorBlock.TRANS_KEY,"Potion Injector");
         addBlock(() -> ModBlocks.COMPOUND_BREWING_STAND,"Compound Brewing Stand");
         addBlock(() -> ModBlocks.REINFORCED_CAULDRON,"Reinforced Cauldron");
+        addBlock(() -> ModBlocks.REINFORCED_WATER_CAULDRON,"Reinforced Water Cauldron");
         addBlock(() -> ModBlocks.POTION_INJECTOR,"Potion Injector");
         addItem(() -> ModItems.POTIONEER_GAUNTLET,getNameFromItem(ModItems.POTIONEER_GAUNTLET));
         addItem(() -> ModItems.RUDIMENTARY_GAUNTLET,getNameFromItem(ModItems.RUDIMENTARY_GAUNTLET));
@@ -90,8 +91,20 @@ public class ModLangProvider extends LanguageProvider {
         addHoldSDesc(ModBlocks.POTION_INJECTOR,"Summary: Hold [Shift]");
         addCtrlDesc(ModBlocks.POTION_INJECTOR,"Use this block to inject Blaze Powder and Lingering Potions into the Potioneer Gauntlet.");
         addHoldCDesc(ModBlocks.POTION_INJECTOR,"Functionality: Hold [Ctrl]");
+        addTooltip("coated_with","Coated with:");
+        addTooltip("spiked_with","Spiked with:");
+        add("key.davespotioneering.open_config","Open Config");
+        add("key.categories."+DavesPotioneering.MODID,"Dave's Potioneering");
+        addConfig("gauntlet_hud_x","The X Position of the gauntlet hud (left top). You should be using the in-game gui to change this though");
+        addConfig("gauntlet_hud_y","The y Position of the gauntlet hud (left top). You should be using the in-game gui to change this though");
+        addConfig("gauntlet_hud_preset","You shouldn't change this. Just don't");
     }
-
+    protected void addConfig(String value,String trans) {
+        add("config."+value,trans);
+    }
+    protected void addTooltip(String code,String tip) {
+        add(DavesPotioneering.MODID+"."+code+"."+"tooltip",tip);
+    }
     protected void addDesc(ItemLike item, String desc) {
         add(item.asItem().getDescriptionId()+".desc",desc);
     }

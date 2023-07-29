@@ -42,11 +42,13 @@ public class ReinforcedCauldronBlock extends AbstractCauldronBlock {
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter worldIn, List<Component> tooltip, TooltipFlag flagIn) {
 
         tooltip.add(Component.translatable(getDescriptionId()+".hold_shift.desc"));
-        if (Screen.hasShiftDown())
-            for (int i = 0; i < S_LINES;i++) {
+        if (Screen.hasShiftDown()) {
+                   tooltip.add(this.getShiftDescription().withStyle(ChatFormatting.GRAY));
+            //  for (int i = 0; i < S_LINES;i++) {
 
-                tooltip.add(this.getShiftDescriptions(i).withStyle(ChatFormatting.GRAY));
-            }
+         //       tooltip.add(this.getShiftDescriptions(i).withStyle(ChatFormatting.GRAY));
+         //   }
+        }
 
         tooltip.add(Component.translatable(getDescriptionId()+".hold_ctrl.desc"));
         if (Screen.hasControlDown())
