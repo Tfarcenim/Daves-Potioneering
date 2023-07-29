@@ -22,6 +22,10 @@
   "block.davespotioneering.reinforced_cauldron1.ctrl.desc": "- Can be filled with potions. Don't mix different flavors!",
   "block.davespotioneering.reinforced_cauldron2.alt.desc": "3. The liquid will sizzle and evaporate until there is nothing left but the newly coated item.",
   "block.davespotioneering.reinforced_cauldron2.ctrl.desc": "- Can be filled with milk",
+  "block.davespotioneering.reinforced_water_cauldron": "Reinforced Water Cauldron",
+  "config.gauntlet_hud_preset": "You shouldn't change this. Just don't",
+  "config.gauntlet_hud_x": "The X Position of the gauntlet hud (left top). You should be using the in-game gui to change this though",
+  "config.gauntlet_hud_y": "The y Position of the gauntlet hud (left top). You should be using the in-game gui to change this though",
   "container.davespotioneering.compound_brewing": "Compound Brewing Stand",
   "davespotioneering.coated_with.tooltip": "Coated with:",
   "davespotioneering.container.potion_injector": "Potion Injector",
@@ -83,5 +87,7 @@
   "item.minecraft.lingering_potion.effect.milk": "Lingering Milk Bottle",
   "item.minecraft.potion.effect.milk": "Milk Bottle",
   "item.minecraft.splash_potion.effect.milk": "Splash Milk Bottle",
-  "itemGroup.davespotioneering": "Dave's Potioneering"
+  "itemGroup.davespotioneering": "Dave's Potioneering",
+  "key.categories.davespotioneering": "Dave's Potioneering",
+  "key.davespotioneering.open_config": "Open Config"
 }

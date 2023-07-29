@@ -23,7 +23,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.block.LayeredReinforcedCauldronBlock;
-import tfar.davespotioneering.block.ReinforcedCauldronBlock;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
 import tfar.davespotioneering.init.ModItems;
 import tfar.davespotioneering.init.ModPotions;
@@ -91,24 +90,27 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity {
     }
 
     public void onEntityCollision(Entity entity) {
-        if (entity instanceof ItemEntity && getBlockState().getValue(LayeredReinforcedCauldronBlock.DRAGONS_BREATH)) {
+        if (entity instanceof ItemEntity) {
             ItemStack stack = ((ItemEntity) entity).getItem();
-
             if (stack.is(ModItems.BLACKLISTED)) return;
 
+            boolean dragon = getBlockState().getValue(LayeredReinforcedCauldronBlock.DRAGONS_BREATH);
             Util.CoatingType coatingType = Util.CoatingType.getCoatingType(stack);
 
             BlockState blockState = getBlockState();
             int cLevel = blockState.getValue(LayeredCauldronBlock.LEVEL);
             if (potion == ModPotions.MILK && PotionUtils.getPotion(stack) != Potions.EMPTY && !Util.isPotion(stack)) {
                 LayeredReinforcedCauldronBlock.removeCoating(blockState,level,worldPosition,null,stack);
+            } else if (coatingType == Util.CoatingType.FOOD) {
+                if (ModConfig.Server.spike_food.get() && stack.getCount()>=8) {//check if food can be coated
+                    LayeredReinforcedCauldronBlock.handleFoodSpiking(blockState,level,worldPosition,null,null,stack);
+                }
             } else if (stack.getItem() == Items.ARROW && cLevel > 0) {
-              LayeredReinforcedCauldronBlock.handleArrowCoating(blockState,level,worldPosition,null,null,stack);
-            } else if (cLevel == 3) {
-
+                if (dragon)
+                    LayeredReinforcedCauldronBlock.handleArrowCoating(blockState,level,worldPosition,null,null,stack);
+            } else if (cLevel == 3 && dragon) {
                 if (coatingType == Util.CoatingType.TOOL && !ModConfig.Server.coat_tools.get()) return;//check if tools can be coated
 
-                if (coatingType == Util.CoatingType.FOOD && !ModConfig.Server.spike_food.get()) return;//check if food can be coated
 
                 if (coatingType == Util.CoatingType.ANY && !ModConfig.Server.coat_anything.get() && !stack.is(ModItems.WHITELISTED)) return;
                 //check if anything can be coated AND the item is not in a whitelist
