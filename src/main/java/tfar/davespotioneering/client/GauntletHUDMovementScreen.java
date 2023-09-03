@@ -3,6 +3,7 @@ package tfar.davespotioneering.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -15,10 +16,10 @@ public class GauntletHUDMovementScreen extends Screen {
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
-        minecraft.font.drawShadow(matrixStack, Component.translatable("davespotioneering.gui.moveGauntletHUD"), 6, 5, ChatFormatting.WHITE.getColor());
+        matrixStack.drawString(font,Component.translatable("davespotioneering.gui.moveGauntletHUD"), 6, 5, ChatFormatting.WHITE.getColor());
     }
 
     public static final String KEY = "davespotioneering.gui.moveGauntletHUD.preset";
@@ -26,27 +27,28 @@ public class GauntletHUDMovementScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        addRenderableWidget(new Button(5, 15, 75, 20, Component.translatable(KEY + GauntletHUD.HudPresets.TOP_LEFT.ordinal()), (button) -> {
+        addRenderableWidget(Button.builder(Component.translatable(KEY + GauntletHUD.HudPresets.TOP_LEFT.ordinal()), (button) -> {
             GauntletHUD.x = 5;
             GauntletHUD.y = 5;
             GauntletHUD.preset = GauntletHUD.HudPresets.TOP_LEFT;
-        }));
-        addRenderableWidget(new Button(85, 15, 75, 20, Component.translatable(KEY + GauntletHUD.HudPresets.TOP_RIGHT.ordinal()), (button) -> {
+        }).pos(5, 15).size( 75, 20).build());
+        addRenderableWidget(Button.builder(Component.translatable(KEY + GauntletHUD.HudPresets.TOP_RIGHT.ordinal()),(button) -> {
             GauntletHUD.x = width - GauntletHUD.TEX_WIDTH - 5;
             GauntletHUD.y = 5;
             GauntletHUD.preset = GauntletHUD.HudPresets.TOP_RIGHT;
-        }));
-        addRenderableWidget(new Button(165, 15, 75, 20, Component.translatable(KEY + GauntletHUD.HudPresets.BTM_LEFT.ordinal()), (button) -> {
+        }).pos(85, 15).size(75, 20).build());
+        addRenderableWidget(Button.builder(Component.translatable(KEY + GauntletHUD.HudPresets.BTM_LEFT.ordinal()), (button) -> {
             GauntletHUD.x = 5;
             GauntletHUD.y = height - GauntletHUD.TEX_HEIGHT - 5;
             GauntletHUD.preset = GauntletHUD.HudPresets.BTM_LEFT;
-        }));
-        addRenderableWidget(new Button(245, 15, 75, 20, Component.translatable(KEY + GauntletHUD.HudPresets.BTM_RIGHT.ordinal()), (button) -> {
+        }).pos(165, 15).size(75, 20).build());
+        addRenderableWidget(Button.builder( Component.translatable(KEY + GauntletHUD.HudPresets.BTM_RIGHT.ordinal()), (button) -> {
             GauntletHUD.x = width - GauntletHUD.TEX_WIDTH - 5;
             GauntletHUD.y = height - GauntletHUD.TEX_HEIGHT - 5;
             GauntletHUD.preset = GauntletHUD.HudPresets.BTM_RIGHT;
-        }));
-        addRenderableWidget(new Button(325, 15, 75, 20, Component.translatable(KEY + GauntletHUD.HudPresets.ABOVE_HOTBAR.ordinal()), (button) -> GauntletHUD.preset = GauntletHUD.HudPresets.ABOVE_HOTBAR));
+        }).pos(245, 15).size(75, 20).build());
+        addRenderableWidget(Button.builder(Component.translatable(KEY + GauntletHUD.HudPresets.ABOVE_HOTBAR.ordinal()),
+                (button) -> GauntletHUD.preset = GauntletHUD.HudPresets.ABOVE_HOTBAR).pos(325, 15).size(75, 20).build());
     }
 
     @Override

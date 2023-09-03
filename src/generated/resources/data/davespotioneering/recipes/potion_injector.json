@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "a": {
       "item": "minecraft:diorite"
@@ -21,5 +22,6 @@
   ],
   "result": {
     "item": "davespotioneering:potion_injector"
-  }
+  },
+  "show_notification": true
 }

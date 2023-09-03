@@ -16,6 +16,6 @@ public class ModSoundEvents {
     public static final SoundEvent GAUNTLET_EQUIP = createSound("gauntlet_equip");
 
     private static SoundEvent createSound(String name) {
-        return new SoundEvent(new ResourceLocation(DavesPotioneering.MODID, name));
+        return SoundEvent.createVariableRangeEvent(new ResourceLocation(DavesPotioneering.MODID, name));
     }
 }

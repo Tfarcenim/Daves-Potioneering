@@ -3,11 +3,14 @@ package tfar.davespotioneering.datagen.assets;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -19,7 +22,7 @@ import tfar.davespotioneering.init.ModItems;
 import java.util.Locale;
 
 public class ModItemModelProvider extends ItemModelProvider {
-    public ModItemModelProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
+    public ModItemModelProvider(PackOutput generator, ExistingFileHelper existingFileHelper) {
         super(generator, DavesPotioneering.MODID, existingFileHelper);
     }
 
@@ -78,10 +81,10 @@ public class ModItemModelProvider extends ItemModelProvider {
 
         getBuilder(name).guiLight(BlockModel.GuiLight.FRONT)
                 .customLoader(SeparateTransformsModelBuilder::begin).base(rSpriteFile)
-                .perspective(ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, r3dFile)
-                .perspective(ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND, r3dFile)
-                .perspective(ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND, r3dFile)
-                .perspective(ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND, r3dFile)
+                .perspective(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND, r3dFile)
+                .perspective(ItemDisplayContext.FIRST_PERSON_LEFT_HAND, r3dFile)
+                .perspective(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, r3dFile)
+                .perspective(ItemDisplayContext.THIRD_PERSON_LEFT_HAND, r3dFile)
                 .end();
     }
 
@@ -99,18 +102,18 @@ public class ModItemModelProvider extends ItemModelProvider {
     }
 
     protected void makeSimpleBlockItem(Item item, ResourceLocation loc) {
-        String s = Registry.ITEM.getKey(item).toString();
+        String s = BuiltInRegistries.ITEM.getKey(item).toString();
         getBuilder(s)
                 .parent(getExistingFile(loc));
     }
 
     protected void makeSimpleBlockItem(Item item) {
-        makeSimpleBlockItem(item, new ResourceLocation(DavesPotioneering.MODID, "block/" + Registry.ITEM.getKey(item).getPath()));
+        makeSimpleBlockItem(item, new ResourceLocation(DavesPotioneering.MODID, "block/" + BuiltInRegistries.ITEM.getKey(item).getPath()));
     }
 
 
     protected void makeOneLayerItem(Item item, ResourceLocation texture) {
-        String path = Registry.ITEM.getKey(item).getPath();
+        String path = BuiltInRegistries.ITEM.getKey(item).getPath();
         if (existingFileHelper.exists(new ResourceLocation(texture.getNamespace(), "item/" + texture.getPath())
                 , PackType.CLIENT_RESOURCES, ".png", "textures")) {
             getBuilder(path).parent(getExistingFile(mcLoc("item/generated")))
@@ -121,7 +124,7 @@ public class ModItemModelProvider extends ItemModelProvider {
     }
 
     protected void makeOneLayerItem(Item item) {
-        ResourceLocation texture = Registry.ITEM.getKey(item);
+        ResourceLocation texture = BuiltInRegistries.ITEM.getKey(item);
         makeOneLayerItem(item, texture);
     }
 }

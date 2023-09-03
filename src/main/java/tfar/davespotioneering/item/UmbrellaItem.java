@@ -14,13 +14,14 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.util.NonNullLazy;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 import tfar.davespotioneering.client.HideISTERsFromServer;
 import tfar.davespotioneering.init.ModSoundEvents;
 
@@ -28,7 +29,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class UmbrellaItem extends ShieldItem implements IAnimatable {
+public class UmbrellaItem extends ShieldItem implements GeoItem {
     private final String model;
     private final String style;
 
@@ -71,22 +72,22 @@ public class UmbrellaItem extends ShieldItem implements IAnimatable {
         pLevel.playLocalSound(pLivingEntity.getX(),pLivingEntity.getY(),pLivingEntity.getZ(), ModSoundEvents.UMBRELLA_CLOSE, SoundSource.BLOCKS,.5f,1,false);
     }
 
-
-    AnimationFactory factory = GeckoLibUtil.createFactory(this);
-
     @Override
-    public void registerControllers(AnimationData data) {
-        data.addAnimationController(
+    public void registerControllers(AnimatableManager.ControllerRegistrar data) {
+        data.add(
                 new AnimationController<>(this, "null", 0, this::predicate)
         );
     }
 
-    protected <P extends IAnimatable> PlayState predicate(AnimationEvent<P> event) {
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
+    }
+
+    protected <P extends GeoAnimatable> PlayState predicate(AnimationState<P> event) {
         return PlayState.STOP;
     }
 
-    @Override
-    public AnimationFactory getFactory() {
-        return factory;
-    }
 }

@@ -1,5 +1,6 @@
 package tfar.davespotioneering.init;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -18,21 +19,15 @@ public class ModItems {
 
     private static List<Item> MOD_ITEMS;
 
-    public static final CreativeModeTab tab = new CreativeModeTab(DavesPotioneering.MODID) {
-        @Override
-        public ItemStack makeIcon() {
-            return new ItemStack(ModItems.COMPOUND_BREWING_STAND);
-        }
-    };
-    
-    public static final Item COMPOUND_BREWING_STAND = new BlockItem(ModBlocks.COMPOUND_BREWING_STAND,new Item.Properties().tab(tab));
-    public static final Item REINFORCED_CAULDRON = new BlockItem(ModBlocks.REINFORCED_CAULDRON,new Item.Properties().tab(tab));
-    public static final Item POTIONEER_GAUNTLET = new GauntletItem(new Item.Properties().tab(tab).durability(32));
-    public static final Item NETHERITE_GAUNTLET = new SimpleGauntletItem(Tiers.NETHERITE,4,-2.8f,new Item.Properties().tab(tab));
-    public static final Item RUDIMENTARY_GAUNTLET = new SimpleGauntletItem(Tiers.IRON,3,-2.8f,new Item.Properties().tab(tab));
+
+    public static final Item COMPOUND_BREWING_STAND = new BlockItem(ModBlocks.COMPOUND_BREWING_STAND,new Item.Properties());
+    public static final Item REINFORCED_CAULDRON = new BlockItem(ModBlocks.REINFORCED_CAULDRON,new Item.Properties());
+    public static final Item POTIONEER_GAUNTLET = new GauntletItem(new Item.Properties().durability(32));
+    public static final Item NETHERITE_GAUNTLET = new SimpleGauntletItem(Tiers.NETHERITE,4,-2.8f,new Item.Properties());
+    public static final Item RUDIMENTARY_GAUNTLET = new SimpleGauntletItem(Tiers.IRON,3,-2.8f,new Item.Properties());
 
     public static final Item MAGIC_LECTERN = new BlockItem(ModBlocks.MAGIC_LECTERN,new Item.Properties());
-    public static final Item POTION_INJECTOR = new BlockItem(ModBlocks.POTION_INJECTOR,new Item.Properties().tab(tab));
+    public static final Item POTION_INJECTOR = new BlockItem(ModBlocks.POTION_INJECTOR,new Item.Properties());
 
     public static final Item WHITE_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.WHITE,"classic");
     public static final Item ORANGE_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.ORANGE,"classic");
@@ -58,8 +53,9 @@ public class ModItems {
     public static final TagKey<Item> BLACKLISTED = ItemTags.create(new ResourceLocation(DavesPotioneering.MODID,"blacklisted"));
     public static final TagKey<Item> WHITELISTED = ItemTags.create(new ResourceLocation(DavesPotioneering.MODID,"whitelisted"));
 
+
     public static Item.Properties baseUmbrella() {
-        return new Item.Properties().tab(tab).durability(300);
+        return new Item.Properties().durability(300);
     }
 
     public static List<Item> getAllItems() {

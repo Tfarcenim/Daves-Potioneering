@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -64,7 +65,7 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
 
     public static void boom(Level level, BlockPos pos) {
         level.setBlockAndUpdate(pos,ModBlocks.REINFORCED_CAULDRON.defaultBlockState());
-        level.explode(null, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, 1, false, Explosion.BlockInteraction.NONE);
+        level.explode(null, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, 1f, false, Level.ExplosionInteraction.NONE);
     }
 
     public static void handleWeaponCoating(BlockState state, Level level, BlockPos pos, @Nullable Player player, InteractionHand p_175715_, ItemStack stack) {
@@ -173,7 +174,7 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
         if (stack.getItem() instanceof TieredItem) {
             CompoundTag nbt = stack.getOrCreateTag();
             nbt.putInt(USES, ModConfig.Server.coating_uses.get());
-            nbt.putString("Potion", Registry.POTION.getKey(potion).toString());
+            nbt.putString("Potion", BuiltInRegistries.POTION.getKey(potion).toString());
         } else {
             PotionUtils.setPotion(stack, potion);
         }

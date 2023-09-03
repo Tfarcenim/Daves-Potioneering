@@ -3,6 +3,7 @@ package tfar.davespotioneering.item;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -175,7 +176,7 @@ public class GauntletItem extends SwordItem {
                 amplifier = Component.literal(String.valueOf(instance.getAmplifier()));
             }
             if (instance.getDuration() > 1) {
-                duration = Component.literal(MobEffectUtil.formatDuration(instance, 1f));
+                duration = MobEffectUtil.formatDuration(instance, 1f);
                 product = Component.translatable("davespotioneering.tooltip.gauntlet.withDuration", effectFormatted, amplifier, duration);
             } else {
                 product = Component.translatable("davespotioneering.tooltip.gauntlet", effectFormatted, amplifier);
@@ -215,7 +216,7 @@ public class GauntletItem extends SwordItem {
         List<Potion> potions = new ArrayList<>();
         for (Tag inbt : nbts) {
             if (inbt instanceof StringTag stringNBT) {
-                Potion potion = Registry.POTION.get(new ResourceLocation(stringNBT.getAsString()));
+                Potion potion = BuiltInRegistries.POTION.get(new ResourceLocation(stringNBT.getAsString()));
                 effects.addAll(potion.getEffects());
                 potions.add(potion);
             }
@@ -271,9 +272,9 @@ public class GauntletItem extends SwordItem {
         Tag post = nbts.get(index);
         if (post == null) return null;
 
-        Potion activePotion = Registry.POTION.get(new ResourceLocation(nbts.get(info.getInt(ACTIVE_POTION)).getAsString()));
-        Potion prePotion = Registry.POTION.get(new ResourceLocation(pre.getAsString()));
-        Potion postPotion = Registry.POTION.get(new ResourceLocation(post.getAsString()));
+        Potion activePotion = BuiltInRegistries.POTION.get(new ResourceLocation(nbts.get(info.getInt(ACTIVE_POTION)).getAsString()));
+        Potion prePotion = BuiltInRegistries.POTION.get(new ResourceLocation(pre.getAsString()));
+        Potion postPotion = BuiltInRegistries.POTION.get(new ResourceLocation(post.getAsString()));
 
         return new Potion[]{activePotion, prePotion, postPotion};
     }
@@ -340,20 +341,6 @@ public class GauntletItem extends SwordItem {
                 map.set(0, newArrayIndex);
             }
         }
-    }
-
-    public static List<ItemStack> getItemsFromInventory(ItemStack item, Inventory inventory) {
-        List<ItemStack> items = new ArrayList<>();
-        for (ItemStack stack : inventory.items) {
-            if (stack.sameItem(item)) items.add(stack);
-        }
-        for (ItemStack stack : inventory.offhand) {
-            if (stack.sameItem(item)) items.add(stack);
-        }
-        for (ItemStack stack : inventory.armor) {
-            if (stack.sameItem(item)) items.add(stack);
-        }
-        return items;
     }
 
     public static List<Integer> toList(int... in) {

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "a": {
       "item": "minecraft:glass_bottle"
@@ -21,5 +22,6 @@
   ],
   "result": {
     "item": "davespotioneering:potioneer_gauntlet"
-  }
+  },
+  "show_notification": true
 }

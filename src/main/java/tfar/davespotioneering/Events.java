@@ -21,6 +21,7 @@ import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.event.entity.living.PotionColorCalculationEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.Event;
 import tfar.davespotioneering.block.LayeredReinforcedCauldronBlock;
 import tfar.davespotioneering.duck.BrewingStandDuck;
@@ -34,7 +35,7 @@ public class Events {
     public static void potionCooldown(PlayerInteractEvent.RightClickItem e) {
         ItemStack stack = e.getItemStack();
         Player player = e.getEntity();
-        if (!player.level.isClientSide && stack.getItem() instanceof ThrowablePotionItem) {
+        if (!player.level().isClientSide && stack.getItem() instanceof ThrowablePotionItem) {
             player.getCooldowns().addCooldown(stack.getItem(), ModConfig.Server.potion_throw_cooldown.get());
         }
     }
@@ -101,7 +102,7 @@ public class Events {
     //this is called when the player takes a potion from the brewing stand
     public static void playerBrew(PlayerBrewedPotionEvent e) {
         Player player = e.getEntity();
-        if (!player.level.isClientSide) {
+        if (!player.level().isClientSide) {
             AbstractContainerMenu container = player.containerMenu;
             BlockEntity entity = null;
             if (container instanceof BrewingStandMenu) {
@@ -123,6 +124,12 @@ public class Events {
                 e.setResult(Event.Result.DENY);
             }
         }
+    }
+
+    public static void serverStart(ServerStartingEvent e) {
+        Util.setStackSize(Items.POTION,ModConfig.Server.potion_stack_size.get());
+        Util.setStackSize(Items.SPLASH_POTION,ModConfig.Server.splash_potion_stack_size.get());
+        Util.setStackSize(Items.LINGERING_POTION,ModConfig.Server.lingering_potion_stack_size.get());
     }
 
     public static void effectColor(PotionColorCalculationEvent e) {
@@ -153,5 +160,6 @@ public class Events {
         MinecraftForge.EVENT_BUS.addListener(Events::playerBrew);
         MinecraftForge.EVENT_BUS.addListener(Events::canApplyEffect);
         MinecraftForge.EVENT_BUS.addListener(Events::effectColor);
+        MinecraftForge.EVENT_BUS.addListener(Events::serverStart);
     }
 }

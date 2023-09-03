@@ -3,6 +3,7 @@ package tfar.davespotioneering.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.cauldron.CauldronInteraction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -161,7 +162,7 @@ public class ModCauldronInteractions {
         WATER.put(Items.DRAGON_BREATH,ModCauldronInteractions::dragonsBreath);
         WATER.put(Items.ARROW,ModCauldronInteractions::arrowCoating);
 
-        for (Item item : Registry.ITEM) {
+        for (Item item : BuiltInRegistries.ITEM) {
             if (item instanceof TieredItem) {
                 WATER.put(item,ModCauldronInteractions::weaponCoating);
             } else if (item.isEdible()) {

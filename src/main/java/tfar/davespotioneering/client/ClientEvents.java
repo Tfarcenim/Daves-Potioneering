@@ -158,7 +158,7 @@ public class ClientEvents {
 
     public static void playerTick(TickEvent.PlayerTickEvent e) {
         Player player = e.player;
-        if (e.phase == TickEvent.Phase.END && e.side == LogicalSide.CLIENT && player.level.getGameTime() % ModConfig.Client.particle_drip_rate.get() == 0) {
+        if (e.phase == TickEvent.Phase.END && e.side == LogicalSide.CLIENT && player.level().getGameTime() % ModConfig.Client.particle_drip_rate.get() == 0) {
 
             ItemStack stack = player.getMainHandItem();
 

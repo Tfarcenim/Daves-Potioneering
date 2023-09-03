@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "a": {
       "item": "minecraft:black_wool"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "davespotioneering:black_umbrella"
-  }
+  },
+  "show_notification": true
 }

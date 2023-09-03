@@ -3,10 +3,11 @@ package tfar.davespotioneering.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
@@ -62,7 +63,7 @@ public class GauntletHUD implements IGuiOverlay {
         }
     }
 
-    private static void renderPotion(Potion potion, PoseStack matrixStack, int x, int y, int cooldown) {
+    private static void renderPotion(Potion potion, GuiGraphics matrixStack, int x, int y, int cooldown) {
         if (potion == null) return;
         if (potion.getEffects().isEmpty()) return;
 
@@ -70,21 +71,20 @@ public class GauntletHUD implements IGuiOverlay {
 
         if (potion.getEffects().size() > 1) {
 
-            String name = Registry.POTION.getKey(potion).toString();
-
+            String name = BuiltInRegistries.POTION.getKey(potion).toString();
+            ResourceLocation resourceLocation;
             if (name.contains("turtle_master")) {
-                bind(getGauntletIconLoc("turtle_master"));
+                resourceLocation = getGauntletIconLoc("turtle_master");
             } else if (mc.getResourceManager().getResource(getGauntletIconLoc(name)).isPresent()) {
-                bind(getGauntletIconLoc(name));
+                resourceLocation =getGauntletIconLoc(name);
             } else {
-                bind(getGauntletIconLoc("unknown"));
+                resourceLocation = getGauntletIconLoc("unknown");
             }
-            GuiComponent.blit(matrixStack, x, y, mc.gui.getBlitOffset(), 0, 0, 18, 18, 18, 18);
+            matrixStack.blit(resourceLocation, x, y, 0, 0, 0, 18, 18, 18, 18);
         } else {
             MobEffect effect = potion.getEffects().get(0).getEffect();
             TextureAtlasSprite sprite = mc.getMobEffectTextures().get(effect);
-            bind(sprite.atlas().location());
-            GuiComponent.blit(matrixStack, x, y, 0, 18, 18, sprite);
+            matrixStack.blit(x, y, 0, 18, 18, sprite);
         }
 
 
@@ -92,11 +92,11 @@ public class GauntletHUD implements IGuiOverlay {
         if (cooldown > 0) {
 
             if (DavesPotioneering.DEBUG)
-                Minecraft.getInstance().font.drawShadow(matrixStack, cooldown + "", x, y - 20, 0xff0000);
+                matrixStack.drawString(mc.font, cooldown + "", x, y - 20, 0xff0000);
 
             int w = 18;
             int scale = getScaledCooldown(w, cooldown);
-            GuiComponent.fill(matrixStack, x, y + w - scale, x + 18, y + w, 0x7fffffff);
+            matrixStack.fill(x, y + w - scale, x + 18, y + w, 0x7fffffff);
         }
     }
 
@@ -130,7 +130,7 @@ public class GauntletHUD implements IGuiOverlay {
     }
 
     @Override
-    public void render(ForgeGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
+    public void render(ForgeGui gui, GuiGraphics poseStack, float partialTick, int screenWidth, int screenHeight) {
         // only renders when the hotbar renders
         //            if (Minecraft.getInstance().currentScreen != null) return;
         // get player from client
@@ -145,7 +145,6 @@ public class GauntletHUD implements IGuiOverlay {
 
 
             RenderSystem.setShaderColor(1, 1, 1, 1);
-            bind(hud);
 
             if (preset == HudPresets.ABOVE_HOTBAR) {
                 x = (screenWidth-TEX_WIDTH) / 2;
@@ -180,7 +179,7 @@ public class GauntletHUD implements IGuiOverlay {
             } else {
                 yOffset = 0;
             }
-            GuiComponent.blit(poseStack, xFixed, yFixed, gui.getBlitOffset(), 0, 1 + 43 * yOffset, TEX_WIDTH, TEX_HEIGHT, 128, 128);
+            poseStack.blit(hud,xFixed, yFixed, 0, 0, 1 + 43 * yOffset, TEX_WIDTH, TEX_HEIGHT, 128, 128);
 
             int active = info.getInt(GauntletItem.ACTIVE_POTION);
 

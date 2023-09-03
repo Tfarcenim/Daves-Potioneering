@@ -3,6 +3,7 @@ package tfar.davespotioneering.blockentity;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -60,13 +61,13 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity {
 
     @Override
     public void load(CompoundTag nbt) {
-        potion = Registry.POTION.get(new ResourceLocation(nbt.getString("potion")));
+        potion = BuiltInRegistries.POTION.get(new ResourceLocation(nbt.getString("potion")));
         super.load(nbt);
     }
 
     @Override
     public void saveAdditional(CompoundTag compound) {
-        compound.putString("potion", Registry.POTION.getKey(potion).toString());
+        compound.putString("potion", BuiltInRegistries.POTION.getKey(potion).toString());
         super.saveAdditional(compound);
     }
 
@@ -116,7 +117,7 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity {
                 //check if anything can be coated AND the item is not in a whitelist
 
                 //burn off a layer, then schedule the rest of the ticks
-                entity.level.playSound(null,worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.8F, 1);
+                entity.level().playSound(null,worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.8F, 1);
                 LayeredReinforcedCauldronBlock.setWaterLevel(level,worldPosition,blockState,2);
                 scheduleTick();
             }

@@ -3,13 +3,13 @@ package tfar.davespotioneering.client.model.gecko;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.model.GeoModel;
 import tfar.davespotioneering.DavesPotioneering;
 
 import java.util.Locale;
 
-public class GeoItemModel<T extends Item & IAnimatable> extends AnimatedGeoModel<T> {
+public class GeoItemModel<T extends Item & GeoAnimatable> extends GeoModel<T> {
 
     protected final ResourceLocation animation;
 
@@ -19,27 +19,27 @@ public class GeoItemModel<T extends Item & IAnimatable> extends AnimatedGeoModel
 
     private static final ResourceLocation DUMMY = new ResourceLocation(DavesPotioneering.MODID, "animations/animation.dummy.json");
 
-    public static <T extends Item & IAnimatable>GeoItemModel<T> makeClosedUmbrella(DyeColor color) {
+    public static <T extends Item & GeoAnimatable>GeoItemModel<T> makeClosedUmbrella(DyeColor color) {
         return new GeoItemModel<>(new ResourceLocation("closed_umbrella"),
                 new ResourceLocation(DavesPotioneering.MODID, "closed_" + color.name().toLowerCase(Locale.ROOT) + "_umbrella"), DUMMY);
     }
 
-    public static<T extends Item & IAnimatable>  GeoItemModel<T> makeOpenUmbrella(DyeColor color) {
+    public static<T extends Item & GeoAnimatable>  GeoItemModel<T> makeOpenUmbrella(DyeColor color) {
         return new GeoItemModel<>(new ResourceLocation("open_umbrella"),
                 new ResourceLocation(DavesPotioneering.MODID, "open_" + color.name().toLowerCase(Locale.ROOT) + "_umbrella"), DUMMY);
     }
 
-    public static<T extends Item & IAnimatable> GeoItemModel<T> makeClosedUmbrella(String color) {
+    public static<T extends Item & GeoAnimatable> GeoItemModel<T> makeClosedUmbrella(String color) {
         return new GeoItemModel<>(new ResourceLocation("closed_umbrella"),
                 new ResourceLocation(DavesPotioneering.MODID, "closed_" + color + "_umbrella"), DUMMY);
     }
 
-    public static <T extends Item & IAnimatable>GeoItemModel<T> makeOpenUmbrella(String color) {
+    public static <T extends Item & GeoAnimatable>GeoItemModel<T> makeOpenUmbrella(String color) {
         return new GeoItemModel<>(new ResourceLocation("open_umbrella"),
                 new ResourceLocation(DavesPotioneering.MODID, "open_" + color + "_umbrella"), DUMMY);
     }
 
-    public static <T extends Item & IAnimatable>GeoItemModel<T> makeOpenAgedUmbrella() {
+    public static <T extends Item & GeoAnimatable>GeoItemModel<T> makeOpenAgedUmbrella() {
         return new GeoItemModel<>(new ResourceLocation("open_aged_umbrella"),
                 new ResourceLocation(DavesPotioneering.MODID, "open_aged_umbrella"), DUMMY);
     }

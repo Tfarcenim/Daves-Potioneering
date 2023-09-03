@@ -1,6 +1,7 @@
 package tfar.davespotioneering.menu;
 
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -118,11 +119,11 @@ public class PotionInjectorMenu extends AbstractContainerMenu {
 
             for (int i = 0; i < PotionInjectorHandler.GAUNTLET; i++) {
 
-                Potion oldPotion = oldList.isEmpty() ? Potions.EMPTY : Registry.POTION.get(new ResourceLocation(oldList.get(i).getAsString()));
+                Potion oldPotion = oldList.isEmpty() ? Potions.EMPTY : BuiltInRegistries.POTION.get(new ResourceLocation(oldList.get(i).getAsString()));
 
                 if (oldPotion == Potions.EMPTY) {
                     ItemStack potionStack = inventory.getStackInSlot(i);
-                    nbt1.add(StringTag.valueOf(Registry.POTION.getKey(PotionUtils.getPotion(potionStack)).toString()));
+                    nbt1.add(StringTag.valueOf(BuiltInRegistries.POTION.getKey(PotionUtils.getPotion(potionStack)).toString()));
                     inventory.extractItem(i, 1, false);
                     //copy old potion over
                 } else {
@@ -153,7 +154,7 @@ public class PotionInjectorMenu extends AbstractContainerMenu {
             for (int i = 0; i < listNBT.size(); i++) {
                 Tag inbt = listNBT.get(i);
 
-                Potion potion = Registry.POTION.get(new ResourceLocation(inbt.getAsString()));
+                Potion potion = BuiltInRegistries.POTION.get(new ResourceLocation(inbt.getAsString()));
                 if (potion != Potions.EMPTY) {
                     ItemStack present = inventory.getStackInSlot(i);
                     if (present.getCount() < inventory.getSlotLimit(i)) {
@@ -207,7 +208,7 @@ public class PotionInjectorMenu extends AbstractContainerMenu {
                 ListTag listNBT = info.getList("potions", Tag.TAG_STRING);
                 if (!listNBT.isEmpty()) {
                     for (Tag nb : listNBT) {
-                        Potion potion = Registry.POTION.get(new ResourceLocation(nb.getAsString()));
+                        Potion potion = BuiltInRegistries.POTION.get(new ResourceLocation(nb.getAsString()));
                         if (potion != Potions.EMPTY) {
                             return SoundTy.BOTH;
                         }

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "a": {
       "item": "minecraft:cauldron"
@@ -15,5 +16,6 @@
   ],
   "result": {
     "item": "davespotioneering:reinforced_cauldron"
-  }
+  },
+  "show_notification": true
 }

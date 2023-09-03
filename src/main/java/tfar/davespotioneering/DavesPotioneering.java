@@ -2,6 +2,7 @@ package tfar.davespotioneering;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -88,14 +89,15 @@ public class DavesPotioneering {
     }
 
     private void register(RegisterEvent e) {
-        superRegister(e, ModBlocks.class,Registry.BLOCK_REGISTRY,Block.class);
-        superRegister(e, ModItems.class,Registry.ITEM_REGISTRY,Item.class);
-        superRegister(e, ModBlockEntityTypes.class,Registry.BLOCK_ENTITY_TYPE_REGISTRY,BlockEntityType.class);
-        superRegister(e, ModMenuTypes.class,Registry.MENU_REGISTRY, MenuType.class);
-        superRegister(e, ModEffects.class,Registry.MOB_EFFECT_REGISTRY, MobEffect.class);
-        superRegister(e, ModParticleTypes.class,Registry.PARTICLE_TYPE_REGISTRY, ParticleType.class);
-        superRegister(e, ModPotions.class,Registry.POTION_REGISTRY,Potion.class);
-        superRegister(e, ModSoundEvents.class,Registry.SOUND_EVENT_REGISTRY,SoundEvent.class);
+        superRegister(e, ModBlocks.class,Registries.BLOCK,Block.class);
+        superRegister(e, ModItems.class,Registries.ITEM,Item.class);
+        superRegister(e, ModBlockEntityTypes.class,Registries.BLOCK_ENTITY_TYPE,BlockEntityType.class);
+        superRegister(e, ModMenuTypes.class,Registries.MENU, MenuType.class);
+        superRegister(e, ModEffects.class,Registries.MOB_EFFECT, MobEffect.class);
+        superRegister(e, ModParticleTypes.class,Registries.PARTICLE_TYPE, ParticleType.class);
+        superRegister(e, ModPotions.class,Registries.POTION,Potion.class);
+        superRegister(e, ModSoundEvents.class, Registries.SOUND_EVENT,SoundEvent.class);
+        e.register(Registries.CREATIVE_MODE_TAB,new ResourceLocation(MODID,MODID),() -> ModCreativeTab.DAVESPOTIONEERING);
     }
 
     public static <T> void superRegister(RegisterEvent e, Class<?> clazz, ResourceKey<? extends  Registry<T>> resourceKey, Class<?> filter) {
@@ -143,11 +145,9 @@ public class DavesPotioneering {
 
     }
 
-    private void stackAdj(ModConfigEvent e) {
+    private void stackAdj(ModConfigEvent.Loading e) {
         if (e.getConfig().getModId().equals(MODID)) {
-            Util.setStackSize(Items.POTION,ModConfig.Server.potion_stack_size.get());
-            Util.setStackSize(Items.SPLASH_POTION,ModConfig.Server.splash_potion_stack_size.get());
-            Util.setStackSize(Items.LINGERING_POTION,ModConfig.Server.lingering_potion_stack_size.get());
+
         }
     }
 

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "a": {
       "item": "minecraft:copper_ingot"
@@ -11,5 +12,6 @@
   ],
   "result": {
     "item": "davespotioneering:rudimentary_gauntlet"
-  }
+  },
+  "show_notification": true
 }

@@ -1,6 +1,7 @@
 package tfar.davespotioneering.datagen.assets;
 
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Items;
@@ -11,14 +12,11 @@ import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.block.PotionInjectorBlock;
 import tfar.davespotioneering.client.GauntletHUD;
 import tfar.davespotioneering.client.GauntletHUDMovementScreen;
-import tfar.davespotioneering.init.ModBlocks;
-import tfar.davespotioneering.init.ModEffects;
-import tfar.davespotioneering.init.ModItems;
-import tfar.davespotioneering.init.ModPotions;
+import tfar.davespotioneering.init.*;
 import tfar.davespotioneering.item.UmbrellaItem;
 
 public class ModLangProvider extends LanguageProvider {
-    public ModLangProvider(DataGenerator gen) {
+    public ModLangProvider(PackOutput gen) {
         super(gen, DavesPotioneering.MODID, "en_us");
     }
 
@@ -44,7 +42,7 @@ public class ModLangProvider extends LanguageProvider {
         add(GauntletHUDMovementScreen.KEY+ GauntletHUD.HudPresets.ABOVE_HOTBAR.ordinal(), "Above Hotbar");
         add("davespotioneering.tooltip.gauntlet", "%s %s");
         add("davespotioneering.tooltip.gauntlet.withDuration", "%s %s (%s)");
-        addGroup(ModItems.tab,"Dave's Potioneering");
+        addGroup(ModCreativeTab.DAVESPOTIONEERING,"Dave's Potioneering");
 
         ModItems.getAllItems().stream().filter(UmbrellaItem.class::isInstance)
                 .forEach(item -> {

@@ -10,10 +10,6 @@ import java.util.Locale;
 
 public class HideISTERsFromServer {
 
-    public static BlockEntityWithoutLevelRenderer createGeoClassicUmbrellaItemStackRenderer(DyeColor color) {
-        return createGeoClassicUmbrellaItemStackRenderer(color.name().toLowerCase(Locale.ROOT));
-    }
-
     public static BlockEntityWithoutLevelRenderer createGeoClassicUmbrellaItemStackRenderer(String itemName) {
         return new DoubleGeoItemStackRenderer<>(
                 GeoItemModel.makeClosedUmbrella(itemName),

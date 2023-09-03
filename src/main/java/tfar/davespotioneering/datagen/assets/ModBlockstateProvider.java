@@ -2,7 +2,9 @@ package tfar.davespotioneering.datagen.assets;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -18,7 +20,7 @@ import tfar.davespotioneering.block.LayeredReinforcedCauldronBlock;
 import tfar.davespotioneering.init.ModBlocks;
 
 public class ModBlockstateProvider extends BlockStateProvider {
-    public ModBlockstateProvider(DataGenerator gen, ExistingFileHelper exFileHelper) {
+    public ModBlockstateProvider(PackOutput gen, ExistingFileHelper exFileHelper) {
         super(gen, DavesPotioneering.MODID, exFileHelper);
     }
 
@@ -46,7 +48,7 @@ public class ModBlockstateProvider extends BlockStateProvider {
     }
 
     protected void blockstateFromExistingModel(Block block) {
-        String s = Registry.BLOCK.getKey(block).getPath();
+        String s = BuiltInRegistries.BLOCK.getKey(block).getPath();
         ModelFile modelFile = models().getExistingFile(new ResourceLocation(DavesPotioneering.MODID, "block/" + s));
         getVariantBuilder(block).forAllStates(state -> {
             ConfiguredModel.Builder<?> builder = ConfiguredModel.builder().modelFile(modelFile);

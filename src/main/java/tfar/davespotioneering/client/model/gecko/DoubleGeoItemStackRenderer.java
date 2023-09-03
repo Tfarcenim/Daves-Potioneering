@@ -1,30 +1,22 @@
 package tfar.davespotioneering.client.model.gecko;
 
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.renderer.GeoItemRenderer;
 
-import java.util.function.Function;
+public class DoubleGeoItemStackRenderer<T extends Item & GeoAnimatable> extends GeoItemRenderer<T> {
 
-public class DoubleGeoItemStackRenderer<T extends Item & IAnimatable> extends GeoItemStackRenderer<T> {
+    private final GeoModel<T> modelProvider2;
 
-    private final AnimatedGeoModel<T> modelProvider2;
-
-    public DoubleGeoItemStackRenderer(AnimatedGeoModel<T> modelProvider1, AnimatedGeoModel<T> modelProvider2) {
-        this(modelProvider1, RenderType::entityCutout, modelProvider2);
-    }
-
-    public DoubleGeoItemStackRenderer(AnimatedGeoModel<T> modelProvider1, Function<ResourceLocation, RenderType> renderTypeGetter, AnimatedGeoModel<T> modelProvider2) {
-        super(modelProvider1,renderTypeGetter);
+    public DoubleGeoItemStackRenderer(GeoModel<T> modelProvider1, GeoModel<T> modelProvider2) {
+        super(modelProvider1);
         this.modelProvider2 = modelProvider2;
     }
 
     public static final ThreadLocal<Float> override = ThreadLocal.withInitial(() -> 1f);
 
-    @Override
-    public AnimatedGeoModel<T> getGeoModelProvider() {
-        return override.get() == 1 ? modelProvider2 : modelProvider;
+    public GeoModel<T> getGeoModel() {
+        return override.get() == 1 ? modelProvider2 : model;
     }
 }
