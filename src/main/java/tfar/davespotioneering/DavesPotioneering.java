@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -64,8 +65,8 @@ public class DavesPotioneering {
 
         // Register the setup method for modloading
         bus.addListener(this::setup);
-        bus.addListener(this::stackAdj);
-        bus.addListener(this::stackAdj1);
+        MinecraftForge.EVENT_BUS.addListener(this::stackAdj);
+        MinecraftForge.EVENT_BUS.addListener(this::stackAdj1);
         if (FMLEnvironment.dist.isClient()) {
             // Register the doClientStuff method for modloading
             bus.addListener(ClientEvents::doClientStuff);
