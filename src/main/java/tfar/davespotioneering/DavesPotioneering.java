@@ -17,7 +17,9 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
+import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -26,6 +28,7 @@ import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import tfar.davespotioneering.block.ModCauldronInteractions;
@@ -61,7 +64,8 @@ public class DavesPotioneering {
 
         // Register the setup method for modloading
         bus.addListener(this::setup);
-        bus.addListener(this::stackAdj);
+        MinecraftForge.EVENT_BUS.addListener(this::stackAdj);
+        MinecraftForge.EVENT_BUS.addListener(this::stackAdj1);
         if (FMLEnvironment.dist.isClient()) {
             // Register the doClientStuff method for modloading
             bus.addListener(ClientEvents::doClientStuff);
@@ -143,12 +147,16 @@ public class DavesPotioneering {
 
     }
 
-    private void stackAdj(ModConfigEvent e) {
-        if (e.getConfig().getModId().equals(MODID)) {
+    private void stackAdj(ServerStartingEvent e) {
             Util.setStackSize(Items.POTION,ModConfig.Server.potion_stack_size.get());
             Util.setStackSize(Items.SPLASH_POTION,ModConfig.Server.splash_potion_stack_size.get());
             Util.setStackSize(Items.LINGERING_POTION,ModConfig.Server.lingering_potion_stack_size.get());
-        }
+    }
+
+    private void stackAdj1(NetworkEvent.ClientCustomPayloadLoginEvent e) {
+        Util.setStackSize(Items.POTION,ModConfig.Server.potion_stack_size.get());
+        Util.setStackSize(Items.SPLASH_POTION,ModConfig.Server.splash_potion_stack_size.get());
+        Util.setStackSize(Items.LINGERING_POTION,ModConfig.Server.lingering_potion_stack_size.get());
     }
 
     protected static void strongRecipe(Potion potion,Potion strong) {
