@@ -65,11 +65,11 @@ public class GauntletHUD {
         int windowW = mc.getWindow().getScaledWidth();
         int windowH = mc.getWindow().getScaledHeight();
 
-        int xFixed = MathHelper.clamp((windowW + ClothConfig.gauntlet_hud_x)/2, 0, windowW-120);
-        int yFixed = MathHelper.clamp(windowH+ClothConfig.gauntlet_hud_y, 0, windowH-TEX_H);
+        int xFixed = MathHelper.clamp((windowW + DavesPotioneering.CONFIG.gauntlet_hud_x)/2, 0, windowW-120);
+        int yFixed = MathHelper.clamp(windowH+DavesPotioneering.CONFIG.gauntlet_hud_y, 0, windowH-TEX_H);
 
 
-        if(ClothConfig.gauntlet_hud_preset == HudPreset.ABOVE_HOTBAR) {
+        if(DavesPotioneering.CONFIG.gauntlet_hud_preset == HudPreset.ABOVE_HOTBAR) {
             int height = TEX_H + 50;
             if (fade > 0) {
                 height += 10;
@@ -160,7 +160,7 @@ public class GauntletHUD {
     }
 
     private static int getScaledCooldown(float pixels, float cooldown) {
-        float totalCooldown = ClothConfig.gauntlet_cooldown;
+        float totalCooldown = DavesPotioneering.CONFIG.gauntlet_cooldown;
         float progress = totalCooldown - cooldown;
 
         if (totalCooldown != 0) {

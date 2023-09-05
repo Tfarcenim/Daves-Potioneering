@@ -33,12 +33,12 @@ public class Events {
         ItemStack stack = player.getStackInHand(interactionHand);
 
         if (!player.world.isClient && stack.getItem() instanceof ThrowablePotionItem) {
-            player.getItemCooldownManager().set(stack.getItem(), ClothConfig.potion_throw_cooldown);
+            player.getItemCooldownManager().set(stack.getItem(), DavesPotioneering.CONFIG.potion_throw_cooldown);
         }
     }
 
     public static ActionResult milkCow(PlayerEntity player, World e2, Hand hand, Entity clicked, @Nullable EntityHitResult e5) {
-        if (clicked instanceof CowEntity cowEntity && ClothConfig.milk) {
+        if (clicked instanceof CowEntity cowEntity && DavesPotioneering.CONFIG.milk) {
             ItemStack itemstack = player.getStackInHand(hand);
             if (itemstack.getItem() == Items.GLASS_BOTTLE && !cowEntity.isBaby()) {
                 player.playSound(SoundEvents.ENTITY_COW_MILK, 1.0F, 1.0F);
@@ -85,8 +85,8 @@ public class Events {
     public static void heldItemChangeEvent(PlayerEntity player) {
         ItemStack stack = player.getMainHandStack();
         if ((stack.getItem() instanceof LingeringPotionItem || stack.getItem() instanceof SplashPotionItem)) {
-            player.getItemCooldownManager().set(Items.SPLASH_POTION, ClothConfig.potion_use_cooldown);
-            player.getItemCooldownManager().set(Items.LINGERING_POTION, ClothConfig.potion_use_cooldown);
+            player.getItemCooldownManager().set(Items.SPLASH_POTION, DavesPotioneering.CONFIG.potion_use_cooldown);
+            player.getItemCooldownManager().set(Items.LINGERING_POTION, DavesPotioneering.CONFIG.potion_use_cooldown);
         }
     }
 

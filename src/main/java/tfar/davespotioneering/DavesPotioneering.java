@@ -39,11 +39,6 @@ public class DavesPotioneering implements ModInitializer {
         ModSoundEvents.register();
         ModParticleTypes.register();
 
-        Util.setStackSize(Items.POTION,ClothConfig.potion_stack_size);
-        Util.setStackSize(Items.SPLASH_POTION,ClothConfig.splash_potion_stack_size);
-        Util.setStackSize(Items.LINGERING_POTION,ClothConfig.lingering_potion_stack_size);
-
-
         Set<Block> newSet = new HashSet<>(((BlockEntityTypeAcces)BlockEntityType.LECTERN).getBlocks());
         newSet.add(ModBlocks.MAGIC_LECTERN);
         ((BlockEntityTypeAcces)BlockEntityType.LECTERN).setBlocks(newSet);
@@ -56,6 +51,9 @@ public class DavesPotioneering implements ModInitializer {
         AutoConfig.register(ClothConfig.class, JanksonConfigSerializer::new);
         CONFIG = AutoConfig.getConfigHolder(ClothConfig.class).getConfig();
 
+        Util.setStackSize(Items.POTION,DavesPotioneering.CONFIG.potion_stack_size);
+        Util.setStackSize(Items.SPLASH_POTION,DavesPotioneering.CONFIG.splash_potion_stack_size);
+        Util.setStackSize(Items.LINGERING_POTION,DavesPotioneering.CONFIG.lingering_potion_stack_size);
 
         PacketHandler.registerMessages();
         ModCauldronInteractions.bootStrap();

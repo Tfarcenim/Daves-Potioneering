@@ -21,6 +21,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
+import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.block.LayeredReinforcedCauldronBlock;
 import tfar.davespotioneering.block.ReinforcedCauldronBlock;
@@ -103,16 +104,16 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity {
             }
 
             else if (coatingType == Util.CoatingType.FOOD && level > 0) {
-                if (ClothConfig.spike_food && stack.getCount() >= 8) {
+                if (DavesPotioneering.CONFIG.spike_food && stack.getCount() >= 8) {
                     LayeredReinforcedCauldronBlock.handleFoodSpiking(blockState,world,pos,null,null,stack);
                 }
             }
 
             else if (level == 3 && dragon) {
 
-                if (coatingType == Util.CoatingType.TOOL && !ClothConfig.coat_tools) return;//check if tools can be coated
+                if (coatingType == Util.CoatingType.TOOL && !DavesPotioneering.CONFIG.coat_tools) return;//check if tools can be coated
 
-                if (coatingType == Util.CoatingType.ANY && !ClothConfig.coat_anything) return;
+                if (coatingType == Util.CoatingType.ANY && !DavesPotioneering.CONFIG.coat_anything) return;
                 //check if anything can be coated AND the item is not in a whitelist
 
 

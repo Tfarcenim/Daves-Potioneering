@@ -106,7 +106,7 @@ public class GauntletItem extends SwordItem implements Perspective {
                         cooldownMap.add(0, new NbtIntArray(new ArrayList<>()));
                         cooldownMap.add(1, new NbtIntArray(new ArrayList<>()));
                     }
-                    addPotionCooldownByIndex(info.getInt("activePotionIndex"), ClothConfig.gauntlet_cooldown, stack, cooldownMap);
+                    addPotionCooldownByIndex(info.getInt("activePotionIndex"), DavesPotioneering.CONFIG.gauntlet_cooldown, stack, cooldownMap);
                 }
             }
         }

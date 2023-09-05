@@ -20,6 +20,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.init.ModBlocks;
+import tfar.davespotioneering.init.ModPotions;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
@@ -44,6 +45,18 @@ public class ModCauldronInteractions {
             }
             return actionResult;
         };
+
+    static final CauldronBehavior FILL_MILK = (state, level, pos, player, hand, itemStack) -> {
+        ActionResult interaction  = CauldronBehavior.fillCauldron(level, pos, player, hand, itemStack, ModBlocks.REINFORCED_WATER_CAULDRON.getDefaultState().with(LeveledCauldronBlock.LEVEL, 3), SoundEvents.ITEM_BUCKET_EMPTY);
+        if (interaction == ActionResult.CONSUME) {
+            BlockEntity blockEntity = level.getBlockEntity(pos);
+            if (blockEntity instanceof ReinforcedCauldronBlockEntity reinforcedCauldronBlock) {
+                reinforcedCauldronBlock.setPotion(ModPotions.MILK);
+            }
+        }
+        return interaction;
+    };
+
         static final CauldronBehavior FILL_LAVA = (p_175676_, p_175677_, p_175678_, p_175679_, p_175680_, p_175681_) -> CauldronBehavior.fillCauldron(p_175677_, p_175678_, p_175679_, p_175680_, p_175681_, Blocks.LAVA_CAULDRON.getDefaultState().with(LeveledCauldronBlock.LEVEL, 3), SoundEvents.ITEM_BUCKET_EMPTY_LAVA);
         static final CauldronBehavior FILL_POWDER_SNOW = (p_175669_, p_175670_, p_175671_, p_175672_, p_175673_, p_175674_) -> CauldronBehavior.fillCauldron(p_175670_, p_175671_, p_175672_, p_175673_, p_175674_, Blocks.POWDER_SNOW_CAULDRON.getDefaultState().with(LeveledCauldronBlock.LEVEL, 3), SoundEvents.ITEM_BUCKET_EMPTY_POWDER_SNOW);
 
@@ -70,7 +83,8 @@ public class ModCauldronInteractions {
                 return ActionResult.success(level.isClient);
             });
             addDefaultInteractions(WATER);
-            WATER.put(Items.BUCKET, (p_175725_, p_175726_, p_175727_, p_175728_, p_175729_, p_175730_) -> fillBucket(p_175725_, p_175726_, p_175727_, p_175728_, p_175729_, p_175730_, new ItemStack(Items.WATER_BUCKET), (p_175660_) -> p_175660_.get(LeveledCauldronBlock.LEVEL) == 3, SoundEvents.ITEM_BUCKET_FILL));
+            //this needs to be changed because there can be things other than water
+            WATER.put(Items.BUCKET, (p_175725_, p_175726_, p_175727_, p_175728_, p_175729_, p_175730_) -> fillWaterBucket(p_175725_, p_175726_, p_175727_, p_175728_, p_175729_, p_175730_, (p_175660_) -> p_175660_.get(LeveledCauldronBlock.LEVEL) == 3, SoundEvents.ITEM_BUCKET_FILL));
             WATER.put(Items.GLASS_BOTTLE, (state, level, pos, player, hand, stack) -> {
                 if (!level.isClient) {
                     Item item = stack.getItem();
@@ -165,6 +179,8 @@ public class ModCauldronInteractions {
                     WATER.put(item,ModCauldronInteractions::spikedFood);
                 }
             }
+
+            EMPTY.put(Items.MILK_BUCKET, FILL_MILK);
             //end//
 
             LAVA.put(Items.BUCKET, (p_175697_, p_175698_, p_175699_, p_175700_, p_175701_, p_175702_) -> fillBucket(p_175697_, p_175698_, p_175699_, p_175700_, p_175701_, p_175702_, new ItemStack(Items.LAVA_BUCKET), (p_175651_) -> true, SoundEvents.ITEM_BUCKET_FILL_LAVA));
@@ -185,25 +201,64 @@ public class ModCauldronInteractions {
         return ActionResult.success(level.isClient);
     }
 
-        static ActionResult fillBucket(BlockState p_175636_, World p_175637_, BlockPos p_175638_, PlayerEntity player, Hand p_175640_, ItemStack p_175641_, ItemStack p_175642_, Predicate<BlockState> p_175643_, SoundEvent p_175644_) {
-            if (!p_175643_.test(p_175636_)) {
+        static ActionResult fillBucket(BlockState state, World level, BlockPos pos, PlayerEntity player, Hand hand, ItemStack stack, ItemStack second, Predicate<BlockState> p_175643_, SoundEvent soundEvent) {
+            if (!p_175643_.test(state)) {
                 return ActionResult.PASS;
             } else {
-                if (!p_175637_.isClient) {
-                    Item item = p_175641_.getItem();
-                    player.setStackInHand(p_175640_, ItemUsage.exchangeStack(p_175641_, player, p_175642_));
-                    player.incrementStat(Stats.USE_CAULDRON);
-                    player.incrementStat(Stats.USED.getOrCreateStat(item));
-                    p_175637_.setBlockState(p_175638_, ModBlocks.REINFORCED_CAULDRON.getDefaultState());//patch
-                    p_175637_.playSound(null, p_175638_, p_175644_, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                    p_175637_.emitGameEvent(null, GameEvent.FLUID_PICKUP, p_175638_);
+                if (!level.isClient) {
+                    fillB(level,pos,player,hand,stack,soundEvent,second);
                 }
 
-                return ActionResult.success(p_175637_.isClient);
+                return ActionResult.success(level.isClient);
             }
         }
 
-        @Nonnull
+    //milk exists
+
+    static ActionResult fillWaterBucket(BlockState state, World level, BlockPos pos, PlayerEntity player, Hand hand, ItemStack stack, Predicate<BlockState> statePredicate, SoundEvent soundEvent) {
+        if (!statePredicate.test(state)) {
+            return ActionResult.PASS;
+        } else {
+            BlockEntity blockEntity = level.getBlockEntity(pos);
+            if (blockEntity instanceof ReinforcedCauldronBlockEntity cauldronBlockEntity) {
+                Potion potion = cauldronBlockEntity.getPotion();
+                if (!canBucket(potion)) {
+                    return ActionResult.PASS;
+                }
+                if (!level.isClient) {
+                    fillB(level,pos,player,hand,stack,soundEvent,getBucket(potion));
+                }
+            }
+            return ActionResult.success(level.isClient);
+        }
+    }
+
+    static void fillB(World level, BlockPos pos, PlayerEntity player, Hand hand, ItemStack stack, SoundEvent soundEvent, ItemStack second) {
+        Item item = stack.getItem();
+        player.setStackInHand(hand, ItemUsage.exchangeStack(stack, player, second));
+        player.incrementStat(Stats.USE_CAULDRON);
+        player.incrementStat(Stats.USED.getOrCreateStat(item));
+        level.setBlockState(pos, ModBlocks.REINFORCED_CAULDRON.getDefaultState());//patch
+        level.playSound(null, pos, soundEvent, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        level.emitGameEvent(null, GameEvent.FLUID_PICKUP, pos);
+    }
+
+    static boolean canBucket(Potion potion) {
+        return potion == Potions.WATER || potion == ModPotions.MILK;
+    }
+
+    public static ItemStack getBucket(Potion potion) {
+        if (potion == Potions.WATER) {
+            return new ItemStack(Items.WATER_BUCKET);
+        } else if (potion == ModPotions.MILK) {
+            return new ItemStack(Items.MILK_BUCKET);
+        }
+        System.out.println("No bucket found for: "+potion);
+        return new ItemStack(Items.WATER_BUCKET);
+    }
+
+
+    @Nonnull
         static ActionResult dragonsBreath(BlockState state, World level, BlockPos pos, PlayerEntity player, Hand p_175715_, ItemStack stack) {
             if (!level.isClient) {
                 if (!player.getAbilities().creativeMode) {
