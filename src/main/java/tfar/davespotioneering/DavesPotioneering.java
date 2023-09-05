@@ -154,12 +154,6 @@ public class DavesPotioneering {
         Util.setStackSize(Items.LINGERING_POTION, ModConfig.Server.lingering_potion_stack_size.get());
     }
 
-    private void stackAdj1(ClientPlayerNetworkEvent.LoggingIn e) {
-        Util.setStackSize(Items.POTION, ModConfig.Server.potion_stack_size.get());
-        Util.setStackSize(Items.SPLASH_POTION, ModConfig.Server.splash_potion_stack_size.get());
-        Util.setStackSize(Items.LINGERING_POTION, ModConfig.Server.lingering_potion_stack_size.get());
-    }
-
     protected static void strongRecipe(Potion potion, Potion strong) {
         BrewingRecipeRegistry.addRecipe(PotionIngredient.create(
                         PotionUtils.setPotion(new ItemStack(Items.POTION), potion)),
