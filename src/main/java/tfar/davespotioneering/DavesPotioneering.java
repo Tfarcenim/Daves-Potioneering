@@ -66,7 +66,6 @@ public class DavesPotioneering {
         // Register the setup method for modloading
         bus.addListener(this::setup);
         MinecraftForge.EVENT_BUS.addListener(this::stackAdj);
-        MinecraftForge.EVENT_BUS.addListener(this::stackAdj1);
         if (FMLEnvironment.dist.isClient()) {
             // Register the doClientStuff method for modloading
             bus.addListener(ClientEvents::doClientStuff);
