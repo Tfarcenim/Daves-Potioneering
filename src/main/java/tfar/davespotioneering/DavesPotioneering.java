@@ -66,7 +66,6 @@ public class DavesPotioneering {
         // Register the setup method for modloading
         bus.addListener(this::setup);
         MinecraftForge.EVENT_BUS.addListener(this::stackAdj);
-        MinecraftForge.EVENT_BUS.addListener(this::stackAdj1);
         if (FMLEnvironment.dist.isClient()) {
             // Register the doClientStuff method for modloading
             bus.addListener(ClientEvents::doClientStuff);
@@ -155,11 +154,7 @@ public class DavesPotioneering {
         Util.setStackSize(Items.LINGERING_POTION, ModConfig.Server.lingering_potion_stack_size.get());
     }
 
-    private void stackAdj1(ClientPlayerNetworkEvent.LoggingIn e) {
-        Util.setStackSize(Items.POTION, ModConfig.Server.potion_stack_size.get());
-        Util.setStackSize(Items.SPLASH_POTION, ModConfig.Server.splash_potion_stack_size.get());
-        Util.setStackSize(Items.LINGERING_POTION, ModConfig.Server.lingering_potion_stack_size.get());
-    }
+
     protected static void strongRecipe(Potion potion,Potion strong) {
         BrewingRecipeRegistry.addRecipe(PotionIngredient.create(
                         PotionUtils.setPotion(new ItemStack(Items.POTION),potion)),

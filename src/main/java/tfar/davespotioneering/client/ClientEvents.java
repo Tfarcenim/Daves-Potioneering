@@ -17,15 +17,13 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.client.event.ModelEvent;
-import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
-import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -34,6 +32,7 @@ import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.ModConfig;
+import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.client.particle.FastDripParticle;
 import tfar.davespotioneering.client.particle.TintedSplashParticle;
@@ -106,6 +105,7 @@ public class ClientEvents {
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::onMouseInput);
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::onMouseScroll);
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::playerTick);
+        MinecraftForge.EVENT_BUS.addListener(ClientEvents::stackAdj1);
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.COMPOUND_BREWING_STAND, RenderType.cutoutMipped());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.POTION_INJECTOR,RenderType.translucent());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.REINFORCED_WATER_CAULDRON,RenderType.translucent());
@@ -149,6 +149,12 @@ public class ClientEvents {
 
     public static void overlay(RegisterGuiOverlaysEvent e) {
         e.registerBelow(VanillaGuiOverlay.CHAT_PANEL.id(),DavesPotioneering.MODID,new GauntletHUD());
+    }
+
+    private static void stackAdj1(ClientPlayerNetworkEvent.LoggingIn e) {
+        Util.setStackSize(Items.POTION, ModConfig.Server.potion_stack_size.get());
+        Util.setStackSize(Items.SPLASH_POTION, ModConfig.Server.splash_potion_stack_size.get());
+        Util.setStackSize(Items.LINGERING_POTION, ModConfig.Server.lingering_potion_stack_size.get());
     }
 
     private static void registerBlockingProperty(Item item) {
