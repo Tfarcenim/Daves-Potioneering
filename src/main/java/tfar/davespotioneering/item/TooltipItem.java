@@ -1,40 +1,39 @@
 package tfar.davespotioneering.item;
 
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.world.World;
-
 import javax.annotation.Nullable;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import java.util.List;
 
 public class TooltipItem extends Item {
 
-    public TooltipItem(Settings properties) {
+    public TooltipItem(Properties properties) {
         super(properties);
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, @Nullable World worldIn, List<Text> tooltip, TooltipContext flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
 
-        tooltip.add(Text.translatable(getTranslationKey()+".hold_shift.desc"));
+        tooltip.add(Component.translatable(getDescriptionId()+".hold_shift.desc"));
         if (Screen.hasShiftDown())
-        tooltip.add(this.getShiftDescription().formatted(Formatting.GRAY));
+        tooltip.add(this.getShiftDescription().withStyle(ChatFormatting.GRAY));
 
-        tooltip.add(Text.translatable(getTranslationKey()+".hold_ctrl.desc"));
+        tooltip.add(Component.translatable(getDescriptionId()+".hold_ctrl.desc"));
         if (Screen.hasControlDown())
-            tooltip.add(this.getCtrlDescription().formatted(Formatting.GRAY));
+            tooltip.add(this.getCtrlDescription().withStyle(ChatFormatting.GRAY));
     }
 
-    public MutableText getCtrlDescription() {
-        return Text.translatable(this.getTranslationKey() + ".ctrl.desc");
+    public MutableComponent getCtrlDescription() {
+        return Component.translatable(this.getDescriptionId() + ".ctrl.desc");
     }
 
-    public MutableText getShiftDescription() {
-        return Text.translatable(this.getTranslationKey() + ".shift.desc");
+    public MutableComponent getShiftDescription() {
+        return Component.translatable(this.getDescriptionId() + ".shift.desc");
     }
 }

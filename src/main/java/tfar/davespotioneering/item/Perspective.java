@@ -1,9 +1,9 @@
 package tfar.davespotioneering.item;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public interface Perspective {
 
-    Identifier getGuiModel(boolean active);
+    ResourceLocation getGuiModel(boolean active);
 
 }

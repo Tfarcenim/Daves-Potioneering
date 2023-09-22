@@ -1,15 +1,6 @@
 package tfar.davespotioneering.inv;
 
 import com.google.common.collect.Sets;
-import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.recipe.BrewingRecipeRegistry;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.Direction;
 import org.apache.commons.lang3.ArrayUtils;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
@@ -19,15 +10,24 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionBrewing;
 
-public class BrewingHandler extends SimpleInventory {
+public class BrewingHandler extends SimpleContainer {
 
     public BrewingHandler(int size) {
         super(size);
     }
 
-    public DefaultedList<ItemStack> getItems() {
-        return ((SimpleContainerAccess)this).getStacks();
+    public NonNullList<ItemStack> getItems() {
+        return items;
     }
 
     public int[] getSlotsForFace(Direction side) {
@@ -43,7 +43,7 @@ public class BrewingHandler extends SimpleInventory {
 
     public boolean isItemValid(int index, ItemStack stack) {
         if (ArrayUtils.contains(AdvancedBrewingStandBlockEntity.INGREDIENTS,index)) {
-            return BrewingRecipeRegistry.isValidIngredient(stack);
+            return PotionBrewing.isIngredient(stack);
         } else {
             Item item = stack.getItem();
             if (index == AdvancedBrewingStandBlockEntity.FUEL) {
@@ -70,28 +70,28 @@ public class BrewingHandler extends SimpleInventory {
         FUEL_AND_POTIONS = potion_fuel.stream().mapToInt(i -> i).toArray();
     }
 
-    public void readTags(NbtList tags) {
+    public void readTags(ListTag tags) {
         for (int i = 0; i < tags.size(); i++)
         {
-            NbtCompound itemTags = tags.getCompound(i);
+            CompoundTag itemTags = tags.getCompound(i);
             int slot = itemTags.getInt("Slot");
 
             if (slot >= 0 && slot < getItems().size())
             {
-                getItems().set(i,ItemStack.fromNbt(itemTags));
+                getItems().set(i,ItemStack.of(itemTags));
             }
         }
     }
 
-    public NbtList getTags() {
-        NbtList nbtTagList = new NbtList();
-        for (int i = 0; i < this.size(); i++)
+    public ListTag getTags() {
+        ListTag nbtTagList = new ListTag();
+        for (int i = 0; i < this.getContainerSize(); i++)
         {
             if (!getItems().get(i).isEmpty())
             {
-                NbtCompound itemTag = new NbtCompound();
+                CompoundTag itemTag = new CompoundTag();
                 itemTag.putInt("Slot", i);
-                getItems().get(i).writeNbt(itemTag);
+                getItems().get(i).save(itemTag);
                 nbtTagList.add(itemTag);
             }
         }

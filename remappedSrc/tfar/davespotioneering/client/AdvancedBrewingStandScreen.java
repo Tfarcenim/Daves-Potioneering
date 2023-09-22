@@ -1,46 +1,46 @@
 package tfar.davespotioneering.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Inventory;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
 import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
 
-public class AdvancedBrewingStandScreen extends HandledScreen<AdvancedBrewingStandContainer> {
+public class AdvancedBrewingStandScreen extends AbstractContainerScreen<AdvancedBrewingStandContainer> {
 
-    private static final Identifier BREWING_STAND_GUI_TEXTURES = new Identifier(DavesPotioneering.MODID,"textures/gui/compound_brewing_stand.png");
+    private static final ResourceLocation BREWING_STAND_GUI_TEXTURES = new ResourceLocation(DavesPotioneering.MODID,"textures/gui/compound_brewing_stand.png");
     private static final int[] BUBBLELENGTHS = new int[]{29, 24, 20, 16, 11, 6, 0};
 
-    public AdvancedBrewingStandScreen(AdvancedBrewingStandContainer p_i51097_1_, PlayerInventory p_i51097_2_, Text p_i51097_3_) {
+    public AdvancedBrewingStandScreen(AdvancedBrewingStandContainer p_i51097_1_, Inventory p_i51097_2_, Component p_i51097_3_) {
         super(p_i51097_1_, p_i51097_2_, p_i51097_3_);
-        backgroundHeight += 26;
-        this.playerInventoryTitleY += 28;
+        imageHeight += 26;
+        this.inventoryLabelY += 28;
     }
 
     protected void init() {
         super.init();
-        this.titleX = (this.backgroundWidth - this.textRenderer.getWidth(this.title)) / 2;
+        this.titleLabelX = (this.imageWidth - this.font.width(this.title)) / 2;
     }
 
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.drawMouseoverTooltip(matrixStack, mouseX, mouseY);
+        this.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
-    protected void drawBackground(MatrixStack matrixStack, float partialTicks, int x, int y) {
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.client.getTextureManager().bindTexture(BREWING_STAND_GUI_TEXTURES);
-        int i = (this.width - this.backgroundWidth) / 2;
-        int j = (this.height - this.backgroundHeight) / 2;
-        this.drawTexture(matrixStack, i, j, 0, 0, this.backgroundWidth, this.backgroundHeight);
-        int fuel = this.handler.getFuel();
-        int l = MathHelper.clamp((18 * fuel + 20 - 1) / 20, 0, 18);
+    protected void drawBackground(PoseStack matrixStack, float partialTicks, int x, int y) {
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0,BREWING_STAND_GUI_TEXTURES);
+        int i = (this.width - this.imageWidth) / 2;
+        int j = (this.height - this.imageHeight) / 2;
+        this.drawTexture(matrixStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
+        int fuel = this.menu.getFuel();
+        int l = Mth.clamp((18 * fuel + 20 - 1) / 20, 0, 18);
 
         int y1 = 42;
 
@@ -49,7 +49,7 @@ public class AdvancedBrewingStandScreen extends HandledScreen<AdvancedBrewingSta
         }
 
 
-        int brewTime = this.handler.getBrewTime();
+        int brewTime = this.menu.getBrewTime();
         if (brewTime > 0) {
             int length = (int)(28.0F * (1.0F - (float)brewTime / AdvancedBrewingStandBlockEntity.TIME));
             if (length > 0) {

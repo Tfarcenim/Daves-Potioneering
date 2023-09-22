@@ -1,26 +1,25 @@
 package tfar.davespotioneering;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BrewingStandBlockEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.passive.CowEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtil;
-import net.minecraft.potion.Potions;
-import net.minecraft.screen.BrewingStandScreenHandler;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.world.World;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.Cow;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.BrewingStandMenu;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
+import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.Nullable;
 import tfar.davespotioneering.block.LayeredReinforcedCauldronBlock;
-import tfar.davespotioneering.config.ClothConfig;
 import tfar.davespotioneering.duck.BrewingStandDuck;
 import tfar.davespotioneering.init.ModPotions;
 import tfar.davespotioneering.item.UmbrellaItem;
@@ -29,51 +28,51 @@ import tfar.davespotioneering.mixin.BrewingStandContainerAccess;
 
 public class Events {
 
-    public static void potionCooldown(PlayerEntity player, World level, Hand interactionHand) {
-        ItemStack stack = player.getStackInHand(interactionHand);
+    public static void potionCooldown(Player player, Level level, InteractionHand interactionHand) {
+        ItemStack stack = player.getItemInHand(interactionHand);
 
-        if (!player.world.isClient && stack.getItem() instanceof ThrowablePotionItem) {
-            player.getItemCooldownManager().set(stack.getItem(), DavesPotioneering.CONFIG.potion_throw_cooldown);
+        if (!player.level().isClientSide && stack.getItem() instanceof ThrowablePotionItem) {
+            player.getCooldowns().addCooldown(stack.getItem(), DavesPotioneering.CONFIG.potion_throw_cooldown);
         }
     }
 
-    public static ActionResult milkCow(PlayerEntity player, World e2, Hand hand, Entity clicked, @Nullable EntityHitResult e5) {
-        if (clicked instanceof CowEntity cowEntity && DavesPotioneering.CONFIG.milk) {
-            ItemStack itemstack = player.getStackInHand(hand);
+    public static InteractionResult milkCow(Player player, Level e2, InteractionHand hand, Entity clicked, @Nullable EntityHitResult e5) {
+        if (clicked instanceof Cow cowEntity && DavesPotioneering.CONFIG.milk) {
+            ItemStack itemstack = player.getItemInHand(hand);
             if (itemstack.getItem() == Items.GLASS_BOTTLE && !cowEntity.isBaby()) {
-                player.playSound(SoundEvents.ENTITY_COW_MILK, 1.0F, 1.0F);
-                itemstack.decrement(1);
+                player.playSound(SoundEvents.COW_MILK, 1.0F, 1.0F);
+                itemstack.shrink(1);
                 ItemStack milkBottle = new ItemStack(Items.POTION);
-                PotionUtil.setPotion(milkBottle, ModPotions.MILK);
-                player.giveItemStack(milkBottle);
-                return ActionResult.CONSUME;
+                PotionUtils.setPotion(milkBottle, ModPotions.MILK);
+                player.addItem(milkBottle);
+                return InteractionResult.CONSUME;
             }
         }
-        return ActionResult.PASS;
+        return InteractionResult.PASS;
     }
 
-    public static void onEat(PlayerEntity player, ItemStack stack) {
-        Potion potion = PotionUtil.getPotion(stack);
-        for (StatusEffectInstance effectInstance : potion.getEffects()) {
-            player.addStatusEffect(new StatusEffectInstance(effectInstance.getEffectType(), Math.max(effectInstance.getDuration() / 8, 1), effectInstance.getAmplifier(), effectInstance.isAmbient(), effectInstance.shouldShowParticles()));
+    public static void onEat(Player player, ItemStack stack) {
+        Potion potion = PotionUtils.getPotion(stack);
+        for (MobEffectInstance effectInstance : potion.getEffects()) {
+            player.addEffect(new MobEffectInstance(effectInstance.getEffect(), Math.max(effectInstance.getDuration() / 8, 1), effectInstance.getAmplifier(), effectInstance.isAmbient(), effectInstance.isVisible()));
         }
     }
 
-    public static ActionResult afterHit(PlayerEntity player, World e2, Hand e3, Entity victim, @Nullable EntityHitResult e5) {
+    public static InteractionResult afterHit(Player player, Level e2, InteractionHand e3, Entity victim, @Nullable EntityHitResult e5) {
 
-        ItemStack weapon = player.getMainHandStack();
+        ItemStack weapon = player.getMainHandItem();
 
-        if (weapon.getItem() instanceof ToolItem) {
-            Potion potion = PotionUtil.getPotion(weapon);
+        if (weapon.getItem() instanceof TieredItem) {
+            Potion potion = PotionUtils.getPotion(weapon);
             if (potion != Potions.EMPTY) {
-                for(StatusEffectInstance effectinstance : potion.getEffects()) {
-                    ((LivingEntity)victim).addStatusEffect(new StatusEffectInstance(effectinstance.getEffectType(), Math.max(effectinstance.getDuration() / 8, 1), effectinstance.getAmplifier(), effectinstance.isAmbient(), effectinstance.shouldShowParticles()));
+                for(MobEffectInstance effectinstance : potion.getEffects()) {
+                    ((LivingEntity)victim).addEffect(new MobEffectInstance(effectinstance.getEffect(), Math.max(effectinstance.getDuration() / 8, 1), effectinstance.getAmplifier(), effectinstance.isAmbient(), effectinstance.isVisible()));
                 }
-                if (!player.getAbilities().creativeMode)
+                if (!player.getAbilities().instabuild)
                     LayeredReinforcedCauldronBlock.useCharge(weapon);
             }
         }
-        return ActionResult.PASS;
+        return InteractionResult.PASS;
     }
 
     //this is called when the potion is done brewing, we use this instead of the forge event because it has a reference
@@ -82,21 +81,21 @@ public class Events {
         ((BrewingStandDuck)brewingStandTileEntity).addXp(Util.getBrewXp(ingredient));
     }
 
-    public static void heldItemChangeEvent(PlayerEntity player) {
-        ItemStack stack = player.getMainHandStack();
+    public static void heldItemChangeEvent(Player player) {
+        ItemStack stack = player.getMainHandItem();
         if ((stack.getItem() instanceof LingeringPotionItem || stack.getItem() instanceof SplashPotionItem)) {
-            player.getItemCooldownManager().set(Items.SPLASH_POTION, DavesPotioneering.CONFIG.potion_use_cooldown);
-            player.getItemCooldownManager().set(Items.LINGERING_POTION, DavesPotioneering.CONFIG.potion_use_cooldown);
+            player.getCooldowns().addCooldown(Items.SPLASH_POTION, DavesPotioneering.CONFIG.potion_use_cooldown);
+            player.getCooldowns().addCooldown(Items.LINGERING_POTION, DavesPotioneering.CONFIG.potion_use_cooldown);
         }
     }
 
     //this is called when the player takes a potion from the brewing stand
-    public static void playerTakedBrewedPotion(PlayerEntity player) {
-        if (!player.world.isClient) {
-            ScreenHandler container = player.currentScreenHandler;
+    public static void playerTakedBrewedPotion(Player player) {
+        if (!player.level().isClientSide) {
+            AbstractContainerMenu container = player.containerMenu;
             BlockEntity entity = null;
-            if (container instanceof BrewingStandScreenHandler) {
-                entity = (BrewingStandBlockEntity)((BrewingStandContainerAccess)container).getInventory();
+            if (container instanceof BrewingStandMenu) {
+                entity = (BrewingStandBlockEntity)((BrewingStandContainerAccess)container).getBrewingStand();
             } else if (container instanceof AdvancedBrewingStandContainer) {
                 entity = ((AdvancedBrewingStandContainer)container).blockEntity;
             }
@@ -108,9 +107,9 @@ public class Events {
     }
 
     public static boolean canApplyEffect(LivingEntity entity) {
-        if (entity instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity)entity;
-            if (player.getActiveItem().getItem() instanceof UmbrellaItem) {
+        if (entity instanceof Player) {
+            Player player = (Player)entity;
+            if (player.getUseItem().getItem() instanceof UmbrellaItem) {
                 return false;
             }
         }

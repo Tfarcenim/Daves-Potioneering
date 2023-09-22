@@ -7,19 +7,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tfar.davespotioneering.init.ModPotions;
 
 import java.util.Collection;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.potion.PotionUtil;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.item.alchemy.PotionUtils;
 
-@Mixin(PotionUtil.class)
+@Mixin(PotionUtils.class)
 public class PotionUtilsMixin {
 
     @Inject(method = "getColor(Ljava/util/Collection;)I",at = @At("RETURN"),cancellable = true)
-    private static void modifyColor(Collection<StatusEffectInstance> instances, CallbackInfoReturnable<Integer> cir) {
+    private static void modifyColor(Collection<MobEffectInstance> instances, CallbackInfoReturnable<Integer> cir) {
         int old = cir.getReturnValue();
         if (old == 0) {
-            for(StatusEffectInstance effectinstance : instances) {
+            for(MobEffectInstance effectinstance : instances) {
                 if (effectinstance.equals(ModPotions.INVIS_2)) {
-                    int k = effectinstance.getEffectType().getColor();
+                    int k = effectinstance.getEffect().getColor();
                     int l = 1;
                     float r = (float)(l * (k >> 16 & 255)) / 255.0F;
                     float g = (float)(l * (k >> 8 & 255)) / 255.0F;

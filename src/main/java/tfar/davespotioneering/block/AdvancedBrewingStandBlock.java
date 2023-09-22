@@ -1,97 +1,97 @@
 package tfar.davespotioneering.block;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BrewingStandBlock;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityTicker;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.stat.Stats;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
 
 import javax.annotation.Nullable;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BrewingStandBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import java.util.List;
 
 public class AdvancedBrewingStandBlock extends BrewingStandBlock {
-    public AdvancedBrewingStandBlock(Settings properties) {
+    public AdvancedBrewingStandBlock(Properties properties) {
         super(properties);
     }
 
-    public ActionResult onUse(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockHitResult hit) {
-        if (worldIn.isClient) {
-            return ActionResult.SUCCESS;
+    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+        if (worldIn.isClientSide) {
+            return InteractionResult.SUCCESS;
         } else {
             BlockEntity tileentity = worldIn.getBlockEntity(pos);
             if (tileentity instanceof AdvancedBrewingStandBlockEntity) {
-                player.openHandledScreen((AdvancedBrewingStandBlockEntity)tileentity);
-                player.incrementStat(Stats.INTERACT_WITH_BREWINGSTAND);
+                player.openMenu((AdvancedBrewingStandBlockEntity)tileentity);
+                player.awardStat(Stats.INTERACT_WITH_BREWINGSTAND);
             }
-            return ActionResult.CONSUME;
+            return InteractionResult.CONSUME;
         }
     }
 
     public static final int C_LINES = 3;
 
     @Override
-    public void appendTooltip(ItemStack stack, @Nullable BlockView worldIn, List<Text> tooltip, TooltipContext flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable BlockGetter worldIn, List<Component> tooltip, TooltipFlag flagIn) {
 
-        tooltip.add(Text.translatable(getTranslationKey()+".hold_shift.desc"));
+        tooltip.add(Component.translatable(getDescriptionId()+".hold_shift.desc"));
         if (Screen.hasShiftDown())
-            tooltip.add(this.getShiftDescription().formatted(Formatting.GRAY));
+            tooltip.add(this.getShiftDescription().withStyle(ChatFormatting.GRAY));
 
-        tooltip.add(Text.translatable(getTranslationKey()+".hold_ctrl.desc"));
+        tooltip.add(Component.translatable(getDescriptionId()+".hold_ctrl.desc"));
         if (Screen.hasControlDown())
             for (int i = 0; i < C_LINES;i++) {
-                tooltip.add(this.getCtrlDescriptions(i).formatted(Formatting.GRAY));
+                tooltip.add(this.getCtrlDescriptions(i).withStyle(ChatFormatting.GRAY));
             }
     }
 
-    public MutableText getShiftDescription() {
-        return Text.translatable(this.getTranslationKey() + ".shift.desc");
+    public MutableComponent getShiftDescription() {
+        return Component.translatable(this.getDescriptionId() + ".shift.desc");
     }
 
-    public MutableText getCtrlDescription() {
-        return Text.translatable(this.getTranslationKey() + ".ctrl.desc");
+    public MutableComponent getCtrlDescription() {
+        return Component.translatable(this.getDescriptionId() + ".ctrl.desc");
     }
 
-    public MutableText getCtrlDescriptions(int i) {
-        return Text.translatable(this.getTranslationKey() + i +".ctrl.desc");
+    public MutableComponent getCtrlDescriptions(int i) {
+        return Component.translatable(this.getDescriptionId() + i +".ctrl.desc");
     }
 
     @Override
-    public BlockEntity createBlockEntity(BlockPos blockPos, BlockState blockState) {
+    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
         return new AdvancedBrewingStandBlockEntity(blockPos,blockState);
     }
 
     @Override
-    public void onStateReplaced(BlockState blockState, World world, BlockPos blockPos, BlockState blockState2, boolean bl) {
-        if (!blockState.isOf(blockState2.getBlock())) {
+    public void onRemove(BlockState blockState, Level world, BlockPos blockPos, BlockState blockState2, boolean bl) {
+        if (!blockState.is(blockState2.getBlock())) {
             BlockEntity blockEntity = world.getBlockEntity(blockPos);
             if (blockEntity instanceof AdvancedBrewingStandBlockEntity brewingStandBlockEntity) {
-                Util.dropContents(world, blockPos,brewingStandBlockEntity.getBrewingHandler().stacks);
-                world.updateComparators(blockPos, this);
+                Util.dropContents(world, blockPos,brewingStandBlockEntity.getBrewingHandler().items);
+                world.updateNeighbourForOutputSignal(blockPos, this);
             }
-            super.onStateReplaced(blockState, world, blockPos, blockState2, bl);
+            super.onRemove(blockState, world, blockPos, blockState2, bl);
         }
     }
 
     @Override
     @Nullable
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState blockState, BlockEntityType<T> blockEntityType) {
-        return world.isClient ? null : checkType(blockEntityType, ModBlockEntityTypes.COMPOUND_BREWING_STAND, AdvancedBrewingStandBlockEntity::tick);
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState blockState, BlockEntityType<T> blockEntityType) {
+        return world.isClientSide ? null : createTickerHelper(blockEntityType, ModBlockEntityTypes.COMPOUND_BREWING_STAND, AdvancedBrewingStandBlockEntity::tick);
     }
 }

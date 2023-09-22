@@ -1,32 +1,32 @@
 package tfar.davespotioneering.menu;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.recipe.BrewingRecipeRegistry;
-import net.minecraft.screen.ArrayPropertyDelegate;
-import net.minecraft.screen.BrewingStandScreenHandler;
-import net.minecraft.screen.PropertyDelegate;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.slot.Slot;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.BrewingStandMenu;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.SimpleContainerData;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionBrewing;
 import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
 import tfar.davespotioneering.init.ModContainerTypes;
 import tfar.davespotioneering.inv.BrewingHandler;
 
-public class AdvancedBrewingStandContainer extends ScreenHandler {
-    private final PropertyDelegate data;
+public class AdvancedBrewingStandContainer extends AbstractContainerMenu {
+    private final ContainerData data;
 
     public AdvancedBrewingStandBlockEntity blockEntity;
 
     //client
-    public AdvancedBrewingStandContainer(int id, PlayerInventory playerInventory) {
-        this(id, playerInventory, new BrewingHandler(AdvancedBrewingStandBlockEntity.SLOTS), new ArrayPropertyDelegate(2),null);
+    public AdvancedBrewingStandContainer(int id, Inventory playerInventory) {
+        this(id, playerInventory, new BrewingHandler(AdvancedBrewingStandBlockEntity.SLOTS), new SimpleContainerData(2),null);
     }
 
     //common
-    public AdvancedBrewingStandContainer(int id, PlayerInventory playerInventory, Inventory inventory, PropertyDelegate data, AdvancedBrewingStandBlockEntity advancedBrewingStandBlockEntity) {
+    public AdvancedBrewingStandContainer(int id, Inventory playerInventory, Container inventory, ContainerData data, AdvancedBrewingStandBlockEntity advancedBrewingStandBlockEntity) {
         super(ModContainerTypes.ADVANCED_BREWING_STAND, id);
        // assertInventorySize(inventory, 5);
        // assertIntArraySize(data, 2);
@@ -49,9 +49,9 @@ public class AdvancedBrewingStandContainer extends ScreenHandler {
 
         this.addSlot(new IngredientSlot(inventory, 7, 79, ing1));
 
-        this.addSlot(new BrewingStandScreenHandler.FuelSlot(inventory, AdvancedBrewingStandBlockEntity.FUEL, 17, ing1));
+        this.addSlot(new BrewingStandMenu.FuelSlot(inventory, AdvancedBrewingStandBlockEntity.FUEL, 17, ing1));
 
-        this.addProperties(data);
+        this.addDataSlots(data);
 
         int invX = 8;
         int invY = 110;
@@ -70,7 +70,7 @@ public class AdvancedBrewingStandContainer extends ScreenHandler {
     /**
      * Determines whether supplied player can use this container
      */
-    public boolean canUse(PlayerEntity playerIn) {
+    public boolean stillValid(Player playerIn) {
         return true;//this.tileBrewingStand.isUsableByPlayer(playerIn);
     }
 
@@ -78,34 +78,34 @@ public class AdvancedBrewingStandContainer extends ScreenHandler {
      * Handle when the stack in slot {@code index} is shift-clicked. Normally this moves the stack between the player
      * inventory and the other inventory(s).
      */
-    public ItemStack transferSlot(PlayerEntity playerIn, int index) {
+    public ItemStack quickMoveStack(Player playerIn, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
-        if (slot != null && slot.hasStack()) {
-            ItemStack slotStack = slot.getStack();
+        if (slot != null && slot.hasItem()) {
+            ItemStack slotStack = slot.getItem();
             itemstack = slotStack.copy();
             if (index < AdvancedBrewingStandBlockEntity.SLOTS) {
-                if (!this.insertItem(slotStack, AdvancedBrewingStandBlockEntity.SLOTS, 41, false)) {
+                if (!this.moveItemStackTo(slotStack, AdvancedBrewingStandBlockEntity.SLOTS, 41, false)) {
                     return ItemStack.EMPTY;
                 }
             } else {
-                if (!this.insertItem(slotStack, 0, AdvancedBrewingStandBlockEntity.SLOTS, true)) {
+                if (!this.moveItemStackTo(slotStack, 0, AdvancedBrewingStandBlockEntity.SLOTS, true)) {
                     return ItemStack.EMPTY;
                 }
-                slot.onQuickTransfer(slotStack, itemstack);
+                slot.onQuickCraft(slotStack, itemstack);
             }
 
             if (slotStack.isEmpty()) {
-                slot.setStack(ItemStack.EMPTY);
+                slot.setByPlayer(ItemStack.EMPTY);
             } else {
-                slot.markDirty();
+                slot.setChanged();
             }
 
             if (slotStack.getCount() == itemstack.getCount()) {
                 return ItemStack.EMPTY;
             }
 
-            slot.onTakeItem(playerIn, slotStack);
+            slot.onTake(playerIn, slotStack);
         }
 
         return itemstack;
@@ -120,20 +120,20 @@ public class AdvancedBrewingStandContainer extends ScreenHandler {
     }
 
     static class IngredientSlot extends Slot {
-        public IngredientSlot(Inventory iInventoryIn, int index, int xPosition, int yPosition) {
+        public IngredientSlot(Container iInventoryIn, int index, int xPosition, int yPosition) {
             super(iInventoryIn, index, xPosition, yPosition);
         }
 
         /**
          * Check if the stack is allowed to be placed in this slot, used for armor slots as well as furnace fuel.
          */
-        public boolean canInsert(ItemStack stack) {
-            return stack.getItem() == Items.MILK_BUCKET || BrewingRecipeRegistry.isValidIngredient(stack);
+        public boolean mayPlace(ItemStack stack) {
+            return stack.getItem() == Items.MILK_BUCKET || PotionBrewing.isIngredient(stack);
         }
     }
 
-    public static class PotionSlot extends BrewingStandScreenHandler.PotionSlot {
-        public PotionSlot(Inventory iItemHandler, int index, int x, int y) {
+    public static class PotionSlot extends BrewingStandMenu.PotionSlot {
+        public PotionSlot(Container iItemHandler, int index, int x, int y) {
             super(iItemHandler, index, x, y);
         }
 
@@ -141,7 +141,7 @@ public class AdvancedBrewingStandContainer extends ScreenHandler {
          * Returns the maximum stack size for a given slot (usually the same as getInventoryStackLimit(), but 1 in the
          * case of armor slots)
          */
-        public int getMaxItemCount() {
+        public int getMaxStackSize() {
             return 2;
         }
     }

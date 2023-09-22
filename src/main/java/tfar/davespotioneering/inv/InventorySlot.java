@@ -1,7 +1,7 @@
 package tfar.davespotioneering.inv;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public class InventorySlot extends Slot {
     private final PotionInjectorHandler inventory;
@@ -12,7 +12,7 @@ public class InventorySlot extends Slot {
     }
 
     @Override
-    public boolean canInsert(ItemStack stack) {
-        return inventory.isValid(id,stack);
+    public boolean mayPlace(ItemStack stack) {
+        return inventory.canPlaceItem(index,stack);
     }
 }

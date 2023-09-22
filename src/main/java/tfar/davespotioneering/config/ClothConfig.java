@@ -17,7 +17,7 @@ public class ClothConfig implements ConfigData {
     public int gauntlet_hud_y = -92;
     public int particle_drip_rate = 10;
 
-    public GauntletHUD.HudPreset gauntlet_hud_preset = GauntletHUD.HudPreset.ABOVE_HOTBAR;
+    public GauntletHUD.Preset gauntlet_hud_preset = GauntletHUD.Preset.ABOVE_HOTBAR;
 
 
     //server

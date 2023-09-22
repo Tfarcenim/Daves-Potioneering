@@ -1,11 +1,11 @@
 package tfar.davespotioneering.mixin;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.block.entity.BrewingStandBlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.duck.BrewingStandDuck;
@@ -26,11 +26,11 @@ public class BrewingStandBlockEntityMixin extends BlockEntity implements Brewing
     }
 
     @Override
-    public void dump(PlayerEntity player) {
+    public void dump(Player player) {
         if (xp > 0) {
             xp = 0;
-            Util.splitAndSpawnExperience(world, player.getPos(), xp);
-            markDirty(world,pos,getCachedState());
+            Util.splitAndSpawnExperience(level, player.position(), xp);
+            setChanged(level,worldPosition,getBlockState());
         }
     }
 }

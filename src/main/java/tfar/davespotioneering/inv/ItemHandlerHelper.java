@@ -1,16 +1,15 @@
 package tfar.davespotioneering.inv;
 
-import net.minecraft.item.ItemStack;
-
 import javax.annotation.Nonnull;
+import net.minecraft.world.item.ItemStack;
 
 public class ItemHandlerHelper {
     public static boolean canItemStacksStack(@Nonnull ItemStack a, @Nonnull ItemStack b)
     {
-        if (a.isEmpty() || !a.isItemEqual(b) || a.hasNbt() != b.hasNbt())
+        if (a.isEmpty() || !(a.getItem() == b.getItem()) || a.hasTag() != b.hasTag())
             return false;
 
-        return (!a.hasNbt() || a.getNbt().equals(b.getNbt()));
+        return (!a.hasTag() || a.getTag().equals(b.getTag()));
     }
 
     @Nonnull

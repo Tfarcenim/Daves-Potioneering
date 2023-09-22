@@ -1,17 +1,17 @@
 package tfar.davespotioneering.effect;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.InstantStatusEffect;
-import net.minecraft.entity.effect.StatusEffectType;
+import net.minecraft.world.effect.InstantenousMobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.entity.LivingEntity;
 
-public class MilkEffect extends InstantStatusEffect {
-    public MilkEffect(StatusEffectType typeIn, int liquidColorIn) {
+public class MilkEffect extends InstantenousMobEffect {
+    public MilkEffect(MobEffectCategory typeIn, int liquidColorIn) {
         super(typeIn, liquidColorIn);
     }
 
 
     @Override
-    public void applyUpdateEffect(LivingEntity entityLivingBaseIn, int amplifier) {
-        entityLivingBaseIn.clearStatusEffects();
+    public void applyEffectTick(LivingEntity entityLivingBaseIn, int amplifier) {
+        entityLivingBaseIn.removeAllEffects();
     }
 }

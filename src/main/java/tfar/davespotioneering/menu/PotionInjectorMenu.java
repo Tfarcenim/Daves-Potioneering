@@ -1,35 +1,36 @@
 package tfar.davespotioneering.menu;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtString;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtil;
-import net.minecraft.potion.Potions;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
 import tfar.davespotioneering.init.ModContainerTypes;
 import tfar.davespotioneering.inv.InventorySlot;
 import tfar.davespotioneering.inv.PotionInjectorHandler;
 
-public class PotionInjectorMenu extends ScreenHandler {
+public class PotionInjectorMenu extends AbstractContainerMenu {
 
     private final PotionInjectorHandler inventory;
 
     //client
-    public PotionInjectorMenu(int id, PlayerInventory playerInventory) {
+    public PotionInjectorMenu(int id, Inventory playerInventory) {
         this(id, playerInventory, new PotionInjectorHandler(8));
     }
 
     //common
-    public PotionInjectorMenu(int id, PlayerInventory playerInventory, PotionInjectorHandler inventory) {
+    public PotionInjectorMenu(int id, Inventory playerInventory, PotionInjectorHandler inventory) {
         super(ModContainerTypes.ALCHEMICAL_GAUNTLET, id);
         this.inventory = inventory;
         // assertInventorySize(inventory, 5);
@@ -60,7 +61,7 @@ public class PotionInjectorMenu extends ScreenHandler {
     }
 
     @Override
-    public boolean canUse(PlayerEntity playerIn) {
+    public boolean stillValid(Player playerIn) {
         return true;
     }
 
@@ -69,24 +70,24 @@ public class PotionInjectorMenu extends ScreenHandler {
      * inventory and the other inventory(s).
      */
     @Override
-    public ItemStack transferSlot(PlayerEntity playerIn, int index) {
+    public ItemStack quickMoveStack(Player playerIn, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
-        if (slot != null && slot.hasStack()) {
-            ItemStack itemstack1 = slot.getStack();
+        if (slot != null && slot.hasItem()) {
+            ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
-            if (index < this.inventory.size()) {
-                if (!this.insertItem(itemstack1, this.inventory.size(), this.slots.size(), true)) {
+            if (index < this.inventory.getContainerSize()) {
+                if (!this.moveItemStackTo(itemstack1, this.inventory.getContainerSize(), this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (!this.insertItem(itemstack1, 0, this.inventory.size(), false)) {
+            } else if (!this.moveItemStackTo(itemstack1, 0, this.inventory.getContainerSize(), false)) {
                 return ItemStack.EMPTY;
             }
 
             if (itemstack1.isEmpty()) {
-                slot.setStack(ItemStack.EMPTY);
+                slot.setByPlayer(ItemStack.EMPTY);
             } else {
-                slot.markDirty();
+                slot.setChanged();
             }
         }
 
@@ -107,23 +108,23 @@ public class PotionInjectorMenu extends ScreenHandler {
     public static final int BLAZE_CAP = 32;
 
     private void storePotionsAndBlaze() {
-        ItemStack gauntlet = inventory.getStack(PotionInjectorHandler.GAUNTLET);
+        ItemStack gauntlet = inventory.getItem(PotionInjectorHandler.GAUNTLET);
         if (!gauntlet.isEmpty()) {
-            NbtCompound newNbt = new NbtCompound();
-            NbtList nbt1 = new NbtList();
-            NbtCompound oldNBT = gauntlet.getOrCreateNbt();
+            CompoundTag newNbt = new CompoundTag();
+            ListTag nbt1 = new ListTag();
+            CompoundTag oldNBT = gauntlet.getOrCreateTag();
 
-            NbtCompound info = oldNBT.getCompound("info");
-            NbtList oldList = info.getList("potions", 10);
+            CompoundTag info = oldNBT.getCompound("info");
+            ListTag oldList = info.getList("potions", 10);
 
             for (int i = 0; i < PotionInjectorHandler.GAUNTLET; i++) {
 
-                Potion oldPotion = oldList.isEmpty() ? Potions.EMPTY : Registry.POTION.get(new Identifier(oldList.get(i).asString()));
+                Potion oldPotion = oldList.isEmpty() ? Potions.EMPTY : BuiltInRegistries.POTION.get(new ResourceLocation(oldList.get(i).getAsString()));
 
                 if (oldPotion == Potions.EMPTY) {
-                    ItemStack potionStack = inventory.getStack(i);
-                    nbt1.add(NbtString.of(Registry.POTION.getId(PotionUtil.getPotion(potionStack)).toString()));
-                    inventory.removeStack(i, 1);
+                    ItemStack potionStack = inventory.getItem(i);
+                    nbt1.add(StringTag.valueOf(BuiltInRegistries.POTION.getKey(PotionUtils.getPotion(potionStack)).toString()));
+                    inventory.removeItem(i, 1);
                     //copy old potion over
                 } else {
                     nbt1.add(oldList.get(i));
@@ -133,36 +134,36 @@ public class PotionInjectorMenu extends ScreenHandler {
             newNbt.putInt("activePotionIndex", 0);
             newNbt.put("potions", nbt1);
 
-            int presentBlaze = gauntlet.getMaxDamage() - gauntlet.getDamage();
+            int presentBlaze = gauntlet.getMaxDamage() - gauntlet.getDamageValue();
 
-            int blazeInsert = Math.min(BLAZE_CAP - presentBlaze,Math.min(BLAZE_CAP,inventory.getStack(PotionInjectorHandler.BLAZE).getCount()));
+            int blazeInsert = Math.min(BLAZE_CAP - presentBlaze,Math.min(BLAZE_CAP,inventory.getItem(PotionInjectorHandler.BLAZE).getCount()));
 
-            gauntlet.setDamage(gauntlet.getMaxDamage() - (blazeInsert + presentBlaze));
-            inventory.removeStack(PotionInjectorHandler.BLAZE,blazeInsert);
-            gauntlet.getNbt().put("info",newNbt);
+            gauntlet.setDamageValue(gauntlet.getMaxDamage() - (blazeInsert + presentBlaze));
+            inventory.removeItem(PotionInjectorHandler.BLAZE,blazeInsert);
+            gauntlet.getTag().put("info",newNbt);
         }
     }
 
     public static final byte TAG_STRING = 8;//get this from Tag in 1.18
 
     private void removePotionsAndBlaze() {
-        ItemStack gauntlet = inventory.getStack(PotionInjectorHandler.GAUNTLET);
+        ItemStack gauntlet = inventory.getItem(PotionInjectorHandler.GAUNTLET);
         if (!gauntlet.isEmpty()) {
-            NbtCompound nbt = gauntlet.getNbt().getCompound("info");
-            NbtList listNBT = nbt.getList("potions", TAG_STRING);
+            CompoundTag nbt = gauntlet.getTag().getCompound("info");
+            ListTag listNBT = nbt.getList("potions", TAG_STRING);
 
             boolean allRemoved = true;
             for (int i = 0; i < listNBT.size(); i++) {
-                NbtElement inbt = listNBT.get(i);
+                Tag inbt = listNBT.get(i);
 
-                Potion potion = Registry.POTION.get(new Identifier(inbt.asString()));
+                Potion potion = BuiltInRegistries.POTION.get(new ResourceLocation(inbt.getAsString()));
                 if (potion != Potions.EMPTY) {
-                    ItemStack present = inventory.getStack(i);
-                    if (present.getCount() < inventory.getMaxCountPerStack()) {
+                    ItemStack present = inventory.getItem(i);
+                    if (present.getCount() < inventory.getMaxStackSize()) {
                         ItemStack stack = new ItemStack(Items.LINGERING_POTION);
-                        PotionUtil.setPotion(stack, potion);
+                        PotionUtils.setPotion(stack, potion);
                        inventory.insertItem(i, stack, false);
-                        listNBT.set(i,NbtString.of(Registry.POTION.getId(Potions.EMPTY).toString()));
+                        listNBT.set(i,StringTag.valueOf(BuiltInRegistries.POTION.getKey(Potions.EMPTY).toString()));
                     } else {
                         allRemoved = false;
                     }
@@ -172,20 +173,20 @@ public class PotionInjectorMenu extends ScreenHandler {
                 nbt.remove("potions");
             }
 
-            int presentBlaze = inventory.getStack(PotionInjectorHandler.BLAZE).getCount();
+            int presentBlaze = inventory.getItem(PotionInjectorHandler.BLAZE).getCount();
 
-            int maxBlazeRemove = inventory.getMaxCountPerStack() - presentBlaze;
+            int maxBlazeRemove = inventory.getMaxStackSize() - presentBlaze;
 
-            int blaze = gauntlet.getMaxDamage() - gauntlet.getDamage();
+            int blaze = gauntlet.getMaxDamage() - gauntlet.getDamageValue();
 
             int blazeRemove = Math.min(maxBlazeRemove,blaze);
 
             inventory.insertItem(PotionInjectorHandler.BLAZE,new ItemStack(Items.BLAZE_POWDER,blazeRemove),false);
 
             if (blaze > blazeRemove) {
-               gauntlet.setDamage(gauntlet.getMaxDamage() - (blaze - blazeRemove));
+               gauntlet.setDamageValue(gauntlet.getMaxDamage() - (blaze - blazeRemove));
             } else {
-                gauntlet.setDamage(gauntlet.getMaxDamage());
+                gauntlet.setDamageValue(gauntlet.getMaxDamage());
             }
         }
     }
@@ -193,23 +194,23 @@ public class PotionInjectorMenu extends ScreenHandler {
     public SoundTy getSound(boolean inject) {
         if (inject) {
             for (int i = 0; i < 6; i++) {
-                if (!inventory.getStack(i).isEmpty()) {
+                if (!inventory.getItem(i).isEmpty()) {
                     return SoundTy.BOTH;
                 }
             }
 
-            return inventory.getStack(PotionInjectorHandler.BLAZE).isEmpty() ? SoundTy.NONE : SoundTy.BLAZE;
+            return inventory.getItem(PotionInjectorHandler.BLAZE).isEmpty() ? SoundTy.NONE : SoundTy.BLAZE;
 
 
         } else {
-            ItemStack stack = inventory.getStack(PotionInjectorHandler.GAUNTLET);
-            NbtCompound nbt = stack.getNbt();
+            ItemStack stack = inventory.getItem(PotionInjectorHandler.GAUNTLET);
+            CompoundTag nbt = stack.getTag();
             if (nbt != null) {
-                NbtCompound info = nbt.getCompound("info");
-                NbtList listNBT = info.getList("potions", TAG_STRING);
+                CompoundTag info = nbt.getCompound("info");
+                ListTag listNBT = info.getList("potions", TAG_STRING);
                 if (!listNBT.isEmpty()) {
-                    for (NbtElement nb : listNBT) {
-                        Potion potion = Registry.POTION.get(new Identifier(nb.asString()));
+                    for (Tag nb : listNBT) {
+                        Potion potion = BuiltInRegistries.POTION.get(new ResourceLocation(nb.getAsString()));
                         if (potion != Potions.EMPTY) {
                             return SoundTy.BOTH;
                         }

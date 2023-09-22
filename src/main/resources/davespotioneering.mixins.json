@@ -23,12 +23,10 @@
   "client": [
     "BakedModelManagerAccess",
     "BakedModelManagerMixin",
-    "BakedQuadAccess",
     "IngameGuiAccess",
     "ItemOverrideListMixin",
     "ItemRendererMixin",
     "ModelBakeryMixin",
-    "ModelOverrideListMixin",
     "MouseHelperMixin",
     "ParticleManagerAccess",
     "PlayerInfoMixin"

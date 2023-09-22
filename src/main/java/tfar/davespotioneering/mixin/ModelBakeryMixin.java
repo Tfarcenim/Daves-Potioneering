@@ -1,9 +1,5 @@
 package tfar.davespotioneering.mixin;
 
-import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.util.ModelIdentifier;
-import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -13,18 +9,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tfar.davespotioneering.client.ClientHooks;
 
 import java.util.Map;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.resources.ResourceLocation;
 
-@Mixin(ModelLoader.class)
+@Mixin(ModelBakery.class)
 public class ModelBakeryMixin {
 
-    @Shadow @Final private Map<Identifier, UnbakedModel> unbakedModels;
+    @Shadow @Final private Map<ResourceLocation, UnbakedModel> unbakedCache;
 
-    @Shadow @Final private Map<Identifier, UnbakedModel> modelsToBake;
+    @Shadow @Final private Map<ResourceLocation, UnbakedModel> topLevelModels;
 
-    @Inject(method = "addModel",at = @At("RETURN"))
-    private void injectedModels(ModelIdentifier modelId, CallbackInfo ci) {
+    @Inject(method = "loadTopLevel",at = @At("RETURN"))
+    private void injectedModels(ModelResourceLocation modelId, CallbackInfo ci) {
         if (modelId.getPath().contains("trident_in_hand")) {
-            ClientHooks.injectCustomModels((ModelLoader)(Object)this,unbakedModels,modelsToBake);
+            ClientHooks.injectCustomModels((ModelBakery)(Object)this, unbakedCache, topLevelModels);
         }
     }
 }

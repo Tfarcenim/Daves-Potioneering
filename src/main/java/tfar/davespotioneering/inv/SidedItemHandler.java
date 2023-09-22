@@ -1,12 +1,12 @@
 package tfar.davespotioneering.inv;
 
 import javax.annotation.Nonnull;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
-public class SidedItemHandler implements Inventory {
+public class SidedItemHandler implements Container {
     protected final BrewingHandler inv;
     private final Direction direction;
 
@@ -24,33 +24,33 @@ public class SidedItemHandler implements Inventory {
     }
 
     @Override
-    public int size() {
+    public int getContainerSize() {
         return inv.getSlotsForFace(direction).length;
     }
 
     @Override
     @Nonnull
-    public ItemStack getStack(int slot) {
+    public ItemStack getItem(int slot) {
         int i = mapSlot(slot);
-        return i == -1 ? ItemStack.EMPTY : inv.getStack(i);
+        return i == -1 ? ItemStack.EMPTY : inv.getItem(i);
     }
 
     @Override
-    public ItemStack removeStack(int i) {
+    public ItemStack removeItemNoUpdate(int i) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public void setStack(int slot, @Nonnull ItemStack stack) {
+    public void setItem(int slot, @Nonnull ItemStack stack) {
         int slot1 = mapSlot(slot);
 
         if (slot1 != -1)
-            inv.setStack(slot, stack);
+            inv.setItem(slot, stack);
     }
 
     @Override
     @Nonnull
-    public ItemStack removeStack(int slot, int amount) {
+    public ItemStack removeItem(int slot, int amount) {
         if (amount == 0)
             return ItemStack.EMPTY;
 
@@ -59,11 +59,11 @@ public class SidedItemHandler implements Inventory {
         if (slot1 == -1)
             return ItemStack.EMPTY;
 
-        return inv.removeStack(slot1,amount);
+        return inv.removeItem(slot1,amount);
     }
 
     @Override
-    public boolean isValid(int slot, @Nonnull ItemStack stack) {
+    public boolean canPlaceItem(int slot, @Nonnull ItemStack stack) {
         int slot1 = mapSlot(slot);
         return slot1 != -1 && inv.isItemValid(slot1, stack);
     }
@@ -74,17 +74,17 @@ public class SidedItemHandler implements Inventory {
     }
 
     @Override
-    public void markDirty() {
+    public void setChanged() {
 
     }
 
     @Override
-    public boolean canPlayerUse(PlayerEntity player) {
+    public boolean stillValid(Player player) {
         return true;
     }
 
     @Override
-    public void clear() {
+    public void clearContent() {
 
     }
 }

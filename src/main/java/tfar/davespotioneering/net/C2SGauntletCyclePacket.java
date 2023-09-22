@@ -4,10 +4,10 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import tfar.davespotioneering.item.GauntletItem;
 
 public class C2SGauntletCyclePacket implements ServerPlayNetworking.PlayChannelHandler {
@@ -18,12 +18,12 @@ public class C2SGauntletCyclePacket implements ServerPlayNetworking.PlayChannelH
     }
 
     public static void encode(boolean up) {
-        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
         buf.writeBoolean(up);
         ClientPlayNetworking.send(PacketHandler.gauntlet_cycle, buf);
     }
 
-    public void handle(ServerPlayerEntity player, boolean up) {
+    public void handle(ServerPlayer player, boolean up) {
         player.getServer().execute(() -> {
             if (up) {
                 GauntletItem.cycleGauntletForward(player);
@@ -34,7 +34,7 @@ public class C2SGauntletCyclePacket implements ServerPlayNetworking.PlayChannelH
     }
 
     @Override
-    public void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
+    public void receive(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender) {
         boolean up = buf.readBoolean();
         handle(player,up);
     }

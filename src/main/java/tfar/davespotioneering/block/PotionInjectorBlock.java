@@ -1,80 +1,80 @@
 package tfar.davespotioneering.block;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockEntityProvider;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ShapeContext;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.NamedScreenHandlerFactory;
-import net.minecraft.stat.Stats;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.DirectionProperty;
-import net.minecraft.state.property.Properties;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.function.BooleanBiFunction;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.PotionInjectorBlockEntity;
 
 import javax.annotation.Nullable;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import java.util.List;
 
-public class PotionInjectorBlock extends Block implements BlockEntityProvider {
-    public PotionInjectorBlock(Settings properties) {
+public class PotionInjectorBlock extends Block implements EntityBlock {
+    public PotionInjectorBlock(Properties properties) {
         super(properties);
-        setDefaultState(stateManager.getDefaultState().with(FACING, Direction.NORTH).with(HAS_GAUNTLET,false));
+        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(HAS_GAUNTLET,false));
     }
 
     public static final String TRANS_KEY = "davespotioneering.container.potion_injector";
 
-    public static final Text CONTAINER_NAME = Text.translatable(TRANS_KEY);
+    public static final Component CONTAINER_NAME = Component.translatable(TRANS_KEY);
 
-    public static final BooleanProperty HAS_GAUNTLET = BooleanProperty.of("has_gauntlet");
-    public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
+    public static final BooleanProperty HAS_GAUNTLET = BooleanProperty.create("has_gauntlet");
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-    public ActionResult onUse(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockHitResult hit) {
-        if (worldIn.isClient) {
-            return ActionResult.SUCCESS;
+    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+        if (worldIn.isClientSide) {
+            return InteractionResult.SUCCESS;
         } else {
-            player.openHandledScreen((NamedScreenHandlerFactory) worldIn.getBlockEntity(pos));
-            player.incrementStat(Stats.INTERACT_WITH_CRAFTING_TABLE);
-            return ActionResult.CONSUME;
+            player.openMenu((MenuProvider) worldIn.getBlockEntity(pos));
+            player.awardStat(Stats.INTERACT_WITH_CRAFTING_TABLE);
+            return InteractionResult.CONSUME;
         }
     }
 
-    protected static final VoxelShape BOTTOM_SHAPE = Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D);
+    protected static final VoxelShape BOTTOM_SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D);
 
-    protected static final VoxelShape NORTH_SHAPE = Block.createCuboidShape(0.0D, 8.0D, 0.0D, 8.0D, 16.0D, 16.0D);
-    protected static final VoxelShape SOUTH_SHAPE = Block.createCuboidShape(8.0D, 8.0D, 0.0D, 16.0D, 16.0D, 16.0D);
-    protected static final VoxelShape EAST_SHAPE = Block.createCuboidShape(0.0D, 8.0D, 0.0D, 16.0D, 16.0D, 8.0D);
-    protected static final VoxelShape WEST_SHAPE = Block.createCuboidShape(0.0D, 8.0D, 8.0D, 16.0D, 16.0D, 16.0D);
+    protected static final VoxelShape NORTH_SHAPE = Block.box(0.0D, 8.0D, 0.0D, 8.0D, 16.0D, 16.0D);
+    protected static final VoxelShape SOUTH_SHAPE = Block.box(8.0D, 8.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+    protected static final VoxelShape EAST_SHAPE = Block.box(0.0D, 8.0D, 0.0D, 16.0D, 16.0D, 8.0D);
+    protected static final VoxelShape WEST_SHAPE = Block.box(0.0D, 8.0D, 8.0D, 16.0D, 16.0D, 16.0D);
 
     public static final VoxelShape[] SHAPES =
-            new VoxelShape[]{VoxelShapes.combineAndSimplify(BOTTOM_SHAPE,EAST_SHAPE, BooleanBiFunction.OR),
-                    VoxelShapes.combineAndSimplify(BOTTOM_SHAPE,SOUTH_SHAPE, BooleanBiFunction.OR),
-                    VoxelShapes.combineAndSimplify(BOTTOM_SHAPE,WEST_SHAPE, BooleanBiFunction.OR),
-                    VoxelShapes.combineAndSimplify(BOTTOM_SHAPE,NORTH_SHAPE, BooleanBiFunction.OR),
+            new VoxelShape[]{Shapes.join(BOTTOM_SHAPE,EAST_SHAPE, BooleanOp.OR),
+                    Shapes.join(BOTTOM_SHAPE,SOUTH_SHAPE, BooleanOp.OR),
+                    Shapes.join(BOTTOM_SHAPE,WEST_SHAPE, BooleanOp.OR),
+                    Shapes.join(BOTTOM_SHAPE,NORTH_SHAPE, BooleanOp.OR),
             };
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView worldIn, BlockPos pos, ShapeContext context) {
-        return SHAPES[state.get(FACING).getHorizontal()];
+    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
+        return SHAPES[state.getValue(FACING).get2DDataValue()];
     }
 
     /*@Override
@@ -92,56 +92,56 @@ public class PotionInjectorBlock extends Block implements BlockEntityProvider {
         return 1;
     }*/
 
-    public static void setHasGauntlet(World worldIn, BlockPos pos, BlockState state, boolean hasBook) {
-        worldIn.setBlockState(pos, state.with(HAS_GAUNTLET, hasBook), 3);
+    public static void setHasGauntlet(Level worldIn, BlockPos pos, BlockState state, boolean hasBook) {
+        worldIn.setBlock(pos, state.setValue(HAS_GAUNTLET, hasBook), 3);
         //notifyNeighbors(worldIn, pos, state);
     }
 
-    public BlockState getPlacementState(ItemPlacementContext context) {
-        return this.getDefaultState().with(FACING, context.getPlayerFacing().getOpposite());
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return this.defaultBlockState().setValue(FACING, context.getNearestLookingDirection().getOpposite());
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        super.appendProperties(builder);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(HAS_GAUNTLET,FACING);
     }
 
     @Override
-    public void onStateReplaced(BlockState blockState, World world, BlockPos blockPos, BlockState blockState2, boolean bl) {
-        if (!blockState.isOf(blockState2.getBlock())) {
+    public void onRemove(BlockState blockState, Level world, BlockPos blockPos, BlockState blockState2, boolean bl) {
+        if (!blockState.is(blockState2.getBlock())) {
             BlockEntity blockEntity = world.getBlockEntity(blockPos);
             if (blockEntity instanceof PotionInjectorBlockEntity potionInjectorBlockEntity) {
-                Util.dropContents(world, blockPos,potionInjectorBlockEntity.handler.stacks);
-                world.updateComparators(blockPos, this);
+                Util.dropContents(world, blockPos,potionInjectorBlockEntity.handler.items);
+                world.updateNeighbourForOutputSignal(blockPos, this);
             }
-            super.onStateReplaced(blockState, world, blockPos, blockState2, bl);
+            super.onRemove(blockState, world, blockPos, blockState2, bl);
         }
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, @Nullable BlockView worldIn, List<Text> tooltip, TooltipContext flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable BlockGetter worldIn, List<Component> tooltip, TooltipFlag flagIn) {
 
-        tooltip.add(Text.translatable(getTranslationKey()+".hold_shift.desc"));
+        tooltip.add(Component.translatable(getDescriptionId()+".hold_shift.desc"));
         if (Screen.hasShiftDown())
-            tooltip.add(this.getShiftDescription().formatted(Formatting.GRAY));
+            tooltip.add(this.getShiftDescription().withStyle(ChatFormatting.GRAY));
 
-        tooltip.add(Text.translatable(getTranslationKey()+".hold_ctrl.desc"));
+        tooltip.add(Component.translatable(getDescriptionId()+".hold_ctrl.desc"));
         if (Screen.hasControlDown())
-            tooltip.add(this.getCtrlDescription().formatted(Formatting.GRAY));
+            tooltip.add(this.getCtrlDescription().withStyle(ChatFormatting.GRAY));
     }
 
-    public MutableText getShiftDescription() {
-        return Text.translatable(this.getTranslationKey() + ".shift.desc");
+    public MutableComponent getShiftDescription() {
+        return Component.translatable(this.getDescriptionId() + ".shift.desc");
     }
 
-    public MutableText getCtrlDescription() {
-        return Text.translatable(this.getTranslationKey() + ".ctrl.desc");
+    public MutableComponent getCtrlDescription() {
+        return Component.translatable(this.getDescriptionId() + ".ctrl.desc");
     }
 
     @org.jetbrains.annotations.Nullable
     @Override
-    public BlockEntity createBlockEntity(BlockPos pos,BlockState state) {
+    public BlockEntity newBlockEntity(BlockPos pos,BlockState state) {
         return new PotionInjectorBlockEntity(pos,state);
     }
 }

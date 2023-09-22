@@ -1,17 +1,17 @@
 package tfar.davespotioneering.mixin;
 
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedModelManager;
-import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 import java.util.Map;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelManager;
+import net.minecraft.resources.ResourceLocation;
 
-@Mixin(BakedModelManager.class)
+@Mixin(ModelManager.class)
 public interface BakedModelManagerAccess {
 
-    @Accessor Map<Identifier, BakedModel> getModels();
+    @Accessor Map<ResourceLocation, BakedModel> getBakedRegistry();
 
 
 }

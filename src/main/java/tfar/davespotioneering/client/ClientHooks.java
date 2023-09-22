@@ -1,39 +1,38 @@
 package tfar.davespotioneering.client;
 
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.item.ItemModels;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.world.item.ItemDisplayContext;
 import tfar.davespotioneering.duck.ModelManagerDuck;
 import tfar.davespotioneering.init.ModItems;
 import tfar.davespotioneering.item.Perspective;
 import tfar.davespotioneering.mixin.BakedModelManagerAccess;
-
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.HashMap;
 import java.util.Map;
+import net.minecraft.client.renderer.ItemModelShaper;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 public class ClientHooks {
 
 
     static boolean chace;
 
-    static Map<Identifier,BakedModel> map = new HashMap<>();
+    static Map<ResourceLocation,BakedModel> map = new HashMap<>();
 
-    public static BakedModel modifyModel(BakedModel model, ItemStack stack, ModelTransformation.Mode renderMode, boolean leftHanded, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, ItemModels models) {
+    public static BakedModel modifyModel(BakedModel model, ItemStack stack, ItemDisplayContext renderMode, boolean leftHanded, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay, ItemModelShaper models) {
         if (stack.getItem() instanceof Perspective) {
-            if (renderMode == ModelTransformation.Mode.GUI) {
+            if (renderMode == ItemDisplayContext.GUI) {
                 //the other 2 vars are never used
                 boolean active = ClientEvents.GAUNTLET.call(stack, null,null,0) == 1;
 
                 if (!chace) {
                     chace = true;
-                    for (Map.Entry<Identifier,BakedModel> entry : ((BakedModelManagerAccess)models.getModelManager()).getModels().entrySet()) {
+                    for (Map.Entry<ResourceLocation,BakedModel> entry : ((BakedModelManagerAccess)models.getModelManager()).getBakedRegistry().entrySet()) {
                         if (entry.getKey().getPath().contains("gauntlet")) {
                             map.put(entry.getKey(),entry.getValue());
                         }
@@ -49,11 +48,11 @@ public class ClientHooks {
         return model;
     }
 
-    private static BakedModel getSpecial(ItemModels models,Identifier rl) {
+    private static BakedModel getSpecial(ItemModelShaper models,ResourceLocation rl) {
         return ((ModelManagerDuck)models.getModelManager()).getSpecialModel(rl);
     }
 
-    public static void injectCustomModels(ModelLoader modelLoader, Map<Identifier, UnbakedModel> unbakedModels, Map<Identifier, UnbakedModel> modelsToBake) {
+    public static void injectCustomModels(ModelBakery modelLoader, Map<ResourceLocation, UnbakedModel> unbakedModels, Map<ResourceLocation, UnbakedModel> modelsToBake) {
         for (Item item : ModItems.getAllItems()) {
             if (item instanceof Perspective) {
                 injectCustomModel(((Perspective) item).getGuiModel(false),modelLoader,unbakedModels,modelsToBake);
@@ -62,8 +61,8 @@ public class ClientHooks {
         }
     }
 
-    public static void injectCustomModel(Identifier model,ModelLoader modelLoader, Map<Identifier, UnbakedModel> unbakedModels, Map<Identifier, UnbakedModel> modelsToBake) {
-        UnbakedModel unbakedModel = modelLoader.getOrLoadModel(model);
+    public static void injectCustomModel(ResourceLocation model,ModelBakery modelLoader, Map<ResourceLocation, UnbakedModel> unbakedModels, Map<ResourceLocation, UnbakedModel> modelsToBake) {
+        UnbakedModel unbakedModel = modelLoader.getModel(model);
         unbakedModels.put(model,unbakedModel);
         modelsToBake.put(model,unbakedModel);
     }

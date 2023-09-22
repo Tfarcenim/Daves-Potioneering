@@ -1,29 +1,29 @@
 package tfar.davespotioneering.blockentity;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BrewingStandBlock;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityTicker;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventories;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.PotionItem;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtil;
-import net.minecraft.recipe.BrewingRecipeRegistry;
-import net.minecraft.screen.NamedScreenHandlerFactory;
-import net.minecraft.screen.PropertyDelegate;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.text.Text;
-import net.minecraft.util.ItemScatterer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.Containers;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionBrewing;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BrewingStandBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import org.apache.commons.lang3.tuple.Pair;
 import tfar.davespotioneering.Events;
 import tfar.davespotioneering.Util;
@@ -35,7 +35,7 @@ import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 
-public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  NamedScreenHandlerFactory, BrewingStandDuck {
+public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  MenuProvider, BrewingStandDuck {
     /** an array of the output slot indices */
 
     //potions are 0,1,2
@@ -60,7 +60,7 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
     private Item ingredientID;
     private int fuel;
 
-    protected final PropertyDelegate data = new PropertyDelegate() {
+    protected final ContainerData data = new ContainerData() {
         public int get(int index) {
             switch(index) {
                 case 0:
@@ -83,7 +83,7 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
 
         }
 
-        public int size() {
+        public int getCount() {
             return 2;
         }
     };
@@ -96,16 +96,16 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
         super(typeIn,blockPos,blockState);
     }
 
-    protected Text getDefaultName() {
-        return Text.translatable("container.davespotioneering.compound_brewing");
+    protected Component getDefaultName() {
+        return Component.translatable("container.davespotioneering.compound_brewing");
     }
 
-    public static void tick(World world, BlockPos blockPos, BlockState blockState, AdvancedBrewingStandBlockEntity brewingStandBlockEntity) {
-        ItemStack fuelStack = brewingStandBlockEntity.brewingHandler.getStack(FUEL);
+    public static void tick(Level world, BlockPos blockPos, BlockState blockState, AdvancedBrewingStandBlockEntity brewingStandBlockEntity) {
+        ItemStack fuelStack = brewingStandBlockEntity.brewingHandler.getItem(FUEL);
         if (brewingStandBlockEntity.fuel <= 0 && fuelStack.getItem() == Items.BLAZE_POWDER) {
             brewingStandBlockEntity.fuel = 20;
-            fuelStack.decrement(1);
-            markDirty(world,blockPos,blockState);
+            fuelStack.shrink(1);
+            setChanged(world,blockPos,blockState);
         }
 
         boolean canBrew = brewingStandBlockEntity.canBrew();
@@ -116,22 +116,22 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
             boolean done = brewingStandBlockEntity.brewTime == 0;
             if (done && canBrew) {
                 brewingStandBlockEntity.brewPotions();
-                markDirty(world,blockPos,blockState);
+                setChanged(world,blockPos,blockState);
             } else if (!canBrew) {
                 brewingStandBlockEntity.brewTime = 0;
-                markDirty(world,blockPos,blockState);
+                setChanged(world,blockPos,blockState);
             } else if (brewingStandBlockEntity.ingredientID != ing.getItem()) {
                 brewingStandBlockEntity.brewTime = 0;
-                markDirty(world,blockPos,blockState);
+                setChanged(world,blockPos,blockState);
             }
         } else if (canBrew && brewingStandBlockEntity.fuel > 0) {
             --brewingStandBlockEntity.fuel;
             brewingStandBlockEntity.brewTime = TIME;
             brewingStandBlockEntity.ingredientID = ing.getItem();
-            markDirty(world,blockPos,blockState);
+            setChanged(world,blockPos,blockState);
         }
 
-        if (!brewingStandBlockEntity.world.isClient) {
+        if (!brewingStandBlockEntity.level.isClientSide) {
             brewingStandBlockEntity.setBottleBlockStates();
         }
     }
@@ -140,21 +140,21 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
         boolean[] aboolean = this.createFilledSlotsArray();
         if (!Arrays.equals(aboolean, this.filledSlots)) {
             this.filledSlots = aboolean;
-            BlockState blockstate = this.world.getBlockState(this.getPos());
+            BlockState blockstate = this.level.getBlockState(this.getBlockPos());
             if (!(blockstate.getBlock() instanceof BrewingStandBlock)) {
                 return;
             }
-            for(int i = 0; i < BrewingStandBlock.BOTTLE_PROPERTIES.length; ++i) {
-                blockstate = blockstate.with(BrewingStandBlock.BOTTLE_PROPERTIES[i], aboolean[i]);
+            for(int i = 0; i < BrewingStandBlock.HAS_BOTTLE.length; ++i) {
+                blockstate = blockstate.setValue(BrewingStandBlock.HAS_BOTTLE[i], aboolean[i]);
             }
-            this.world.setBlockState(this.pos, blockstate, 2);
+            this.level.setBlock(this.worldPosition, blockstate, 2);
         }
     }
 
     //searches 7 => 3
     public Pair<Integer,ItemStack> getPriorityIngredient() {
         for (int i = 7; i > 2;i--) {
-            ItemStack ing = brewingHandler.getStack(i);
+            ItemStack ing = brewingHandler.getItem(i);
             if (!ing.isEmpty() && isThereARecipe(ing)) {
                 return Pair.of(i,ing);
             }
@@ -165,8 +165,8 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
 
     public boolean isThereARecipe(ItemStack ingredient) {
         for (int i : POTIONS) {
-            ItemStack potion = brewingHandler.getStack(i);
-            if (BrewingRecipeRegistry.hasRecipe(potion,ingredient))
+            ItemStack potion = brewingHandler.getItem(i);
+            if (PotionBrewing.hasMix(potion,ingredient))
                 return true;
         }
         return false;
@@ -180,7 +180,7 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
         boolean[] aboolean = new boolean[3];
 
         for(int i = 0; i < 3; ++i) {
-            if (!this.brewingHandler.getStack(i).isEmpty()) {
+            if (!this.brewingHandler.getItem(i).isEmpty()) {
                 aboolean[i] = true;
             }
         }
@@ -191,13 +191,6 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
     private boolean canBrew() {
         ItemStack ing = getPriorityIngredient().getRight();
         if (!ing.isEmpty()) {
-
-            if (ing.getItem() == Items.MILK_BUCKET) {
-                if (canMilkify()) {
-                    return true;
-                }
-            }
-
             return isThereARecipe(ing);
         }
         return false;
@@ -211,65 +204,50 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
         Util.brewPotions(brewingHandler.getItems(), ingredient, POTIONS);
         Events.potionBrew(this,ingredient);
 
-        BlockPos blockpos = this.getPos();
-        if (ingredient.getItem().hasRecipeRemainder()) {
-            ItemStack ingredientContainerItem = ingredient.getItem().getRecipeRemainder().getDefaultStack();
-            ingredient.decrement(1);
+        BlockPos blockpos = this.getBlockPos();
+        if (ingredient.getItem().hasCraftingRemainingItem()) {
+            ItemStack ingredientContainerItem = ingredient.getItem().getCraftingRemainingItem().getDefaultInstance();
+            ingredient.shrink(1);
             if (ingredient.isEmpty()) {
                 ingredient = ingredientContainerItem;
-            } else if (!this.world.isClient) {
-                ItemScatterer.spawn(this.world, blockpos.getX(), blockpos.getY(), blockpos.getZ(), ingredientContainerItem);
+            } else if (!this.level.isClientSide) {
+                Containers.dropItemStack(this.level, blockpos.getX(), blockpos.getY(), blockpos.getZ(), ingredientContainerItem);
             }
         }
         //todo
-        else ingredient.decrement(1);
+        else ingredient.shrink(1);
 
-        this.brewingHandler.setStack(pair.getLeft(), ingredient);
+        this.brewingHandler.setItem(pair.getLeft(), ingredient);
         //plays brewing stand block brewing finished sound
-        this.world.syncWorldEvent(1035, blockpos, 0);
-    }
-
-    private boolean canMilkify() {
-        for (int i : POTIONS) {
-            ItemStack potionStack = brewingHandler.getStack(i);
-            if (potionStack.getItem() instanceof PotionItem) {
-                Potion potion = PotionUtil.getPotion(potionStack);
-                String name = Registry.POTION.getId(potion).toString();
-                if (name.contains("long") || name.contains("strong")) {
-                    continue;
-                }
-                return true;
-            }
-        }
-        return false;
+        this.level.levelEvent(1035, blockpos, 0);
     }
 
     @Override
-    public void readNbt(NbtCompound nbt) {
-        super.readNbt(nbt);
-        Inventories.readNbt(nbt,brewingHandler.getItems());
+    public void load(CompoundTag nbt) {
+        super.load(nbt);
+        ContainerHelper.loadAllItems(nbt,brewingHandler.getItems());
         this.brewTime = nbt.getShort("BrewTime");
         this.fuel = nbt.getInt("Fuel");
         xp = nbt.getInt("xp");
     }
 
     @Override
-    public void writeNbt(NbtCompound compound) {
-        super.writeNbt(compound);
+    public void saveAdditional(CompoundTag compound) {
+        super.saveAdditional(compound);
         compound.putShort("BrewTime", (short)this.brewTime);
-        Inventories.writeNbt(compound,brewingHandler.getItems());
+        ContainerHelper.saveAllItems(compound,brewingHandler.getItems());
         compound.putInt("Fuel", this.fuel);
         compound.putInt("xp",xp);
     }
 
     @Override
-    public Text getDisplayName() {
+    public Component getDisplayName() {
         return getDefaultName();
     }
 
     @Nullable
     @Override
-    public ScreenHandler createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
+    public AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player player) {
         return new AdvancedBrewingStandContainer(id, playerInventory, brewingHandler, this.data,this);
     }
 
@@ -279,11 +257,11 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
     }
 
     @Override
-    public void dump(PlayerEntity player) {
+    public void dump(Player player) {
         if(xp > 0) {
-            Util.splitAndSpawnExperience(world, player.getPos(), xp);
+            Util.splitAndSpawnExperience(level, player.position(), xp);
             xp = 0;
-            markDirty();
+            setChanged();
         }
     }
 
@@ -296,10 +274,10 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Nam
         return blockEntityType2 == blockEntityType ? (BlockEntityTicker<A>) blockEntityTicker : null;
     }
 
-    protected static void markDirty(World world, BlockPos blockPos, BlockState blockState) {
-        world.markDirty(blockPos);
+    protected static void setChanged(Level world, BlockPos blockPos, BlockState blockState) {
+        world.blockEntityChanged(blockPos);
         if (!blockState.isAir()) {
-            world.updateComparators(blockPos, blockState.getBlock());
+            world.updateNeighbourForOutputSignal(blockPos, blockState.getBlock());
         }
     }
 }

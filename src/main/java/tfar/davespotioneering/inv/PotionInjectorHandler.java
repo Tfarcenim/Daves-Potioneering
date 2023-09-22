@@ -1,16 +1,16 @@
 package tfar.davespotioneering.inv;
 
-import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
 import tfar.davespotioneering.item.GauntletItem;
 import tfar.davespotioneering.mixin.SimpleContainerAccess;
 
 import javax.annotation.Nonnull;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
-public class PotionInjectorHandler extends SimpleInventory {
+public class PotionInjectorHandler extends SimpleContainer {
 
     public static final int GAUNTLET = 6;
     public static final int BLAZE = 7;
@@ -20,7 +20,7 @@ public class PotionInjectorHandler extends SimpleInventory {
     }
 
     @Override
-    public boolean isValid(int slot, @Nonnull ItemStack stack) {
+    public boolean canPlaceItem(int slot, @Nonnull ItemStack stack) {
         switch (slot) {
             case 0:
             case 1:
@@ -34,17 +34,17 @@ public class PotionInjectorHandler extends SimpleInventory {
             case BLAZE:
                 return stack.getItem() == Items.BLAZE_POWDER;
         }
-        return super.isValid(slot, stack);
+        return super.canPlaceItem(slot, stack);
     }
 
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         if (stack.isEmpty())
             return ItemStack.EMPTY;
 
-        if (!isValid(slot, stack))
+        if (!canPlaceItem(slot, stack))
             return stack;
 
-        ItemStack existing = getStack(slot);
+        ItemStack existing = getItem(slot);
 
         int limit = getStackLimit(stack);
 
@@ -65,11 +65,11 @@ public class PotionInjectorHandler extends SimpleInventory {
         {
             if (existing.isEmpty())
             {
-                this.setStack(slot, reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, limit) : stack);
+                this.setItem(slot, reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, limit) : stack);
             }
             else
             {
-                existing.increment(reachedLimit ? limit : stack.getCount());
+                existing.grow(reachedLimit ? limit : stack.getCount());
             }
            // onContentsChanged(slot);
         }
@@ -79,32 +79,32 @@ public class PotionInjectorHandler extends SimpleInventory {
 
     protected int getStackLimit(@Nonnull ItemStack stack)
     {
-        return Math.min(getMaxCountPerStack(), stack.getMaxCount());
+        return Math.min(getMaxStackSize(), stack.getMaxStackSize());
     }
 
     //needed to prevent markDirty updates when loading from save
-    public void readTags(NbtList tags) {
+    public void readTags(ListTag tags) {
         for (int i = 0; i < tags.size(); i++)
         {
-            NbtCompound itemTags = tags.getCompound(i);
+            CompoundTag itemTags = tags.getCompound(i);
             int slot = itemTags.getInt("Slot");
 
-            if (slot >= 0 && slot < ((SimpleContainerAccess)this).getStacks().size())
+            if (slot >= 0 && slot < items.size())
             {
-                ((SimpleContainerAccess)this).getStacks().set(i,ItemStack.fromNbt(itemTags));
+                items.set(i,ItemStack.of(itemTags));
             }
         }
     }
 
-    public NbtList getTags() {
-        NbtList nbtTagList = new NbtList();
-        for (int i = 0; i < this.size(); i++)
+    public ListTag getTags() {
+        ListTag nbtTagList = new ListTag();
+        for (int i = 0; i < this.getContainerSize(); i++)
         {
-            if (!((SimpleContainerAccess)this).getStacks().get(i).isEmpty())
+            if (!items.get(i).isEmpty())
             {
-                NbtCompound itemTag = new NbtCompound();
+                CompoundTag itemTag = new CompoundTag();
                 itemTag.putInt("Slot", i);
-                ((SimpleContainerAccess)this).getStacks().get(i).writeNbt(itemTag);
+                items.get(i).save(itemTag);
                 nbtTagList.add(itemTag);
             }
         }

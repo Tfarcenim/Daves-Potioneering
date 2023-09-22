@@ -5,14 +5,14 @@ import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
-import net.minecraft.block.Block;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtil;
-import net.minecraft.potion.Potions;
-import net.minecraft.recipe.BrewingRecipeRegistry;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionBrewing;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import tfar.davespotioneering.block.ModCauldronInteractions;
 import tfar.davespotioneering.config.ClothConfig;
 import tfar.davespotioneering.init.*;
@@ -39,9 +39,9 @@ public class DavesPotioneering implements ModInitializer {
         ModSoundEvents.register();
         ModParticleTypes.register();
 
-        Set<Block> newSet = new HashSet<>(((BlockEntityTypeAcces)BlockEntityType.LECTERN).getBlocks());
+        Set<Block> newSet = new HashSet<>(((BlockEntityTypeAcces)BlockEntityType.LECTERN).getValidBlocks());
         newSet.add(ModBlocks.MAGIC_LECTERN);
-        ((BlockEntityTypeAcces)BlockEntityType.LECTERN).setBlocks(newSet);
+        ((BlockEntityTypeAcces)BlockEntityType.LECTERN).setValidBlocks(newSet);
 
 
       //  UseItemCallback.EVENT.register(Events::potionCooldown);
@@ -60,32 +60,32 @@ public class DavesPotioneering implements ModInitializer {
     }
 
     protected static void strongRecipe(Potion potion,Potion strong) {
-        BrewingRecipeRegistry.registerPotionRecipe(potion, Items.GLOWSTONE_DUST, strong);
+        PotionBrewing.addMix(potion, Items.GLOWSTONE_DUST, strong);
     }
 
     protected static void extendedRecipe(Potion potion,Potion extended) {
-        BrewingRecipeRegistry.registerPotionRecipe(potion, Items.REDSTONE, extended);
+        PotionBrewing.addMix(potion, Items.REDSTONE, extended);
     }
 
     protected static void splashRecipe(Potion potion,Potion splash) {
-        BrewingRecipeRegistry.registerPotionRecipe(potion, Items.GUNPOWDER, splash);
+        PotionBrewing.addMix(potion, Items.GUNPOWDER, splash);
     }
 
     protected static void lingerRecipe(Potion potion,Potion splash) {
-        BrewingRecipeRegistry.registerPotionRecipe(potion, Items.DRAGON_BREATH, splash);
+        PotionBrewing.addMix(potion, Items.DRAGON_BREATH, splash);
     }
 
     public static void addPotions() {
         strongRecipe(Potions.INVISIBILITY,ModPotions.STRONG_INVISIBILITY);
 
         ItemStack milkPot = new ItemStack(Items.POTION);
-        PotionUtil.setPotion(milkPot,ModPotions.MILK);
+        PotionUtils.setPotion(milkPot,ModPotions.MILK);
 
         ItemStack splashMilkPot = new ItemStack(Items.SPLASH_POTION);
-        PotionUtil.setPotion(splashMilkPot,ModPotions.MILK);
+        PotionUtils.setPotion(splashMilkPot,ModPotions.MILK);
 
         ItemStack lingerMilkPot = new ItemStack(Items.LINGERING_POTION);
-        PotionUtil.setPotion(lingerMilkPot,ModPotions.MILK);
+        PotionUtils.setPotion(lingerMilkPot,ModPotions.MILK);
 
      //   splashRecipe(ModPotions.MILK,splashMilkPot);
 

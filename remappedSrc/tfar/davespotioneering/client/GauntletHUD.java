@@ -1,45 +1,45 @@
 package tfar.davespotioneering.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.MinecraftClient;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.potion.Potion;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.alchemy.Potion;
 import tfar.davespotioneering.DavesPotioneering;
-import tfar.davespotioneering.ModConfig;
+import tfar.davespotioneering.config.ClothConfig;
 import tfar.davespotioneering.init.ModSoundEvents;
 import tfar.davespotioneering.item.GauntletItem;
+import tfar.davespotioneering.mixin.IngameGuiAccess;
 
-public class GauntletHUD extends DrawableHelper {
-    public static final Identifier GAUNTLET_ICON_LOC = new Identifier(DavesPotioneering.MODID, "textures/gauntlet_icons/");
-    public final static GauntletHUD hudInstance = new GauntletHUD();
+public class GauntletHUD {
+    public static final ResourceLocation GAUNTLET_ICON_LOC = new ResourceLocation(DavesPotioneering.MODID, "textures/gauntlet_icons/");
 
-    public static Identifier getGauntletIconLoc(String fileName) {
-        return new Identifier(GAUNTLET_ICON_LOC.getNamespace(), GAUNTLET_ICON_LOC.getPath() + fileName + ".png");
+    private static final int TEX_H = 41;
+
+    public static ResourceLocation getGauntletIconLoc(String fileName) {
+        return new ResourceLocation(GAUNTLET_ICON_LOC.getNamespace(), GAUNTLET_ICON_LOC.getPath() + fileName + ".png");
     }
 
-    private Potion activePotion = null;
-    private Potion prePotion = null;
-    private Potion postPotion = null;
-    private final Identifier hud = getGauntletIconLoc("hud");
+    private static Potion activePotion = null;
+    private static Potion prePotion = null;
+    private static Potion postPotion = null;
+    private static final ResourceLocation hud_texture = getGauntletIconLoc("hud");
 
-    public int x = ModConfig.Client.gauntlet_hud_x;
-    public int y = ModConfig.Client.gauntlet_hud_y;
-    public HudPresets preset = ModConfig.Client.gauntlet_hud_preset;
-
-    public static final MinecraftClient mc = MinecraftClient.getInstance();
+    public static final Minecraft mc = Minecraft.getInstance();
 
     private static boolean forwardCycle = false;
     private static boolean backwardCycle = false;
@@ -47,107 +47,120 @@ public class GauntletHUD extends DrawableHelper {
     private static final int maxCooldown = 40;
     private static int cooldown = maxCooldown;
 
-    public void init(Potion activePotion, Potion prePotion, Potion postPotion) {
-        this.activePotion = activePotion;
-        this.prePotion = prePotion;
-        this.postPotion = postPotion;
+    public static void init(Potion activePotion, Potion prePotion, Potion postPotion) {
+        GauntletHUD.activePotion = activePotion;
+        GauntletHUD.prePotion = prePotion;
+        GauntletHUD.postPotion = postPotion;
     }
 
-    public void render(MatrixStack matrixStack) {
-        RenderSystem.pushMatrix();
-        RenderSystem.color4f(1, 1, 1, 1);
-        mc.getTextureManager().bindTexture(hud);
+    public static void render(PoseStack matrixStack) {
+        matrixStack.pushPose();
+        RenderSystem.setShaderColor(1, 1, 1, 1);
+        RenderSystem.setShaderTexture(0,hud_texture);
 
-        int windowW = mc.getWindow().getScaledWidth();
-        int windowH = mc.getWindow().getScaledHeight();
+        Gui hud = mc.gui;
 
-        int xFixed = MathHelper.clamp((windowW + x)/2, 0, windowW-120);
-        int yFixed = MathHelper.clamp(windowH+y, 0, windowH-41);
+        int fade = ((IngameGuiAccess)hud).getHeldItemTooltipFade();
+
+        int windowW = mc.getWindow().getGuiScaledWidth();
+        int windowH = mc.getWindow().getGuiScaledHeight();
+
+        int xFixed = Mth.clamp((windowW + DavesPotioneering.CONFIG.gauntlet_hud_x)/2, 0, windowW-120);
+        int yFixed = Mth.clamp(windowH+DavesPotioneering.CONFIG.gauntlet_hud_y, 0, windowH-TEX_H);
+
+
+        if(DavesPotioneering.CONFIG.gauntlet_hud_preset == HudPreset.ABOVE_HOTBAR) {
+            int height = TEX_H + 50;
+            if (fade > 0) {
+                height += 10;
+            }
+            yFixed = windowH - height;
+        }
 
         if (forwardCycle) {
             cooldown--;
-            drawTexture(matrixStack, xFixed, yFixed, getZOffset(), 0, 87, 120, 41, 128, 128);
+            DrawableHelper.drawTexture(matrixStack, xFixed, yFixed, hud.getZOffset(), 0, 87, 120, TEX_H, 128, 128);
             if (cooldown <= 0) {
-               mc.getSoundManager().play(PositionedSoundInstance.master(ModSoundEvents.GAUNTLET_SCROLL, 1.0F));
+               mc.getSoundManager().play(SimpleSoundInstance.forUI(ModSoundEvents.GAUNTLET_SCROLL, 1.0F));
                 forwardCycle = false;
                 cooldown = maxCooldown;
             }
         } else if (backwardCycle) {
             cooldown--;
-            drawTexture(matrixStack, xFixed, yFixed, getZOffset(), 0, 44, 120, 41, 128, 128);
+            DrawableHelper.drawTexture(matrixStack, xFixed, yFixed, hud.getZOffset(), 0, 44, 120, TEX_H, 128, 128);
             if (cooldown <= 0) {
-                mc.getSoundManager().play(PositionedSoundInstance.master(ModSoundEvents.GAUNTLET_SCROLL, 1.0F));
+                mc.getSoundManager().play(SimpleSoundInstance.forUI(ModSoundEvents.GAUNTLET_SCROLL, 1.0F));
                 backwardCycle = false;
                 cooldown = maxCooldown;
             }
         } else {
-            drawTexture(matrixStack, xFixed, yFixed, getZOffset(), 0, 1, 120, 41, 128, 128);
+            DrawableHelper.drawTexture(matrixStack, xFixed, yFixed, hud.getZOffset(), 0, 1, 120, TEX_H, 128, 128);
         }
 
-        PlayerEntity player = MinecraftClient.getInstance().player;
+        Player player = Minecraft.getInstance().player;
         if (player == null) return;
-        ItemStack g = player.getMainHandStack();
+        ItemStack g = player.getMainHandItem();
 
         CompoundTag info = g.getOrCreateTag().getCompound("info");
         renderPotion(prePotion, matrixStack, xFixed + 3, yFixed + 21, GauntletItem.getCooldownFromPotionByIndex(info.getInt("activePotionIndex")-1, g), false);
         renderPotion(activePotion, matrixStack, xFixed + 51, yFixed + 5, GauntletItem.getCooldownFromPotionByIndex(info.getInt("activePotionIndex"), g), true);
         renderPotion(postPotion, matrixStack, xFixed + 99, yFixed + 21, GauntletItem.getCooldownFromPotionByIndex(info.getInt("activePotionIndex")+1, g), false);
-        RenderSystem.popMatrix();
+        matrixStack.popPose();
     }
 
-    private void renderPotion(Potion potion, MatrixStack matrixStack, int x, int y, int cooldown, boolean isActivePotion) {
+    private static void renderPotion(Potion potion, PoseStack matrixStack, int x, int y, int cooldown, boolean isActivePotion) {
         if (potion == null) return;
 
-        Identifier name = Registry.POTION.getId(potion);
+        ResourceLocation name = Registry.POTION.getId(potion);
 
         if (potion.getEffects().isEmpty()) return;
 
-        RenderSystem.pushMatrix();
-        RenderSystem.color4f(1, 1, 1, 1);
+        matrixStack.pushPose();
+        RenderSystem.setShaderColor(1, 1, 1, 1);
 
         if (potion.getEffects().size() > 1) {
             if (name.toString().contains("turtle_master")) {
-                mc.getTextureManager().bindTexture(getGauntletIconLoc("turtle_master"));
-            } else if (mc.getResourceManager().containsResource(getGauntletIconLoc(name.toString()))) {
-                mc.getTextureManager().bindTexture(getGauntletIconLoc(name.toString()));
+                RenderSystem.setShaderTexture(0,getGauntletIconLoc("turtle_master"));
+            } else if (mc.getResourceManager().getResource(getGauntletIconLoc(name.toString())).isPresent()) {
+                RenderSystem.setShaderTexture(0,getGauntletIconLoc(name.toString()));
             } else {
-                mc.getTextureManager().bindTexture(getGauntletIconLoc("unknown"));
+                RenderSystem.setShaderTexture(0,getGauntletIconLoc("unknown"));
             }
-            drawTexture(matrixStack, x, y, getZOffset(), 0, 0, 18, 18, 18, 18);
+            DrawableHelper.drawTexture(matrixStack, x, y, mc.gui.getZOffset(), 0, 0, 18, 18, 18, 18);
         } else {
-            StatusEffect effect = potion.getEffects().get(0).getEffectType();
-            Sprite sprite = mc.getStatusEffectSpriteManager().getSprite(effect);
-            mc.getTextureManager().bindTexture(sprite.getAtlas().getId());
-            drawSprite(matrixStack, x, y, 0, 18, 18, sprite);
+            MobEffect effect = potion.getEffects().get(0).getEffect();
+            TextureAtlasSprite sprite = mc.getMobEffectTextures().get(effect);
+            RenderSystem.setShaderTexture(0,sprite.getAtlas().getId());
+            DrawableHelper.drawSprite(matrixStack, x, y, 0, 18, 18, sprite);
         }
 
         // render cooldown, modified from ItemRenderer
         if (cooldown > 0.0F) {
-            RenderSystem.pushMatrix();
+            matrixStack.pushPose();
             RenderSystem.disableDepthTest();
             RenderSystem.disableTexture();
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
-            RenderSystem.translatef(1, 1, getZOffset()+1);
-            Tessellator tessellator1 = Tessellator.getInstance();
-            BufferBuilder bufferbuilder1 = tessellator1.getBuffer();
+            matrixStack.translate(1, 1, mc.gui.getZOffset()+1);
+            Tesselator tessellator = Tesselator.getInstance();
+            BufferBuilder bufferbuilder = tessellator.getBuilder();
             if (isActivePotion) {
                 int scale = getScaledCooldown(18, cooldown);
-                this.draw(bufferbuilder1, x, y + scale, 18, 18-scale, 255, 255, 255, 127);
+                draw(bufferbuilder, x, y + scale, 18, 18-scale, 255, 255, 255, 127);
             } else {
                 int scale = getScaledCooldown(16, cooldown);
-                this.draw(bufferbuilder1, x, y + scale, 17, 16-scale, 255, 255, 255, 127);
+                draw(bufferbuilder, x, y + scale, 17, 16-scale, 255, 255, 255, 127);
             }
             RenderSystem.enableTexture();
             RenderSystem.enableDepthTest();
-            RenderSystem.popMatrix();
+            matrixStack.popPose();
         }
 
-        RenderSystem.popMatrix();
+        matrixStack.popPose();
     }
 
-    private int getScaledCooldown(float pixels, float cooldown) {
-        float totalCooldown = ModConfig.Server.gauntlet_cooldown;
+    private static int getScaledCooldown(float pixels, float cooldown) {
+        float totalCooldown = DavesPotioneering.CONFIG.gauntlet_cooldown;
         float progress = totalCooldown - cooldown;
 
         if (totalCooldown != 0) {
@@ -159,19 +172,13 @@ public class GauntletHUD extends DrawableHelper {
     }
 
     // copy-pasted from ItemRenderer class
-    private void draw(BufferBuilder renderer, int x, int y, int width, int height, int red, int green, int blue, int alpha) {
-        renderer.begin(7, VertexFormats.POSITION_COLOR);
-        renderer.vertex(x, y, 0.0D).color(red, green, blue, alpha).next();
-        renderer.vertex(x, y + height, 0.0D).color(red, green, blue, alpha).next();
-        renderer.vertex(x + width, y + height, 0.0D).color(red, green, blue, alpha).next();
-        renderer.vertex(x + width, y, 0.0D).color(red, green, blue, alpha).next();
-        Tessellator.getInstance().draw();
-    }
-
-    public void refreshPosition() {
-    //    x = ModConfig.Client.client.get();
-    //    y = ModConfig.Client.gauntlet_hud_y.get();
-    //    preset = ModConfig.Client.gauntlet_hud_preset.get();
+    private static void draw(BufferBuilder renderer, int x, int y, int width, int height, int red, int green, int blue, int alpha) {
+        renderer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        renderer.vertex(x, y, 0.0D).color(red, green, blue, alpha).endVertex();
+        renderer.vertex(x, y + height, 0.0D).color(red, green, blue, alpha).endVertex();
+        renderer.vertex(x + width, y + height, 0.0D).color(red, green, blue, alpha).endVertex();
+        renderer.vertex(x + width, y, 0.0D).color(red, green, blue, alpha).endVertex();
+        Tesselator.getInstance().end();
     }
 
     public static void forwardCycle() {
@@ -182,7 +189,7 @@ public class GauntletHUD extends DrawableHelper {
         backwardCycle = true;
     }
 
-    public enum HudPresets{
+    public enum HudPreset {
         TOP_LEFT,
         TOP_RIGHT,
         BTM_LEFT,

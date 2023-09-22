@@ -1,32 +1,28 @@
 package tfar.davespotioneering.client;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import tfar.davespotioneering.DavesPotioneering;
-import tfar.davespotioneering.config.ClothConfig;
 
 public class GauntletHUDMovementScreen extends Screen {
 
     private int x;
     private int y;
-    private GauntletHUD.HudPreset preset;
+    private GauntletHUD.Preset preset;
 
     protected GauntletHUDMovementScreen() {
-        super(Text.empty());
+        super(Component.empty());
     }
 
-    private static final Text info =Text.translatable("davespotioneering.gui.moveGauntletHUD");
-
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
-        GauntletHUD.render(matrixStack);
-        client.textRenderer.drawWithShadow(matrixStack, info, 6, 5, Formatting.WHITE.getColorValue());
+        matrixStack.drawString(font,Component.translatable("davespotioneering.gui.moveGauntletHUD"), 6, 5, ChatFormatting.WHITE.getColor());
     }
 
     public static final String KEY = "davespotioneering.gui.moveGauntletHUD.preset";
@@ -34,57 +30,36 @@ public class GauntletHUDMovementScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-
-        int y1 = 20;
-
-        int x1 = width / 2 - 40;
-
-        int dist = 80;
-
-        addDrawableChild(new ButtonWidget(x1 - 2 * dist, y1, 75, 20, Text.translatable(KEY + GauntletHUD.HudPreset.TOP_LEFT.ordinal()), (button) -> {
-            x = getFixedPositionValue(5, true);
-            y = getFixedPositionValue(5, false);
-            preset = GauntletHUD.HudPreset.TOP_LEFT;
-        }));
-        addDrawableChild(new ButtonWidget(x1 - dist, y1, 75, 20, Text.translatable(KEY + GauntletHUD.HudPreset.TOP_RIGHT.ordinal()), (button) -> {
-            x = getFixedPositionValue(width - 120 - 5, true);
-            y = getFixedPositionValue(5, false);
-            preset = GauntletHUD.HudPreset.TOP_RIGHT;
-        }));
-        addDrawableChild(new ButtonWidget(x1, y1, 75, 20, Text.translatable(KEY + GauntletHUD.HudPreset.BTM_LEFT.ordinal()), (button) -> {
-            x = getFixedPositionValue(5, true);
-            y = getFixedPositionValue(height - 45 - 5, false);
-            preset = GauntletHUD.HudPreset.BTM_LEFT;
-        }));
-
-        addDrawableChild(new ButtonWidget(x1 + dist, y1, 75, 20, Text.translatable(KEY + GauntletHUD.HudPreset.BTM_RIGHT.ordinal()), (button) -> {
-            x = getFixedPositionValue(width - 120 - 5, true);
-            y = getFixedPositionValue(height - 45 - 5, false);
-            preset = GauntletHUD.HudPreset.BTM_RIGHT;
-        }));
-
-        addDrawableChild(new ButtonWidget(x1 + 2 * dist, y1, 75, 20, Text.translatable(KEY + GauntletHUD.HudPreset.ABOVE_HOTBAR.ordinal()), (button) -> {
-            if (client != null && client.player != null && client.player.isCreative()) {
-                x = getFixedPositionValue((width - 120) / 2, true);
-                y = getFixedPositionValue(height - 42 - 25, false);
-            } else {
-                x = getFixedPositionValue((width - 120) / 2, true);
-                y = getFixedPositionValue(height - 42 - 40, false);
-            }
-            preset = GauntletHUD.HudPreset.ABOVE_HOTBAR;
-        }));
-    }
-
-    public static int getFixedPositionValue(int value, boolean isWidth) {
-        return isWidth ? value*2-MinecraftClient.getInstance().getWindow().getScaledWidth() : value-MinecraftClient.getInstance().getWindow().getScaledHeight();
+        addRenderableWidget(Button.builder(Component.translatable(KEY + GauntletHUD.Preset.TOP_LEFT.ordinal()), (button) -> {
+            x = 5;
+            y = 5;
+            preset = GauntletHUD.Preset.TOP_LEFT;
+        }).pos(5, 15).size( 75, 20).build());
+        addRenderableWidget(Button.builder(Component.translatable(KEY + GauntletHUD.Preset.TOP_RIGHT.ordinal()),(button) -> {
+            x = width - GauntletHUD.TEX_WIDTH - 5;
+            y = 5;
+            preset = GauntletHUD.Preset.TOP_RIGHT;
+        }).pos(85, 15).size(75, 20).build());
+        addRenderableWidget(Button.builder(Component.translatable(KEY + GauntletHUD.Preset.BTM_LEFT.ordinal()), (button) -> {
+            x = 5;
+            y = height - GauntletHUD.TEX_HEIGHT - 5;
+            preset = GauntletHUD.Preset.BTM_LEFT;
+        }).pos(165, 15).size(75, 20).build());
+        addRenderableWidget(Button.builder( Component.translatable(KEY + GauntletHUD.Preset.BTM_RIGHT.ordinal()), (button) -> {
+            x = width - GauntletHUD.TEX_WIDTH - 5;
+            y = height - GauntletHUD.TEX_HEIGHT - 5;
+            preset = GauntletHUD.Preset.BTM_RIGHT;
+        }).pos(245, 15).size(75, 20).build());
+        addRenderableWidget(Button.builder(Component.translatable(KEY + GauntletHUD.Preset.ABOVE_HOTBAR.ordinal()),
+                (button) -> preset = GauntletHUD.Preset.ABOVE_HOTBAR).pos(325, 15).size(75, 20).build());
     }
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        if (button == 0) {
-            x = getFixedPositionValue((int) mouseX, true);
-            y = getFixedPositionValue((int) mouseY, false);
-            preset = GauntletHUD.HudPreset.FREE_MOVE;
+        if (button == 0 && getChildAt(mouseX,mouseY).isEmpty()) {// do not attempt to drag when hovering over a button!
+            x = (int) mouseX;
+            y = (int) mouseY;
+            preset = GauntletHUD.Preset.FREE_MOVE;
         }
         return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
     }
@@ -100,7 +75,7 @@ public class GauntletHUDMovementScreen extends Screen {
     }
 
     public static void open() {
-        MinecraftClient.getInstance().setScreen(null);
-        MinecraftClient.getInstance().setScreen(new GauntletHUDMovementScreen());
+        Minecraft.getInstance().setScreen(null);
+        Minecraft.getInstance().setScreen(new GauntletHUDMovementScreen());
     }
 }

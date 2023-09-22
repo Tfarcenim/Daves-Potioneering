@@ -1,32 +1,30 @@
 package tfar.davespotioneering.item;
 
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffectUtil;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.SwordItem;
-import net.minecraft.item.ToolMaterials;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.nbt.*;
-import net.minecraft.potion.Potion;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Pair;
-import net.minecraft.util.TypedActionResult;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.*;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
-import tfar.davespotioneering.ModConfig;
-import tfar.davespotioneering.init.ModItems;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffectUtil;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.level.Level;
+import tfar.davespotioneering.DavesPotioneering;
+import tfar.davespotioneering.config.ClothConfig;
 import tfar.davespotioneering.init.ModSoundEvents;
 import tfar.davespotioneering.menu.PotionInjectorMenu;
 
@@ -35,46 +33,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public class GauntletItem extends SwordItem {
+public class GauntletItem extends SwordItem implements Perspective {
 
-    public GauntletItem(Settings properties) {
-        super(ToolMaterials.NETHERITE, 4, -2.8f, properties);
+    public GauntletItem(Properties properties) {
+        super(Tiers.NETHERITE, 4, -2.8f, properties);
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity playerIn, Hand handIn) {
-        ItemStack stack = playerIn.getStackInHand(handIn);
-        if (playerIn.isSneaking()) {
+    public InteractionResultHolder<ItemStack> use(Level world, Player playerIn, InteractionHand handIn) {
+        ItemStack stack = playerIn.getItemInHand(handIn);
+        if (playerIn.isShiftKeyDown()) {
 //                PacketHandler.sendToClient(new GauntletHUDMovementGuiPacket(), (ServerPlayerEntity) playerIn);
 
 
             boolean active = stack.getOrCreateTag().getBoolean("active");
 
-            int blaze = getBlaze(stack);
+            int blaze = stack.getMaxDamage() - stack.getDamageValue();
 
-            if (!world.isClient && (blaze > 0 || active)) {
+            if (!world.isClientSide && (blaze > 0 || active)) {
                 stack.getOrCreateTag().putBoolean("active", !active);
-                world.playSound(null,playerIn.getX(),playerIn.getY(),playerIn.getZ(),active ? ModSoundEvents.GAUNTLET_TURNING_OFF : ModSoundEvents.GAUNTLET_TURNING_ON, SoundCategory.PLAYERS,.5f,1);
+                world.playSound(null, playerIn.getX(), playerIn.getY(), playerIn.getZ(), active ? ModSoundEvents.GAUNTLET_TURNING_OFF : ModSoundEvents.GAUNTLET_TURNING_ON, SoundSource.PLAYERS, .5f, 1);
             } else {
             }
-            return TypedActionResult.success(stack);
+            return InteractionResultHolder.success(stack);
         }
-        return TypedActionResult.pass(stack);
-    }
-
- //   @Override
-    public int getDamage(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
-        double blaze = 0;
-        if (tag != null) {
-            CompoundTag info = tag.getCompound("info");
-            blaze = info.getInt("blaze");
-        }
-        return PotionInjectorMenu.BLAZE_CAP - (int) blaze;
+        return InteractionResultHolder.pass(stack);
     }
 
     @Override
-    public boolean isDamageable() {
+    public boolean canBeDepleted() {
         return false;
     }
 
@@ -83,41 +70,36 @@ public class GauntletItem extends SwordItem {
         return stack.getCount() == 1;
     }
 
-   // @Override
-  //  public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-  //      return oldStack.getItem() != newStack.getItem();
-  //  }
+    // @Override
+    //  public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+    //      return oldStack.getItem() != newStack.getItem();
+    //  }
 
-  //  @Override
-    public boolean showDurabilityBar(ItemStack stack) {
-        CompoundTag info = stack.getOrCreateTag().getCompound("info");
-        double blaze = info.getInt("blaze");
-        return blaze > 0;
-    }
-
-  //  @Override
+    //  @Override
     public int getRGBDurabilityForDisplay(ItemStack stack) {
-        return Formatting.GOLD.getColorValue();
+        return ChatFormatting.GOLD.getColor();
     }
 
     @Override
-    public boolean postHit(ItemStack stack, LivingEntity victim, LivingEntity attacker) {
+    public boolean hurtEnemy(ItemStack stack, LivingEntity victim, LivingEntity attacker) {
         if (stack.getItem() instanceof GauntletItem) {
             CompoundTag info = stack.getOrCreateTag().getCompound("info");
             Potion[] potions = getPotionsFromNBT(info);
-            if (attacker instanceof PlayerEntity) {
+            if (attacker instanceof Player) {
 
                 boolean active = stack.getTag().getBoolean("active");
 
-                if (potions != null && getCooldownFromPotionByIndex(info.getInt("activePotionIndex"), stack) <= 0 && info.getInt("blaze") > 0 && active) {
+                if (potions != null && getCooldownFromPotionByIndex(info.getInt("activePotionIndex"), stack) <= 0 && (stack.getMaxDamage() - stack.getDamageValue()) > 0 && active) {
                     Potion potion = potions[0];
-                    for (StatusEffectInstance effectInstance : potion.getEffects()) {
-                        victim.addStatusEffect(new StatusEffectInstance(effectInstance));
+                    for (MobEffectInstance effectInstance : potion.getEffects()) {
+                        victim.addEffect(new MobEffectInstance(effectInstance));
                     }
-                    info.putInt("blaze", info.getInt("blaze") - 1);
 
-                    if (info.getInt("blaze") == 0) {
-                        stack.getTag().putBoolean("active",false);
+                    stack.hurtAndBreak(1, attacker, livingEntity -> {
+                    });
+
+                    if (stack.getDamageValue() == stack.getMaxDamage()) {
+                        stack.getTag().putBoolean("active", false);
                     }
 
                     ListTag cooldownMap;
@@ -128,100 +110,93 @@ public class GauntletItem extends SwordItem {
                         cooldownMap.add(0, new IntArrayTag(new ArrayList<>()));
                         cooldownMap.add(1, new IntArrayTag(new ArrayList<>()));
                     }
-                    addPotionCooldownByIndex(info.getInt("activePotionIndex"), ModConfig.Server.gauntlet_cooldown, stack, cooldownMap);
+                    addPotionCooldownByIndex(info.getInt("activePotionIndex"), DavesPotioneering.CONFIG.gauntlet_cooldown, stack, cooldownMap);
                 }
             }
         }
-        return super.postHit(stack, victim, attacker);
+        return true;
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, @Nullable World worldIn, List<Text> tooltip, TooltipContext flagIn) {
-        super.appendTooltip(stack, worldIn, tooltip, flagIn);
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+        super.appendHoverText(stack, worldIn, tooltip, flagIn);
 
-        tooltip.add(new TranslatableText(getTranslationKey()+".hold_shift.desc"));
+        tooltip.add(Component.translatable(getDescriptionId() + ".hold_shift.desc"));
         if (Screen.hasShiftDown())
-            tooltip.add(this.getShiftDescription().formatted(Formatting.GRAY));
+            tooltip.add(this.getShiftDescription().withStyle(ChatFormatting.GRAY));
 
-        tooltip.add(new TranslatableText(getTranslationKey()+".hold_ctrl.desc"));
+        tooltip.add(Component.translatable(getDescriptionId() + ".hold_ctrl.desc"));
         if (Screen.hasControlDown())
-            tooltip.add(this.getCtrlDescription().formatted(Formatting.GRAY));
+            tooltip.add(this.getCtrlDescription().withStyle(ChatFormatting.GRAY));
 
-        Pair<List<StatusEffectInstance>, List<Potion>> tuple = getEffectsFromGauntlet(stack);
+        Tuple<List<MobEffectInstance>, List<Potion>> tuple = getEffectsFromGauntlet(stack);
         if (tuple == null) return;
-        if (tuple.getLeft().isEmpty()) return;
-        tooltip.add(new LiteralText(" "));
+        if (tuple.getA().isEmpty()) return;
+        tooltip.add(Component.literal(" "));
 
-        for (StatusEffectInstance instance : tuple.getLeft()) {
-            TranslatableText effectFormatted = new TranslatableText(instance.getTranslationKey());
-            effectFormatted.formatted(instance.getEffectType().getType().getFormatting());
-            LiteralText amplifier = new LiteralText("");
-            LiteralText duration;
-            TranslatableText product;
+        for (MobEffectInstance instance : tuple.getA()) {
+            MutableComponent effectFormatted = Component.translatable(instance.getDescriptionId());
+            effectFormatted.withStyle(instance.getEffect().getCategory().getTooltipFormatting());
+            MutableComponent amplifier = Component.literal("");
+            MutableComponent duration;
+            MutableComponent product;
             if (instance.getAmplifier() > 0) {
-                amplifier = new LiteralText(String.valueOf(instance.getAmplifier()));
+                amplifier = Component.literal(String.valueOf(instance.getAmplifier()));
             }
             if (instance.getDuration() > 1) {
-                duration = new LiteralText(StatusEffectUtil.durationToString(instance, 1f));
-                product = new TranslatableText("davespotioneering.tooltip.gauntlet.withDuration", effectFormatted, amplifier, duration);
+                duration = Component.literal(MobEffectUtil.durationToString(instance, 1f));
+                product = Component.translatable("davespotioneering.tooltip.gauntlet.withDuration", effectFormatted, amplifier, duration);
             } else {
-                product = new TranslatableText("davespotioneering.tooltip.gauntlet", effectFormatted, amplifier);
+                product = Component.translatable("davespotioneering.tooltip.gauntlet", effectFormatted, amplifier);
             }
 
             tooltip.add(product);
 
-            }
+        }
 
 
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
+    public void inventoryTick(ItemStack stack, Level world, Entity entity, int itemSlot, boolean isSelected) {
         super.inventoryTick(stack, world, entity, itemSlot, isSelected);
-        if (entity instanceof PlayerEntity && !entity.getEntityWorld().isClient()) {
-            PlayerEntity player = (PlayerEntity) entity;
-            ItemStack gauntletInstance = new ItemStack(ModItems.POTIONEER_GAUNTLET);
-            if (player.inventory.contains(gauntletInstance)) {
-                List<ItemStack> gauntlets = getItemsFromInventory(gauntletInstance, player.inventory);
-                for (ItemStack gauntlet : gauntlets) {
-                    modifyCooldowns(gauntlet, (cd) -> {
-                        if (cd > 0) cd -= 1;
-                        return cd;
-                    });
-                }
-            }
+        if (entity instanceof Player && !entity.getCommandSenderWorld().isClientSide()) {
+            modifyCooldowns(stack, (cd) -> {
+                if (cd > 0) cd -= 1;
+                return cd;
+            });
         }
     }
 
-    public MutableText getShiftDescription() {
-        return new TranslatableText(this.getTranslationKey() + ".shift.desc");
+    public MutableComponent getShiftDescription() {
+        return Component.translatable(this.getDescriptionId() + ".shift.desc");
     }
 
-    public MutableText getCtrlDescription() {
-        return new TranslatableText(this.getTranslationKey() + ".ctrl.desc");
+    public MutableComponent getCtrlDescription() {
+        return Component.translatable(this.getDescriptionId() + ".ctrl.desc");
     }
 
     @Nullable
-    public static Pair<List<StatusEffectInstance>, List<Potion>> getEffectsFromGauntlet(ItemStack stack) {
+    public static Tuple<List<MobEffectInstance>, List<Potion>> getEffectsFromGauntlet(ItemStack stack) {
         if (!stack.hasTag()) return null;
-        ListTag nbts = stack.getTag().getCompound("info").getList("potions", 8);//StringTag?
-        List<StatusEffectInstance> effects = new ArrayList<>();
+        ListTag nbts = stack.getTag().getCompound("info").getList("potions", PotionInjectorMenu.TAG_STRING);//NbtString?
+        List<MobEffectInstance> effects = new ArrayList<>();
         List<Potion> potions = new ArrayList<>();
         for (Tag inbt : nbts) {
             if (inbt instanceof StringTag) {
                 StringTag stringNBT = (StringTag) inbt;
-                Potion potion = Registry.POTION.get(new Identifier(stringNBT.asString()));
+                Potion potion = Registry.POTION.get(new ResourceLocation(stringNBT.getAsString()));
                 effects.addAll(potion.getEffects());
                 potions.add(potion);
             }
         }
-        return new Pair<>(effects, potions);
+        return new Tuple<>(effects, potions);
     }
 
-    public static void cycleGauntletForward(PlayerEntity player) {
+    public static void cycleGauntletForward(Player player) {
         if (player == null) return;
-        CompoundTag info = player.getMainHandStack().getOrCreateTag().getCompound("info");
-        ListTag nbts = info.getList("potions", 8);
+        CompoundTag info = player.getMainHandItem().getOrCreateTag().getCompound("info");
+        ListTag nbts = info.getList("potions", PotionInjectorMenu.TAG_STRING);
         if (nbts.isEmpty()) return;
         int index = info.getInt("activePotionIndex");
         index++;
@@ -231,10 +206,10 @@ public class GauntletItem extends SwordItem {
         info.putInt("activePotionIndex", index);
     }
 
-    public static void cycleGauntletBackward(PlayerEntity player) {
+    public static void cycleGauntletBackward(Player player) {
         if (player == null) return;
-        CompoundTag info = player.getMainHandStack().getOrCreateTag().getCompound("info");
-        ListTag nbts = info.getList("potions", 8);
+        CompoundTag info = player.getMainHandItem().getOrCreateTag().getCompound("info");
+        ListTag nbts = info.getList("potions", PotionInjectorMenu.TAG_STRING);
         if (nbts.isEmpty()) return;
         int index = info.getInt("activePotionIndex");
         index--;
@@ -245,7 +220,7 @@ public class GauntletItem extends SwordItem {
     }
 
     public static Potion[] getPotionsFromNBT(CompoundTag info) {
-        ListTag nbts = info.getList("potions", 8);
+        ListTag nbts = info.getList("potions", PotionInjectorMenu.TAG_STRING);
         if (nbts.isEmpty()) return null;
 
         // get active potion
@@ -266,9 +241,9 @@ public class GauntletItem extends SwordItem {
         Tag post = nbts.get(index);
         if (post == null) return null;
 
-        Potion activePotion = Registry.POTION.get(new Identifier(nbts.get(info.getInt("activePotionIndex")).asString()));
-        Potion prePotion = Registry.POTION.get(new Identifier(pre.asString()));
-        Potion postPotion = Registry.POTION.get(new Identifier(post.asString()));
+        Potion activePotion = Registry.POTION.get(new ResourceLocation(nbts.get(info.getInt("activePotionIndex")).getAsString()));
+        Potion prePotion = Registry.POTION.get(new ResourceLocation(pre.getAsString()));
+        Potion postPotion = Registry.POTION.get(new ResourceLocation(post.getAsString()));
 
         return new Potion[]{activePotion, prePotion, postPotion};
     }
@@ -280,8 +255,8 @@ public class GauntletItem extends SwordItem {
                 IntArrayTag indexArray = (IntArrayTag) cooldownMap.get(0);
                 IntArrayTag cooldownArray = (IntArrayTag) cooldownMap.get(1);
 
-                indexArray.add(IntTag.of(index));
-                cooldownArray.add(IntTag.of(cooldown));
+                indexArray.add(IntTag.valueOf(index));
+                cooldownArray.add(IntTag.valueOf(cooldown));
 
                 ListTag list = new ListTag();
                 list.add(0, indexArray);
@@ -304,8 +279,8 @@ public class GauntletItem extends SwordItem {
                     IntArrayTag indexArray = (IntArrayTag) cooldownMap.get(0);
                     IntArrayTag cooldownArray = (IntArrayTag) cooldownMap.get(1);
                     try {
-                        int indexOfPotionIndex = toList(indexArray.getIntArray()).indexOf(indexOfPotion);
-                        return toList(cooldownArray.getIntArray()).get(indexOfPotionIndex);
+                        int indexOfPotionIndex = toList(indexArray.getAsIntArray()).indexOf(indexOfPotion);
+                        return toList(cooldownArray.getAsIntArray()).get(indexOfPotionIndex);
                     } catch (Exception ignore) {
                         // if the potion doesn't have cooldown an IndexOutOfBounds exception will be thrown, but it is not an actual problem, so we are just ignoring it
                     }
@@ -324,15 +299,15 @@ public class GauntletItem extends SwordItem {
                 IntArrayTag cooldownArray = (IntArrayTag) map.get(1);
                 IntArrayTag indexArray = (IntArrayTag) map.get(0);
                 if (cooldownArray.isEmpty() || indexArray.isEmpty()) return;
-                if (cooldownArray.getIntArray().length != indexArray.getIntArray().length) return;
+                if (cooldownArray.getAsIntArray().length != indexArray.getAsIntArray().length) return;
                 List<Integer> cooldownList = new ArrayList<>();
                 List<Integer> indexList = new ArrayList<>();
-                for (int i = 0; i < cooldownArray.getIntArray().length; i++) {
-                    int modified = modifier.apply(cooldownArray.getIntArray()[i]);
+                for (int i = 0; i < cooldownArray.getAsIntArray().length; i++) {
+                    int modified = modifier.apply(cooldownArray.getAsIntArray()[i]);
                     // copying over the cooldown and index to a new list, remove ones that are already expired
                     if (modified > 0) {
                         cooldownList.add(modified);
-                        indexList.add(indexArray.getIntArray()[i]);
+                        indexList.add(indexArray.getAsIntArray()[i]);
                     }
                 }
                 IntArrayTag newArray = new IntArrayTag(cooldownList);
@@ -343,12 +318,12 @@ public class GauntletItem extends SwordItem {
         }
     }
 
-    public static List<ItemStack> getItemsFromInventory(ItemStack item, PlayerInventory inventory) {
+    public static List<ItemStack> getItemsFromInventory(ItemStack item, Inventory inventory) {
         List<ItemStack> items = new ArrayList<>();
-        for (ItemStack stack : inventory.main) {
+        for (ItemStack stack : inventory.items) {
             if (stack.isItemEqualIgnoreDamage(item)) items.add(stack);
         }
-        for (ItemStack stack : inventory.offHand) {
+        for (ItemStack stack : inventory.offhand) {
             if (stack.isItemEqualIgnoreDamage(item)) items.add(stack);
         }
         for (ItemStack stack : inventory.armor) {
@@ -365,13 +340,11 @@ public class GauntletItem extends SwordItem {
         return list;
     }
 
-    public static int getBlaze(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
-        int blaze = 0;
-        if (tag != null) {
-            CompoundTag info = tag.getCompound("info");
-            blaze = info.getInt("blaze");
-        }
-        return blaze;
+    public static final ResourceLocation ALC_ID = new ResourceLocation(DavesPotioneering.MODID, "item/sprite/potioneer_gauntlet");
+    public static final ResourceLocation LIT_ALC_ID = new ResourceLocation(DavesPotioneering.MODID, "item/sprite/lit_potioneer_gauntlet");
+
+    @Override
+    public ResourceLocation getGuiModel(boolean active) {
+        return active ? LIT_ALC_ID : ALC_ID;
     }
 }
