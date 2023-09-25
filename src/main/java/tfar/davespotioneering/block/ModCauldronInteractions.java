@@ -78,6 +78,7 @@ public class ModCauldronInteractions {
 
                 if (blockEntity instanceof ReinforcedCauldronBlockEntity reinforced) {
                     reinforced.setPotion(PotionUtils.getPotion(stack));
+                    reinforced.setCustomEffects(PotionUtils.getCustomEffects(stack));
                 }
 
                 level.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);

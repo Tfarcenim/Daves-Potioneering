@@ -35,13 +35,13 @@ public class ModLangProvider extends LanguageProvider {
         addItem(() -> ModItems.NETHERITE_GAUNTLET,getNameFromItem(ModItems.NETHERITE_GAUNTLET));
 
         add("davespotioneering.gui.moveGauntletHUD", "Use your mouse to drag the Gauntlet HUD wherever you would like or use one of these default positions.");
+
         add(GauntletHUDMovementScreen.KEY+ GauntletHUD.HudPresets.TOP_LEFT.ordinal(), "Left Top");
         add(GauntletHUDMovementScreen.KEY+ GauntletHUD.HudPresets.TOP_RIGHT.ordinal(), "Right Top");
         add(GauntletHUDMovementScreen.KEY+ GauntletHUD.HudPresets.BTM_LEFT.ordinal(), "Left Bottom");
         add(GauntletHUDMovementScreen.KEY+ GauntletHUD.HudPresets.BTM_RIGHT.ordinal(), "Right Bottom");
         add(GauntletHUDMovementScreen.KEY+ GauntletHUD.HudPresets.ABOVE_HOTBAR.ordinal(), "Above Hotbar");
-        add("davespotioneering.tooltip.gauntlet", "%s %s");
-        add("davespotioneering.tooltip.gauntlet.withDuration", "%s %s (%s)");
+
         addGroup(ModCreativeTab.DAVESPOTIONEERING,"Dave's Potioneering");
 
         ModItems.getAllItems().stream().filter(UmbrellaItem.class::isInstance)

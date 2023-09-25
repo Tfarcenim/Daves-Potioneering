@@ -39,7 +39,7 @@ import tfar.davespotioneering.client.particle.TintedSplashParticle;
 import tfar.davespotioneering.init.*;
 import tfar.davespotioneering.item.GauntletItem;
 import tfar.davespotioneering.mixin.ParticleManagerAccess;
-import tfar.davespotioneering.net.GauntletCyclePacket;
+import tfar.davespotioneering.net.C2SGauntletCyclePacket;
 import tfar.davespotioneering.net.PacketHandler;
 
 public class ClientEvents {
@@ -76,10 +76,10 @@ public class ClientEvents {
         if (held.isEmpty()) return;
         if (held.getItem() instanceof GauntletItem && player.isShiftKeyDown()) {
             if (event.getScrollDelta() == 1.f) {
-                PacketHandler.sendToServer(new GauntletCyclePacket(true));
+                PacketHandler.sendToServer(new C2SGauntletCyclePacket(true));
                 GauntletHUD.backwardCycle();
             } else {
-                PacketHandler.sendToServer(new GauntletCyclePacket(false));
+                PacketHandler.sendToServer(new C2SGauntletCyclePacket(false));
                 GauntletHUD.forwardCycle();
             }
             event.setCanceled(true);
@@ -89,7 +89,7 @@ public class ClientEvents {
     public static void tooltips(ItemTooltipEvent e) {
         ItemStack stack = e.getItemStack();
 
-        if (PotionUtils.getPotion(stack) != Potions.EMPTY) {
+        if (!PotionUtils.getMobEffects(stack).isEmpty()) {
             if (stack.getItem() instanceof TieredItem) {
                 e.getToolTip().add(Component.literal("Coated with"));
                 PotionUtils.addPotionTooltip(stack, e.getToolTip(), 0.125F);
@@ -110,7 +110,7 @@ public class ClientEvents {
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.POTION_INJECTOR,RenderType.translucent());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.REINFORCED_WATER_CAULDRON,RenderType.translucent());
         MenuScreens.register(ModMenuTypes.ADVANCED_BREWING_STAND, AdvancedBrewingStandScreen::new);
-        MenuScreens.register(ModMenuTypes.ALCHEMICAL_GAUNTLET, GauntletWorkstationScreen::new);
+        MenuScreens.register(ModMenuTypes.ALCHEMICAL_GAUNTLET, PotionInjectorScreen::new);
 
         BlockEntityRenderers.register(ModBlockEntityTypes.POTION_INJECTOR, PotionInjectorRenderer::new);
 
