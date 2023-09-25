@@ -16,14 +16,14 @@ import tfar.davespotioneering.menu.PotionInjectorMenu;
 import tfar.davespotioneering.net.C2SPotionInjector;
 import tfar.davespotioneering.net.PacketHandler;
 
-public class GauntletWorkstationScreen extends AbstractContainerScreen<PotionInjectorMenu> {
-    public GauntletWorkstationScreen(PotionInjectorMenu screenContainer, Inventory inv, Component titleIn) {
+public class PotionInjectorScreen extends AbstractContainerScreen<PotionInjectorMenu> {
+    public PotionInjectorScreen(PotionInjectorMenu screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         imageHeight+=30;
         inventoryLabelY += 26;
     }
 
-    private static final ResourceLocation BREWING_STAND_GUI_TEXTURES = new ResourceLocation(DavesPotioneering.MODID,"textures/gui/gauntlet_workstation.png");
+    private static final ResourceLocation GUI_TEXTURES = new ResourceLocation(DavesPotioneering.MODID,"textures/gui/potion_injector.png");
 
     public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
@@ -82,7 +82,7 @@ public class GauntletWorkstationScreen extends AbstractContainerScreen<PotionInj
     @Override
     protected void renderBg(PoseStack matrixStack, float partialTicks, int x, int y) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, BREWING_STAND_GUI_TEXTURES);
+        RenderSystem.setShaderTexture(0, GUI_TEXTURES);
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
         this.blit(matrixStack, i, j, 0, 0, this.imageWidth, this.imageHeight);

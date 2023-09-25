@@ -20,15 +20,23 @@ public class PacketHandler {
                 C2SPotionInjector::new,
                 C2SPotionInjector::handle);
 
-        INSTANCE.registerMessage(id++, GauntletCyclePacket.class,
-                GauntletCyclePacket::encode,
-                GauntletCyclePacket::new,
-                GauntletCyclePacket::handle);
+        INSTANCE.registerMessage(id++, C2SGauntletCyclePacket.class,
+                C2SGauntletCyclePacket::encode,
+                C2SGauntletCyclePacket::new,
+                C2SGauntletCyclePacket::handle);
 
-        INSTANCE.registerMessage(id++, GauntletHUDMovementGuiPacket.class,
+        INSTANCE.registerMessage(id++, S2COpenGauntletHUDConfigScreenPacket.class,
                 (packetOpenGui, packetBuffer) -> {},
-                buf -> new GauntletHUDMovementGuiPacket(),
-                GauntletHUDMovementGuiPacket::handle);
+                buf -> new S2COpenGauntletHUDConfigScreenPacket(),
+                S2COpenGauntletHUDConfigScreenPacket::handle);
+
+
+        INSTANCE.registerMessage(id++,
+                S2CCooldownPacket.class,
+                S2CCooldownPacket::encode,
+                S2CCooldownPacket::new,
+                S2CCooldownPacket::handle);
+
     }
 
     public static void sendToClient(Object packet, ServerPlayer player) {

@@ -48,6 +48,8 @@ public class GauntletHUD implements IGuiOverlay {
     private static final int maxCooldown = 40;
     private static int cooldown = maxCooldown;
 
+    public static int[] cooldowns = new int[6];
+
     public void init(Potion activePotion, Potion prePotion, Potion postPotion) {
         this.activePotion = activePotion;
         this.prePotion = prePotion;
@@ -141,7 +143,7 @@ public class GauntletHUD implements IGuiOverlay {
         if (g.getItem() instanceof GauntletItem) {
             // get nbt
             CompoundTag info = player.getMainHandItem().getOrCreateTag().getCompound(GauntletItem.INFO);
-            Potion[] potions = GauntletItem.getPotionsFromNBT(info);
+            Potion[] potions = GauntletItem.getVisibleEffects(info);
 
 
             RenderSystem.setShaderColor(1, 1, 1, 1);
@@ -187,9 +189,9 @@ public class GauntletHUD implements IGuiOverlay {
             int prev = active > 0 ? active - 1 : GauntletItem.SLOTS - 1;
             int next = active < GauntletItem.SLOTS - 1 ? active + 1 : 0;
 
-            renderPotion(prePotion, poseStack, xFixed + 3, yFixed + 21, GauntletItem.getCooldownFromPotionByIndex(prev, g));
-            renderPotion(activePotion, poseStack, xFixed + 51, yFixed + 5, GauntletItem.getCooldownFromPotionByIndex(active, g));
-            renderPotion(postPotion, poseStack, xFixed + 99, yFixed + 21, GauntletItem.getCooldownFromPotionByIndex(next, g));
+            renderPotion(prePotion, poseStack, xFixed + 3, yFixed + 21, cooldowns[prev]);
+            renderPotion(activePotion, poseStack, xFixed + 51, yFixed + 5, cooldowns[active]);
+            renderPotion(postPotion, poseStack, xFixed + 99, yFixed + 21, cooldowns[next]);
 
             if (potions == null) {
                 // reset

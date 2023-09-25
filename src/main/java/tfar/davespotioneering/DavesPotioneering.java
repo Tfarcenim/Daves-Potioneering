@@ -1,5 +1,6 @@
 package tfar.davespotioneering;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.resources.ResourceKey;
@@ -38,6 +39,7 @@ import tfar.davespotioneering.client.GauntletHUD;
 import tfar.davespotioneering.datagen.ModDatagen;
 import tfar.davespotioneering.effect.PotionIngredient;
 import tfar.davespotioneering.init.*;
+import tfar.davespotioneering.item.GauntletItem;
 import tfar.davespotioneering.mixin.BlockEntityTypeAcces;
 import tfar.davespotioneering.net.PacketHandler;
 
@@ -66,6 +68,7 @@ public class DavesPotioneering {
         // Register the setup method for modloading
         bus.addListener(this::setup);
         MinecraftForge.EVENT_BUS.addListener(this::stackAdj);
+        MinecraftForge.EVENT_BUS.addListener(GauntletItem::tickCooldowns);
         if (FMLEnvironment.dist.isClient()) {
             // Register the doClientStuff method for modloading
             bus.addListener(ClientEvents::doClientStuff);

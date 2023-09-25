@@ -5,7 +5,7 @@ import tfar.davespotioneering.client.GauntletHUDMovementScreen;
 
 import java.util.function.Supplier;
 
-public class GauntletHUDMovementGuiPacket {
+public class S2COpenGauntletHUDConfigScreenPacket {
     public void handle(Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(GauntletHUDMovementScreen::open);
         ctx.get().setPacketHandled(true);
