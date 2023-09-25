@@ -134,7 +134,7 @@ public class GauntletHUD implements IIngameOverlay {
         if (g.getItem() instanceof GauntletItem) {
             // get nbt
             CompoundTag info = player.getMainHandItem().getOrCreateTag().getCompound(GauntletItem.INFO);
-            Potion[] potions = GauntletItem.getPotionsFromNBT(info);
+            Potion[] potions = GauntletItem.getVisibleEffects(info);
 
             RenderSystem.setShaderColor(1, 1, 1, 1);
             bind(hud);

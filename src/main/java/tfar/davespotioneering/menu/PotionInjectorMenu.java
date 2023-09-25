@@ -6,6 +6,8 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -17,8 +19,12 @@ import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
+import tfar.davespotioneering.Util;
 import tfar.davespotioneering.init.ModContainerTypes;
 import tfar.davespotioneering.inv.PotionInjectorHandler;
+import tfar.davespotioneering.item.GauntletItem;
+
+import java.util.List;
 
 public class PotionInjectorMenu extends AbstractContainerMenu {
 
@@ -110,80 +116,82 @@ public class PotionInjectorMenu extends AbstractContainerMenu {
         ItemStack gauntlet = inventory.getStackInSlot(PotionInjectorHandler.GAUNTLET);
         if (!gauntlet.isEmpty()) {
             CompoundTag newNbt = new CompoundTag();
-            ListTag nbt1 = new ListTag();
+            ListTag potionList = new ListTag();
             CompoundTag oldNBT = gauntlet.getOrCreateTag();
 
-            CompoundTag info = oldNBT.getCompound("info");
-            ListTag oldList = info.getList("potions", Tag.TAG_STRING);
+            CompoundTag info = oldNBT.getCompound(GauntletItem.INFO);
+            ListTag oldPotionList = info.getList(GauntletItem.POTIONS, Tag.TAG_COMPOUND);
 
             for (int i = 0; i < PotionInjectorHandler.GAUNTLET; i++) {
-
-                Potion oldPotion = oldList.isEmpty() ? Potions.EMPTY : Registry.POTION.get(new ResourceLocation(oldList.get(i).getAsString()));
-
-                if (oldPotion == Potions.EMPTY) {
+                CompoundTag oldTag = oldPotionList.isEmpty() ? new CompoundTag() : oldPotionList.getCompound(i);
+                Potion oldPotion = oldPotionList.isEmpty() ? Potions.EMPTY : PotionUtils.getPotion(oldTag);
+                List<MobEffectInstance> oldCustomEffects = oldPotionList.isEmpty() ? List.of() : PotionUtils.getCustomEffects(oldTag);
+                if (oldPotion == Potions.EMPTY && oldCustomEffects.isEmpty()) {
                     ItemStack potionStack = inventory.getStackInSlot(i);
-                    nbt1.add(StringTag.valueOf(PotionUtils.getPotion(potionStack).getRegistryName().toString()));
+                    potionList.add(Util.saveAllEffects(new CompoundTag(),PotionUtils.getPotion(potionStack),PotionUtils.getCustomEffects(potionStack)));
                     inventory.extractItem(i, 1, false);
                     //copy old potion over
                 } else {
-                    nbt1.add(oldList.get(i));
+                    potionList.add(oldPotionList.get(i));
                 }
             }
 
-            newNbt.putInt("activePotionIndex", 0);
-            newNbt.put("potions", nbt1);
+            newNbt.putInt(GauntletItem.ACTIVE_POTION, 0);
+            newNbt.put(GauntletItem.POTIONS, potionList);
 
-            int presentBlaze = info.getInt("blaze");
+            int presentBlaze = info.getInt(GauntletItem.BLAZE);
 
             int blazeInsert = Math.min(BLAZE_CAP - presentBlaze,Math.min(BLAZE_CAP,inventory.getStackInSlot(PotionInjectorHandler.BLAZE).getCount()));
 
-            newNbt.putInt("blaze",blazeInsert + presentBlaze);
+            newNbt.putInt(GauntletItem.BLAZE,blazeInsert + presentBlaze);
             inventory.extractItem(PotionInjectorHandler.BLAZE,blazeInsert,false);
-            gauntlet.getTag().put("info",newNbt);
+            gauntlet.getTag().put(GauntletItem.INFO,newNbt);
         }
     }
 
     private void removePotionsAndBlaze() {
         ItemStack gauntlet = inventory.getStackInSlot(PotionInjectorHandler.GAUNTLET);
         if (!gauntlet.isEmpty()) {
-            CompoundTag nbt = gauntlet.getTag().getCompound("info");
-            ListTag listNBT = nbt.getList("potions", Tag.TAG_STRING);
+            CompoundTag nbt = gauntlet.getTag().getCompound(GauntletItem.INFO);
+            ListTag listNBT = nbt.getList(GauntletItem.POTIONS, Tag.TAG_COMPOUND);
 
             boolean allRemoved = true;
             for (int i = 0; i < listNBT.size(); i++) {
-                Tag inbt = listNBT.get(i);
+                CompoundTag inbt = listNBT.getCompound(i);
 
-                Potion potion = Registry.POTION.get(new ResourceLocation(inbt.getAsString()));
-                if (potion != Potions.EMPTY) {
+                Potion potion = PotionUtils.getPotion(inbt);
+                List<MobEffectInstance> customEffects = PotionUtils.getCustomEffects(inbt);
+                if (potion != Potions.EMPTY || !customEffects.isEmpty()) {
                     ItemStack present = inventory.getStackInSlot(i);
                     if (present.getCount() < inventory.getSlotLimit(i)) {
                         ItemStack stack = new ItemStack(Items.LINGERING_POTION);
                         PotionUtils.setPotion(stack, potion);
+                        PotionUtils.setCustomEffects(stack,customEffects);
                         inventory.insertItem(i, stack, false);
-                        listNBT.set(i,StringTag.valueOf(Potions.EMPTY.getRegistryName().toString()));
+                        listNBT.set(i,new CompoundTag());
                     } else {
                         allRemoved = false;
                     }
                 }
             }
             if (allRemoved) {
-                nbt.remove("potions");
+                nbt.remove(GauntletItem.POTIONS);
             }
 
             int presentBlaze = inventory.getStackInSlot(PotionInjectorHandler.BLAZE).getCount();
 
             int maxBlazeRemove = inventory.getSlotLimit(PotionInjectorHandler.BLAZE) - presentBlaze;
 
-            int blaze = nbt.getInt("blaze");
+            int blaze = nbt.getInt(GauntletItem.BLAZE);
 
             int blazeRemove = Math.min(maxBlazeRemove,blaze);
 
             inventory.insertItem(PotionInjectorHandler.BLAZE,new ItemStack(Items.BLAZE_POWDER,blazeRemove),false);
 
             if (blaze > blazeRemove) {
-                nbt.putInt("blaze",blaze - blazeRemove);
+                nbt.putInt(GauntletItem.BLAZE,blaze - blazeRemove);
             } else {
-                nbt.remove("blaze");
+                nbt.remove(GauntletItem.BLAZE);
             }
         }
     }
@@ -203,8 +211,8 @@ public class PotionInjectorMenu extends AbstractContainerMenu {
             ItemStack stack = inventory.getStackInSlot(PotionInjectorHandler.GAUNTLET);
             CompoundTag nbt = stack.getTag();
             if (nbt != null) {
-                CompoundTag info = nbt.getCompound("info");
-                ListTag listNBT = info.getList("potions", Tag.TAG_STRING);
+                CompoundTag info = nbt.getCompound(GauntletItem.INFO);
+                ListTag listNBT = info.getList(GauntletItem.POTIONS, Tag.TAG_STRING);
                 if (!listNBT.isEmpty()) {
                     for (Tag nb : listNBT) {
                         Potion potion = Registry.POTION.get(new ResourceLocation(nb.getAsString()));
@@ -213,7 +221,7 @@ public class PotionInjectorMenu extends AbstractContainerMenu {
                         }
                     }
                 }
-                if (info.getInt("blaze") > 0) {
+                if (info.getInt(GauntletItem.BLAZE) > 0) {
                     return SoundTy.BLAZE;
                 }
             }

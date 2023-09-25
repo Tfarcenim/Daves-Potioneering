@@ -17,7 +17,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
@@ -35,7 +34,6 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import tfar.davespotioneering.ModConfig;
-import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.client.particle.FastDripParticle;
 import tfar.davespotioneering.client.particle.TintedSplashParticle;
@@ -94,7 +92,7 @@ public class ClientEvents {
     public static void tooltips(ItemTooltipEvent e) {
         ItemStack stack = e.getItemStack();
 
-        if (PotionUtils.getPotion(stack) != Potions.EMPTY) {
+        if (!PotionUtils.getMobEffects(stack).isEmpty()) {
             if (stack.getItem() instanceof TieredItem) {
                 e.getToolTip().add(new TextComponent("Coated with"));
                 PotionUtils.addPotionTooltip(stack, e.getToolTip(), 0.125F);
@@ -114,7 +112,7 @@ public class ClientEvents {
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.POTION_INJECTOR,RenderType.translucent());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.REINFORCED_WATER_CAULDRON,RenderType.translucent());
         MenuScreens.register(ModContainerTypes.ADVANCED_BREWING_STAND, AdvancedBrewingStandScreen::new);
-        MenuScreens.register(ModContainerTypes.ALCHEMICAL_GAUNTLET, GauntletWorkstationScreen::new);
+        MenuScreens.register(ModContainerTypes.ALCHEMICAL_GAUNTLET, PotionInjectorScreen::new);
         BlockEntityRenderers.register(ModBlockEntityTypes.POTION_INJECTOR, PotionInjectorRenderer::new);
 
         Minecraft.getInstance().getBlockColors().register((state, reader, pos, index) -> {

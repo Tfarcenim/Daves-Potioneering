@@ -9,6 +9,8 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -28,10 +30,14 @@ import tfar.davespotioneering.init.ModItems;
 import tfar.davespotioneering.init.ModPotions;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReinforcedCauldronBlockEntity extends BlockEntity {
 
     @Nonnull protected Potion potion = Potions.EMPTY;
+    protected List<MobEffectInstance> customEffects = new ArrayList<>();
 
     public ReinforcedCauldronBlockEntity( BlockPos p_155283_, BlockState p_155284_) {
         this(ModBlockEntityTypes.REINFORCED_CAULDRON,p_155283_,p_155284_);
@@ -46,8 +52,17 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity {
         return potion;
     }
 
+    public List<MobEffectInstance> getCustomEffects() {
+        return customEffects;
+    }
+
     public void setPotion(@Nonnull Potion potion) {
         this.potion = potion;
+        setChanged();
+    }
+
+    public void setCustomEffects(List<MobEffectInstance> customEffects) {
+        this.customEffects = customEffects;
         setChanged();
     }
 
@@ -60,13 +75,14 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity {
 
     @Override
     public void load(CompoundTag nbt) {
-        potion = Registry.POTION.get(new ResourceLocation(nbt.getString("potion")));
+        potion = PotionUtils.getPotion(nbt);
+        customEffects = PotionUtils.getCustomEffects(nbt);
         super.load(nbt);
     }
 
     @Override
     public void saveAdditional(CompoundTag compound) {
-        compound.putString("potion", potion.getRegistryName().toString());
+        Util.saveAllEffects(compound,potion,customEffects);
         super.saveAdditional(compound);
     }
 

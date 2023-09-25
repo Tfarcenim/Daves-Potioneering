@@ -42,8 +42,6 @@ public class ModLangProvider extends LanguageProvider {
         add(GauntletHUDMovementGui.KEY+ GauntletHUD.HudPresets.BTM_LEFT.ordinal(), "Left Bottom");
         add(GauntletHUDMovementGui.KEY+ GauntletHUD.HudPresets.BTM_RIGHT.ordinal(), "Right Bottom");
         add(GauntletHUDMovementGui.KEY+ GauntletHUD.HudPresets.ABOVE_HOTBAR.ordinal(), "Above Hotbar");
-        add("davespotioneering.tooltip.gauntlet", "%s %s");
-        add("davespotioneering.tooltip.gauntlet.withDuration", "%s %s (%s)");
         addGroup(ModItems.tab,"Dave's Potioneering");
 
         ModItems.getAllItems().stream().filter(UmbrellaItem.class::isInstance)

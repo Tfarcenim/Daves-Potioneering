@@ -29,6 +29,8 @@ import tfar.davespotioneering.item.UmbrellaItem;
 import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
 import tfar.davespotioneering.mixin.BrewingStandContainerAccess;
 
+import java.util.List;
+
 public class Events {
 
     public static void potionCooldown(PlayerInteractEvent.RightClickItem e) {
@@ -92,8 +94,8 @@ public class Events {
     }
 
     public static void onEat(Player player, ItemStack stack) {
-        Potion potion = PotionUtils.getPotion(stack);
-        for (MobEffectInstance effectInstance : potion.getEffects()) {
+        List<MobEffectInstance> mobEffectInstances = PotionUtils.getMobEffects(stack);
+        for (MobEffectInstance effectInstance : mobEffectInstances) {
             player.addEffect(new MobEffectInstance(effectInstance.getEffect(), Math.max(effectInstance.getDuration() / 8, 1), effectInstance.getAmplifier(), effectInstance.isAmbient(), effectInstance.showIcon()));
         }
     }
