@@ -1,7 +1,6 @@
 package tfar.davespotioneering.block;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
@@ -10,6 +9,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
@@ -21,11 +21,13 @@ import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import tfar.davespotioneering.PotionUtils2;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.init.ModPotions;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
@@ -96,8 +98,16 @@ public class ModCauldronInteractions {
                 BlockEntity blockEntity = level.getBlockEntity(pos);
                 if (blockEntity instanceof ReinforcedCauldronBlockEntity reinforced) {
                     Potion potion = reinforced.getPotion();
-                    player.setItemInHand(hand, ItemUtils.createFilledResult(stack, player, PotionUtils.setPotion(new ItemStack(Items.POTION), potion)));
-                    if (potion != Potions.WATER)
+                    List<MobEffectInstance> customEffects = reinforced.getCustomEffects();
+                    Integer color = reinforced.getCustomColor();
+                    ItemStack potionItem = Items.POTION.getDefaultInstance();
+                    PotionUtils.setPotion(potionItem, potion);
+                    PotionUtils.setCustomEffects(potionItem,customEffects);
+                    if (color != null) {
+                        PotionUtils2.setCustomColor(potionItem,color);
+                    }
+                    player.setItemInHand(hand, ItemUtils.createFilledResult(stack, player, potionItem));
+                    if (potion != Potions.WATER || !reinforced.getCustomEffects().isEmpty())
                         LayeredReinforcedCauldronBlock.lowerFillLevel0(state, level, pos);
                 }
 
@@ -174,11 +184,11 @@ public class ModCauldronInteractions {
 
         //custom//
         WATER.put(Items.DRAGON_BREATH,ModCauldronInteractions::dragonsBreath);
-        WATER.put(Items.ARROW,ModCauldronInteractions::arrowCoating);
+        WATER.put(Items.ARROW, (state, level, pos, player, stack, stack2) -> arrowCoating(state, level, pos, player, stack2));
 
         for (Item item : BuiltInRegistries.ITEM) {
             if (item instanceof TieredItem) {
-                WATER.put(item,ModCauldronInteractions::weaponCoating);
+                WATER.put(item, (state, level, pos, player, stack, stack2) -> weaponCoating(state, level, pos, player, stack2));
             } else if (item.isEdible()) {
                 WATER.put(item,ModCauldronInteractions::spikedFood);
             }
@@ -282,8 +292,8 @@ public class ModCauldronInteractions {
     }
 
     @Nonnull
-    static InteractionResult arrowCoating(BlockState state, Level level, BlockPos pos, Player player, InteractionHand p_175715_, ItemStack stack) {
-        LayeredReinforcedCauldronBlock.handleArrowCoating(state,level,pos,player,p_175715_,stack);
+    static InteractionResult arrowCoating(BlockState state, Level level, BlockPos pos, Player player, ItemStack stack) {
+        LayeredReinforcedCauldronBlock.handleArrowCoating(state,level,pos,player, stack);
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
@@ -294,8 +304,8 @@ public class ModCauldronInteractions {
     }
 
     @Nonnull
-    static InteractionResult weaponCoating(BlockState state, Level level, BlockPos pos, Player player, InteractionHand p_175715_, ItemStack stack) {
-        LayeredReinforcedCauldronBlock.handleWeaponCoating(state,level,pos,player,p_175715_,stack);
+    static InteractionResult weaponCoating(BlockState state, Level level, BlockPos pos, Player player, ItemStack stack) {
+        LayeredReinforcedCauldronBlock.handleWeaponCoating(state,level,pos,player, stack);
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
 }

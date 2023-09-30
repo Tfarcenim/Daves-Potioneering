@@ -2,15 +2,11 @@ package tfar.davespotioneering.blockentity;
 
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -24,6 +20,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import tfar.davespotioneering.ModConfig;
+import tfar.davespotioneering.PotionUtils2;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.block.LayeredReinforcedCauldronBlock;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
@@ -37,15 +34,18 @@ import java.util.List;
 
 public class ReinforcedCauldronBlockEntity extends BlockEntity {
 
-    @Nonnull protected Potion potion = Potions.EMPTY;
+    @Nonnull
+    protected Potion potion = Potions.EMPTY;
     protected List<MobEffectInstance> customEffects = new ArrayList<>();
+    @Nullable
+    protected Integer customPotionColor;
 
-    public ReinforcedCauldronBlockEntity( BlockPos p_155283_, BlockState p_155284_) {
-        this(ModBlockEntityTypes.REINFORCED_CAULDRON,p_155283_,p_155284_);
+    public ReinforcedCauldronBlockEntity(BlockPos p_155283_, BlockState p_155284_) {
+        this(ModBlockEntityTypes.REINFORCED_CAULDRON, p_155283_, p_155284_);
     }
 
     public ReinforcedCauldronBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos p_155283_, BlockState p_155284_) {
-        super(tileEntityTypeIn,p_155283_,p_155284_);
+        super(tileEntityTypeIn, p_155283_, p_155284_);
     }
 
     @Nonnull
@@ -68,22 +68,34 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity {
     }
 
     public int getColor() {
-        if (!potion.getEffects().isEmpty()) {
-            return PotionUtils.getColor(potion);
+        if (potion == Potions.WATER) {
+            return BiomeColors.getAverageWaterColor(level, worldPosition);
+        } else {
+            if (customPotionColor != null) {
+                return customPotionColor;
+            } else {
+                return PotionUtils.getColor(potion);
+            }
         }
-        return BiomeColors.getAverageWaterColor(level, worldPosition);
+    }
+
+    public Integer getCustomColor() {
+        return customPotionColor;
     }
 
     @Override
     public void load(CompoundTag nbt) {
         potion = PotionUtils.getPotion(nbt);
         customEffects = PotionUtils.getCustomEffects(nbt);
+        if (nbt.contains(PotionUtils.TAG_CUSTOM_POTION_COLOR)) {
+            customPotionColor = nbt.getInt(PotionUtils.TAG_CUSTOM_POTION_COLOR);
+        }
         super.load(nbt);
     }
 
     @Override
     public void saveAdditional(CompoundTag compound) {
-        Util.saveAllEffects(compound,potion,customEffects);
+        PotionUtils2.saveAllEffects(compound, potion, customEffects,customPotionColor);
         super.saveAdditional(compound);
     }
 
@@ -117,24 +129,26 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity {
             BlockState blockState = getBlockState();
             int cLevel = blockState.getValue(LayeredCauldronBlock.LEVEL);
             if (potion == ModPotions.MILK && PotionUtils.getPotion(stack) != Potions.EMPTY && !Util.isPotion(stack)) {
-                LayeredReinforcedCauldronBlock.removeCoating(blockState,level,worldPosition,null,stack);
+                LayeredReinforcedCauldronBlock.removeCoating(blockState, level, worldPosition, null, stack);
             } else if (coatingType == Util.CoatingType.FOOD) {
-                if (ModConfig.Server.spike_food.get() && stack.getCount()>=8) {//check if food can be coated
-                    LayeredReinforcedCauldronBlock.handleFoodSpiking(blockState,level,worldPosition,null,null,stack);
+                if (ModConfig.Server.spike_food.get() && stack.getCount() >= 8) {//check if food can be coated
+                    LayeredReinforcedCauldronBlock.handleFoodSpiking(blockState, level, worldPosition, null, null, stack);
                 }
             } else if (stack.getItem() == Items.ARROW && cLevel > 0) {
                 if (dragon)
-                    LayeredReinforcedCauldronBlock.handleArrowCoating(blockState,level,worldPosition,null,null,stack);
+                    LayeredReinforcedCauldronBlock.handleArrowCoating(blockState, level, worldPosition, null, stack);
             } else if (cLevel == 3 && dragon) {
-                if (coatingType == Util.CoatingType.TOOL && !ModConfig.Server.coat_tools.get()) return;//check if tools can be coated
+                if (coatingType == Util.CoatingType.TOOL && !ModConfig.Server.coat_tools.get())
+                    return;//check if tools can be coated
 
 
-                if (coatingType == Util.CoatingType.ANY && !ModConfig.Server.coat_all.get() && !stack.is(ModItems.WHITELISTED)) return;
+                if (coatingType == Util.CoatingType.ANY && !ModConfig.Server.coat_all.get() && !stack.is(ModItems.WHITELISTED))
+                    return;
                 //check if anything can be coated AND the item is not in a whitelist
 
                 //burn off a layer, then schedule the rest of the ticks
-                entity.level().playSound(null,worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.8F, 1);
-                LayeredReinforcedCauldronBlock.setWaterLevel(level,worldPosition,blockState,2);
+                entity.level().playSound(null, worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.8F, 1);
+                LayeredReinforcedCauldronBlock.setWaterLevel(level, worldPosition, blockState, 2);
                 scheduleTick();
             }
         }

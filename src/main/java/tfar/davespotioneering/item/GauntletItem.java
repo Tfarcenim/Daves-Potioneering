@@ -24,7 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.ModConfig;
-import tfar.davespotioneering.Util;
+import tfar.davespotioneering.PotionUtils2;
 import tfar.davespotioneering.init.ModSoundEvents;
 import tfar.davespotioneering.menu.PotionInjectorMenu;
 import tfar.davespotioneering.net.PacketHandler;
@@ -160,7 +160,7 @@ public class GauntletItem extends SwordItem {
         tooltip.add(Component.literal(" "));
 
         for (Tag instance : nbts) {
-            Util.addPotionTooltip((CompoundTag) instance,tooltip,.125f);
+            PotionUtils2.addPotionTooltip((CompoundTag) instance,tooltip,.125f);
             tooltip.add(Component.literal("----------------"));
         }
     }

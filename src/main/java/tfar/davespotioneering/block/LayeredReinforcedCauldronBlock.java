@@ -1,10 +1,7 @@
 package tfar.davespotioneering.block;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.core.cauldron.CauldronInteraction;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -20,7 +17,6 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
@@ -32,12 +28,12 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.AABB;
 import tfar.davespotioneering.ModConfig;
+import tfar.davespotioneering.PotionUtils2;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.init.ModPotions;
 import tfar.davespotioneering.init.ModSoundEvents;
-import tfar.davespotioneering.item.GauntletItem;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -70,7 +66,7 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
         level.explode(null, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, 1f, false, Level.ExplosionInteraction.NONE);
     }
 
-    public static void handleWeaponCoating(BlockState state, Level level, BlockPos pos, @Nullable Player player, InteractionHand p_175715_, ItemStack stack) {
+    public static void handleWeaponCoating(BlockState state, Level level, BlockPos pos, @Nullable Player player, ItemStack stack) {
         if (state.getValue(DRAGONS_BREATH)) {
             ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) level.getBlockEntity(pos);
             Potion potion = reinforcedCauldronBlockEntity.getPotion();
@@ -79,14 +75,14 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
                 if (player != null && !player.getAbilities().instabuild) {
                     player.awardStat(Stats.USE_CAULDRON);
                 }
-                addCoating(stack,potion,customEffects);
+                addCoating(stack,potion,customEffects,reinforcedCauldronBlockEntity.getCustomColor());
                 level.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
                 level.setBlockAndUpdate(pos,ModBlocks.REINFORCED_CAULDRON.defaultBlockState());
             }
         }
     }
 
-    public static void handleArrowCoating(BlockState state, Level level, BlockPos pos, @Nullable Player player, InteractionHand p_175715_, ItemStack stack) {
+    public static void handleArrowCoating(BlockState state, Level level, BlockPos pos, @Nullable Player player, ItemStack stack) {
         int wLevel = state.getValue(LEVEL);
         if (state.getValue(DRAGONS_BREATH)) {
             //can't tip arrows if there's less than 8
@@ -101,7 +97,7 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
                     player.awardStat(Stats.USE_CAULDRON);
                 }
                 ItemStack tippedArrows = new ItemStack(Items.TIPPED_ARROW, 8);
-                addCoating(tippedArrows, potion,customEffects);
+                addCoating(tippedArrows, potion,customEffects,reinforcedCauldronBlockEntity.getCustomColor());
                 stack.shrink(8);
                 level.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
 
@@ -131,7 +127,7 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
                 player.awardStat(Stats.USE_CAULDRON);
             }
             ItemStack tippedArrows = stack.split(8);
-            addCoating(tippedArrows, potion,customEffects);
+            addCoating(tippedArrows, potion,customEffects,reinforcedCauldronBlockEntity.getCustomColor());
             level.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
 
             level.addFreshEntity(new ItemEntity(level, pos.getX(), pos.getY() + 1, pos.getZ(), tippedArrows));
@@ -161,7 +157,7 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
         if (level == 0) {
             reinforcedCauldronBlockEntity.setPotion(Potions.EMPTY);
         } else {
-            if (reinforcedCauldronBlockEntity.getPotion() == Potions.EMPTY) {
+            if (reinforcedCauldronBlockEntity.getPotion() == Potions.EMPTY && reinforcedCauldronBlockEntity.getCustomEffects().isEmpty()) {
                 reinforcedCauldronBlockEntity.setPotion(Potions.WATER);
             }
         }
@@ -174,12 +170,16 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
         nbt.remove(TAG_USES);
         nbt.remove(PotionUtils.TAG_POTION);
         nbt.remove(PotionUtils.TAG_CUSTOM_POTION_EFFECTS);
+        nbt.remove(PotionUtils.TAG_CUSTOM_POTION_COLOR);
     }
 
 
-    public static void addCoating(ItemStack stack, Potion potion, List<MobEffectInstance> customEffects) {
+    public static void addCoating(ItemStack stack, Potion potion, List<MobEffectInstance> customEffects,@Nullable Integer color) {
         PotionUtils.setPotion(stack, potion);
         PotionUtils.setCustomEffects(stack,customEffects);
+        if (color != null) {
+            PotionUtils2.setCustomColor(stack, color);
+        }
         if (Util.CoatingType.getCoatingType(stack) != Util.CoatingType.FOOD) {
             stack.getTag().putInt(TAG_USES, ModConfig.Server.coating_uses.get());
         }
@@ -237,7 +237,7 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
                     new AABB(pos));
 
             if (items.size() == 1) {
-                handleWeaponCoating(state, world, pos,null, null, items.get(0).getItem());
+                handleWeaponCoating(state, world, pos,null, items.get(0).getItem());
             } else {
                 boom(world,pos);
             }

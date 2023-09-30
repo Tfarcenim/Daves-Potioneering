@@ -168,7 +168,7 @@ public class ClientEvents {
 
             ItemStack stack = player.getMainHandItem();
 
-            if (stack.getItem() instanceof TieredItem && PotionUtils.getPotion(stack) != Potions.EMPTY) {
+            if (stack.getItem() instanceof TieredItem && !PotionUtils.getMobEffects(stack).isEmpty()) {
 
 
                 ParticleOptions particleData = ModParticleTypes.FAST_DRIPPING_WATER;

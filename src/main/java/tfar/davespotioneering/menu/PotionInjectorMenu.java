@@ -15,7 +15,7 @@ import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
-import tfar.davespotioneering.Util;
+import tfar.davespotioneering.PotionUtils2;
 import tfar.davespotioneering.init.ModMenuTypes;
 import tfar.davespotioneering.inv.PotionInjectorHandler;
 import tfar.davespotioneering.item.GauntletItem;
@@ -124,7 +124,7 @@ public class PotionInjectorMenu extends AbstractContainerMenu {
                 List<MobEffectInstance> oldCustomEffects = oldPotionList.isEmpty() ? List.of() : PotionUtils.getCustomEffects(oldTag);
                 if (oldPotion == Potions.EMPTY && oldCustomEffects.isEmpty()) {
                     ItemStack potionStack = inventory.getStackInSlot(i);
-                    potionList.add(Util.saveAllEffects(new CompoundTag(),PotionUtils.getPotion(potionStack),PotionUtils.getCustomEffects(potionStack)));
+                    potionList.add(PotionUtils2.saveAllEffects(new CompoundTag(),PotionUtils.getPotion(potionStack),PotionUtils.getCustomEffects(potionStack)));
                     inventory.extractItem(i, 1, false);
                     //copy old potion over
                 } else {
