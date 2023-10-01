@@ -5,6 +5,9 @@ import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
@@ -38,6 +41,7 @@ public class DavesPotioneering implements ModInitializer {
         ModContainerTypes.register();
         ModSoundEvents.register();
         ModParticleTypes.register();
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB,new ResourceLocation(DavesPotioneering.MODID,"tab"),ModItems.tab);
 
         Set<Block> newSet = new HashSet<>(((BlockEntityTypeAcces)BlockEntityType.LECTERN).getValidBlocks());
         newSet.add(ModBlocks.MAGIC_LECTERN);

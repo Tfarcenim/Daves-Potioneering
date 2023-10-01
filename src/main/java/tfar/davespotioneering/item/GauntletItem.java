@@ -270,12 +270,10 @@ public class GauntletItem extends SwordItem implements Perspective {
     public static int getCooldownFromPotionByIndex(int indexOfPotion, ItemStack stack) {
         CompoundTag info = stack.getOrCreateTag().getCompound("info");
         Tag inbt = info.get("potionCooldownMap");
-        if (inbt instanceof ListTag) {
-            ListTag cooldownMap = (ListTag) inbt;
+        if (inbt instanceof ListTag cooldownMap) {
             if (cooldownMap.get(0) instanceof IntArrayTag) {
-                if (cooldownMap.get(1) instanceof IntArrayTag) {
+                if (cooldownMap.get(1) instanceof IntArrayTag cooldownArray) {
                     IntArrayTag indexArray = (IntArrayTag) cooldownMap.get(0);
-                    IntArrayTag cooldownArray = (IntArrayTag) cooldownMap.get(1);
                     try {
                         int indexOfPotionIndex = toList(indexArray.getAsIntArray()).indexOf(indexOfPotion);
                         return toList(cooldownArray.getAsIntArray()).get(indexOfPotionIndex);

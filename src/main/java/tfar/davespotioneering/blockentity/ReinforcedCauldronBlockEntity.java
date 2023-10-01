@@ -2,12 +2,11 @@ package tfar.davespotioneering.blockentity;
 
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -21,16 +20,23 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import tfar.davespotioneering.DavesPotioneering;
+import tfar.davespotioneering.PotionUtils2;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.block.LayeredReinforcedCauldronBlock;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
 import tfar.davespotioneering.init.ModPotions;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class ReinforcedCauldronBlockEntity extends BlockEntity {
 
     @Nonnull protected Potion potion = Potions.EMPTY;
+    protected List<MobEffectInstance> customEffects = new ArrayList<>();
+    @Nullable Integer customPotionColor;
 
     public ReinforcedCauldronBlockEntity(BlockPos blockPos, BlockState blockState) {
         this(ModBlockEntityTypes.REINFORCED_CAULDRON,blockPos,blockState);
@@ -38,6 +44,14 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity {
 
     public ReinforcedCauldronBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos blockPos, BlockState blockState) {
         super(tileEntityTypeIn,blockPos,blockState);
+    }
+
+    public List<MobEffectInstance> getCustomEffects() {
+        return customEffects;
+    }
+
+    public void setCustomEffects(List<MobEffectInstance> customEffects) {
+        this.customEffects = customEffects;
     }
 
     @Nonnull
@@ -50,21 +64,35 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity {
     }
 
     public int getColor() {
-        if (!potion.getEffects().isEmpty()) {
-            return PotionUtils.getColor(potion);
+        if (potion == Potions.WATER) {
+            return BiomeColors.getAverageWaterColor(level, worldPosition);
+        } else {
+            return Objects.requireNonNullElseGet(customPotionColor, () -> PotionUtils.getColor(potion));
         }
-        return BiomeColors.getAverageWaterColor(level, worldPosition);
+    }
+
+    @Nullable
+    public Integer getCustomPotionColor() {
+        return customPotionColor;
+    }
+
+    public void setCustomPotionColor(@Nullable Integer customPotionColor) {
+        this.customPotionColor = customPotionColor;
     }
 
     @Override
     public void load(CompoundTag nbt) {
-        potion = BuiltInRegistries.POTION.get(new ResourceLocation(nbt.getString("potion")));
+        potion = PotionUtils.getPotion(nbt);
+        customEffects = PotionUtils2.getCustomEffects(nbt);
+        if (nbt.contains(PotionUtils.TAG_CUSTOM_POTION_COLOR)) {
+            customPotionColor = nbt.getInt(PotionUtils.TAG_CUSTOM_POTION_COLOR);
+        }
         super.load(nbt);
     }
 
     @Override
     public void saveAdditional(CompoundTag compound) {
-        compound.putString("potion", BuiltInRegistries.POTION.getKey(potion).toString());
+        PotionUtils2.saveAllEffects(compound,potion,customEffects, customPotionColor);
     }
 
     @Nonnull

@@ -13,6 +13,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -34,6 +35,8 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.AABB;
 import tfar.davespotioneering.DavesPotioneering;
+import tfar.davespotioneering.PotionUtils2;
+import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.config.ClothConfig;
 import tfar.davespotioneering.init.ModBlocks;
@@ -58,37 +61,6 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
         this.registerDefaultState(this.stateDefinition.any().setValue(DRAGONS_BREATH,false));
     }
 
-    public static void handlePotionBottle(BlockState state, Level world, BlockPos pos, Player player, ItemStack stack, int level) {
-        Potion potion = PotionUtils.getPotion(stack);
-        ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) world.getBlockEntity(pos);
-        Potion storedPotion = reinforcedCauldronBlockEntity.getPotion();
-        if (!world.isClientSide) {
-            if (level < 3) {
-                if (!player.getAbilities().instabuild) {
-                    player.awardStat(Stats.USE_CAULDRON);
-                    stack.shrink(1);
-
-                    ItemStack itemstack4 = new ItemStack(Items.GLASS_BOTTLE);
-
-                    if (!player.getInventory().add(itemstack4)) {
-                        player.drop(itemstack4, false);
-                    } else {
-                        // ((ServerPlayer) player).refreshContainer(player.inventoryMenu);
-                    }
-                }
-
-                world.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
-
-                if (level > 0 && storedPotion != potion) {
-                    boom(world, pos);
-                } else {
-                //    setWaterLevel(world, pos, state, level + 1);
-                    reinforcedCauldronBlockEntity.setPotion(potion);
-                }
-            }
-        }
-    }
-
     public static void lowerFillLevel0(BlockState p_153560_, Level p_153561_, BlockPos pos) {
         int i = p_153560_.getValue(LEVEL) - 1;
         p_153561_.setBlockAndUpdate(pos, i == 0 ? ModBlocks.REINFORCED_CAULDRON.defaultBlockState() : p_153560_.setValue(LEVEL, i));
@@ -103,28 +75,13 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
         if (state.getValue(DRAGONS_BREATH)) {
             ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) level.getBlockEntity(pos);
             Potion potion = reinforcedCauldronBlockEntity.getPotion();
+            List<MobEffectInstance> customEffects = reinforcedCauldronBlockEntity.getCustomEffects();
+            Integer customPotionColor = reinforcedCauldronBlockEntity.getCustomPotionColor();
             if (!level.isClientSide) {
                 if (player != null && !player.getAbilities().instabuild) {
                     player.awardStat(Stats.USE_CAULDRON);
                 }
-                addCoating(stack,potion);
-                level.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
-                level.setBlockAndUpdate(pos,ModBlocks.REINFORCED_CAULDRON.defaultBlockState());
-            }
-        }
-    }
-
-    public static void handleWeaponCoatingEntity(BlockState state, Level level, BlockPos pos, @Nullable Player player, ItemEntity stack) {
-        if (state.getValue(DRAGONS_BREATH)) {
-            ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) level.getBlockEntity(pos);
-            Potion potion = reinforcedCauldronBlockEntity.getPotion();
-            if (!level.isClientSide) {
-                if (player != null && !player.getAbilities().instabuild) {
-                    player.awardStat(Stats.USE_CAULDRON);
-                }
-                ItemStack copy = stack.getItem().copy();
-                addCoating(copy,potion);
-                stack.setItem(copy);
+                addCoating(stack,potion,customEffects,customPotionColor);
                 level.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
                 level.setBlockAndUpdate(pos,ModBlocks.REINFORCED_CAULDRON.defaultBlockState());
             }
@@ -144,8 +101,10 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
                 if (player != null && !player.getAbilities().instabuild) {
                     player.awardStat(Stats.USE_CAULDRON);
                 }
+                List<MobEffectInstance> customEffects = reinforcedCauldronBlockEntity.getCustomEffects();
+                Integer customPotionColor = reinforcedCauldronBlockEntity.getCustomPotionColor();
                 ItemStack tippedArrows = new ItemStack(Items.TIPPED_ARROW, 8);
-                addCoating(tippedArrows, potion);
+                addCoating(tippedArrows, potion,customEffects,customPotionColor);
                 stack.shrink(8);
                 level.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
 
@@ -166,6 +125,8 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
         }
         ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) level.getBlockEntity(pos);
         Potion potion = reinforcedCauldronBlockEntity.getPotion();
+        List<MobEffectInstance> customEffects = reinforcedCauldronBlockEntity.getCustomEffects();
+        Integer customPotionColor = reinforcedCauldronBlockEntity.getCustomPotionColor();
         if (!level.isClientSide) {
             boolean milk = potion == ModPotions.MILK;
 
@@ -179,7 +140,7 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
             if (milk)
                 removeCoating(spikedFood);
             else
-                addCoating(spikedFood, potion);
+                addCoating(spikedFood, potion,customEffects,customPotionColor);
             level.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
 
             level.addFreshEntity(new ItemEntity(level, pos.getX(), pos.getY() + 1, pos.getZ(), spikedFood));
@@ -204,19 +165,25 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
         }
     }
 
+    public static final String TAG_USES = "uses";
+
     public static void removeCoating(ItemStack stack) {
         CompoundTag nbt = stack.getTag();
-        nbt.remove(USES);
-        nbt.remove("Potion");
+        nbt.remove(TAG_USES);
+        nbt.remove(PotionUtils.TAG_POTION);
+        nbt.remove(PotionUtils.TAG_CUSTOM_POTION_EFFECTS);
+        nbt.remove(PotionUtils.TAG_CUSTOM_POTION_COLOR);
     }
 
-    public static void addCoating(ItemStack stack,Potion potion) {
-        if (stack.getItem() instanceof TieredItem) {
-            CompoundTag nbt = stack.getOrCreateTag();
-            nbt.putInt(USES, DavesPotioneering.CONFIG.coating_uses);
-            nbt.putString("Potion", BuiltInRegistries.POTION.getKey(potion).toString());
-        } else if (stack.getItem() == Items.TIPPED_ARROW || stack.getItem().isEdible()) {
-            PotionUtils.setPotion(stack, potion);
+
+    public static void addCoating(ItemStack stack, Potion potion, List<MobEffectInstance> customEffects, @Nullable Integer color) {
+        PotionUtils.setPotion(stack, potion);
+        PotionUtils.setCustomEffects(stack,customEffects);
+        if (color != null) {
+            PotionUtils2.setCustomColor(stack, color);
+        }
+        if (Util.CoatingType.getCoatingType(stack) != Util.CoatingType.FOOD) {
+            stack.getTag().putInt(TAG_USES, DavesPotioneering.CONFIG.coating_uses);
         }
     }
 
@@ -264,7 +231,7 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
     //this is used for the coating
     @Override
     public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource rand) {
-        int level = state.getValue(LEVEL);
+        int wLevel = state.getValue(LEVEL);
 
         world.playSound(null,pos, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.8F, 1);
 

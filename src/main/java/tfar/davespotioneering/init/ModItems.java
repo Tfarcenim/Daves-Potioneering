@@ -24,8 +24,9 @@ public class ModItems {
     private static List<Item> MOD_ITEMS;
 
     public static final CreativeModeTab tab = CreativeModeTab.builder(CreativeModeTab.Row.TOP,0)
-            .title(Component.translatable(DavesPotioneering.MODID))
+            .title(Component.translatable("itemGroup."+DavesPotioneering.MODID+"."+DavesPotioneering.MODID))
             .icon(() -> new ItemStack(ModItems.POTIONEER_GAUNTLET))
+            .displayItems((itemDisplayParameters, output) -> getAllItems().forEach(output::accept))
             .build();
     
     public static final Item COMPOUND_BREWING_STAND = new BlockItem(ModBlocks.COMPOUND_BREWING_STAND,new Item.Properties());
