@@ -182,7 +182,7 @@ public class GauntletItem extends SwordItem {
     public static void cycleGauntletForward(Player player) {
         if (player == null) return;
         CompoundTag info = player.getMainHandItem().getOrCreateTag().getCompound(INFO);
-        ListTag nbts = info.getList(POTIONS, Tag.TAG_STRING);
+        ListTag nbts = info.getList(POTIONS, Tag.TAG_COMPOUND);
         if (nbts.isEmpty()) return;
         int index = info.getInt(ACTIVE_POTION);
         index++;
@@ -195,7 +195,7 @@ public class GauntletItem extends SwordItem {
     public static void cycleGauntletBackward(Player player) {
         if (player == null) return;
         CompoundTag info = player.getMainHandItem().getOrCreateTag().getCompound(INFO);
-        ListTag nbts = info.getList(POTIONS, Tag.TAG_STRING);
+        ListTag nbts = info.getList(POTIONS, Tag.TAG_COMPOUND);
         if (nbts.isEmpty()) return;
         int index = info.getInt(ACTIVE_POTION);
         index--;
