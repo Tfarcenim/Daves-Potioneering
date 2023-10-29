@@ -8,6 +8,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.PotionItem;
@@ -22,6 +23,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import tfar.davespotioneering.DavesPotioneering;
+import tfar.davespotioneering.PotionUtils2;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.block.LayeredReinforcedCauldronBlock;
 import tfar.davespotioneering.block.ReinforcedCauldronBlock;
@@ -30,10 +32,16 @@ import tfar.davespotioneering.init.ModBlockEntityTypes;
 import tfar.davespotioneering.init.ModPotions;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReinforcedCauldronBlockEntity extends BlockEntity {
 
     @Nonnull protected Potion potion = Potions.EMPTY;
+    protected List<StatusEffectInstance> customEffects = new ArrayList<>();
+    @Nullable
+    protected Integer customPotionColor;
 
     public ReinforcedCauldronBlockEntity(BlockPos blockPos, BlockState blockState) {
         this(ModBlockEntityTypes.REINFORCED_CAULDRON,blockPos,blockState);
@@ -61,13 +69,18 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity {
 
     @Override
     public void readNbt(NbtCompound nbt) {
-        potion = Registry.POTION.get(new Identifier(nbt.getString("potion")));
+        potion = PotionUtil.getPotion(nbt);
+        customEffects = PotionUtil.getCustomPotionEffects(nbt);
+        if (nbt.contains(PotionUtil.CUSTOM_POTION_COLOR_KEY)) {
+            customPotionColor = nbt.getInt(PotionUtil.CUSTOM_POTION_COLOR_KEY);
+        }
         super.readNbt(nbt);
     }
 
     @Override
     public void writeNbt(NbtCompound compound) {
-        compound.putString("potion", Registry.POTION.getId(potion).toString());
+        PotionUtils2.saveAllEffects(compound, potion, customEffects,customPotionColor);
+        super.writeNbt(compound);
     }
 
     @Nonnull
