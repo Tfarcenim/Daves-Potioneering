@@ -8,6 +8,7 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
+import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.config.ClothConfig;
 
 public class GauntletHUDMovementScreen extends Screen {
@@ -90,9 +91,9 @@ public class GauntletHUDMovementScreen extends Screen {
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int mouseButton) {
         if (mouseButton == 0) {
-            ClothConfig.gauntlet_hud_x = x;
-            ClothConfig.gauntlet_hud_y = y;
-            ClothConfig.gauntlet_hud_preset = preset;
+            DavesPotioneering.CONFIG.gauntlet_hud_x = x;
+            DavesPotioneering.CONFIG.gauntlet_hud_y = y;
+            DavesPotioneering.CONFIG.gauntlet_hud_preset = preset;
         }
         return super.mouseReleased(mouseX, mouseY, mouseButton);
     }

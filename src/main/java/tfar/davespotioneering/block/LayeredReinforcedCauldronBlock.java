@@ -206,7 +206,7 @@ public class LayeredReinforcedCauldronBlock extends LeveledCauldronBlock impleme
     public static void addCoating(ItemStack stack,Potion potion) {
         if (stack.getItem() instanceof ToolItem) {
             NbtCompound nbt = stack.getOrCreateNbt();
-            nbt.putInt("uses", ClothConfig.coating_uses);
+            nbt.putInt("uses", DavesPotioneering.CONFIG.coating_uses);
             nbt.putString("Potion", Registry.POTION.getId(potion).toString());
         } else if (stack.getItem() == Items.TIPPED_ARROW || stack.getItem().isFood()) {
             PotionUtil.setPotion(stack, potion);

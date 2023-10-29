@@ -11,32 +11,32 @@ public class ClothConfig implements ConfigData {
 
     //client
     @Comment("HUD X")
-    public static int gauntlet_hud_x = -120;
+    public int gauntlet_hud_x = -120;
 
     @Comment("HUD Y")
-    public static int gauntlet_hud_y = -92;
-    public static int particle_drip_rate = 10;
+    public int gauntlet_hud_y = -92;
+    public int particle_drip_rate = 10;
 
-    public static GauntletHUD.HudPreset gauntlet_hud_preset = GauntletHUD.HudPreset.ABOVE_HOTBAR;
+    public GauntletHUD.HudPreset gauntlet_hud_preset = GauntletHUD.HudPreset.ABOVE_HOTBAR;
 
-    public static int potion_cooldown = 30;
-    public static int coating_uses = 25;
+    public int potion_cooldown = 30;
+    public int coating_uses = 25;
 
     //server
 
-    public static int potion_stack_size = 16;
-    public static int splash_potion_stack_size = 4;
-    public static int lingering_potion_stack_size = 4;
+    public int potion_stack_size = 16;
+    public int splash_potion_stack_size = 4;
+    public int lingering_potion_stack_size = 4;
 
-    public static int potion_use_cooldown = 30;
-    public static int potion_throw_cooldown = 30;
+    public int potion_use_cooldown = 30;
+    public int potion_throw_cooldown = 30;
 
-    public static int gauntlet_cooldown = 30;
+    public int gauntlet_cooldown = 30;
 
-    public static boolean coat_tools = true;
-    public static boolean spike_food = true;
-    public static boolean show_spiked_food = true;
-    public static boolean coat_anything;
-    public static boolean milk = true;
+    public boolean coat_tools = true;
+    public boolean spike_food = true;
+    public boolean show_spiked_food = true;
+    public boolean coat_anything;
+    public boolean milk = true;
 
 }

@@ -159,11 +159,11 @@ public class ClientEvents implements ClientModInitializer {
     }
 
     public static void switchGameMode(GameMode oldGameType, GameMode newGameType) {
-        if (newGameType == GameMode.SURVIVAL && ClothConfig.gauntlet_hud_preset == GauntletHUD.HudPreset.ABOVE_HOTBAR) {
-            ClothConfig.gauntlet_hud_x = GauntletHUDMovementScreen.getFixedPositionValue(MinecraftClient.getInstance().getWindow().getScaledHeight() - 42 - 40, false);
+        if (newGameType == GameMode.SURVIVAL && DavesPotioneering.CONFIG.gauntlet_hud_preset == GauntletHUD.HudPreset.ABOVE_HOTBAR) {
+            DavesPotioneering.CONFIG.gauntlet_hud_x = GauntletHUDMovementScreen.getFixedPositionValue(MinecraftClient.getInstance().getWindow().getScaledHeight() - 42 - 40, false);
         }
-        if (newGameType == GameMode.CREATIVE && ClothConfig.gauntlet_hud_preset == GauntletHUD.HudPreset.ABOVE_HOTBAR) {
-            ClothConfig.gauntlet_hud_y = GauntletHUDMovementScreen.getFixedPositionValue(MinecraftClient.getInstance().getWindow().getScaledHeight() - 42 - 25, false);
+        if (newGameType == GameMode.CREATIVE && DavesPotioneering.CONFIG.gauntlet_hud_preset == GauntletHUD.HudPreset.ABOVE_HOTBAR) {
+            DavesPotioneering.CONFIG.gauntlet_hud_y = GauntletHUDMovementScreen.getFixedPositionValue(MinecraftClient.getInstance().getWindow().getScaledHeight() - 42 - 25, false);
         }
     }
 
@@ -204,7 +204,7 @@ public class ClientEvents implements ClientModInitializer {
     public static void tooltips(ItemStack stack, TooltipContext e2, List<Text> tooltip) {
         if (!dontTooltip(stack) && PotionUtil.getPotion(stack) != Potions.EMPTY) {
             if (stack.getItem().isFood()) {
-                if (ClothConfig.show_spiked_food) {
+                if (DavesPotioneering.CONFIG.show_spiked_food) {
                     tooltip.add(new LiteralText("Spiked with"));
                     PotionUtil.buildTooltip(stack, tooltip, 0.125F);
                 }
@@ -249,7 +249,7 @@ public class ClientEvents implements ClientModInitializer {
 
     public static void playerTick(MinecraftClient e) {
         PlayerEntity player = e.player;
-        if (player != null && player.world.getTime() % ClothConfig.particle_drip_rate == 0) {
+        if (player != null && player.world.getTime() % DavesPotioneering.CONFIG.particle_drip_rate == 0) {
 
             ItemStack stack = player.getMainHandStack();
 
