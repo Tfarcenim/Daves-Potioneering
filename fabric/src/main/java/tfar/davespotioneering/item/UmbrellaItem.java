@@ -28,23 +28,20 @@ import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class UmbrellaItem extends ShieldItem implements GeoItem {
-    private final String name;
-    private final String style;
+public class UmbrellaItem extends CUmbrellaItem implements GeoItem {
+
 
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
     private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 
-
     public UmbrellaItem(Properties builder, DyeColor name, String style) {
-        this(builder,name.getName().toLowerCase(Locale.ROOT),style);
+        super(builder, name, style);
     }
 
-    public UmbrellaItem(Properties builder, String name,String style) {
-        super(builder);
-        this.name = name;
-        this.style = style;
+    public UmbrellaItem(Properties builder, String name, String style) {
+        super(builder, name, style);
     }
+
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player playerEntity, InteractionHand hand) {

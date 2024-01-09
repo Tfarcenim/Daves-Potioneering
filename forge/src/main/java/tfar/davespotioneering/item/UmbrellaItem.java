@@ -29,7 +29,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class UmbrellaItem extends ShieldItem implements GeoItem {
+public class UmbrellaItem extends CUmbrellaItem implements GeoItem {
     private final String model;
     private final String style;
 
@@ -53,23 +53,14 @@ public class UmbrellaItem extends ShieldItem implements GeoItem {
 
     @Override
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-        consumer.accept( new IClientItemExtensions() {
+        consumer.accept(new IClientItemExtensions() {
             private final NonNullLazy<BlockEntityWithoutLevelRenderer> ister = NonNullLazy.of(() -> HideISTERsFromServer.createGeoClassicUmbrellaItemStackRenderer(model));
+
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 return ister.get();
             }
         });
-
-    }
-    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pHand) {
-        pLevel.playLocalSound(pPlayer.getX(),pPlayer.getY(),pPlayer.getZ(), ModSoundEvents.UMBRELLA_OPEN, SoundSource.BLOCKS,.5f,1,false);
-        return super.use(pLevel, pPlayer, pHand);
-    }
-
-    @Override
-    public void releaseUsing(ItemStack pStack, Level pLevel, LivingEntity pLivingEntity, int pTimeCharged) {
-        pLevel.playLocalSound(pLivingEntity.getX(),pLivingEntity.getY(),pLivingEntity.getZ(), ModSoundEvents.UMBRELLA_CLOSE, SoundSource.BLOCKS,.5f,1,false);
     }
 
     @Override
