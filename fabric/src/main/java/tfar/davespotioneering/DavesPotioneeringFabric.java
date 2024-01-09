@@ -19,7 +19,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import tfar.davespotioneering.block.ModCauldronInteractions;
 import tfar.davespotioneering.config.ClothConfig;
 import tfar.davespotioneering.init.*;
-import tfar.davespotioneering.mixin.BlockEntityTypeAcces;
 import tfar.davespotioneering.net.PacketHandler;
 
 import java.util.HashSet;

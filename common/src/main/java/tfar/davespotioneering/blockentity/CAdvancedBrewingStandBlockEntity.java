@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.duck.BrewingStandDuck;
 import tfar.davespotioneering.inventory.BasicInventoryBridge;
+import tfar.davespotioneering.menu.AdvancedBrewingStandMenu;
 
 import java.util.Arrays;
 
@@ -137,9 +138,10 @@ public abstract class CAdvancedBrewingStandBlockEntity extends BlockEntity imple
 
     @Nullable
     @Override
-    public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
-        return null;
+    public AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player player) {
+        return new AdvancedBrewingStandMenu(id, playerInventory, handler, this.data,this);
     }
+
 
     @Override
     public void addXp(double xp) {

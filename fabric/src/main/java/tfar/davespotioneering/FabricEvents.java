@@ -23,7 +23,6 @@ import tfar.davespotioneering.block.LayeredReinforcedCauldronBlock;
 import tfar.davespotioneering.duck.BrewingStandDuck;
 import tfar.davespotioneering.init.ModPotions;
 import tfar.davespotioneering.item.UmbrellaItem;
-import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
 import tfar.davespotioneering.mixin.BrewingStandContainerAccess;
 
 public class FabricEvents {
@@ -51,13 +50,6 @@ public class FabricEvents {
         return InteractionResult.PASS;
     }
 
-    public static void onEat(Player player, ItemStack stack) {
-        Potion potion = PotionUtils.getPotion(stack);
-        for (MobEffectInstance effectInstance : potion.getEffects()) {
-            player.addEffect(new MobEffectInstance(effectInstance.getEffect(), Math.max(effectInstance.getDuration() / 8, 1), effectInstance.getAmplifier(), effectInstance.isAmbient(), effectInstance.isVisible()));
-        }
-    }
-
     public static InteractionResult afterHit(Player player, Level e2, InteractionHand e3, Entity victim, @Nullable EntityHitResult e5) {
 
         ItemStack weapon = player.getMainHandItem();
@@ -73,12 +65,6 @@ public class FabricEvents {
             }
         }
         return InteractionResult.PASS;
-    }
-
-    //this is called when the potion is done brewing, we use this instead of the forge event because it has a reference
-    // to the blockentity that created the potions
-    public static void potionBrew(BlockEntity brewingStandTileEntity, ItemStack ingredient) {
-        ((BrewingStandDuck)brewingStandTileEntity).addXp(Util.getBrewXp(ingredient));
     }
 
     public static void heldItemChangeEvent(Player player) {

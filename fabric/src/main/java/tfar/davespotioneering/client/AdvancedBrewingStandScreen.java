@@ -8,9 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import tfar.davespotioneering.DavesPotioneering;
-import tfar.davespotioneering.DavesPotioneeringFabric;
 import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
-import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
 
 public class AdvancedBrewingStandScreen extends AbstractContainerScreen<AdvancedBrewingStandContainer> {
 

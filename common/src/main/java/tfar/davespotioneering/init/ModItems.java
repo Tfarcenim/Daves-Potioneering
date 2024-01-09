@@ -3,12 +3,15 @@ package tfar.davespotioneering.init;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Tiers;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.item.AgedUmbrellaItem;
 import tfar.davespotioneering.item.GauntletItem;
 import tfar.davespotioneering.item.SimpleGauntletItem;
-import tfar.davespotioneering.item.UmbrellaItem;
+import tfar.davespotioneering.platform.Services;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,24 +31,24 @@ public class ModItems {
     public static final Item MAGIC_LECTERN = new BlockItem(ModBlocks.MAGIC_LECTERN,new Item.Properties());
     public static final Item POTION_INJECTOR = new BlockItem(ModBlocks.POTION_INJECTOR,new Item.Properties());
 
-    public static final Item WHITE_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.WHITE,"classic");
-    public static final Item ORANGE_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.ORANGE,"classic");
-    public static final Item MAGENTA_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.MAGENTA,"classic");
-    public static final Item LIGHT_BLUE_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.LIGHT_BLUE,"classic");
-    public static final Item YELLOW_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.YELLOW,"classic");
-    public static final Item LIME_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.LIME,"classic");
-    public static final Item PINK_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.PINK,"classic");
-    public static final Item GRAY_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.GRAY,"classic");
-    public static final Item LIGHT_GRAY_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.LIGHT_GRAY,"classic");
-    public static final Item CYAN_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.CYAN,"classic");
-    public static final Item PURPLE_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.PURPLE,"classic");
-    public static final Item BLUE_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.BLUE,"classic");
-    public static final Item BROWN_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.BROWN,"classic");
-    public static final Item GREEN_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.GREEN,"classic");
-    public static final Item RED_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.RED,"classic");
-    public static final Item BLACK_UMBRELLA = new UmbrellaItem(baseUmbrella(),DyeColor.BLACK,"classic");
+    public static final Item WHITE_UMBRELLA = Services.PLATFORM.makeBasicUmbrella(baseUmbrella(),DyeColor.WHITE,"classic");
+    public static final Item ORANGE_UMBRELLA = Services.PLATFORM.makeBasicUmbrella(baseUmbrella(),DyeColor.ORANGE,"classic");
+    public static final Item MAGENTA_UMBRELLA = Services.PLATFORM.makeBasicUmbrella(baseUmbrella(),DyeColor.MAGENTA,"classic");
+    public static final Item LIGHT_BLUE_UMBRELLA = Services.PLATFORM.makeBasicUmbrella(baseUmbrella(),DyeColor.LIGHT_BLUE,"classic");
+    public static final Item YELLOW_UMBRELLA = Services.PLATFORM.makeBasicUmbrella(baseUmbrella(),DyeColor.YELLOW,"classic");
+    public static final Item LIME_UMBRELLA = Services.PLATFORM.makeBasicUmbrella(baseUmbrella(),DyeColor.LIME,"classic");
+    public static final Item PINK_UMBRELLA = Services.PLATFORM.makeBasicUmbrella(baseUmbrella(),DyeColor.PINK,"classic");
+    public static final Item GRAY_UMBRELLA = Services.PLATFORM.makeBasicUmbrella(baseUmbrella(),DyeColor.GRAY,"classic");
+    public static final Item LIGHT_GRAY_UMBRELLA = Services.PLATFORM.makeBasicUmbrella(baseUmbrella(),DyeColor.LIGHT_GRAY,"classic");
+    public static final Item CYAN_UMBRELLA = Services.PLATFORM.makeBasicUmbrella(baseUmbrella(),DyeColor.CYAN,"classic");
+    public static final Item PURPLE_UMBRELLA = Services.PLATFORM.makeBasicUmbrella(baseUmbrella(),DyeColor.PURPLE,"classic");
+    public static final Item BLUE_UMBRELLA = Services.PLATFORM.makeBasicUmbrella(baseUmbrella(),DyeColor.BLUE,"classic");
+    public static final Item BROWN_UMBRELLA = Services.PLATFORM.makeBasicUmbrella(baseUmbrella(),DyeColor.BROWN,"classic");
+    public static final Item GREEN_UMBRELLA = Services.PLATFORM.makeBasicUmbrella(baseUmbrella(),DyeColor.GREEN,"classic");
+    public static final Item RED_UMBRELLA = Services.PLATFORM.makeBasicUmbrella(baseUmbrella(),DyeColor.RED,"classic");
+    public static final Item BLACK_UMBRELLA = Services.PLATFORM.makeBasicUmbrella(baseUmbrella(),DyeColor.BLACK,"classic");
 
-    public static final Item GILDED_UMBRELLA = new UmbrellaItem(baseUmbrella(),"gilded","gilded");
+    public static final Item GILDED_UMBRELLA = Services.PLATFORM.makeBasicUmbrella(baseUmbrella(),"gilded","gilded");
     public static final Item AGED_UMBRELLA = new AgedUmbrellaItem(baseUmbrella(),"aged");
 
 

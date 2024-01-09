@@ -3,20 +3,10 @@ package tfar.davespotioneering.blockentity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.Containers;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionBrewing;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BrewingStandBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
@@ -25,20 +15,14 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
 import org.apache.commons.lang3.tuple.Pair;
-import tfar.davespotioneering.ForgeEvents;
+import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.ForgeUtil;
-import tfar.davespotioneering.Util;
-import tfar.davespotioneering.duck.BrewingStandDuck;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
 import tfar.davespotioneering.inv.BrewingHandler;
-import tfar.davespotioneering.inv.handler;
 import tfar.davespotioneering.inv.SidedItemHandler;
-import tfar.davespotioneering.menu.AdvancedBrewingStandMenu;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Map;
 
 public class AdvancedBrewingStandBlockEntity extends CAdvancedBrewingStandBlockEntity {
@@ -104,7 +88,7 @@ public class AdvancedBrewingStandBlockEntity extends CAdvancedBrewingStandBlockE
         //note: this is changed from the BrewingRecipeRegistry version to allow for >1 potion in a stack
         ForgeUtil.brewPotions(handler.$getStacks(), ingredient, POTIONS);
         ForgeEventFactory.onPotionBrewed(handler.$getStacks());
-        ForgeEvents.potionBrew(this,ingredient);
+        DavesPotioneering.potionBrew(this,ingredient);
 
         BlockPos blockpos = this.getBlockPos();
         if (ingredient.hasCraftingRemainingItem()) {
@@ -126,20 +110,15 @@ public class AdvancedBrewingStandBlockEntity extends CAdvancedBrewingStandBlockE
     public void load(CompoundTag nbt) {
         super.load(nbt);
         CompoundTag items = nbt.getCompound("Items");
-        handler.deserializeNBT(items);
+       // handler.deserializeNBT(items);
     }
 
     @Override
     public void saveAdditional(CompoundTag compound) {
         super.saveAdditional(compound);
-        compound.put("Items",handler.serializeNBT());
+      //  compound.put("Items",handler.serializeNBT());
     }
 
-    @Nullable
-    @Override
-    public AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player player) {
-        return new AdvancedBrewingStandMenu(id, playerInventory, (ItemStackHandler) handler, this.data,this);
-    }
 
     //forge specific stuff
 

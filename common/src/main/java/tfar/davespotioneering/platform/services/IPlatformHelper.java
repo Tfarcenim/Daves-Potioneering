@@ -1,6 +1,15 @@
 package tfar.davespotioneering.platform.services;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import tfar.davespotioneering.inventory.BasicInventoryBridge;
+
+import java.util.Locale;
 
 public interface IPlatformHelper {
 
@@ -36,5 +45,20 @@ public interface IPlatformHelper {
     }
 
     <T> void superRegister(Class<?> clazz, Registry<T> registry, Class<? extends T> filter);
+
+
+    //loader specific instantiations
+
+    default Item makeBasicUmbrella(Item.Properties builder, DyeColor name, String style) {
+        return makeBasicUmbrella(builder,name.getName().toLowerCase(Locale.ROOT),style);
+    }
+    Item makeBasicUmbrella(Item.Properties builder, String name, String style);
+
+    Slot makeIngSlot(BasicInventoryBridge handle,int slot,int x, int y);
+    Slot makePotSlot(BasicInventoryBridge handle,int slot,int x, int y);
+    Slot makeFuelSlot(BasicInventoryBridge handle,int slot,int x, int y);
+
+    BasicInventoryBridge makeBrewingHandler(int slots);
+    BlockEntity makeAdvancedBrewingStand(BlockPos pos, BlockState state);
 
 }

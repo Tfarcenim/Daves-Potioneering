@@ -2,7 +2,14 @@ package tfar.davespotioneering.platform;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.inventory.BrewingStandMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
 import tfar.davespotioneering.DavesPotioneering;
+import tfar.davespotioneering.inv.BrewingHandler;
+import tfar.davespotioneering.inventory.BasicInventoryBridge;
+import tfar.davespotioneering.item.UmbrellaItem;
 import tfar.davespotioneering.platform.services.IPlatformHelper;
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -40,5 +47,32 @@ public class FabricPlatformHelper implements IPlatformHelper {
                 illegalAccessException.printStackTrace();
             }
         }
+    }
+
+    //loader specific instantiations
+
+    @Override
+    public Item makeBasicUmbrella(Item.Properties builder, String name, String style) {
+        return new UmbrellaItem(builder,name,style);
+    }
+
+    @Override
+    public Slot makeIngSlot(BasicInventoryBridge handle, int slot, int x, int y) {
+        return new BrewingStandMenu.IngredientSlot((Container) handle,slot,x,y);
+    }
+
+    @Override
+    public Slot makePotSlot(BasicInventoryBridge handle, int slot, int x, int y) {
+        return new BrewingStandMenu.PotionSlot((Container) handle,slot,x,y);
+    }
+
+    @Override
+    public Slot makeFuelSlot(BasicInventoryBridge handle, int slot, int x, int y) {
+        return new BrewingStandMenu.FuelSlot((Container) handle,slot,x,y);
+    }
+
+    @Override
+    public BasicInventoryBridge makeBrewingHandler(int slots) {
+        return new BrewingHandler(slots);
     }
 }

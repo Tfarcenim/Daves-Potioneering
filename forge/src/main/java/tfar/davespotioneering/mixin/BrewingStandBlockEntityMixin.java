@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.ForgeEvents;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.duck.BrewingStandDuck;
@@ -43,6 +44,6 @@ public class BrewingStandBlockEntityMixin extends BlockEntity implements Brewing
 
     @Inject(method = "doBrew",at = @At(value = "INVOKE",target = "Lnet/minecraftforge/event/ForgeEventFactory;onPotionBrewed(Lnet/minecraft/core/NonNullList;)V",remap = false))
     private static void betterIntercept(Level itemstack1, BlockPos p_155291_, NonNullList<ItemStack> p_155292_, CallbackInfo ci) {
-        ForgeEvents.potionBrew(itemstack1.getBlockEntity(p_155291_),p_155292_.get(3));
+        DavesPotioneering.potionBrew(itemstack1.getBlockEntity(p_155291_),p_155292_.get(3));
     }
 }

@@ -30,8 +30,6 @@ import tfar.davespotioneering.item.UmbrellaItem;
 import tfar.davespotioneering.menu.AdvancedBrewingStandMenu;
 import tfar.davespotioneering.mixin.BrewingStandContainerAccess;
 
-import java.util.List;
-
 public class ForgeEvents {
 
     public static void potionCooldown(PlayerInteractEvent.RightClickItem e) {
@@ -78,12 +76,6 @@ public class ForgeEvents {
                 }
             }
         }
-    }
-
-    //this is called when the potion is done brewing, we use this instead of the forge event because it has a reference
-    // to the blockentity that created the potions
-    public static void potionBrew(BlockEntity brewingStandTileEntity, ItemStack ingredient) {
-        ((BrewingStandDuck)brewingStandTileEntity).addXp(Util.getBrewXp(ingredient));
     }
 
     public static void heldItemChangeEvent(Player player) {

@@ -15,6 +15,7 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import tfar.davespotioneering.duck.BrewingStandDuck;
 import tfar.davespotioneering.init.*;
 import tfar.davespotioneering.platform.Services;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -59,5 +60,9 @@ public class DavesPotioneering {
         }
     }
 
-
+    //this is called when the potion is done brewing, we use this instead of the forge event because it has a reference
+    // to the blockentity that created the potions
+    public static void potionBrew(BlockEntity brewingStandTileEntity, ItemStack ingredient) {
+        ((BrewingStandDuck)brewingStandTileEntity).addXp(Util.getBrewXp(ingredient));
+    }
 }

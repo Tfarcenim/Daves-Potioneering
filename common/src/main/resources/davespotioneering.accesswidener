@@ -2,4 +2,11 @@ accessWidener v1 named
 
 accessible class net/minecraft/world/inventory/BrewingStandMenu$PotionSlot
 accessible class net/minecraft/world/inventory/BrewingStandMenu$FuelSlot
+accessible class net/minecraft/world/inventory/BrewingStandMenu$IngredientSlot
 accessible method net/minecraft/client/renderer/item/ItemProperties register (Lnet/minecraft/world/item/Item;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/client/renderer/item/ClampedItemPropertyFunction;)V
+accessible method net/minecraft/core/particles/SimpleParticleType <init> (Z)V
+
+accessible method net/minecraft/world/inventory/MenuType <init> (Lnet/minecraft/world/inventory/MenuType$MenuSupplier;Lnet/minecraft/world/flag/FeatureFlagSet;)V
+accessible class net/minecraft/world/inventory/MenuType$MenuSupplier
+
+extendable class net/minecraft/world/level/block/entity/BlockEntityType$BlockEntitySupplier

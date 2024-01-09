@@ -6,8 +6,6 @@ import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import tfar.davespotioneering.DavesPotioneering;
-import tfar.davespotioneering.DavesPotioneeringFabric;
-import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
 import tfar.davespotioneering.menu.PotionInjectorMenu;
 
 import java.lang.reflect.Field;

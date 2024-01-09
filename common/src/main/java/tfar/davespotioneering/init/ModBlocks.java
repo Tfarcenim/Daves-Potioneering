@@ -12,7 +12,7 @@ public class ModBlocks {
 
     private static List<Block> MOD_BLOCKS;
 
-    public static final Block COMPOUND_BREWING_STAND = new CAdvancedBrewingStandBlock(BlockBehaviour.Properties.of()
+    public static final Block COMPOUND_BREWING_STAND = new AdvancedBrewingStandBlock(BlockBehaviour.Properties.of()
             .requiresCorrectToolForDrops().strength(0.5F).lightLevel(state -> 1).noOcclusion());
 
     public static final Block REINFORCED_CAULDRON = new ReinforcedCauldronBlock(BlockBehaviour.Properties.of()
