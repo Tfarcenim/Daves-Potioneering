@@ -18,8 +18,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionBrewing;
+import tfar.davespotioneering.inventory.BasicInventoryBridge;
 
-public class BrewingHandler extends SimpleContainer {
+public class BrewingHandler extends SimpleContainer implements BasicInventoryBridge {
 
     public BrewingHandler(int size) {
         super(size);
@@ -97,4 +98,18 @@ public class BrewingHandler extends SimpleContainer {
         return nbtTagList;
     }
 
+    @Override
+    public ItemStack $getStackInSlot(int slot) {
+        return getItem(slot);
+    }
+
+    @Override
+    public NonNullList<ItemStack> $getStacks() {
+        return items;
+    }
+
+    @Override
+    public void $setStackInSlot(int slot, ItemStack stack) {
+        setItem(slot,stack);
+    }
 }

@@ -10,21 +10,21 @@ import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.items.ItemStackHandler;
 import org.apache.commons.lang3.ArrayUtils;
 import tfar.davespotioneering.ForgeUtil;
-import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
+import tfar.davespotioneering.inventory.BasicInventoryBridge;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class BrewingHandler extends ItemStackHandler {
+public class BrewingHandler extends ItemStackHandler implements BasicInventoryBridge {
 
     public BrewingHandler(int size) {
         super(size);
     }
 
-    public NonNullList<ItemStack> getStacks() {
+    public NonNullList<ItemStack> $getStacks() {
         return stacks;
     }
 
@@ -71,5 +71,15 @@ public class BrewingHandler extends ItemStackHandler {
         Set<Integer> potion_fuel = new HashSet<>(potSet);
         potion_fuel.add(AdvancedBrewingStandBlockEntity.FUEL);
         FUEL_AND_POTIONS = potion_fuel.stream().mapToInt(i -> i).toArray();
+    }
+
+    @Override
+    public ItemStack $getStackInSlot(int slot) {
+        return getStackInSlot(slot);
+    }
+
+    @Override
+    public void $setStackInSlot(int slot, ItemStack stack) {
+        setStackInSlot(slot,stack);
     }
 }

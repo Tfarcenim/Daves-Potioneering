@@ -8,7 +8,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LecternBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import tfar.davespotioneering.DavesPotioneering;
-import tfar.davespotioneering.DavesPotioneeringFabric;
 import tfar.davespotioneering.block.*;
 
 import java.lang.reflect.Field;
@@ -19,7 +18,7 @@ public class ModBlocks {
 
     private static List<Block> MOD_BLOCKS;
 
-    public static final Block COMPOUND_BREWING_STAND = new AdvancedBrewingStandBlock(BlockBehaviour.Properties.of()
+    public static final Block COMPOUND_BREWING_STAND = new CAdvancedBrewingStandBlock(BlockBehaviour.Properties.of()
             .requiresCorrectToolForDrops().strength(0.5F).lightLevel(state -> 1).noOcclusion());
 
     public static final Block REINFORCED_CAULDRON = new ReinforcedCauldronBlock(BlockBehaviour.Properties.of()

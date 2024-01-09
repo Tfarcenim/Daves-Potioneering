@@ -12,13 +12,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
+import tfar.davespotioneering.blockentity.CAdvancedBrewingStandBlockEntity;
 import tfar.davespotioneering.init.ModContainerTypes;
 import tfar.davespotioneering.inv.BrewingHandler;
 
 public class AdvancedBrewingStandContainer extends AbstractContainerMenu {
     private final ContainerData data;
 
-    public AdvancedBrewingStandBlockEntity blockEntity;
+    public CAdvancedBrewingStandBlockEntity blockEntity;
 
     //client
     public AdvancedBrewingStandContainer(int id, Inventory playerInventory) {
@@ -32,7 +33,6 @@ public class AdvancedBrewingStandContainer extends AbstractContainerMenu {
        // assertIntArraySize(data, 2);
         this.data = data;
 
-        this.blockEntity = advancedBrewingStandBlockEntity;
 
         int potY = 77;
 
