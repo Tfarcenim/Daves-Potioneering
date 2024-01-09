@@ -5,6 +5,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
+import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.DavesPotioneeringFabric;
 import tfar.davespotioneering.effect.MilkEffect;
 
@@ -22,7 +23,7 @@ public class ModEffects {
         for (Field field : ModEffects.class.getFields()) {
             try {
                 if (field.get(null) instanceof MobEffect effect) {
-                    Registry.register(BuiltInRegistries.MOB_EFFECT,new ResourceLocation(DavesPotioneeringFabric.MODID,field.getName().toLowerCase(Locale.ROOT)),effect);
+                    Registry.register(BuiltInRegistries.MOB_EFFECT,new ResourceLocation(DavesPotioneering.MODID,field.getName().toLowerCase(Locale.ROOT)),effect);
                 }
             } catch (IllegalAccessException illegalAccessException) {
                 illegalAccessException.printStackTrace();

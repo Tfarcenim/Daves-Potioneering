@@ -28,7 +28,6 @@ import java.util.Set;
 public class DavesPotioneeringFabric implements ModInitializer {
     // Directly reference a log4j logger.
 
-    public static final String MODID = "davespotioneering";
     public static ClothConfig CONFIG;
 
     @Override
@@ -41,7 +40,7 @@ public class DavesPotioneeringFabric implements ModInitializer {
         ModContainerTypes.register();
         ModSoundEvents.register();
         ModParticleTypes.register();
-        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB,new ResourceLocation(DavesPotioneeringFabric.MODID,"tab"),ModItems.tab);
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB,new ResourceLocation(DavesPotioneering.MODID,"tab"),ModItems.tab);
 
         Set<Block> newSet = new HashSet<>(((BlockEntityTypeAcces)BlockEntityType.LECTERN).getValidBlocks());
         newSet.add(ModBlocks.MAGIC_LECTERN);

@@ -3,10 +3,10 @@ package tfar.davespotioneering.config;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
-import tfar.davespotioneering.DavesPotioneeringFabric;
+import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.client.GauntletHUD;
 
-@Config(name = DavesPotioneeringFabric.MODID)
+@Config(name = DavesPotioneering.MODID)
 public class ClothConfig implements ConfigData {
 
     //client

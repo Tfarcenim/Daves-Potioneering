@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.alchemy.Potion;
+import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.DavesPotioneeringFabric;
 
 import java.lang.reflect.Field;
@@ -26,7 +27,7 @@ public class ModPotions {
         for (Field field : ModPotions.class.getFields()) {
             try {
                 if (field.get(null) instanceof Potion potion) {
-                    Registry.register(BuiltInRegistries.POTION,new ResourceLocation(DavesPotioneeringFabric.MODID,field.getName().toLowerCase(Locale.ROOT)),potion);
+                    Registry.register(BuiltInRegistries.POTION,new ResourceLocation(DavesPotioneering.MODID,field.getName().toLowerCase(Locale.ROOT)),potion);
                 }
             } catch (IllegalAccessException illegalAccessException) {
                 illegalAccessException.printStackTrace();
