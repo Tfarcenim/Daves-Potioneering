@@ -29,12 +29,6 @@ public class ReinforcedCauldronBlockEntity extends CReinforcedCauldronBlockEntit
         super(tileEntityTypeIn,blockPos,blockState);
     }
 
-    //@Override
-    //public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
-    //    this.load(null, packet.getTag());
-    //    level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
-    //}
-
     public void onEntityCollision(Entity entity) {
         if (entity instanceof ItemEntity) {
             boolean dragon = getBlockState().getValue(LayeredReinforcedCauldronBlock.DRAGONS_BREATH);

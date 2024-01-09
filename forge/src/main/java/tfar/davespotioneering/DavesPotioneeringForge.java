@@ -30,6 +30,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
+import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.block.ModCauldronInteractions;
 import tfar.davespotioneering.client.ClientEvents;
 import tfar.davespotioneering.client.GauntletHUD;
@@ -41,9 +42,8 @@ import tfar.davespotioneering.mixin.BlockEntityTypeAcces;
 import tfar.davespotioneering.net.PacketHandler;
 
 import java.lang.reflect.Field;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Supplier;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(DavesPotioneering.MODID)
@@ -70,7 +70,9 @@ public class DavesPotioneeringForge {
             bus.addListener(ClientEvents::overlay);
             bus.addListener(GauntletHUD::bake);
         }
+        DavesPotioneering.earlySetup();
     }
+
 
     public static final ModConfig.Client CLIENT;
     public static final ForgeConfigSpec CLIENT_SPEC;
@@ -87,29 +89,17 @@ public class DavesPotioneeringForge {
         SERVER = specPair2.getLeft();
     }
 
+    public static Map<Registry<?>,List<Pair<ResourceLocation, Supplier<?>>>> registerLater = new HashMap<>();
     private void register(RegisterEvent e) {
-        superRegister(e, ModBlocks.class,Registries.BLOCK,Block.class);
-        superRegister(e, ModItems.class,Registries.ITEM,Item.class);
-        superRegister(e, ModBlockEntityTypes.class,Registries.BLOCK_ENTITY_TYPE,BlockEntityType.class);
-        superRegister(e, ModMenuTypes.class,Registries.MENU, MenuType.class);
-        superRegister(e, ModEffects.class,Registries.MOB_EFFECT, MobEffect.class);
-        superRegister(e, ModParticleTypes.class,Registries.PARTICLE_TYPE, ParticleType.class);
-        superRegister(e, ModPotions.class,Registries.POTION,Potion.class);
-        superRegister(e, ModSoundEvents.class, Registries.SOUND_EVENT,SoundEvent.class);
-        e.register(Registries.CREATIVE_MODE_TAB,new ResourceLocation(DavesPotioneering.MODID, DavesPotioneering.MODID),() -> ModCreativeTab.DAVESPOTIONEERING);
-    }
-
-    public static <T> void superRegister(RegisterEvent e, Class<?> clazz, ResourceKey<? extends  Registry<T>> resourceKey, Class<?> filter) {
-        for (Field field : clazz.getFields()) {
-            try {
-                Object o = field.get(null);
-                if (filter.isInstance(o)) {
-                    e.register(resourceKey,new ResourceLocation(DavesPotioneering.MODID,field.getName().toLowerCase(Locale.ROOT)),() -> (T)o);
-                }
-            } catch (IllegalAccessException illegalAccessException) {
-                illegalAccessException.printStackTrace();
+        for (Map.Entry<Registry<?>,List<Pair<ResourceLocation, Supplier<?>>>> entry : registerLater.entrySet()) {
+            Registry<?> registry = entry.getKey();
+            List<Pair<ResourceLocation, Supplier<?>>> toRegister = entry.getValue();
+            for (Pair<ResourceLocation,Supplier<?>> pair : toRegister) {
+                e.register((ResourceKey<? extends Registry<Object>>)registry.key(),pair.getLeft(),(Supplier<Object>)pair.getValue());
             }
         }
+
+        e.register(Registries.CREATIVE_MODE_TAB,new ResourceLocation(DavesPotioneering.MODID, DavesPotioneering.MODID),() -> ModCreativeTab.DAVESPOTIONEERING);
     }
 
     private void setup(final FMLCommonSetupEvent event) {

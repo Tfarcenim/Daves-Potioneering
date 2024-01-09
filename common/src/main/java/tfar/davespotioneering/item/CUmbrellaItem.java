@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import tfar.davespotioneering.init.ModSoundEvents;
 
 import javax.annotation.Nullable;
 import java.util.List;

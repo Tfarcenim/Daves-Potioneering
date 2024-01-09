@@ -30,6 +30,7 @@ import net.minecraft.world.phys.AABB;
 import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.PotionUtils2;
 import tfar.davespotioneering.Util;
+import tfar.davespotioneering.blockentity.CReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.init.ModPotions;
@@ -68,7 +69,7 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
 
     public static void handleWeaponCoating(BlockState state, Level level, BlockPos pos, @Nullable Player player, ItemStack stack) {
         if (state.getValue(DRAGONS_BREATH)) {
-            ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) level.getBlockEntity(pos);
+            CReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (CReinforcedCauldronBlockEntity) level.getBlockEntity(pos);
             Potion potion = reinforcedCauldronBlockEntity.getPotion();
             List<MobEffectInstance> customEffects = reinforcedCauldronBlockEntity.getCustomEffects();
             if (!level.isClientSide) {
@@ -89,7 +90,7 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
             if (stack.getCount() < 8) {
                 return;
             }
-            ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) level.getBlockEntity(pos);
+            CReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (CReinforcedCauldronBlockEntity) level.getBlockEntity(pos);
             Potion potion = reinforcedCauldronBlockEntity.getPotion();
             List<MobEffectInstance> customEffects = reinforcedCauldronBlockEntity.getCustomEffects();
             if (!level.isClientSide) {
@@ -119,7 +120,7 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
         if (stack.getCount() < 8) {
             return;
         }
-        ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) level.getBlockEntity(pos);
+        CReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (CReinforcedCauldronBlockEntity) level.getBlockEntity(pos);
         Potion potion = reinforcedCauldronBlockEntity.getPotion();
         List<MobEffectInstance> customEffects = reinforcedCauldronBlockEntity.getCustomEffects();
         if (!level.isClientSide) {
@@ -140,7 +141,7 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
     }
 
     public static void removeCoating(BlockState state, Level world, BlockPos pos,@Nullable Player player, ItemStack stack) {
-        ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) world.getBlockEntity(pos);
+        CReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (CReinforcedCauldronBlockEntity) world.getBlockEntity(pos);
         Potion potion = reinforcedCauldronBlockEntity.getPotion();
         if (potion == ModPotions.MILK && !world.isClientSide) {
             if (player != null && !player.getAbilities().instabuild) {
@@ -153,7 +154,7 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
     }
 
     public static void setWaterLevel(Level world, BlockPos pos, BlockState state, int level) {
-        ReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (ReinforcedCauldronBlockEntity) world.getBlockEntity(pos);
+        CReinforcedCauldronBlockEntity reinforcedCauldronBlockEntity = (CReinforcedCauldronBlockEntity) world.getBlockEntity(pos);
         if (level == 0) {
             reinforcedCauldronBlockEntity.setPotion(Potions.EMPTY);
         } else {

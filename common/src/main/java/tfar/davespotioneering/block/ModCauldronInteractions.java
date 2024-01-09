@@ -22,7 +22,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import tfar.davespotioneering.PotionUtils2;
-import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
+import tfar.davespotioneering.blockentity.CReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.init.ModPotions;
 
@@ -30,8 +30,6 @@ import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
-
-import static tfar.davespotioneering.block.LayeredReinforcedCauldronBlock.DRAGONS_BREATH;
 
 /**
  * Copied from @CauldronInteraction
@@ -46,7 +44,7 @@ public class ModCauldronInteractions {
     static final CauldronInteraction FILL_WATER = (state, level, pos, player, p_175687_, p_175688_) -> {
         InteractionResult interactionResult = CauldronInteraction.emptyBucket(level, pos, player, p_175687_, p_175688_, ModBlocks.REINFORCED_WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3), SoundEvents.BUCKET_EMPTY);
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof ReinforcedCauldronBlockEntity reinforcedCauldronBlock) {
+        if (blockEntity instanceof CReinforcedCauldronBlockEntity reinforcedCauldronBlock) {
             reinforcedCauldronBlock.setPotion(Potions.WATER);
         }
         return interactionResult;
@@ -56,7 +54,7 @@ public class ModCauldronInteractions {
         InteractionResult interaction  = CauldronInteraction.emptyBucket(level, pos, player, hand, itemStack, ModBlocks.REINFORCED_WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3), SoundEvents.BUCKET_EMPTY);
         if (interaction == InteractionResult.CONSUME) {
             BlockEntity blockEntity = level.getBlockEntity(pos);
-            if (blockEntity instanceof ReinforcedCauldronBlockEntity reinforcedCauldronBlock) {
+            if (blockEntity instanceof CReinforcedCauldronBlockEntity reinforcedCauldronBlock) {
                 reinforcedCauldronBlock.setPotion(ModPotions.MILK);
             }
         }
@@ -78,7 +76,7 @@ public class ModCauldronInteractions {
 
                 BlockEntity blockEntity = level.getBlockEntity(pos);
 
-                if (blockEntity instanceof ReinforcedCauldronBlockEntity reinforced) {
+                if (blockEntity instanceof CReinforcedCauldronBlockEntity reinforced) {
                     reinforced.setPotion(PotionUtils.getPotion(stack));
                     reinforced.setCustomEffects(PotionUtils.getCustomEffects(stack));
                 }
@@ -96,7 +94,7 @@ public class ModCauldronInteractions {
                 Item item = stack.getItem();
 
                 BlockEntity blockEntity = level.getBlockEntity(pos);
-                if (blockEntity instanceof ReinforcedCauldronBlockEntity reinforced) {
+                if (blockEntity instanceof CReinforcedCauldronBlockEntity reinforced) {
                     Potion potion = reinforced.getPotion();
                     List<MobEffectInstance> customEffects = reinforced.getCustomEffects();
                     Integer color = reinforced.getCustomPotionColor();
@@ -127,7 +125,7 @@ public class ModCauldronInteractions {
                     player.awardStat(Stats.ITEM_USED.get(stack.getItem()));
 
                     BlockEntity blockEntity = level.getBlockEntity(pos);
-                    if (blockEntity instanceof ReinforcedCauldronBlockEntity reinforced) {
+                    if (blockEntity instanceof CReinforcedCauldronBlockEntity reinforced) {
 
                         if (reinforced.getPotion() != PotionUtils.getPotion(stack)) {
                             LayeredReinforcedCauldronBlock.boom(level,pos);
@@ -234,7 +232,7 @@ public class ModCauldronInteractions {
             return InteractionResult.PASS;
         } else {
             BlockEntity blockEntity = level.getBlockEntity(pos);
-            if (blockEntity instanceof ReinforcedCauldronBlockEntity cauldronBlockEntity) {
+            if (blockEntity instanceof CReinforcedCauldronBlockEntity cauldronBlockEntity) {
                 Potion potion = cauldronBlockEntity.getPotion();
 
                 if (!canBucket(potion)) {
@@ -286,7 +284,7 @@ public class ModCauldronInteractions {
                 }
             }
             level.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
-            level.setBlockAndUpdate(pos,state.setValue(DRAGONS_BREATH,true));
+            level.setBlockAndUpdate(pos,state.setValue(LayeredReinforcedCauldronBlock.DRAGONS_BREATH,true));
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
     }

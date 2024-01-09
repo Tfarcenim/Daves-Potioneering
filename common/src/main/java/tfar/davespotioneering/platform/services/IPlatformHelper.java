@@ -1,5 +1,7 @@
 package tfar.davespotioneering.platform.services;
 
+import net.minecraft.core.Registry;
+
 public interface IPlatformHelper {
 
     /**
@@ -30,7 +32,9 @@ public interface IPlatformHelper {
      * @return The name of the environment type.
      */
     default String getEnvironmentName() {
-
         return isDevelopmentEnvironment() ? "development" : "production";
     }
+
+    <T> void superRegister(Class<?> clazz, Registry<T> registry, Class<? extends T> filter);
+
 }

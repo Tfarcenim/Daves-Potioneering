@@ -32,14 +32,7 @@ public class DavesPotioneeringFabric implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        ModBlocks.register();
-        ModItems.register();
-        ModEffects.register();
-        ModPotions.register();
-        ModBlockEntityTypes.register();
-        ModContainerTypes.register();
-        ModSoundEvents.register();
-        ModParticleTypes.register();
+        DavesPotioneering.earlySetup();
         Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB,new ResourceLocation(DavesPotioneering.MODID,"tab"),ModItems.tab);
 
         Set<Block> newSet = new HashSet<>(((BlockEntityTypeAcces)BlockEntityType.LECTERN).getValidBlocks());

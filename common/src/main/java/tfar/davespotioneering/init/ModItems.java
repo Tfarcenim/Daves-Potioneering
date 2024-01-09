@@ -69,5 +69,4 @@ public class ModItems {
         }
         return MOD_ITEMS;
     }
-
 }

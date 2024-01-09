@@ -8,6 +8,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.data.LanguageProvider;
 import org.codehaus.plexus.util.StringUtils;
 import tfar.davespotioneering.DavesPotioneering;
+import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.block.PotionInjectorBlock;
 import tfar.davespotioneering.client.GauntletHUD;
 import tfar.davespotioneering.client.GauntletHUDMovementScreen;
