@@ -1,6 +1,7 @@
 package tfar.davespotioneering.client;
 
 import net.minecraft.world.item.ItemDisplayContext;
+import tfar.davespotioneering.DavesPotioneeringClient;
 import tfar.davespotioneering.duck.ModelManagerDuck;
 import tfar.davespotioneering.init.ModItems;
 import tfar.davespotioneering.item.Perspective;
@@ -28,7 +29,7 @@ public class ClientHooks {
         if (stack.getItem() instanceof Perspective) {
             if (renderMode == ItemDisplayContext.GUI) {
                 //the other 2 vars are never used
-                boolean active = ClientEvents.GAUNTLET.call(stack, null,null,0) == 1;
+                boolean active = DavesPotioneeringClient.GAUNTLET.call(stack, null,null,0) == 1;
 
                 if (!chace) {
                     chace = true;

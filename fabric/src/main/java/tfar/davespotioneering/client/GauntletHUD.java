@@ -16,13 +16,14 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
+import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.DavesPotioneeringFabric;
 import tfar.davespotioneering.init.ModSoundEvents;
 import tfar.davespotioneering.item.GauntletItem;
-import tfar.davespotioneering.mixin.IngameGuiAccess;
+import tfar.davespotioneering.mixin.GuiAccess;
 
 public class GauntletHUD {
-    public static final ResourceLocation GAUNTLET_ICON_LOC = new ResourceLocation(DavesPotioneeringFabric.MODID, "textures/gauntlet_icons/");
+    public static final ResourceLocation GAUNTLET_ICON_LOC = new ResourceLocation(DavesPotioneering.MODID, "textures/gauntlet_icons/");
 
     private static final int TEX_H = 41;
 
@@ -59,7 +60,7 @@ public class GauntletHUD {
 
         Gui hud = mc.gui;
 
-        int fade = ((IngameGuiAccess)hud).getToolHighlightTimer();
+        int fade = ((GuiAccess)hud).getToolHighlightTimer();
 
         int windowW = mc.getWindow().getGuiScaledWidth();
         int windowH = mc.getWindow().getGuiScaledHeight();

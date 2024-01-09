@@ -7,13 +7,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
+import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.DavesPotioneeringFabric;
 import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
 import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
 
 public class AdvancedBrewingStandScreen extends AbstractContainerScreen<AdvancedBrewingStandContainer> {
 
-    private static final ResourceLocation BREWING_STAND_GUI_TEXTURES = new ResourceLocation(DavesPotioneeringFabric.MODID,"textures/gui/compound_brewing_stand.png");
+    private static final ResourceLocation BREWING_STAND_GUI_TEXTURES = new ResourceLocation(DavesPotioneering.MODID,"textures/gui/compound_brewing_stand.png");
     private static final int[] BUBBLELENGTHS = new int[]{29, 24, 20, 16, 11, 6, 0};
 
     public AdvancedBrewingStandScreen(AdvancedBrewingStandContainer p_i51097_1_, Inventory p_i51097_2_, Component p_i51097_3_) {

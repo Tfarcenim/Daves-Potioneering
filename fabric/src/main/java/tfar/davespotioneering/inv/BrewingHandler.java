@@ -2,9 +2,8 @@ package tfar.davespotioneering.inv;
 
 import com.google.common.collect.Sets;
 import org.apache.commons.lang3.ArrayUtils;
-import tfar.davespotioneering.Util;
+import tfar.davespotioneering.FabricUtil;
 import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
-import tfar.davespotioneering.mixin.SimpleContainerAccess;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -50,7 +49,7 @@ public class BrewingHandler extends SimpleContainer {
                 return item == Items.BLAZE_POWDER;
             } else {
                 //potion slots
-                return Util.isValidInputCountInsensitive(stack);
+                return FabricUtil.isValidInputCountInsensitive(stack);
             }
         }
     }

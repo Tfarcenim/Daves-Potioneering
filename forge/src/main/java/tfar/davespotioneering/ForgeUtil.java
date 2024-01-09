@@ -13,21 +13,7 @@ import tfar.davespotioneering.mixin.ItemAccess;
 
 import java.util.List;
 
-public class Util {
-
-    public static void setStackSize(Item item, int count) {
-        ((ItemAccess) item).setMaxStackSize(count);
-    }
-
-    //brewing xp is determined by the ingredient used, more valuable ingredients should give more xp
-    public static double getBrewXp(ItemStack stack) {
-        return stack.getRarity() == Rarity.RARE ? 10 : 7;
-    }
-
-    public static void splitAndSpawnExperience(Level world, Vec3 pos, double experience) {
-        world.addFreshEntity(new ExperienceOrb(world, pos.x, pos.y, pos.z, (int) experience));
-    }
-
+public class ForgeUtil {
     public static void brewPotions(NonNullList<ItemStack> inputs, ItemStack ingredient, int[] inputIndexes) {
         for (int i : inputIndexes) {
             ItemStack output = BrewingRecipeRegistry.getOutput(inputs.get(i), ingredient);

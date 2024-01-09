@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
+import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.DavesPotioneeringFabric;
 import tfar.davespotioneering.menu.PotionInjectorMenu;
 import tfar.davespotioneering.net.C2SPotionInjector;
@@ -24,7 +25,7 @@ public class PotionInjectorScreen extends AbstractContainerScreen<PotionInjector
         inventoryLabelY += 26;
     }
 
-    private static final ResourceLocation TEXTURES = new ResourceLocation(DavesPotioneeringFabric.MODID,"textures/gui/potion_injector.png");
+    private static final ResourceLocation TEXTURES = new ResourceLocation(DavesPotioneering.MODID,"textures/gui/potion_injector.png");
 
     public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);

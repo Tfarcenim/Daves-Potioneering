@@ -17,7 +17,6 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
@@ -27,7 +26,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArrowItem;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.TieredItem;
@@ -40,6 +38,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import org.lwjgl.glfw.GLFW;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
+import tfar.davespotioneering.DavesPotioneering;
+import tfar.davespotioneering.DavesPotioneeringClient;
 import tfar.davespotioneering.DavesPotioneeringFabric;
 import tfar.davespotioneering.block.LayeredReinforcedCauldronBlock;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
@@ -56,10 +56,12 @@ import com.mojang.blaze3d.platform.InputConstants;
 import java.util.List;
 import java.util.Locale;
 
+import static tfar.davespotioneering.DavesPotioneeringClient.registerBlockingProperty;
+
 public class ClientEvents implements ClientModInitializer {
 
     public static KeyMapping CONFIG = new KeyMapping("key.davespotioneering.open_config",
-            InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_3,"key.categories."+ DavesPotioneeringFabric.MODID);
+            InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_3,"key.categories."+ DavesPotioneering.MODID);
     @Override
     public void onInitializeClient() {
 
@@ -93,7 +95,7 @@ public class ClientEvents implements ClientModInitializer {
             return 0xffffff;
         }, ModBlocks.REINFORCED_WATER_CAULDRON);
 
-       ItemProperties.register(ModItems.POTIONEER_GAUNTLET, new ResourceLocation("active"),GAUNTLET
+       ItemProperties.register(ModItems.POTIONEER_GAUNTLET, new ResourceLocation("active"), DavesPotioneeringClient.GAUNTLET
                 );
 
         registerBlockingProperty(ModItems.WHITE_UMBRELLA);
@@ -117,10 +119,8 @@ public class ClientEvents implements ClientModInitializer {
         registerBlockingProperty(ModItems.GILDED_UMBRELLA);
 
         //BuiltinItemRendererRegistry.INSTANCE.register(ModItems.AGED_UMBRELLA,createAgedUmbrellaItemStackRenderer());
-
+        DavesPotioneeringClient.clientSetup();
     }
-
-    public static final ClampedItemPropertyFunction GAUNTLET = (stack, level, entity, i) -> stack.hasTag() ? stack.getTag().getBoolean("active") ? 1 : 0 : 0;
 
 
     public static GeoItemRenderer umbrella(String s) {
@@ -209,10 +209,7 @@ public class ClientEvents implements ClientModInitializer {
         return stack.getItem() instanceof PotionItem || stack.getItem() instanceof ArrowItem;
     }
 
-    private static void registerBlockingProperty(Item item) {
-        ItemProperties.register(item, new ResourceLocation("blocking"),
-                (stack, world, entity,i) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
-    }
+
 
     public static void gauntletHud(GuiGraphics matrixStack, float tickDelta) {
         // only renders when the hotbar renders

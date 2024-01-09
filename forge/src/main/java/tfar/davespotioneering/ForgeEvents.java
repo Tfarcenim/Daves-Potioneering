@@ -32,7 +32,7 @@ import tfar.davespotioneering.mixin.BrewingStandContainerAccess;
 
 import java.util.List;
 
-public class Events {
+public class ForgeEvents {
 
     public static void potionCooldown(PlayerInteractEvent.RightClickItem e) {
         ItemStack stack = e.getItemStack();
@@ -155,13 +155,13 @@ public class Events {
     }
 
     public static void register() {
-        MinecraftForge.EVENT_BUS.addListener(Events::potionCooldown);
-        MinecraftForge.EVENT_BUS.addListener(Events::milkCow);
-        MinecraftForge.EVENT_BUS.addListener(Events::afterHit);
+        MinecraftForge.EVENT_BUS.addListener(ForgeEvents::potionCooldown);
+        MinecraftForge.EVENT_BUS.addListener(ForgeEvents::milkCow);
+        MinecraftForge.EVENT_BUS.addListener(ForgeEvents::afterHit);
 
-        MinecraftForge.EVENT_BUS.addListener(Events::playerBrew);
-        MinecraftForge.EVENT_BUS.addListener(Events::canApplyEffect);
-        MinecraftForge.EVENT_BUS.addListener(Events::effectColor);
-        MinecraftForge.EVENT_BUS.addListener(Events::serverStart);
+        MinecraftForge.EVENT_BUS.addListener(ForgeEvents::playerBrew);
+        MinecraftForge.EVENT_BUS.addListener(ForgeEvents::canApplyEffect);
+        MinecraftForge.EVENT_BUS.addListener(ForgeEvents::effectColor);
+        MinecraftForge.EVENT_BUS.addListener(ForgeEvents::serverStart);
     }
 }

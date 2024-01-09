@@ -9,6 +9,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.items.ItemStackHandler;
 import org.apache.commons.lang3.ArrayUtils;
+import tfar.davespotioneering.ForgeUtil;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
 
@@ -52,7 +53,7 @@ public class BrewingHandler extends ItemStackHandler {
                 return item == Items.BLAZE_POWDER;
             } else {
                 //potion slots
-                return Util.isValidInputCountInsensitive(stack);
+                return ForgeUtil.isValidInputCountInsensitive(stack);
             }
         }
     }

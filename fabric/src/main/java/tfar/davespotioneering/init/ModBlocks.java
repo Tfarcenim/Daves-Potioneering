@@ -5,7 +5,9 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LecternBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.DavesPotioneeringFabric;
 import tfar.davespotioneering.block.*;
 
@@ -25,7 +27,7 @@ public class ModBlocks {
 
     public static final Block REINFORCED_WATER_CAULDRON = new LayeredReinforcedCauldronBlock(BlockBehaviour.Properties.copy(REINFORCED_CAULDRON));
 
-    public static final Block MAGIC_LECTERN = new MagicLecternBlock(BlockBehaviour.Properties.copy(Blocks.LECTERN));
+    public static final Block MAGIC_LECTERN = new LecternBlock(BlockBehaviour.Properties.copy(Blocks.LECTERN));
 
     public static final Block POTION_INJECTOR = new PotionInjectorBlock(BlockBehaviour.Properties.copy(Blocks.FLETCHING_TABLE).noOcclusion());
 
@@ -35,7 +37,7 @@ public class ModBlocks {
             try {
                 Object o = field.get(null);
                 if (o instanceof Block) {
-                    Registry.register(BuiltInRegistries.BLOCK,new ResourceLocation(DavesPotioneeringFabric.MODID,field.getName().toLowerCase(Locale.ROOT)),(Block)o);
+                    Registry.register(BuiltInRegistries.BLOCK,new ResourceLocation(DavesPotioneering.MODID,field.getName().toLowerCase(Locale.ROOT)),(Block)o);
                 }
             } catch (IllegalAccessException illegalAccessException) {
                 illegalAccessException.printStackTrace();

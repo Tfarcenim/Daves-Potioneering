@@ -1,5 +1,6 @@
 package tfar.davespotioneering.block;
 
+import tfar.davespotioneering.FabricUtil;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
 import tfar.davespotioneering.init.ModBlockEntityTypes;

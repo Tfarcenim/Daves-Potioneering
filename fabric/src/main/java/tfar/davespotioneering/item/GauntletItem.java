@@ -22,6 +22,7 @@ import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.Level;
+import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.DavesPotioneeringFabric;
 import tfar.davespotioneering.init.ModSoundEvents;
 import tfar.davespotioneering.menu.PotionInjectorMenu;
@@ -319,8 +320,8 @@ public class GauntletItem extends SwordItem implements Perspective {
         return list;
     }
 
-    public static final ResourceLocation ALC_ID = new ResourceLocation(DavesPotioneeringFabric.MODID, "item/sprite/potioneer_gauntlet");
-    public static final ResourceLocation LIT_ALC_ID = new ResourceLocation(DavesPotioneeringFabric.MODID, "item/sprite/lit_potioneer_gauntlet");
+    public static final ResourceLocation ALC_ID = new ResourceLocation(DavesPotioneering.MODID, "item/sprite/potioneer_gauntlet");
+    public static final ResourceLocation LIT_ALC_ID = new ResourceLocation(DavesPotioneering.MODID, "item/sprite/lit_potioneer_gauntlet");
 
     @Override
     public ResourceLocation getGuiModel(boolean active) {

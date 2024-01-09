@@ -99,7 +99,7 @@ public class ModCauldronInteractions {
                 if (blockEntity instanceof ReinforcedCauldronBlockEntity reinforced) {
                     Potion potion = reinforced.getPotion();
                     List<MobEffectInstance> customEffects = reinforced.getCustomEffects();
-                    Integer color = reinforced.getCustomColor();
+                    Integer color = reinforced.getCustomPotionColor();
                     ItemStack potionItem = Items.POTION.getDefaultInstance();
                     PotionUtils.setPotion(potionItem, potion);
                     PotionUtils.setCustomEffects(potionItem,customEffects);

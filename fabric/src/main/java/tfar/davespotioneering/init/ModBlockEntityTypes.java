@@ -4,6 +4,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.DavesPotioneeringFabric;
 import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
 import tfar.davespotioneering.blockentity.PotionInjectorBlockEntity;
@@ -26,7 +27,7 @@ public class ModBlockEntityTypes {
             try {
                 Object o = field.get(null);
                 if (o instanceof BlockEntityType) {
-                    Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,new ResourceLocation(DavesPotioneeringFabric.MODID,field.getName().toLowerCase(Locale.ROOT)),(BlockEntityType<?>) o);
+                    Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,new ResourceLocation(DavesPotioneering.MODID,field.getName().toLowerCase(Locale.ROOT)),(BlockEntityType<?>) o);
                 }
             } catch (IllegalAccessException illegalAccessException) {
                 illegalAccessException.printStackTrace();

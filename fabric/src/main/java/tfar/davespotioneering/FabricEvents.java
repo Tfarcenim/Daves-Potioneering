@@ -26,7 +26,7 @@ import tfar.davespotioneering.item.UmbrellaItem;
 import tfar.davespotioneering.menu.AdvancedBrewingStandContainer;
 import tfar.davespotioneering.mixin.BrewingStandContainerAccess;
 
-public class Events {
+public class FabricEvents {
 
     public static void potionCooldown(Player player, Level level, InteractionHand interactionHand) {
         ItemStack stack = player.getItemInHand(interactionHand);

@@ -17,13 +17,11 @@
     "PotionUtilsMixin",
     "ServerPlayerInteractionManagerMixin",
     "ServerPlayNetHandlerMixin",
-    "SimpleContainerAccess",
-    "ThrowablePotionItemMixin"
+    "SimpleContainerAccess"
   ],
   "client": [
     "BakedModelManagerAccess",
     "BakedModelManagerMixin",
-    "IngameGuiAccess",
     "ItemOverrideListMixin",
     "ItemRendererMixin",
     "ModelBakeryMixin",

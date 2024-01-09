@@ -1,7 +1,6 @@
 package tfar.davespotioneering.blockentity;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.ContainerHelper;
@@ -14,10 +13,7 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.PotionItem;
-import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
-import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BrewingStandBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -25,7 +21,8 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.apache.commons.lang3.tuple.Pair;
-import tfar.davespotioneering.Events;
+import tfar.davespotioneering.FabricEvents;
+import tfar.davespotioneering.FabricUtil;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.duck.BrewingStandDuck;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
@@ -201,8 +198,8 @@ public class AdvancedBrewingStandBlockEntity extends BlockEntity implements  Men
         ItemStack ingredient = pair.getRight();
 
         //note: this is changed from the BrewingRecipeRegistry version to allow for >1 potion in a stack
-        Util.brewPotions(brewingHandler.getItems(), ingredient, POTIONS);
-        Events.potionBrew(this,ingredient);
+        FabricUtil.brewPotions(brewingHandler.getItems(), ingredient, POTIONS);
+        FabricEvents.potionBrew(this,ingredient);
 
         BlockPos blockpos = this.getBlockPos();
         if (ingredient.getItem().hasCraftingRemainingItem()) {

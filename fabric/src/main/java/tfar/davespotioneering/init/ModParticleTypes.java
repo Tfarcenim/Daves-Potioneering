@@ -5,6 +5,7 @@ import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.DavesPotioneeringFabric;
 
 import java.lang.reflect.Field;
@@ -23,7 +24,7 @@ public class ModParticleTypes {
             try {
                 Object o = field.get(null);
                 if (o instanceof ParticleType) {
-                    Registry.register(BuiltInRegistries.PARTICLE_TYPE,new ResourceLocation(DavesPotioneeringFabric.MODID,field.getName().toLowerCase(Locale.ROOT)),(ParticleType<?>)o);
+                    Registry.register(BuiltInRegistries.PARTICLE_TYPE,new ResourceLocation(DavesPotioneering.MODID,field.getName().toLowerCase(Locale.ROOT)),(ParticleType<?>)o);
                 }
             } catch (IllegalAccessException illegalAccessException) {
                 illegalAccessException.printStackTrace();

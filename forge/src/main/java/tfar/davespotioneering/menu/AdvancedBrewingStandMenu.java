@@ -17,6 +17,7 @@ import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
+import tfar.davespotioneering.ForgeUtil;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
 import tfar.davespotioneering.init.ModMenuTypes;
@@ -176,7 +177,7 @@ public class AdvancedBrewingStandMenu extends AbstractContainerMenu {
          * Check if the stack is allowed to be placed in this slot, used for armor slots as well as furnace fuel.
          */
         public boolean mayPlace(ItemStack stack) {
-            return Util.isValidInputCountInsensitive(stack);
+            return ForgeUtil.isValidInputCountInsensitive(stack);
         }
 
         /**

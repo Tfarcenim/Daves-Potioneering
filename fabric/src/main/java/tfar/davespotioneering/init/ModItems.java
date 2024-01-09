@@ -5,6 +5,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
+import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.DavesPotioneeringFabric;
 import tfar.davespotioneering.item.GauntletItem;
 import tfar.davespotioneering.item.SimpleGauntletItem;
@@ -18,13 +19,13 @@ import java.util.stream.Collectors;
 
 public class ModItems {
 
-    public static final ResourceLocation NET_ID = new ResourceLocation(DavesPotioneeringFabric.MODID,"item/sprite/netherite_gauntlet");
-    public static final ResourceLocation RUD_ID = new ResourceLocation(DavesPotioneeringFabric.MODID,"item/sprite/rudimentary_gauntlet");
+    public static final ResourceLocation NET_ID = new ResourceLocation(DavesPotioneering.MODID,"item/sprite/netherite_gauntlet");
+    public static final ResourceLocation RUD_ID = new ResourceLocation(DavesPotioneering.MODID,"item/sprite/rudimentary_gauntlet");
 
     private static List<Item> MOD_ITEMS;
 
     public static final CreativeModeTab tab = CreativeModeTab.builder(CreativeModeTab.Row.TOP,0)
-            .title(Component.translatable("itemGroup."+ DavesPotioneeringFabric.MODID+"."+ DavesPotioneeringFabric.MODID))
+            .title(Component.translatable("itemGroup."+ DavesPotioneering.MODID+"."+ DavesPotioneering.MODID))
             .icon(() -> new ItemStack(ModItems.POTIONEER_GAUNTLET))
             .displayItems((itemDisplayParameters, output) -> getAllItems().forEach(output::accept))
             .build();
@@ -68,7 +69,7 @@ public class ModItems {
             try {
                 Object o = field.get(null);
                 if (o instanceof Item) {
-                    Registry.register(BuiltInRegistries.ITEM,new ResourceLocation(DavesPotioneeringFabric.MODID,field.getName().toLowerCase(Locale.ROOT)),(Item)o);
+                    Registry.register(BuiltInRegistries.ITEM,new ResourceLocation(DavesPotioneering.MODID,field.getName().toLowerCase(Locale.ROOT)),(Item)o);
                 }
             } catch (IllegalAccessException illegalAccessException) {
                 illegalAccessException.printStackTrace();

@@ -47,9 +47,9 @@ public class DavesPotioneeringFabric implements ModInitializer {
         ((BlockEntityTypeAcces)BlockEntityType.LECTERN).setValidBlocks(newSet);
 
 
-      //  UseItemCallback.EVENT.register(Events::potionCooldown);
-        UseEntityCallback.EVENT.register(Events::milkCow);
-        AttackEntityCallback.EVENT.register(Events::afterHit);
+      //  UseItemCallback.EVENT.register(FabricEvents::potionCooldown);
+        UseEntityCallback.EVENT.register(FabricEvents::milkCow);
+        AttackEntityCallback.EVENT.register(FabricEvents::afterHit);
 
         AutoConfig.register(ClothConfig.class, JanksonConfigSerializer::new);
         CONFIG = AutoConfig.getConfigHolder(ClothConfig.class).getConfig();
@@ -60,6 +60,7 @@ public class DavesPotioneeringFabric implements ModInitializer {
 
         PacketHandler.registerMessages();
         ModCauldronInteractions.bootStrap();
+        DavesPotioneering.commonSetup();
     }
 
     protected static void strongRecipe(Potion potion,Potion strong) {

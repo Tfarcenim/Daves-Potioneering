@@ -1,44 +1,31 @@
 package tfar.davespotioneering.blockentity;
 
-import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.extensions.IForgeBlockEntity;
 import tfar.davespotioneering.ModConfig;
-import tfar.davespotioneering.PotionUtils2;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.block.LayeredReinforcedCauldronBlock;
+import tfar.davespotioneering.blovkentity.CReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
 import tfar.davespotioneering.init.ModItems;
 import tfar.davespotioneering.init.ModPotions;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
+public class ReinforcedCauldronBlockEntity extends CReinforcedCauldronBlockEntity {
 
-public class ReinforcedCauldronBlockEntity extends BlockEntity {
 
-    @Nonnull
-    protected Potion potion = Potions.EMPTY;
-    protected List<MobEffectInstance> customEffects = new ArrayList<>();
-    @Nullable
-    protected Integer customPotionColor;
 
     public ReinforcedCauldronBlockEntity(BlockPos p_155283_, BlockState p_155284_) {
         this(ModBlockEntityTypes.REINFORCED_CAULDRON, p_155283_, p_155284_);
@@ -48,73 +35,11 @@ public class ReinforcedCauldronBlockEntity extends BlockEntity {
         super(tileEntityTypeIn, p_155283_, p_155284_);
     }
 
-    @Nonnull
-    public Potion getPotion() {
-        return potion;
-    }
 
-    public List<MobEffectInstance> getCustomEffects() {
-        return customEffects;
-    }
-
-    public void setPotion(@Nonnull Potion potion) {
-        this.potion = potion;
-        setChanged();
-    }
-
-    public void setCustomEffects(List<MobEffectInstance> customEffects) {
-        this.customEffects = customEffects;
-        setChanged();
-    }
-
-    public int getColor() {
-        if (potion == Potions.WATER) {
-            return BiomeColors.getAverageWaterColor(level, worldPosition);
-        } else {
-            if (customPotionColor != null) {
-                return customPotionColor;
-            } else {
-                return PotionUtils.getColor(potion);
-            }
-        }
-    }
-
-    public Integer getCustomColor() {
-        return customPotionColor;
-    }
-
-    @Override
-    public void load(CompoundTag nbt) {
-        potion = PotionUtils.getPotion(nbt);
-        customEffects = PotionUtils.getCustomEffects(nbt);
-        if (nbt.contains(PotionUtils.TAG_CUSTOM_POTION_COLOR)) {
-            customPotionColor = nbt.getInt(PotionUtils.TAG_CUSTOM_POTION_COLOR);
-        }
-        super.load(nbt);
-    }
-
-    @Override
-    public void saveAdditional(CompoundTag compound) {
-        PotionUtils2.saveAllEffects(compound, potion, customEffects,customPotionColor);
-        super.saveAdditional(compound);
-    }
-
-    @Nonnull
-    @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag tag = new CompoundTag();
-        saveAdditional(tag);
-        return tag;    // okay to send entire inventory on chunk load
-    }
-
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
 
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
-        this.load(packet.getTag());
+        super.onDataPacket(net,packet);
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
     }
 

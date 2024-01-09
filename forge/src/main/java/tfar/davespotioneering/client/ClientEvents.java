@@ -30,6 +30,7 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import tfar.davespotioneering.DavesPotioneering;
+import tfar.davespotioneering.DavesPotioneeringClient;
 import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
@@ -40,6 +41,8 @@ import tfar.davespotioneering.item.GauntletItem;
 import tfar.davespotioneering.mixin.ParticleManagerAccess;
 import tfar.davespotioneering.net.C2SGauntletCyclePacket;
 import tfar.davespotioneering.net.PacketHandler;
+
+import static tfar.davespotioneering.DavesPotioneeringClient.registerBlockingProperty;
 
 public class ClientEvents {
 
@@ -144,6 +147,7 @@ public class ClientEvents {
 
         registerBlockingProperty(ModItems.AGED_UMBRELLA);
         registerBlockingProperty(ModItems.GILDED_UMBRELLA);
+        DavesPotioneeringClient.clientSetup();
     }
 
     public static void overlay(RegisterGuiOverlaysEvent e) {
@@ -154,11 +158,6 @@ public class ClientEvents {
         Util.setStackSize(Items.POTION, ModConfig.Server.potion_stack_size.get());
         Util.setStackSize(Items.SPLASH_POTION, ModConfig.Server.splash_potion_stack_size.get());
         Util.setStackSize(Items.LINGERING_POTION, ModConfig.Server.lingering_potion_stack_size.get());
-    }
-
-    private static void registerBlockingProperty(Item item) {
-        ItemProperties.register(item, new ResourceLocation("blocking"),
-                (stack, world, entity,i) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
     }
 
     public static void playerTick(TickEvent.PlayerTickEvent e) {

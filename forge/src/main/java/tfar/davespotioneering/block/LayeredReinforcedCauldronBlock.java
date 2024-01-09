@@ -75,7 +75,7 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
                 if (player != null && !player.getAbilities().instabuild) {
                     player.awardStat(Stats.USE_CAULDRON);
                 }
-                addCoating(stack,potion,customEffects,reinforcedCauldronBlockEntity.getCustomColor());
+                addCoating(stack,potion,customEffects,reinforcedCauldronBlockEntity.getCustomPotionColor());
                 level.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
                 level.setBlockAndUpdate(pos,ModBlocks.REINFORCED_CAULDRON.defaultBlockState());
             }
@@ -97,7 +97,7 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
                     player.awardStat(Stats.USE_CAULDRON);
                 }
                 ItemStack tippedArrows = new ItemStack(Items.TIPPED_ARROW, 8);
-                addCoating(tippedArrows, potion,customEffects,reinforcedCauldronBlockEntity.getCustomColor());
+                addCoating(tippedArrows, potion,customEffects,reinforcedCauldronBlockEntity.getCustomPotionColor());
                 stack.shrink(8);
                 level.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
 
@@ -127,7 +127,7 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
                 player.awardStat(Stats.USE_CAULDRON);
             }
             ItemStack tippedArrows = stack.split(8);
-            addCoating(tippedArrows, potion,customEffects,reinforcedCauldronBlockEntity.getCustomColor());
+            addCoating(tippedArrows, potion,customEffects,reinforcedCauldronBlockEntity.getCustomPotionColor());
             level.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
 
             level.addFreshEntity(new ItemEntity(level, pos.getX(), pos.getY() + 1, pos.getZ(), tippedArrows));

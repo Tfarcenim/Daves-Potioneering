@@ -113,11 +113,7 @@ public class DavesPotioneeringForge {
     }
 
     private void setup(final FMLCommonSetupEvent event) {
-        Util.setStackSize(Items.POTION,16);
-        Util.setStackSize(Items.SPLASH_POTION,4);
-        Util.setStackSize(Items.LINGERING_POTION,4);
-
-        Events.register();
+        ForgeEvents.register();
 
         ItemStack milkPot = new ItemStack(Items.POTION);
         PotionUtils.setPotion(milkPot,ModPotions.MILK);
@@ -129,7 +125,6 @@ public class DavesPotioneeringForge {
         PotionUtils.setPotion(lingerMilkPot,ModPotions.MILK);
 
         BrewingRecipeRegistry.addRecipe(PotionIngredient.create(milkPot),Ingredient.of(Items.GUNPOWDER),splashMilkPot);
-
         BrewingRecipeRegistry.addRecipe(PotionIngredient.create(milkPot),Ingredient.of(Items.DRAGON_BREATH),lingerMilkPot);
 
         strongRecipe(Potions.INVISIBILITY,ModPotions.STRONG_INVISIBILITY);
@@ -139,9 +134,8 @@ public class DavesPotioneeringForge {
         ((BlockEntityTypeAcces)BlockEntityType.LECTERN).setValidBlocks(newSet);
 
         PacketHandler.registerMessages();
-
         ModCauldronInteractions.bootStrap();
-
+        DavesPotioneering.commonSetup();
     }
 
     private void stackAdj(ServerStartingEvent e) {
