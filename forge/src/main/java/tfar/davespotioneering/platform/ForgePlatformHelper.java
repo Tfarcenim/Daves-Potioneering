@@ -3,12 +3,15 @@ package tfar.davespotioneering.platform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.SlotItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.DavesPotioneeringForge;
@@ -18,6 +21,7 @@ import tfar.davespotioneering.blockentity.CAdvancedBrewingStandBlockEntity;
 import tfar.davespotioneering.blockentity.CReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.inv.BrewingHandler;
+import tfar.davespotioneering.inv.PotionInjectorHandler;
 import tfar.davespotioneering.inv.slots.FuelSlot;
 import tfar.davespotioneering.inv.slots.IngredientSlot;
 import tfar.davespotioneering.inv.slots.PotionSlot;
@@ -71,6 +75,9 @@ public class ForgePlatformHelper implements IPlatformHelper {
         return new UmbrellaItem(builder,name,style);
     }
 
+    public Slot makeBasic(BasicInventoryBridge handle,int slot,int x, int y) {
+        return new SlotItemHandler((IItemHandler) handle,slot,x,y);
+    }
     @Override
     public Slot makeIngSlot(BasicInventoryBridge handle, int slot, int x, int y) {
         return new IngredientSlot((IItemHandler) handle,slot,x,y);
@@ -89,6 +96,11 @@ public class ForgePlatformHelper implements IPlatformHelper {
     @Override
     public BasicInventoryBridge makeBrewingHandler(int slots) {
         return new BrewingHandler(slots);
+    }
+
+    @Override
+    public BasicInventoryBridge makePotionInjector(int slots) {
+        return new PotionInjectorHandler(slots);
     }
 
     @Override

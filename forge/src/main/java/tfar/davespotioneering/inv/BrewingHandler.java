@@ -1,6 +1,8 @@
 package tfar.davespotioneering.inv;
 
 import com.google.common.collect.Sets;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -81,5 +83,15 @@ public class BrewingHandler extends ItemStackHandler implements BasicInventoryBr
     @Override
     public void $setStackInSlot(int slot, ItemStack stack) {
         setStackInSlot(slot,stack);
+    }
+
+    @Override
+    public CompoundTag $save() {
+        return serializeNBT();
+    }
+
+    @Override
+    public void $load(CompoundTag tag) {
+        deserializeNBT(tag);
     }
 }

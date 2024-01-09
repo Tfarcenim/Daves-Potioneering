@@ -1,13 +1,22 @@
 package tfar.davespotioneering.platform;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.BrewingStandMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.state.BlockState;
 import tfar.davespotioneering.DavesPotioneering;
+import tfar.davespotioneering.DavesPotioneeringFabric;
+import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
+import tfar.davespotioneering.blockentity.CAdvancedBrewingStandBlockEntity;
+import tfar.davespotioneering.blockentity.CReinforcedCauldronBlockEntity;
+import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
+import tfar.davespotioneering.config.ClothConfig;
 import tfar.davespotioneering.inv.BrewingHandler;
+import tfar.davespotioneering.inv.PotionInjectorHandler;
 import tfar.davespotioneering.inventory.BasicInventoryBridge;
 import tfar.davespotioneering.item.UmbrellaItem;
 import tfar.davespotioneering.platform.services.IPlatformHelper;
@@ -58,7 +67,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
 
     @Override
     public Slot makeIngSlot(BasicInventoryBridge handle, int slot, int x, int y) {
-        return new BrewingStandMenu.IngredientSlot((Container) handle,slot,x,y);
+        return new BrewingStandMenu.IngredientsSlot((Container) handle,slot,x,y);
     }
 
     @Override
@@ -74,5 +83,41 @@ public class FabricPlatformHelper implements IPlatformHelper {
     @Override
     public BasicInventoryBridge makeBrewingHandler(int slots) {
         return new BrewingHandler(slots);
+    }
+
+    @Override
+    public BasicInventoryBridge makePotionInjector(int slots) {
+        return new PotionInjectorHandler(slots);
+    }
+
+    @Override
+    public CAdvancedBrewingStandBlockEntity makeAdvancedBrewingStand(BlockPos pos, BlockState state) {
+        return new AdvancedBrewingStandBlockEntity(pos,state);
+    }
+
+    @Override
+    public CReinforcedCauldronBlockEntity makeReinforcedCauldron(BlockPos pos, BlockState state) {
+        return new ReinforcedCauldronBlockEntity(pos,state);
+    }
+
+    //configs
+    @Override
+    public boolean coatTools() {
+        return DavesPotioneeringFabric.CONFIG.coat_tools;
+    }
+
+    @Override
+    public boolean spikeFood() {
+        return DavesPotioneeringFabric.CONFIG.spike_food;
+    }
+
+    @Override
+    public boolean coatAnything() {
+        return DavesPotioneeringFabric.CONFIG.coat_anything;
+    }
+
+    @Override
+    public int coatingUses() {
+        return DavesPotioneeringFabric.CONFIG.coating_uses;
     }
 }

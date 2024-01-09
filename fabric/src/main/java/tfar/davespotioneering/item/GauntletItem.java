@@ -25,7 +25,7 @@ import net.minecraft.world.level.Level;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.DavesPotioneeringFabric;
 import tfar.davespotioneering.init.ModSoundEvents;
-import tfar.davespotioneering.menu.PotionInjectorMenu;
+import tfar.davespotioneering.menu.CPotionInjectorMenu;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -178,7 +178,7 @@ public class GauntletItem extends SwordItem implements Perspective {
     @Nullable
     public static Tuple<List<MobEffectInstance>, List<Potion>> getEffectsFromGauntlet(ItemStack stack) {
         if (!stack.hasTag()) return null;
-        ListTag nbts = stack.getTag().getCompound("info").getList("potions", PotionInjectorMenu.TAG_STRING);//NbtString?
+        ListTag nbts = stack.getTag().getCompound("info").getList("potions", CPotionInjectorMenu.TAG_STRING);//NbtString?
         List<MobEffectInstance> effects = new ArrayList<>();
         List<Potion> potions = new ArrayList<>();
         for (Tag inbt : nbts) {
@@ -195,7 +195,7 @@ public class GauntletItem extends SwordItem implements Perspective {
     public static void cycleGauntletForward(Player player) {
         if (player == null) return;
         CompoundTag info = player.getMainHandItem().getOrCreateTag().getCompound("info");
-        ListTag nbts = info.getList("potions", PotionInjectorMenu.TAG_STRING);
+        ListTag nbts = info.getList("potions", CPotionInjectorMenu.TAG_STRING);
         if (nbts.isEmpty()) return;
         int index = info.getInt("activePotionIndex");
         index++;
@@ -208,7 +208,7 @@ public class GauntletItem extends SwordItem implements Perspective {
     public static void cycleGauntletBackward(Player player) {
         if (player == null) return;
         CompoundTag info = player.getMainHandItem().getOrCreateTag().getCompound("info");
-        ListTag nbts = info.getList("potions", PotionInjectorMenu.TAG_STRING);
+        ListTag nbts = info.getList("potions", CPotionInjectorMenu.TAG_STRING);
         if (nbts.isEmpty()) return;
         int index = info.getInt("activePotionIndex");
         index--;
@@ -219,7 +219,7 @@ public class GauntletItem extends SwordItem implements Perspective {
     }
 
     public static Potion[] getPotionsFromNBT(CompoundTag info) {
-        ListTag nbts = info.getList("potions", PotionInjectorMenu.TAG_STRING);
+        ListTag nbts = info.getList("potions", CPotionInjectorMenu.TAG_STRING);
         if (nbts.isEmpty()) return null;
 
         // get active potion

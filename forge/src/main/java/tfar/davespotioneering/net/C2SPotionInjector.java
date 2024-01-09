@@ -4,7 +4,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraftforge.network.NetworkEvent;
-import tfar.davespotioneering.menu.PotionInjectorMenu;
+import tfar.davespotioneering.menu.CPotionInjectorMenu;
 
 import java.util.function.Supplier;
 
@@ -31,8 +31,8 @@ public class C2SPotionInjector {
       if (player == null) return;
       ctx.get().enqueueWork(  ()->  {
         AbstractContainerMenu container = player.containerMenu;
-        if (container instanceof PotionInjectorMenu) {
-          PotionInjectorMenu potionInjectorMenu = (PotionInjectorMenu) container;
+        if (container instanceof CPotionInjectorMenu) {
+          CPotionInjectorMenu potionInjectorMenu = (CPotionInjectorMenu) container;
           potionInjectorMenu.handleButton(button);
 
         }

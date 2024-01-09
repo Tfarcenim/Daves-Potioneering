@@ -2,6 +2,7 @@ package tfar.davespotioneering.platform.services;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -56,11 +57,16 @@ public interface IPlatformHelper {
     }
     Item makeBasicUmbrella(Item.Properties builder, String name, String style);
 
+    default Slot makeBasic(BasicInventoryBridge handle,int slot,int x, int y) {
+        return new Slot((Container) handle,slot,x,y);
+    }
     Slot makeIngSlot(BasicInventoryBridge handle,int slot,int x, int y);
     Slot makePotSlot(BasicInventoryBridge handle,int slot,int x, int y);
     Slot makeFuelSlot(BasicInventoryBridge handle,int slot,int x, int y);
 
     BasicInventoryBridge makeBrewingHandler(int slots);
+    BasicInventoryBridge makePotionInjector(int slots);
+
     CAdvancedBrewingStandBlockEntity makeAdvancedBrewingStand(BlockPos pos, BlockState state);
     CReinforcedCauldronBlockEntity makeReinforcedCauldron(BlockPos pos, BlockState state);
 

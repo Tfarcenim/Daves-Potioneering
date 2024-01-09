@@ -1,5 +1,8 @@
 package tfar.davespotioneering.inv;
 
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.ContainerHelper;
+import tfar.davespotioneering.inventory.BasicInventoryBridge;
 import tfar.davespotioneering.item.GauntletItem;
 
 import javax.annotation.Nonnull;
@@ -9,7 +12,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-public class PotionInjectorHandler extends SimpleContainer {
+public class PotionInjectorHandler extends SimpleContainer implements BasicInventoryBridge {
 
     public static final int GAUNTLET = 6;
     public static final int BLAZE = 7;
@@ -81,32 +84,28 @@ public class PotionInjectorHandler extends SimpleContainer {
         return Math.min(getMaxStackSize(), stack.getMaxStackSize());
     }
 
-    //needed to prevent markDirty updates when loading from save
-    public void readTags(ListTag tags) {
-        for (int i = 0; i < tags.size(); i++)
-        {
-            CompoundTag itemTags = tags.getCompound(i);
-            int slot = itemTags.getInt("Slot");
-
-            if (slot >= 0 && slot < items.size())
-            {
-                items.set(i,ItemStack.of(itemTags));
-            }
-        }
+    @Override
+    public ItemStack $getStackInSlot(int slot) {
+        return getItem(slot);
     }
 
-    public ListTag getTags() {
-        ListTag nbtTagList = new ListTag();
-        for (int i = 0; i < this.getContainerSize(); i++)
-        {
-            if (!items.get(i).isEmpty())
-            {
-                CompoundTag itemTag = new CompoundTag();
-                itemTag.putInt("Slot", i);
-                items.get(i).save(itemTag);
-                nbtTagList.add(itemTag);
-            }
-        }
-        return nbtTagList;
+    @Override
+    public void $setStackInSlot(int slot, ItemStack stack) {
+        setItem(slot,stack);
+    }
+
+    @Override
+    public NonNullList<ItemStack> $getStacks() {
+        return items;
+    }
+
+    @Override
+    public CompoundTag $save() {
+        return ContainerHelper.saveAllItems(new CompoundTag(),items,true);
+    }
+
+    @Override
+    public void $load(CompoundTag tag) {
+        ContainerHelper.loadAllItems(new CompoundTag(),items);
     }
 }

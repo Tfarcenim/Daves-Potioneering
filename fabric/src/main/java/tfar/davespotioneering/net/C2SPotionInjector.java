@@ -9,7 +9,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import tfar.davespotioneering.menu.PotionInjectorMenu;
+import tfar.davespotioneering.menu.CPotionInjectorMenu;
 
 
 public class C2SPotionInjector implements ServerPlayNetworking.PlayChannelHandler {
@@ -24,7 +24,7 @@ public class C2SPotionInjector implements ServerPlayNetworking.PlayChannelHandle
       if (player == null) return;
       player.getServer().execute(  ()->  {
         AbstractContainerMenu container = player.containerMenu;
-        if (container instanceof PotionInjectorMenu potionInjectorMenu) {
+        if (container instanceof CPotionInjectorMenu potionInjectorMenu) {
           potionInjectorMenu.handleButton(button);
 
         }

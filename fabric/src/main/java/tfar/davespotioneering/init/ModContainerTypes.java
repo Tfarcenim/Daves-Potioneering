@@ -6,7 +6,7 @@ import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import tfar.davespotioneering.DavesPotioneering;
-import tfar.davespotioneering.menu.PotionInjectorMenu;
+import tfar.davespotioneering.menu.CPotionInjectorMenu;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -18,7 +18,7 @@ public class ModContainerTypes {
     private static List<MenuType<?>> MOD_CONTAINER_TYPES;
 
     public static final MenuType<AdvancedBrewingStandContainer> ADVANCED_BREWING_STAND = make(AdvancedBrewingStandContainer::new);
-    public static final MenuType<PotionInjectorMenu> ALCHEMICAL_GAUNTLET = make(PotionInjectorMenu::new);
+    public static final MenuType<CPotionInjectorMenu> ALCHEMICAL_GAUNTLET = make(CPotionInjectorMenu::new);
 
     static <T extends AbstractContainerMenu> MenuType<T> make(MenuType.MenuSupplier<T> supplier) {
         return new MenuType<>(supplier, FeatureFlagSet.of(FeatureFlags.VANILLA));

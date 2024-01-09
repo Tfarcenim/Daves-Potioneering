@@ -1,6 +1,7 @@
 package tfar.davespotioneering.inv;
 
 import com.google.common.collect.Sets;
+import net.minecraft.world.ContainerHelper;
 import org.apache.commons.lang3.ArrayUtils;
 import tfar.davespotioneering.FabricUtil;
 import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
@@ -111,5 +112,15 @@ public class BrewingHandler extends SimpleContainer implements BasicInventoryBri
     @Override
     public void $setStackInSlot(int slot, ItemStack stack) {
         setItem(slot,stack);
+    }
+
+    @Override
+    public CompoundTag $save() {
+        return ContainerHelper.saveAllItems(new CompoundTag(),getItems(),true);
+    }
+
+    @Override
+    public void $load(CompoundTag tag) {
+        ContainerHelper.loadAllItems(tag,getItems());
     }
 }

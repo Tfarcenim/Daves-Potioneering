@@ -14,12 +14,12 @@ import net.minecraft.network.chat.Component;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.client.button.InjectButton;
 import tfar.davespotioneering.client.button.StripButton;
-import tfar.davespotioneering.menu.PotionInjectorMenu;
+import tfar.davespotioneering.menu.CPotionInjectorMenu;
 import tfar.davespotioneering.net.C2SPotionInjector;
 import tfar.davespotioneering.net.PacketHandler;
 
-public class PotionInjectorScreen extends AbstractContainerScreen<PotionInjectorMenu> {
-    public PotionInjectorScreen(PotionInjectorMenu screenContainer, Inventory inv, Component titleIn) {
+public class PotionInjectorScreen extends AbstractContainerScreen<CPotionInjectorMenu> {
+    public PotionInjectorScreen(CPotionInjectorMenu screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         imageHeight+=30;
         inventoryLabelY += 26;
@@ -43,7 +43,7 @@ public class PotionInjectorScreen extends AbstractContainerScreen<PotionInjector
             @Override
             public void playDownSound(SoundManager handler) {
 
-                PotionInjectorMenu.SoundTy soundTy = menu.getSound(false);
+                CPotionInjectorMenu.SoundTy soundTy = menu.getSound(false);
                 SoundEvent soundEvent;
 
                 switch (soundTy) {
@@ -60,7 +60,7 @@ public class PotionInjectorScreen extends AbstractContainerScreen<PotionInjector
             @Override
             public void playDownSound(SoundManager handler) {
 
-                PotionInjectorMenu.SoundTy soundTy = menu.getSound(true);
+                CPotionInjectorMenu.SoundTy soundTy = menu.getSound(true);
                 SoundEvent soundEvent = switch (soundTy) {
                     case BOTH -> SoundEvents.BREWING_STAND_BREW;
                     case BLAZE -> SoundEvents.BLAZE_SHOOT;

@@ -13,26 +13,25 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.SlotItemHandler;
 import tfar.davespotioneering.PotionUtils2;
 import tfar.davespotioneering.init.ModMenuTypes;
-import tfar.davespotioneering.inv.PotionInjectorHandler;
-import tfar.davespotioneering.item.GauntletItem;
+import tfar.davespotioneering.inventory.BasicInventoryBridge;
+import tfar.davespotioneering.item.CGauntletItem;
+import tfar.davespotioneering.platform.Services;
 
 import java.util.List;
 
-public class PotionInjectorMenu extends AbstractContainerMenu {
+public class CPotionInjectorMenu extends AbstractContainerMenu {
 
-    private final ItemStackHandler inventory;
+    private final BasicInventoryBridge inventory;
 
     //client
-    public PotionInjectorMenu(int id, Inventory playerInventory) {
-        this(id, playerInventory, new PotionInjectorHandler(8));
+    public CPotionInjectorMenu(int id, Inventory playerInventory) {
+        this(id, playerInventory, Services.PLATFORM.makePotionInjector(8));
     }
 
     //common
-    public PotionInjectorMenu(int id, Inventory playerInventory, ItemStackHandler inventory) {
+    public CPotionInjectorMenu(int id, Inventory playerInventory, BasicInventoryBridge inventory) {
         super(ModMenuTypes.ALCHEMICAL_GAUNTLET, id);
         this.inventory = inventory;
         // assertInventorySize(inventory, 5);
@@ -41,11 +40,11 @@ public class PotionInjectorMenu extends AbstractContainerMenu {
         int potY = 77;
 
         for (int i = 0; i < 6;i++) {
-            this.addSlot(new SlotItemHandler(inventory, i, 26 + 108 * (i/3), 18 + 18 * (i % 3)));
+            this.addSlot(Services.PLATFORM.makeBasic(inventory, i, 26 + 108 * (i/3), 18 + 18 * (i % 3)));
         }
 
-        addSlot(new SlotItemHandler(inventory,6,80, 32));
-        addSlot(new SlotItemHandler(inventory,7,80,55));
+        addSlot(Services.PLATFORM.makeBasic(inventory,6,80, 32));
+        addSlot(Services.PLATFORM.makeBasic(inventory,7,80,55));
 
         int invX = 8;
         int invY = 109;
@@ -77,11 +76,11 @@ public class PotionInjectorMenu extends AbstractContainerMenu {
         if (slot != null && slot.hasItem()) {
             ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
-            if (index < this.inventory.getSlots()) {
-                if (!this.moveItemStackTo(itemstack1, this.inventory.getSlots(), this.slots.size(), true)) {
+            if (index < this.inventory.$getSlots()) {
+                if (!this.moveItemStackTo(itemstack1, this.inventory.$getSlots(), this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (!this.moveItemStackTo(itemstack1, 0, this.inventory.getSlots(), false)) {
+            } else if (!this.moveItemStackTo(itemstack1, 0, this.inventory.$getSlots(), false)) {
                 return ItemStack.EMPTY;
             }
 
@@ -109,7 +108,7 @@ public class PotionInjectorMenu extends AbstractContainerMenu {
     public static final int BLAZE_CAP = 32;
 
     private void storePotionsAndBlaze() {
-        ItemStack gauntlet = inventory.getStackInSlot(PotionInjectorHandler.GAUNTLET);
+        ItemStack gauntlet = inventory.$getStackInSlot(PotionInjectorHandler.GAUNTLET);
         if (!gauntlet.isEmpty()) {
             CompoundTag newNbt = new CompoundTag();
             ListTag potionList = new ListTag();
@@ -132,14 +131,14 @@ public class PotionInjectorMenu extends AbstractContainerMenu {
                 }
             }
 
-            newNbt.putInt(GauntletItem.ACTIVE_POTION, 0);
-            newNbt.put(GauntletItem.POTIONS, potionList);
+            newNbt.putInt(CGauntletItem.ACTIVE_POTION, 0);
+            newNbt.put(CGauntletItem.POTIONS, potionList);
 
             int presentBlaze = info.getInt(GauntletItem.BLAZE);
 
             int blazeInsert = Math.min(BLAZE_CAP - presentBlaze,Math.min(BLAZE_CAP,inventory.getStackInSlot(PotionInjectorHandler.BLAZE).getCount()));
 
-            newNbt.putInt(GauntletItem.BLAZE,blazeInsert + presentBlaze);
+            newNbt.putInt(CGauntletItem.BLAZE,blazeInsert + presentBlaze);
             inventory.extractItem(PotionInjectorHandler.BLAZE,blazeInsert,false);
             System.out.println(potionList.getElementType());
             gauntlet.getTag().put(GauntletItem.INFO,newNbt);

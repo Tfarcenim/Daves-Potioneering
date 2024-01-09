@@ -26,7 +26,7 @@ import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.PotionUtils2;
 import tfar.davespotioneering.init.ModSoundEvents;
-import tfar.davespotioneering.menu.PotionInjectorMenu;
+import tfar.davespotioneering.menu.CPotionInjectorMenu;
 import tfar.davespotioneering.net.PacketHandler;
 import tfar.davespotioneering.net.S2CCooldownPacket;
 
@@ -81,7 +81,7 @@ public class GauntletItem extends SwordItem {
             CompoundTag info = tag.getCompound(INFO);
             blaze = info.getInt(BLAZE);
         }
-        return PotionInjectorMenu.BLAZE_CAP - (int) blaze;
+        return CPotionInjectorMenu.BLAZE_CAP - (int) blaze;
     }
 
     @Override

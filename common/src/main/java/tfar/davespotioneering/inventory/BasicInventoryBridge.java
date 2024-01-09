@@ -1,6 +1,7 @@
 package tfar.davespotioneering.inventory;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
 public interface BasicInventoryBridge {
@@ -9,5 +10,9 @@ public interface BasicInventoryBridge {
     void $setStackInSlot(int slot,ItemStack stack);
 
     NonNullList<ItemStack> $getStacks();
+    int $getSlots();
+
+    CompoundTag $save();
+    void $load(CompoundTag tag);
 
 }
