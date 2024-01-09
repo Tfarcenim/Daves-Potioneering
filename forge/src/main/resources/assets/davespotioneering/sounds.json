@@ -1,0 +1,51 @@
+{
+  "gauntlet_equip": {
+    "sounds": [
+      {
+        "name": "davespotioneering:gauntlet_equip"
+      }
+    ]
+  },
+  "gauntlet_scroll": {
+    "sounds": [
+      {
+        "name": "davespotioneering:gauntlet_scroll"
+      }
+    ]
+  },
+  "gauntlet_turning_off": {
+    "sounds": [
+      {
+        "name": "davespotioneering:gauntlet_turning_off"
+      }
+    ]
+  },
+  "gauntlet_turning_on": {
+    "sounds": [
+      {
+        "name": "davespotioneering:gauntlet_turning_on"
+      }
+    ]
+  },
+  "bubbling_water_cauldron": {
+    "sounds": [
+      {
+        "name": "davespotioneering:bubbling_water_cauldron"
+      }
+    ]
+  },
+  "umbrella_open": {
+    "sounds": [
+      {
+        "name": "davespotioneering:umbrella_open"
+      }
+    ]
+  },
+  "umbrella_close": {
+    "sounds": [
+      {
+        "name": "davespotioneering:umbrella_close"
+      }
+    ]
+  }
+}

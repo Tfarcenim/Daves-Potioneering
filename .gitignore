@@ -11,7 +11,8 @@ out
 *.ipr
 *.iws
 *.iml
-.idea
+.idea/*
+!.idea/scopes
 
 # gradle
 build
@@ -20,9 +21,3 @@ build
 # other
 eclipse
 run
-classes
-extras
-remappedSrc
-# Files from Forge MDK
-forge*changelog.txt
-logs/latest.log

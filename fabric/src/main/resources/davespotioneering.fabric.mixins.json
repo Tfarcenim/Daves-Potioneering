@@ -1,0 +1,38 @@
+{
+  "required": true,
+  "package": "tfar.davespotioneering.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "BlockEntityTypeAcces",
+    "BrewingStandBlockEntityMixin",
+    "BrewingStandContainerAccess",
+    "BrewingStandContainerMixin",
+    "ItemAccess",
+    "LayeredCauldronBlockMixin",
+    "LivingEntityMixin",
+    "PlayerEntityMixin",
+    "PotionBrewingMixin",
+    "PotionItemMixin",
+    "PotionSlotMixin",
+    "PotionUtilsMixin",
+    "ServerPlayerInteractionManagerMixin",
+    "ServerPlayNetHandlerMixin",
+    "SimpleContainerAccess",
+    "ThrowablePotionItemMixin"
+  ],
+  "client": [
+    "BakedModelManagerAccess",
+    "BakedModelManagerMixin",
+    "IngameGuiAccess",
+    "ItemOverrideListMixin",
+    "ItemRendererMixin",
+    "ModelBakeryMixin",
+    "MouseHelperMixin",
+    "ParticleManagerAccess",
+    "PlayerInfoMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8"
+}

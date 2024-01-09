@@ -1,0 +1,11 @@
+{
+  "parent": "davespotioneering:item/3d/potioneer_gauntlet",
+  "overrides": [
+    {
+      "predicate": {
+        "minecraft:active": 1.0
+      },
+      "model": "davespotioneering:item/3d/lit_potioneer_gauntlet_fancy"
+    }
+  ]
+}

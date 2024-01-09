@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "id": "davespotioneering",
+  "version": "${version}",
+  "accessWidener": "davespotioneering.accesswidener",
+  "name": "Dave's Potioneering",
+  "description": "Makes potions more useful",
+  "authors": [
+    "Tfarcenim"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/Tfarcenim/Daves-Potioneering"
+  },
+
+  "license": "CC0-1.0",
+  "icon": "icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "tfar.davespotioneering.DavesPotioneeringFabric"
+    ],
+    "client": [
+      "tfar.davespotioneering.client.ClientEvents"
+
+    ],
+
+    "modmenu": [
+      "tfar.davespotioneering.config.ModMenuScren"
+    ]
+  },
+  "mixins": [
+    "davespotioneering.fabric.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.7.4",
+    "fabric": "*"
+  },
+  "suggests": {
+    "flamingo": "*"
+  }
+}

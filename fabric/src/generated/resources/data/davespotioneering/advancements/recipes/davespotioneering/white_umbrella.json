@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "davespotioneering:white_umbrella"
+    ]
+  },
+  "criteria": {
+    "has_shield": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:shield"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "davespotioneering:white_umbrella"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_shield",
+      "has_the_recipe"
+    ]
+  ]
+}
