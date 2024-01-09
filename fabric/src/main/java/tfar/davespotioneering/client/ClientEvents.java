@@ -49,7 +49,6 @@ import tfar.davespotioneering.client.particle.FastDripParticle;
 import tfar.davespotioneering.client.particle.TintedSplashParticle;
 import tfar.davespotioneering.init.*;
 import tfar.davespotioneering.item.GauntletItem;
-import tfar.davespotioneering.mixin.ParticleManagerAccess;
 import tfar.davespotioneering.net.C2SGauntletCyclePacket;
 import com.mojang.blaze3d.platform.InputConstants;
 

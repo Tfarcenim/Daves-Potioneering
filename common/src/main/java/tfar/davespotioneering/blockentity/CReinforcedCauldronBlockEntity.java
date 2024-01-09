@@ -1,4 +1,4 @@
-package tfar.davespotioneering.blovkentity;
+package tfar.davespotioneering.blockentity;
 
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.core.BlockPos;

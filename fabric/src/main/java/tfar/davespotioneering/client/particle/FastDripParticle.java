@@ -10,7 +10,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import tfar.davespotioneering.init.ModParticleTypes;
-import tfar.davespotioneering.mixin.ParticleManagerAccess;
 
 public class FastDripParticle extends TextureSheetParticle {
         private final Fluid fluid;

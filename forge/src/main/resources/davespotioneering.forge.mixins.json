@@ -4,7 +4,6 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "davespotioneering.refmap.json",
   "mixins": [
-    "BlockEntityTypeAcces",
     "BrewingRecipeRegistryMixin",
     "BrewingStandBlockEntityMixin",
     "BrewingStandContainerAccess",
@@ -17,9 +16,7 @@
     "ThrowablePotionItemMixin"
   ],
   "client": [
-    "GuiAccess",
-    "ItemOverrideListMixin",
-    "ParticleManagerAccess"
+    "ItemOverrideListMixin"
   ],
   "injectors": {
     "defaultRequire": 1

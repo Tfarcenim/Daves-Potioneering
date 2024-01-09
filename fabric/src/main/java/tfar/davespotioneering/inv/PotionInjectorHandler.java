@@ -1,7 +1,6 @@
 package tfar.davespotioneering.inv;
 
 import tfar.davespotioneering.item.GauntletItem;
-import tfar.davespotioneering.mixin.SimpleContainerAccess;
 
 import javax.annotation.Nonnull;
 import net.minecraft.nbt.CompoundTag;

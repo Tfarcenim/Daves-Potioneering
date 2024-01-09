@@ -157,16 +157,6 @@ public class GauntletHUD {
         return 0;
     }
 
-    // copy-pasted from ItemRenderer class
-    private static void draw(BufferBuilder renderer, int x, int y, int width, int height, int red, int green, int blue, int alpha) {
-        renderer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        renderer.vertex(x, y, 0.0D).color(red, green, blue, alpha).endVertex();
-        renderer.vertex(x, y + height, 0.0D).color(red, green, blue, alpha).endVertex();
-        renderer.vertex(x + width, y + height, 0.0D).color(red, green, blue, alpha).endVertex();
-        renderer.vertex(x + width, y, 0.0D).color(red, green, blue, alpha).endVertex();
-        Tesselator.getInstance().end();
-    }
-
     public static void forwardCycle() {
         forwardCycle = true;
     }

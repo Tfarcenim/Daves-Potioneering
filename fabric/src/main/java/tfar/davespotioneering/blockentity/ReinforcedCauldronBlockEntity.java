@@ -16,7 +16,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import tfar.davespotioneering.DavesPotioneeringFabric;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.block.LayeredReinforcedCauldronBlock;
-import tfar.davespotioneering.blovkentity.CReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
 import tfar.davespotioneering.init.ModPotions;
 
