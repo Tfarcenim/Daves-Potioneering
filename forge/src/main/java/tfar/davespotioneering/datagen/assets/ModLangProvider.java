@@ -9,7 +9,7 @@ import net.minecraftforge.common.data.LanguageProvider;
 import org.codehaus.plexus.util.StringUtils;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.init.ModBlocks;
-import tfar.davespotioneering.block.PotionInjectorBlock;
+import tfar.davespotioneering.block.CPotionInjectorBlock;
 import tfar.davespotioneering.client.GauntletHUD;
 import tfar.davespotioneering.client.GauntletHUDMovementScreen;
 import tfar.davespotioneering.init.*;
@@ -25,7 +25,7 @@ public class ModLangProvider extends LanguageProvider {
         addEffect(() -> ModEffects.MILK,"Milk");
         addPotions();
         add("container.davespotioneering.compound_brewing","Compound Brewing Stand");
-        add(PotionInjectorBlock.TRANS_KEY,"Potion Injector");
+        add(CPotionInjectorBlock.TRANS_KEY,"Potion Injector");
         addBlock(() -> ModBlocks.COMPOUND_BREWING_STAND,"Compound Brewing Stand");
         addBlock(() -> ModBlocks.REINFORCED_CAULDRON,"Reinforced Cauldron");
         addBlock(() -> ModBlocks.REINFORCED_WATER_CAULDRON,"Reinforced Water Cauldron");

@@ -27,32 +27,31 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.AABB;
-import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.PotionUtils2;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.CReinforcedCauldronBlockEntity;
-import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.init.ModPotions;
 import tfar.davespotioneering.init.ModSoundEvents;
+import tfar.davespotioneering.platform.Services;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock implements EntityBlock {
+public class CLayeredReinforcedCauldronBlock extends LayeredCauldronBlock implements EntityBlock {
 
     public static final BooleanProperty DRAGONS_BREATH = BooleanProperty.create("dragons_breath");
 
 
     public static int brew_speed = 12;
 
-    public LayeredReinforcedCauldronBlock(Properties properties) {
+    public CLayeredReinforcedCauldronBlock(Properties properties) {
         this(properties, LayeredCauldronBlock.RAIN, ModCauldronInteractions.WATER);
     }
 
-    public LayeredReinforcedCauldronBlock(Properties p_153522_, Predicate<Biome.Precipitation> p_153523_, Map<Item, CauldronInteraction> p_153524_) {
+    public CLayeredReinforcedCauldronBlock(Properties p_153522_, Predicate<Biome.Precipitation> p_153523_, Map<Item, CauldronInteraction> p_153524_) {
         super(p_153522_, p_153523_, p_153524_);
         this.registerDefaultState(this.stateDefinition.any().setValue(DRAGONS_BREATH,false));
     }
@@ -182,7 +181,7 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
             PotionUtils2.setCustomColor(stack, color);
         }
         if (Util.CoatingType.getCoatingType(stack) != Util.CoatingType.FOOD) {
-            stack.getTag().putInt(TAG_USES, ModConfig.Server.coating_uses.get());
+            stack.getTag().putInt(TAG_USES, Services.PLATFORM.coatingUses());
         }
     }
 
@@ -219,8 +218,8 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
 
     public void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity entityIn) {
         BlockEntity tileentity = worldIn.getBlockEntity(pos);
-        if (tileentity instanceof ReinforcedCauldronBlockEntity) {
-            ((ReinforcedCauldronBlockEntity) tileentity).onEntityCollision(entityIn);
+        if (tileentity instanceof CReinforcedCauldronBlockEntity) {
+            ((CReinforcedCauldronBlockEntity) tileentity).onEntityCollision(entityIn);
         }
         super.entityInside(state, worldIn, pos, entityIn);
     }
@@ -248,6 +247,6 @@ public class LayeredReinforcedCauldronBlock extends LayeredCauldronBlock impleme
     @org.jetbrains.annotations.Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos p_153215_, BlockState p_153216_) {
-        return new ReinforcedCauldronBlockEntity(p_153215_,p_153216_);
+        return Services.PLATFORM.makeReinforcedCauldron(p_153215_,p_153216_);
     }
 }

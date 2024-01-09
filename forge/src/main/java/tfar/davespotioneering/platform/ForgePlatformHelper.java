@@ -4,9 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
@@ -14,7 +12,11 @@ import net.minecraftforge.items.IItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.DavesPotioneeringForge;
+import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
+import tfar.davespotioneering.blockentity.CAdvancedBrewingStandBlockEntity;
+import tfar.davespotioneering.blockentity.CReinforcedCauldronBlockEntity;
+import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.inv.BrewingHandler;
 import tfar.davespotioneering.inv.slots.FuelSlot;
 import tfar.davespotioneering.inv.slots.IngredientSlot;
@@ -90,7 +92,34 @@ public class ForgePlatformHelper implements IPlatformHelper {
     }
 
     @Override
-    public BlockEntity makeAdvancedBrewingStand(BlockPos pos, BlockState state) {
+    public CAdvancedBrewingStandBlockEntity makeAdvancedBrewingStand(BlockPos pos, BlockState state) {
         return new AdvancedBrewingStandBlockEntity(pos,state);
+    }
+
+    @Override
+    public CReinforcedCauldronBlockEntity makeReinforcedCauldron(BlockPos pos, BlockState state) {
+        return new ReinforcedCauldronBlockEntity(pos,state);
+    }
+
+    //configs
+
+    @Override
+    public boolean coatTools() {
+        return ModConfig.Server.coat_tools.get();
+    }
+
+    @Override
+    public boolean spikeFood() {
+        return ModConfig.Server.spike_food.get();
+    }
+
+    @Override
+    public boolean coatAnything() {
+        return ModConfig.Server.coat_anything.get();
+    }
+
+    @Override
+    public int coatingUses() {
+        return ModConfig.Server.coating_uses.get();
     }
 }

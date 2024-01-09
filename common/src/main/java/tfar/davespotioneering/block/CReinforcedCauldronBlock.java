@@ -24,8 +24,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 
-public class ReinforcedCauldronBlock extends AbstractCauldronBlock {
-    public ReinforcedCauldronBlock(Properties p_51403_, Map<Item, CauldronInteraction> interactions) {
+public class CReinforcedCauldronBlock extends AbstractCauldronBlock {
+    public CReinforcedCauldronBlock(Properties p_51403_, Map<Item, CauldronInteraction> interactions) {
         super(p_51403_,interactions);
     }
 

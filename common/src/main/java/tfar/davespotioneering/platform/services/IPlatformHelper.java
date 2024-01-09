@@ -7,6 +7,8 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import tfar.davespotioneering.blockentity.CAdvancedBrewingStandBlockEntity;
+import tfar.davespotioneering.blockentity.CReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.inventory.BasicInventoryBridge;
 
 import java.util.Locale;
@@ -59,6 +61,12 @@ public interface IPlatformHelper {
     Slot makeFuelSlot(BasicInventoryBridge handle,int slot,int x, int y);
 
     BasicInventoryBridge makeBrewingHandler(int slots);
-    BlockEntity makeAdvancedBrewingStand(BlockPos pos, BlockState state);
+    CAdvancedBrewingStandBlockEntity makeAdvancedBrewingStand(BlockPos pos, BlockState state);
+    CReinforcedCauldronBlockEntity makeReinforcedCauldron(BlockPos pos, BlockState state);
 
+    //configs
+    boolean coatTools();
+    boolean spikeFood();
+    boolean coatAnything();
+    int coatingUses();
 }

@@ -1,10 +1,5 @@
 package tfar.davespotioneering.block;
 
-import tfar.davespotioneering.FabricUtil;
-import tfar.davespotioneering.Util;
-import tfar.davespotioneering.blockentity.PotionInjectorBlockEntity;
-
-import javax.annotation.Nullable;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
@@ -34,10 +29,14 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import tfar.davespotioneering.Util;
+import tfar.davespotioneering.blockentity.CPotionInjectorBlockEntity;
+
+import javax.annotation.Nullable;
 import java.util.List;
 
-public class PotionInjectorBlock extends Block implements EntityBlock {
-    public PotionInjectorBlock(Properties properties) {
+public class CPotionInjectorBlock extends Block implements EntityBlock {
+    public CPotionInjectorBlock(Properties properties) {
         super(properties);
         registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(HAS_GAUNTLET,false));
     }
@@ -98,9 +97,8 @@ public class PotionInjectorBlock extends Block implements EntityBlock {
         //notifyNeighbors(worldIn, pos, state);
     }
 
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext blockPlaceContext) {
-        return this.defaultBlockState().setValue(FACING, blockPlaceContext.getHorizontalDirection().getOpposite());
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
     }
 
     @Override
@@ -110,14 +108,13 @@ public class PotionInjectorBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public void onRemove(BlockState blockState, Level world, BlockPos blockPos, BlockState blockState2, boolean bl) {
-        if (!blockState.is(blockState2.getBlock())) {
-            BlockEntity blockEntity = world.getBlockEntity(blockPos);
-            if (blockEntity instanceof PotionInjectorBlockEntity potionInjectorBlockEntity) {
-                Util.dropContents(world, blockPos,potionInjectorBlockEntity.handler.items);
-                world.updateNeighbourForOutputSignal(blockPos, this);
+    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
+        if (!pState.is(pNewState.getBlock())) {
+            BlockEntity blockentity = pLevel.getBlockEntity(pPos);
+            if (blockentity instanceof CPotionInjectorBlockEntity potionInjectorBlockEntity) {
+                Util.dropContents(pLevel, pPos, potionInjectorBlockEntity.handler.$getStacks());
             }
-            super.onRemove(blockState, world, blockPos, blockState2, bl);
+            super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
         }
     }
 
@@ -143,7 +140,7 @@ public class PotionInjectorBlock extends Block implements EntityBlock {
 
     @org.jetbrains.annotations.Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos,BlockState state) {
-        return new PotionInjectorBlockEntity(pos,state);
+    public BlockEntity newBlockEntity(BlockPos p_153215_, BlockState p_153216_) {
+        return new CPotionInjectorBlockEntity(p_153215_,p_153216_);
     }
 }

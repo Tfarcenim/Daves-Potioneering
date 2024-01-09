@@ -9,21 +9,21 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.state.BlockState;
-import tfar.davespotioneering.block.PotionInjectorBlock;
-import tfar.davespotioneering.blockentity.PotionInjectorBlockEntity;
+import tfar.davespotioneering.block.CPotionInjectorBlock;
+import tfar.davespotioneering.blockentity.CPotionInjectorBlockEntity;
 import tfar.davespotioneering.init.ModItems;
 
-public class PotionInjectorRenderer implements BlockEntityRenderer<PotionInjectorBlockEntity> {
+public class PotionInjectorRenderer implements BlockEntityRenderer<CPotionInjectorBlockEntity> {
     public PotionInjectorRenderer(BlockEntityRendererProvider.Context rendererDispatcherIn) {
     }
 
     @Override
-    public void render(PotionInjectorBlockEntity tileEntityIn, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(CPotionInjectorBlockEntity tileEntityIn, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
         BlockState blockstate = tileEntityIn.getBlockState();
-        if (blockstate.getValue(PotionInjectorBlock.HAS_GAUNTLET)) {
+        if (blockstate.getValue(CPotionInjectorBlock.HAS_GAUNTLET)) {
             matrixStackIn.pushPose();
 
-            Direction facing = blockstate.getValue(PotionInjectorBlock.FACING);
+            Direction facing = blockstate.getValue(CPotionInjectorBlock.FACING);
 
             matrixStackIn.translate(0.5D, 1.0625D, 0.5D);
             float f = facing.toYRot();

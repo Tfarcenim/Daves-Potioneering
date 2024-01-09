@@ -11,14 +11,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import tfar.davespotioneering.block.PotionInjectorBlock;
+import tfar.davespotioneering.block.CPotionInjectorBlock;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
 import tfar.davespotioneering.inv.PotionInjectorHandler;
 import tfar.davespotioneering.menu.PotionInjectorMenu;
 
 import javax.annotation.Nullable;
 
-public class PotionInjectorBlockEntity extends BlockEntity implements MenuProvider {
+public class CPotionInjectorBlockEntity extends BlockEntity implements MenuProvider {
 
     public PotionInjectorHandler handler = new PotionInjectorHandler(8) {
         @Override
@@ -26,22 +26,22 @@ public class PotionInjectorBlockEntity extends BlockEntity implements MenuProvid
             super.onContentsChanged(slot);
             if (slot == PotionInjectorHandler.GAUNTLET) {
                 ItemStack stack = getStackInSlot(slot);
-                PotionInjectorBlock.setHasGauntlet(level,worldPosition,getBlockState(),!stack.isEmpty());
+                CPotionInjectorBlock.setHasGauntlet(level,worldPosition,getBlockState(),!stack.isEmpty());
             }
         }
     };
 
-    public PotionInjectorBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos p_155283_, BlockState p_155284_) {
+    public CPotionInjectorBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos p_155283_, BlockState p_155284_) {
         super(tileEntityTypeIn,p_155283_,p_155284_);
     }
 
-    public PotionInjectorBlockEntity( BlockPos p_155283_, BlockState p_155284_) {
+    public CPotionInjectorBlockEntity(BlockPos p_155283_, BlockState p_155284_) {
         this(ModBlockEntityTypes.POTION_INJECTOR,p_155283_,p_155284_);
     }
 
     @Override
     public Component getDisplayName() {
-        return PotionInjectorBlock.CONTAINER_NAME;
+        return CPotionInjectorBlock.CONTAINER_NAME;
     }
 
     @Nullable

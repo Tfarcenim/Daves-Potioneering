@@ -22,11 +22,12 @@ import net.minecraft.world.phys.BlockHitResult;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.CAdvancedBrewingStandBlockEntity;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
+import tfar.davespotioneering.platform.Services;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class CAdvancedBrewingStandBlock extends BrewingStandBlock {
+public class CAdvancedBrewingStandBlock extends BrewingStandBlock {
     public CAdvancedBrewingStandBlock(Properties properties) {
         super(properties);
     }
@@ -88,5 +89,12 @@ public abstract class CAdvancedBrewingStandBlock extends BrewingStandBlock {
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return level.isClientSide ? null : createTickerHelper(type, ModBlockEntityTypes.COMPOUND_BREWING_STAND, CAdvancedBrewingStandBlockEntity::serverTick);
     }
+
+
+
+    public BlockEntity newBlockEntity(BlockPos p_152698_, BlockState p_152699_) {
+        return Services.PLATFORM.makeAdvancedBrewingStand(p_152698_, p_152699_);
+    }
+
 
 }

@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
 import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.Nullable;
-import tfar.davespotioneering.block.LayeredReinforcedCauldronBlock;
+import tfar.davespotioneering.block.CLayeredReinforcedCauldronBlock;
 import tfar.davespotioneering.duck.BrewingStandDuck;
 import tfar.davespotioneering.init.ModPotions;
 import tfar.davespotioneering.item.UmbrellaItem;
@@ -61,7 +61,7 @@ public class FabricEvents {
                     ((LivingEntity)victim).addEffect(new MobEffectInstance(effectinstance.getEffect(), Math.max(effectinstance.getDuration() / 8, 1), effectinstance.getAmplifier(), effectinstance.isAmbient(), effectinstance.isVisible()));
                 }
                 if (!player.getAbilities().instabuild)
-                    LayeredReinforcedCauldronBlock.useCharge(weapon);
+                    CLayeredReinforcedCauldronBlock.useCharge(weapon);
             }
         }
         return InteractionResult.PASS;

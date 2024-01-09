@@ -106,7 +106,7 @@ public class ModCauldronInteractions {
                     }
                     player.setItemInHand(hand, ItemUtils.createFilledResult(stack, player, potionItem));
                     if (potion != Potions.WATER || !reinforced.getCustomEffects().isEmpty())
-                        LayeredReinforcedCauldronBlock.lowerFillLevel0(state, level, pos);
+                        CLayeredReinforcedCauldronBlock.lowerFillLevel0(state, level, pos);
                 }
 
                 player.awardStat(Stats.USE_CAULDRON);
@@ -128,7 +128,7 @@ public class ModCauldronInteractions {
                     if (blockEntity instanceof CReinforcedCauldronBlockEntity reinforced) {
 
                         if (reinforced.getPotion() != PotionUtils.getPotion(stack)) {
-                            LayeredReinforcedCauldronBlock.boom(level,pos);
+                            CLayeredReinforcedCauldronBlock.boom(level,pos);
                         } else {
                             level.setBlockAndUpdate(pos, state.cycle(LayeredCauldronBlock.LEVEL));
                             level.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
@@ -284,26 +284,26 @@ public class ModCauldronInteractions {
                 }
             }
             level.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
-            level.setBlockAndUpdate(pos,state.setValue(LayeredReinforcedCauldronBlock.DRAGONS_BREATH,true));
+            level.setBlockAndUpdate(pos,state.setValue(CLayeredReinforcedCauldronBlock.DRAGONS_BREATH,true));
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
     @Nonnull
     static InteractionResult arrowCoating(BlockState state, Level level, BlockPos pos, Player player, ItemStack stack) {
-        LayeredReinforcedCauldronBlock.handleArrowCoating(state,level,pos,player, stack);
+        CLayeredReinforcedCauldronBlock.handleArrowCoating(state,level,pos,player, stack);
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
     @Nonnull
     static InteractionResult spikedFood(BlockState state, Level level, BlockPos pos, Player player, InteractionHand p_175715_, ItemStack stack) {
-        LayeredReinforcedCauldronBlock.handleFoodSpiking(state,level,pos,player,p_175715_,stack);
+        CLayeredReinforcedCauldronBlock.handleFoodSpiking(state,level,pos,player,p_175715_,stack);
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
     @Nonnull
     static InteractionResult weaponCoating(BlockState state, Level level, BlockPos pos, Player player, ItemStack stack) {
-        LayeredReinforcedCauldronBlock.handleWeaponCoating(state,level,pos,player, stack);
+        CLayeredReinforcedCauldronBlock.handleWeaponCoating(state,level,pos,player, stack);
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
 }

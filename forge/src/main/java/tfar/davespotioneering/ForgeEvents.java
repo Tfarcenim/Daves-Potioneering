@@ -23,7 +23,7 @@ import net.minecraftforge.event.entity.living.PotionColorCalculationEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.Event;
-import tfar.davespotioneering.block.LayeredReinforcedCauldronBlock;
+import tfar.davespotioneering.block.CLayeredReinforcedCauldronBlock;
 import tfar.davespotioneering.duck.BrewingStandDuck;
 import tfar.davespotioneering.init.ModPotions;
 import tfar.davespotioneering.item.UmbrellaItem;
@@ -72,7 +72,7 @@ public class ForgeEvents {
                     for(MobEffectInstance effectinstance : potion.getEffects()) {
                         victim.addEffect(new MobEffectInstance(effectinstance.getEffect(), Math.max(effectinstance.getDuration() / 8, 1), effectinstance.getAmplifier(), effectinstance.isAmbient(), effectinstance.isVisible()));
                     }
-                    LayeredReinforcedCauldronBlock.useCharge(weapon);
+                    CLayeredReinforcedCauldronBlock.useCharge(weapon);
                 }
             }
         }

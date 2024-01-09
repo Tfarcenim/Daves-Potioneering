@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import tfar.davespotioneering.block.LayeredReinforcedCauldronBlock;
+import tfar.davespotioneering.block.CLayeredReinforcedCauldronBlock;
 
 //not strictly necessary, but cuts down on duplicate code
 @Mixin(LayeredCauldronBlock.class)
@@ -16,8 +16,8 @@ public class LayeredCauldronBlockMixin {
 
     @Inject(method = "lowerFillLevel",at = @At("HEAD"),cancellable = true)
     private static void handleThis(BlockState p_153560_, Level p_153561_, BlockPos p_153562_, CallbackInfo ci) {
-        if (p_153560_.getBlock() instanceof LayeredReinforcedCauldronBlock) {
-            LayeredReinforcedCauldronBlock.lowerFillLevel0(p_153560_,p_153561_,p_153562_);
+        if (p_153560_.getBlock() instanceof CLayeredReinforcedCauldronBlock) {
+            CLayeredReinforcedCauldronBlock.lowerFillLevel0(p_153560_,p_153561_,p_153562_);
             ci.cancel();
         }
     }

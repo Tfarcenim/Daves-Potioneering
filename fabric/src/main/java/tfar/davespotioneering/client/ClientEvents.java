@@ -41,7 +41,7 @@ import software.bernie.geckolib.renderer.GeoItemRenderer;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.DavesPotioneeringClient;
 import tfar.davespotioneering.DavesPotioneeringFabric;
-import tfar.davespotioneering.block.LayeredReinforcedCauldronBlock;
+import tfar.davespotioneering.block.CLayeredReinforcedCauldronBlock;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.client.model.gecko.DoubleGeoItemStackRenderer;
 import tfar.davespotioneering.client.model.gecko.GeoItemModel;
@@ -200,7 +200,7 @@ public class ClientEvents implements ClientModInitializer {
             } else {
                 tooltip.add(Component.literal("Coated with"));
                 PotionUtils.addPotionTooltip(stack, tooltip, 0.125F);
-                tooltip.add(Component.literal("Uses: " + stack.getTag().getInt(LayeredReinforcedCauldronBlock.USES)));
+                tooltip.add(Component.literal("Uses: " + stack.getTag().getInt(CLayeredReinforcedCauldronBlock.USES)));
             }
         }
     }

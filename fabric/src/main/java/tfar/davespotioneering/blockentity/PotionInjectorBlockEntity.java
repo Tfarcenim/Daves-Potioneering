@@ -1,6 +1,6 @@
 package tfar.davespotioneering.blockentity;
 
-import tfar.davespotioneering.block.PotionInjectorBlock;
+import tfar.davespotioneering.block.CPotionInjectorBlock;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
 import tfar.davespotioneering.inv.PotionInjectorHandler;
 import tfar.davespotioneering.menu.PotionInjectorMenu;
@@ -24,7 +24,7 @@ public class PotionInjectorBlockEntity extends BlockEntity implements MenuProvid
         @Override
         public void setChanged() {
             super.setChanged();
-            PotionInjectorBlock.setHasGauntlet(level,worldPosition,getBlockState(),!this.getItem(GAUNTLET).isEmpty());
+            CPotionInjectorBlock.setHasGauntlet(level,worldPosition,getBlockState(),!this.getItem(GAUNTLET).isEmpty());
         }
     };
 
@@ -38,7 +38,7 @@ public class PotionInjectorBlockEntity extends BlockEntity implements MenuProvid
 
     @Override
     public Component getDisplayName() {
-        return PotionInjectorBlock.CONTAINER_NAME;
+        return CPotionInjectorBlock.CONTAINER_NAME;
     }
 
     @Nullable
