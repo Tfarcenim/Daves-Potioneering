@@ -1,6 +1,7 @@
 package tfar.davespotioneering.platform;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -65,6 +66,8 @@ public class ForgePlatformHelper implements IPlatformHelper {
     public <T extends Registry<? extends F>,F> void superRegister(Class<?> clazz, T registry, Class<? extends F> filter) {
             List<Pair<ResourceLocation, Supplier<?>>> list = DavesPotioneeringForge.registerLater.computeIfAbsent(registry, k -> new ArrayList<>());
         for (Field field : clazz.getFields()) {
+            MappedRegistry<? extends F> forgeRegistry = (MappedRegistry<? extends F>) registry;
+            forgeRegistry.unfreeze();
             try {
                 Object o = field.get(null);
                 if (filter.isInstance(o)) {
