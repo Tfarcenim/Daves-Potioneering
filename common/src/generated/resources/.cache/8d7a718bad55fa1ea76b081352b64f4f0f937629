@@ -1,4 +1,4 @@
-// 1.20.1	2024-01-11T12:20:24.4298131	Item Models: davespotioneering
+// 1.20.1	2024-01-11T12:41:40.3113381	Item Models: davespotioneering
 ea7126a2a96786f08e6a2fc3b4b92f9570b365a5 assets/davespotioneering/models/item/aged_umbrella.json
 d48537427f674f9583af4fd3ef53af1906d6c7f4 assets/davespotioneering/models/item/black_umbrella.json
 45a4d34d5d5cd1929123a4fc2a9259cd09d63508 assets/davespotioneering/models/item/blue_umbrella.json
@@ -58,6 +58,8 @@ d4f12ec1440d18e33450990a1f126e78247b9433 assets/davespotioneering/models/item/pu
 b600374006de7609addc7856fc6b18331567b364 assets/davespotioneering/models/item/red_umbrella.json
 25ff6d27505dff464e7ee6f939b0f7492a60b57c assets/davespotioneering/models/item/reinforced_cauldron.json
 21de9d3cf57ad153e918c9d0dcd5ecb060f77300 assets/davespotioneering/models/item/rudimentary_gauntlet.json
+3e6f2b1e4f3c545f6636070a2a25083a4cab70e5 assets/davespotioneering/models/item/sprite/lit_potioneer_gauntlet.json
+e47020fdebdc4b0aefe9fce5f95a7b511111b470 assets/davespotioneering/models/item/sprite/potioneer_gauntlet.json
 c16ef4274bfa719187dda74fdab90513de03fb52 assets/davespotioneering/models/item/white_umbrella.json
 4e2ccbe9d6a2d63b715b6cc5234bf15a8125a963 assets/davespotioneering/models/item/yellow_umbrella.json
 62e9c545786fb873e4e66687856af74386cf261b assets/davespotioneering/models/sprite/netherite_gauntlet.json

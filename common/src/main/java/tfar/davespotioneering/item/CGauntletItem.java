@@ -159,8 +159,8 @@ public class CGauntletItem extends SwordItem {
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        double blaze = getBlaze(stack);
-        return CPotionInjectorMenu.BLAZE_CAP - (int) blaze;
+        int blaze = getBlaze(stack);
+        return MAX_BAR_WIDTH * blaze / CPotionInjectorMenu.BLAZE_CAP;
     }
 
 
