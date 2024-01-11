@@ -35,6 +35,11 @@ public class BridgedSimpleContainer extends SimpleContainer implements BasicInve
     }
 
     @Override
+    public int $getSlotLimit(int slot) {
+        return getSlotLimit(slot);
+    }
+
+    @Override
     public ItemStack $insertItem(int slot, ItemStack stack, boolean simulate) {
         if (stack.isEmpty())
             return ItemStack.EMPTY;
@@ -78,7 +83,7 @@ public class BridgedSimpleContainer extends SimpleContainer implements BasicInve
     }
 
     protected boolean isItemValid(int slot,ItemStack stack) {
-        return true;
+        return canPlaceItem(slot,stack);
     }
 
     @Override
@@ -115,10 +120,8 @@ public class BridgedSimpleContainer extends SimpleContainer implements BasicInve
         }
     }
 
-    @Override
-    public int getSlotLimit(int slot)
-    {
-        return 64;
+    public int getSlotLimit(int slot) {
+        return getMaxStackSize();
     }
 
     protected int getStackLimit(int slot, @NotNull ItemStack stack) {

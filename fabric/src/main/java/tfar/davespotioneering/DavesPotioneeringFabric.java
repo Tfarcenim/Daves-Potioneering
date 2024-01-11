@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import tfar.davespotioneering.block.ModCauldronInteractions;
 import tfar.davespotioneering.config.ClothConfig;
 import tfar.davespotioneering.init.*;
+import tfar.davespotioneering.mixin.BlockEntityTypeAcces;
 import tfar.davespotioneering.net.PacketHandler;
 
 import java.util.HashSet;
@@ -32,7 +33,7 @@ public class DavesPotioneeringFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         DavesPotioneering.earlySetup();
-        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB,new ResourceLocation(DavesPotioneering.MODID,"tab"),ModItems.tab);
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB,new ResourceLocation(DavesPotioneering.MODID,"tab"),ModCreativeTab.DAVESPOTIONEERING);
 
         Set<Block> newSet = new HashSet<>(((BlockEntityTypeAcces)BlockEntityType.LECTERN).getValidBlocks());
         newSet.add(ModBlocks.MAGIC_LECTERN);

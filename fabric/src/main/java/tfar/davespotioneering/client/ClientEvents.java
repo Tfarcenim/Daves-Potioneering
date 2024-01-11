@@ -6,9 +6,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -17,52 +15,42 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArrowItem;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.PotionItem;
-import net.minecraft.world.item.TieredItem;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.GameType;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import org.lwjgl.glfw.GLFW;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
-import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.DavesPotioneeringClient;
 import tfar.davespotioneering.DavesPotioneeringFabric;
 import tfar.davespotioneering.block.CLayeredReinforcedCauldronBlock;
-import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.client.model.gecko.DoubleGeoItemStackRenderer;
 import tfar.davespotioneering.client.model.gecko.GeoItemModel;
 import tfar.davespotioneering.client.particle.FastDripParticle;
 import tfar.davespotioneering.client.particle.TintedSplashParticle;
-import tfar.davespotioneering.init.*;
+import tfar.davespotioneering.init.ModBlockEntityTypes;
+import tfar.davespotioneering.init.ModBlocks;
+import tfar.davespotioneering.init.ModMenuTypes;
+import tfar.davespotioneering.init.ModParticleTypes;
 import tfar.davespotioneering.item.CGauntletItem;
 import tfar.davespotioneering.item.GauntletItemFabric;
 import tfar.davespotioneering.mixin.ParticleManagerAccess;
 import tfar.davespotioneering.net.C2SGauntletCyclePacket;
-import com.mojang.blaze3d.platform.InputConstants;
+import tfar.davespotioneering.net.ClientPacketHandler;
 
 import java.util.List;
 import java.util.Locale;
 
-import static tfar.davespotioneering.DavesPotioneeringClient.registerBlockingProperty;
-
 public class ClientEvents implements ClientModInitializer {
 
-    public static KeyMapping CONFIG = new KeyMapping("key.davespotioneering.open_config",
-            InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_3,"key.categories."+ DavesPotioneering.MODID);
+
     @Override
     public void onInitializeClient() {
 
@@ -70,7 +58,7 @@ public class ClientEvents implements ClientModInitializer {
         ParticleFactoryRegistry.getInstance().register(ModParticleTypes.FAST_FALLING_WATER, FastDripParticle.FallingWaterFactory::new);
        ParticleFactoryRegistry.getInstance().register(ModParticleTypes.TINTED_SPLASH, TintedSplashParticle.Factory::new);
 
-        KeyBindingHelper.registerKeyBinding(CONFIG);
+        KeyBindingHelper.registerKeyBinding(DavesPotioneeringClient.CONFIG_KEY);
 
         ItemTooltipCallback.EVENT.register(ClientEvents::tooltips);
         HudRenderCallback.EVENT.register(ClientEvents::gauntletHud);
@@ -85,42 +73,9 @@ public class ClientEvents implements ClientModInitializer {
         MenuScreens.register(ModMenuTypes.ALCHEMICAL_GAUNTLET, PotionInjectorScreen::new);
 
         BlockEntityRenderers.register(ModBlockEntityTypes.POTION_INJECTOR, PotionInjectorRenderer::new);
-
-        ColorProviderRegistry.BLOCK.register((state, reader, pos, index) -> {
-            if (pos != null) {
-                BlockEntity blockEntity = reader.getBlockEntity(pos);
-                if (blockEntity instanceof ReinforcedCauldronBlockEntity) {
-                    return ((ReinforcedCauldronBlockEntity) blockEntity).getColor();
-                }
-            }
-            return 0xffffff;
-        }, ModBlocks.REINFORCED_WATER_CAULDRON);
-
-       ItemProperties.register(ModItems.POTIONEER_GAUNTLET, new ResourceLocation("active"), DavesPotioneeringClient.GAUNTLET
-                );
-
-        registerBlockingProperty(ModItems.WHITE_UMBRELLA);
-        registerBlockingProperty(ModItems.ORANGE_UMBRELLA);
-        registerBlockingProperty(ModItems.MAGENTA_UMBRELLA);
-        registerBlockingProperty(ModItems.LIGHT_BLUE_UMBRELLA);
-        registerBlockingProperty(ModItems.YELLOW_UMBRELLA);
-        registerBlockingProperty(ModItems.LIME_UMBRELLA);
-        registerBlockingProperty(ModItems.PINK_UMBRELLA);
-        registerBlockingProperty(ModItems.GRAY_UMBRELLA);
-        registerBlockingProperty(ModItems.LIGHT_GRAY_UMBRELLA);
-        registerBlockingProperty(ModItems.CYAN_UMBRELLA);
-        registerBlockingProperty(ModItems.PURPLE_UMBRELLA);
-        registerBlockingProperty(ModItems.BLUE_UMBRELLA);
-        registerBlockingProperty(ModItems.BROWN_UMBRELLA);
-        registerBlockingProperty(ModItems.GREEN_UMBRELLA);
-        registerBlockingProperty(ModItems.RED_UMBRELLA);
-        registerBlockingProperty(ModItems.BLACK_UMBRELLA);
-
-        registerBlockingProperty(ModItems.AGED_UMBRELLA);
-        registerBlockingProperty(ModItems.GILDED_UMBRELLA);
-
         //BuiltinItemRendererRegistry.INSTANCE.register(ModItems.AGED_UMBRELLA,createAgedUmbrellaItemStackRenderer());
         DavesPotioneeringClient.clientSetup();
+        ClientPacketHandler.registerClientMessages();
     }
 
 

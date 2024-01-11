@@ -28,6 +28,7 @@ public class GauntletHUD {
 
     static final int TEX_HEIGHT = 41;
     static final int TEX_WIDTH = 121;
+    public static int[] cooldowns;
 
     public static ResourceLocation getGauntletIconLoc(String fileName) {
         return new ResourceLocation(GAUNTLET_ICON_LOC.getNamespace(), GAUNTLET_ICON_LOC.getPath() + fileName + ".png");

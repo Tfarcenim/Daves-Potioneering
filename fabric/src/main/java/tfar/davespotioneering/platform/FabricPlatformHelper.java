@@ -3,7 +3,9 @@ package tfar.davespotioneering.platform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.BrewingStandMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
@@ -11,12 +13,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.DavesPotioneeringFabric;
 import tfar.davespotioneering.blockentity.*;
+import tfar.davespotioneering.duck.PlayerDuckFabric;
 import tfar.davespotioneering.inv.BrewingHandlerFabric;
 import tfar.davespotioneering.inv.PotionInjectorHandlerFabric;
 import tfar.davespotioneering.inventory.BasicInventoryBridge;
 import tfar.davespotioneering.item.CGauntletItem;
 import tfar.davespotioneering.item.GauntletItemFabric;
 import tfar.davespotioneering.item.UmbrellaItem;
+import tfar.davespotioneering.net.PacketHandler;
 import tfar.davespotioneering.platform.services.IPlatformHelper;
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -84,6 +88,21 @@ public class FabricPlatformHelper implements IPlatformHelper {
     }
 
     @Override
+    public int[] getGauntletCooldowns(Player player) {
+        return ((PlayerDuckFabric)player).gauntletCooldowns();
+    }
+
+    @Override
+    public void setGauntletCooldowns(Player player, int[] cooldowns) {
+        ((PlayerDuckFabric)player).setGauntletCooldowns(cooldowns);
+    }
+
+    @Override
+    public void syncGauntletCooldowns(Player player, int[] cooldowns) {
+        PacketHandler.sendCooldowns((ServerPlayer) player,cooldowns);
+    }
+
+    @Override
     public BasicInventoryBridge makeBrewingHandler(int slots) {
         return new BrewingHandlerFabric(slots);
     }
@@ -132,5 +151,15 @@ public class FabricPlatformHelper implements IPlatformHelper {
     @Override
     public int coatingUses() {
         return DavesPotioneeringFabric.CONFIG.coating_uses;
+    }
+
+    @Override
+    public int gauntletCooldown() {
+        return DavesPotioneeringFabric.CONFIG.gauntlet_cooldown;
+    }
+
+    @Override
+    public int potionSwitchCooldown() {
+        return DavesPotioneeringFabric.CONFIG.potion_use_cooldown;
     }
 }

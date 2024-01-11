@@ -8,18 +8,14 @@ import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
@@ -32,17 +28,16 @@ import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.DavesPotioneeringClient;
 import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.Util;
-import tfar.davespotioneering.init.ModBlocks;
-import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.client.particle.FastDripParticle;
 import tfar.davespotioneering.client.particle.TintedSplashParticle;
-import tfar.davespotioneering.init.*;
+import tfar.davespotioneering.init.ModBlockEntityTypes;
+import tfar.davespotioneering.init.ModBlocks;
+import tfar.davespotioneering.init.ModMenuTypes;
+import tfar.davespotioneering.init.ModParticleTypes;
 import tfar.davespotioneering.item.GauntletItem;
 import tfar.davespotioneering.mixin.ParticleManagerAccess;
 import tfar.davespotioneering.net.C2SGauntletCyclePacket;
 import tfar.davespotioneering.net.PacketHandler;
-
-import static tfar.davespotioneering.DavesPotioneeringClient.registerBlockingProperty;
 
 public class ClientEvents {
 
@@ -116,37 +111,6 @@ public class ClientEvents {
 
         BlockEntityRenderers.register(ModBlockEntityTypes.POTION_INJECTOR, PotionInjectorRenderer::new);
 
-        Minecraft.getInstance().getBlockColors().register((state, reader, pos, index) -> {
-            if (pos != null) {
-                BlockEntity blockEntity = reader.getBlockEntity(pos);
-                if (blockEntity instanceof ReinforcedCauldronBlockEntity reinforced)
-                    return reinforced.getColor();
-            }
-            return 0xffffff;
-        }, ModBlocks.REINFORCED_WATER_CAULDRON);
-
-        ItemProperties.register(ModItems.POTIONEER_GAUNTLET, new ResourceLocation("active"),
-                (ItemStack a, ClientLevel b, LivingEntity c,int i) -> a.hasTag() ? a.getTag().getBoolean("active") ? 1 : 0 : 0);
-
-        registerBlockingProperty(ModItems.WHITE_UMBRELLA);
-        registerBlockingProperty(ModItems.ORANGE_UMBRELLA);
-        registerBlockingProperty(ModItems.MAGENTA_UMBRELLA);
-        registerBlockingProperty(ModItems.LIGHT_BLUE_UMBRELLA);
-        registerBlockingProperty(ModItems.YELLOW_UMBRELLA);
-        registerBlockingProperty(ModItems.LIME_UMBRELLA);
-        registerBlockingProperty(ModItems.PINK_UMBRELLA);
-        registerBlockingProperty(ModItems.GRAY_UMBRELLA);
-        registerBlockingProperty(ModItems.LIGHT_GRAY_UMBRELLA);
-        registerBlockingProperty(ModItems.CYAN_UMBRELLA);
-        registerBlockingProperty(ModItems.PURPLE_UMBRELLA);
-        registerBlockingProperty(ModItems.BLUE_UMBRELLA);
-        registerBlockingProperty(ModItems.BROWN_UMBRELLA);
-        registerBlockingProperty(ModItems.GREEN_UMBRELLA);
-        registerBlockingProperty(ModItems.RED_UMBRELLA);
-        registerBlockingProperty(ModItems.BLACK_UMBRELLA);
-
-        registerBlockingProperty(ModItems.AGED_UMBRELLA);
-        registerBlockingProperty(ModItems.GILDED_UMBRELLA);
         DavesPotioneeringClient.clientSetup();
     }
 
