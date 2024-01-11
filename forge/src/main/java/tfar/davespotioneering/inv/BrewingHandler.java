@@ -20,7 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class BrewingHandler extends ItemStackHandler implements BasicInventoryBridge {
+public class BrewingHandler extends BridgedItemStackHandler {
 
     public BrewingHandler(int size) {
         super(size);
@@ -75,28 +75,5 @@ public class BrewingHandler extends ItemStackHandler implements BasicInventoryBr
         FUEL_AND_POTIONS = potion_fuel.stream().mapToInt(i -> i).toArray();
     }
 
-    @Override
-    public ItemStack $getStackInSlot(int slot) {
-        return getStackInSlot(slot);
-    }
 
-    @Override
-    public void $setStackInSlot(int slot, ItemStack stack) {
-        setStackInSlot(slot,stack);
-    }
-
-    @Override
-    public CompoundTag $save() {
-        return serializeNBT();
-    }
-
-    @Override
-    public void $load(CompoundTag tag) {
-        deserializeNBT(tag);
-    }
-
-    @Override
-    public int $getSlots() {
-        return getSlots();
-    }
 }

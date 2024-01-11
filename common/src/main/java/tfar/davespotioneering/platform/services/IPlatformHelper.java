@@ -7,7 +7,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import tfar.davespotioneering.blockentity.CAdvancedBrewingStandBlockEntity;
 import tfar.davespotioneering.blockentity.CReinforcedCauldronBlockEntity;
@@ -49,7 +48,7 @@ public interface IPlatformHelper {
         return isDevelopmentEnvironment() ? "development" : "production";
     }
 
-    <T> void superRegister(Class<?> clazz, Registry<T> registry, Class<? extends T> filter);
+    <T extends Registry<? extends F>,F> void superRegister(Class<?> clazz, T registry, Class<? extends F> filter);
 
 
     //loader specific instantiations

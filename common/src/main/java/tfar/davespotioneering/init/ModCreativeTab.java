@@ -7,7 +7,7 @@ import tfar.davespotioneering.DavesPotioneering;
 
 public class ModCreativeTab {
 
-    public static CreativeModeTab DAVESPOTIONEERING = CreativeModeTab.builder()
+    public static CreativeModeTab DAVESPOTIONEERING = CreativeModeTab.builder(null,-1)
             .title(Component.translatable("itemGroup."+ DavesPotioneering.MODID)).icon(() -> new ItemStack(ModItems.POTIONEER_GAUNTLET))
             .displayItems(((pParameters, pOutput) -> pOutput.acceptAll(ModItems.getAllItems().stream().map(ItemStack::new).toList()))).build();
 

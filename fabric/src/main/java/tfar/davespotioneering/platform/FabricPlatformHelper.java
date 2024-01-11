@@ -46,12 +46,12 @@ public class FabricPlatformHelper implements IPlatformHelper {
     }
 
     @Override
-    public <T> void superRegister(Class<?> clazz, Registry<T> registry, Class<? extends T> filter) {
+    public <T extends Registry<? extends F>,F> void superRegister(Class<?> clazz, T registry, Class<? extends F> filter) {
         for (Field field : clazz.getFields()) {
             try {
                 Object o = field.get(null);
                 if (filter.isInstance(o)) {
-                    Registry.register(registry,new ResourceLocation(DavesPotioneering.MODID,field.getName().toLowerCase(Locale.ROOT)),(T)o);
+                    Registry.register((Registry<? super F>) registry,new ResourceLocation(DavesPotioneering.MODID,field.getName().toLowerCase(Locale.ROOT)),(F)o);
                 }
             } catch (IllegalAccessException illegalAccessException) {
                 illegalAccessException.printStackTrace();
@@ -64,6 +64,11 @@ public class FabricPlatformHelper implements IPlatformHelper {
     @Override
     public Item makeBasicUmbrella(Item.Properties builder, String name, String style) {
         return new UmbrellaItem(builder,name,style);
+    }
+
+    @Override
+    public Item makeAgedUmbrella(Item.Properties builder, String style) {
+        return new UmbrellaItem(builder,style,style);
     }
 
     @Override
