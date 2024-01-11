@@ -17,7 +17,7 @@ import tfar.davespotioneering.menu.CPotionInjectorMenu;
 
 import javax.annotation.Nullable;
 
-public class CPotionInjectorBlockEntity extends BlockEntity implements MenuProvider {
+public abstract class CPotionInjectorBlockEntity extends BlockEntity implements MenuProvider {
 
     public static final int GAUNTLET = 6;
     public static final int BLAZE = 7;

@@ -14,5 +14,5 @@ public class ModBlockEntityTypes {
     public static final BlockEntityType<CReinforcedCauldronBlockEntity> REINFORCED_CAULDRON = BlockEntityType.Builder
             .of(Services.PLATFORM::makeReinforcedCauldron,ModBlocks.REINFORCED_WATER_CAULDRON).build(null);
     public static final BlockEntityType<CPotionInjectorBlockEntity> POTION_INJECTOR = BlockEntityType.Builder
-            .of(CPotionInjectorBlockEntity::new,ModBlocks.POTION_INJECTOR).build(null);
+            .of(Services.PLATFORM::makePotionInjector,ModBlocks.POTION_INJECTOR).build(null);
 }

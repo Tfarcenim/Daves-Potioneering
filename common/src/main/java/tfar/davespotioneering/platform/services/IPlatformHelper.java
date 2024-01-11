@@ -9,6 +9,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockState;
 import tfar.davespotioneering.blockentity.CAdvancedBrewingStandBlockEntity;
+import tfar.davespotioneering.blockentity.CPotionInjectorBlockEntity;
 import tfar.davespotioneering.blockentity.CReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.inventory.BasicInventoryBridge;
 import tfar.davespotioneering.item.CGauntletItem;
@@ -71,6 +72,8 @@ public interface IPlatformHelper {
 
     CAdvancedBrewingStandBlockEntity makeAdvancedBrewingStand(BlockPos pos, BlockState state);
     CReinforcedCauldronBlockEntity makeReinforcedCauldron(BlockPos pos, BlockState state);
+    CPotionInjectorBlockEntity makePotionInjector(BlockPos pos, BlockState state);
+
 
     int[] getGauntletCooldowns(Player player);
 

@@ -10,10 +10,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockState;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.DavesPotioneeringFabric;
-import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
-import tfar.davespotioneering.blockentity.CAdvancedBrewingStandBlockEntity;
-import tfar.davespotioneering.blockentity.CReinforcedCauldronBlockEntity;
-import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
+import tfar.davespotioneering.blockentity.*;
 import tfar.davespotioneering.inv.BrewingHandlerFabric;
 import tfar.davespotioneering.inv.PotionInjectorHandlerFabric;
 import tfar.davespotioneering.inventory.BasicInventoryBridge;
@@ -104,6 +101,11 @@ public class FabricPlatformHelper implements IPlatformHelper {
     @Override
     public CReinforcedCauldronBlockEntity makeReinforcedCauldron(BlockPos pos, BlockState state) {
         return new ReinforcedCauldronBlockEntity(pos,state);
+    }
+
+    @Override
+    public CPotionInjectorBlockEntity makePotionInjector(BlockPos pos, BlockState state) {
+        return new PotionInjectorBlockEntity(pos,state);
     }
 
     @Override

@@ -18,10 +18,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.DavesPotioneeringForge;
 import tfar.davespotioneering.ModConfig;
-import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
-import tfar.davespotioneering.blockentity.CAdvancedBrewingStandBlockEntity;
-import tfar.davespotioneering.blockentity.CReinforcedCauldronBlockEntity;
-import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
+import tfar.davespotioneering.blockentity.*;
 import tfar.davespotioneering.inv.BrewingHandler;
 import tfar.davespotioneering.inv.PotionInjectorHandler;
 import tfar.davespotioneering.inv.slots.FuelSlot;
@@ -125,6 +122,11 @@ public class ForgePlatformHelper implements IPlatformHelper {
     @Override
     public CReinforcedCauldronBlockEntity makeReinforcedCauldron(BlockPos pos, BlockState state) {
         return new ReinforcedCauldronBlockEntity(pos,state);
+    }
+
+    @Override
+    public CPotionInjectorBlockEntity makePotionInjector(BlockPos pos, BlockState state) {
+        return new PotionInjectorBlockEntity(pos,state);
     }
 
     @Override

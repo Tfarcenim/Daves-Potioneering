@@ -31,6 +31,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.CPotionInjectorBlockEntity;
+import tfar.davespotioneering.platform.Services;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -141,6 +142,6 @@ public class CPotionInjectorBlock extends Block implements EntityBlock {
     @org.jetbrains.annotations.Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos p_153215_, BlockState p_153216_) {
-        return new CPotionInjectorBlockEntity(p_153215_,p_153216_);
+        return Services.PLATFORM.makePotionInjector(p_153215_,p_153216_);
     }
 }
