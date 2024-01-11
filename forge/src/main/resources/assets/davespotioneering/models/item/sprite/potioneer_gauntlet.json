@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "davespotioneering:item/sprite/potioneer_gauntlet"
-  }
-}
