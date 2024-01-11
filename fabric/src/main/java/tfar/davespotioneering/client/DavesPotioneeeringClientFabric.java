@@ -26,14 +26,12 @@ import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.GameType;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import org.lwjgl.glfw.GLFW;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
 import tfar.davespotioneering.DavesPotioneeringClient;
 import tfar.davespotioneering.DavesPotioneeringFabric;
 import tfar.davespotioneering.block.CLayeredReinforcedCauldronBlock;
-import tfar.davespotioneering.blockentity.CReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.client.model.gecko.DoubleGeoItemStackRenderer;
 import tfar.davespotioneering.client.model.gecko.GeoItemModel;
 import tfar.davespotioneering.client.particle.FastDripParticle;
@@ -106,10 +104,10 @@ public class DavesPotioneeeringClientFabric implements ClientModInitializer {
     }
 
     public static void switchGameMode(GameType oldGameType, GameType newGameType) {
-        if (newGameType == GameType.SURVIVAL && DavesPotioneeringFabric.CONFIG.gauntlet_hud_preset == GauntletHUD.Preset.ABOVE_HOTBAR) {
+        if (DavesPotioneeringFabric.CONFIG.gauntlet_hud_preset == HudPreset.ABOVE_HOTBAR && newGameType == GameType.SURVIVAL) {
             DavesPotioneeringFabric.CONFIG.gauntlet_hud_x = getFixedPositionValue(Minecraft.getInstance().getWindow().getGuiScaledHeight() - 42 - 40, false);
         }
-        if (newGameType == GameType.CREATIVE && DavesPotioneeringFabric.CONFIG.gauntlet_hud_preset == GauntletHUD.Preset.ABOVE_HOTBAR) {
+        if (DavesPotioneeringFabric.CONFIG.gauntlet_hud_preset == HudPreset.ABOVE_HOTBAR && newGameType == GameType.CREATIVE) {
             DavesPotioneeringFabric.CONFIG.gauntlet_hud_y = getFixedPositionValue(Minecraft.getInstance().getWindow().getGuiScaledHeight() - 42 - 25, false);
         }
     }
@@ -142,10 +140,10 @@ public class DavesPotioneeeringClientFabric implements ClientModInitializer {
         if (held.getItem() instanceof GauntletItemFabric && player.isShiftKeyDown()) {
             if (scrollDelta == 1.f) {
                 C2SGauntletCyclePacket.encode(true);
-                GauntletHUD.backwardCycle();
+                GauntletHUDFabric.backwardCycle();
             } else {
                 C2SGauntletCyclePacket.encode(false);
-                GauntletHUD.forwardCycle();
+                GauntletHUDFabric.forwardCycle();
             }
             return true;
         }
@@ -185,13 +183,13 @@ public class DavesPotioneeeringClientFabric implements ClientModInitializer {
             // get nbt
             CompoundTag info = player.getMainHandItem().getOrCreateTag().getCompound("info");
             Potion[] potions = CGauntletItem.getVisibleEffects(info);
-            GauntletHUD.render(matrixStack);
+            GauntletHUDFabric.render(matrixStack);
             if (potions == null) {
                 // reset
-                GauntletHUD.init(null, null, null);
+                GauntletHUDFabric.init(null, null, null);
                 return;
             }
-            GauntletHUD.init(potions[0], potions[1], potions[2]);
+            GauntletHUDFabric.init(potions[0], potions[1], potions[2]);
         }
     }
 

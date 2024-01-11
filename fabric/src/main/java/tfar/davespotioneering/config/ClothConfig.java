@@ -4,7 +4,7 @@ import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import tfar.davespotioneering.DavesPotioneering;
-import tfar.davespotioneering.client.GauntletHUD;
+import tfar.davespotioneering.client.HudPreset;
 
 @Config(name = DavesPotioneering.MODID)
 public class ClothConfig implements ConfigData {
@@ -17,7 +17,7 @@ public class ClothConfig implements ConfigData {
     public int gauntlet_hud_y = -92;
     public int particle_drip_rate = 10;
 
-    public GauntletHUD.Preset gauntlet_hud_preset = GauntletHUD.Preset.ABOVE_HOTBAR;
+    public HudPreset gauntlet_hud_preset = HudPreset.ABOVE_HOTBAR;
 
 
     //server

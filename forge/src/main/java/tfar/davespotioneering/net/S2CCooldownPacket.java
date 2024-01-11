@@ -1,7 +1,7 @@
 package tfar.davespotioneering.net;
 
 import net.minecraft.network.FriendlyByteBuf;
-import tfar.davespotioneering.client.GauntletHUD;
+import tfar.davespotioneering.client.GauntletHUDCommon;
 import tfar.davespotioneering.net.util.S2CPacketHelper;
 
 import java.util.stream.IntStream;
@@ -27,6 +27,6 @@ public class S2CCooldownPacket implements S2CPacketHelper {
 
     @Override
     public void handleClient() {
-        GauntletHUD.cooldowns = cooldowns;
+        GauntletHUDCommon.cooldowns = cooldowns;
     }
 }

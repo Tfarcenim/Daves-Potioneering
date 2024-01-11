@@ -1,22 +1,15 @@
 package tfar.davespotioneering;
 
 import net.minecraft.core.Registry;
-import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
@@ -30,18 +23,15 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
-import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.block.ModCauldronInteractions;
 import tfar.davespotioneering.client.ClientEvents;
-import tfar.davespotioneering.client.GauntletHUD;
+import tfar.davespotioneering.client.GauntletHUDForge;
 import tfar.davespotioneering.datagen.ModDatagen;
 import tfar.davespotioneering.effect.PotionIngredient;
 import tfar.davespotioneering.init.*;
 import tfar.davespotioneering.item.GauntletItem;
-import tfar.davespotioneering.mixin.BlockEntityTypeAcces;
 import tfar.davespotioneering.net.PacketHandler;
 
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -68,7 +58,7 @@ public class DavesPotioneeringForge {
             bus.addListener(ClientEvents::registerLoader);
             bus.addListener(ClientEvents::particle);
             bus.addListener(ClientEvents::overlay);
-            bus.addListener(GauntletHUD::bake);
+            bus.addListener(GauntletHUDForge::bake);
         }
         DavesPotioneering.earlySetup();
     }

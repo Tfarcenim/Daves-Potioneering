@@ -12,7 +12,7 @@ public class GauntletHUDMovementScreen extends Screen {
 
     private int x;
     private int y;
-    private GauntletHUD.Preset preset;
+    private HudPreset preset;
 
     protected GauntletHUDMovementScreen() {
         super(Component.empty());
@@ -30,28 +30,28 @@ public class GauntletHUDMovementScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        addRenderableWidget(Button.builder(Component.translatable(KEY + GauntletHUD.Preset.TOP_LEFT.ordinal()), (button) -> {
+        addRenderableWidget(Button.builder(Component.translatable(KEY + HudPreset.TOP_LEFT.ordinal()), (button) -> {
             x = 5;
             y = 5;
-            preset = GauntletHUD.Preset.TOP_LEFT;
+            preset = HudPreset.TOP_LEFT;
         }).pos(5, 15).size( 75, 20).build());
-        addRenderableWidget(Button.builder(Component.translatable(KEY + GauntletHUD.Preset.TOP_RIGHT.ordinal()),(button) -> {
-            x = width - GauntletHUD.TEX_WIDTH - 5;
+        addRenderableWidget(Button.builder(Component.translatable(KEY + HudPreset.TOP_RIGHT.ordinal()),(button) -> {
+            x = width - GauntletHUDCommon.TEX_WIDTH - 5;
             y = 5;
-            preset = GauntletHUD.Preset.TOP_RIGHT;
+            preset = HudPreset.TOP_RIGHT;
         }).pos(85, 15).size(75, 20).build());
-        addRenderableWidget(Button.builder(Component.translatable(KEY + GauntletHUD.Preset.BTM_LEFT.ordinal()), (button) -> {
+        addRenderableWidget(Button.builder(Component.translatable(KEY + HudPreset.BTM_LEFT.ordinal()), (button) -> {
             x = 5;
-            y = height - GauntletHUD.TEX_HEIGHT - 5;
-            preset = GauntletHUD.Preset.BTM_LEFT;
+            y = height - GauntletHUDCommon.TEX_HEIGHT - 5;
+            preset = HudPreset.BTM_LEFT;
         }).pos(165, 15).size(75, 20).build());
-        addRenderableWidget(Button.builder( Component.translatable(KEY + GauntletHUD.Preset.BTM_RIGHT.ordinal()), (button) -> {
-            x = width - GauntletHUD.TEX_WIDTH - 5;
-            y = height - GauntletHUD.TEX_HEIGHT - 5;
-            preset = GauntletHUD.Preset.BTM_RIGHT;
+        addRenderableWidget(Button.builder( Component.translatable(KEY + HudPreset.BTM_RIGHT.ordinal()), (button) -> {
+            x = width - GauntletHUDCommon.TEX_WIDTH - 5;
+            y = height - GauntletHUDCommon.TEX_HEIGHT - 5;
+            preset = HudPreset.BTM_RIGHT;
         }).pos(245, 15).size(75, 20).build());
-        addRenderableWidget(Button.builder(Component.translatable(KEY + GauntletHUD.Preset.ABOVE_HOTBAR.ordinal()),
-                (button) -> preset = GauntletHUD.Preset.ABOVE_HOTBAR).pos(325, 15).size(75, 20).build());
+        addRenderableWidget(Button.builder(Component.translatable(KEY + HudPreset.ABOVE_HOTBAR.ordinal()),
+                (button) -> preset = HudPreset.ABOVE_HOTBAR).pos(325, 15).size(75, 20).build());
     }
 
     @Override
@@ -59,7 +59,7 @@ public class GauntletHUDMovementScreen extends Screen {
         if (button == 0 && getChildAt(mouseX,mouseY).isEmpty()) {// do not attempt to drag when hovering over a button!
             x = (int) mouseX;
             y = (int) mouseY;
-            preset = GauntletHUD.Preset.FREE_MOVE;
+            preset = HudPreset.FREE_MOVE;
         }
         return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
     }

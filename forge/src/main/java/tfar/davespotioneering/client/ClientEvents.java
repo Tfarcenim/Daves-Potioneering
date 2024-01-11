@@ -74,10 +74,10 @@ public class ClientEvents {
         if (held.getItem() instanceof GauntletItem && player.isShiftKeyDown()) {
             if (event.getScrollDelta() == 1.f) {
                 PacketHandler.sendToServer(new C2SGauntletCyclePacket(true));
-                GauntletHUD.backwardCycle();
+                GauntletHUDForge.backwardCycle();
             } else {
                 PacketHandler.sendToServer(new C2SGauntletCyclePacket(false));
-                GauntletHUD.forwardCycle();
+                GauntletHUDForge.forwardCycle();
             }
             event.setCanceled(true);
         }
@@ -116,7 +116,7 @@ public class ClientEvents {
     }
 
     public static void overlay(RegisterGuiOverlaysEvent e) {
-        e.registerBelow(VanillaGuiOverlay.CHAT_PANEL.id(), DavesPotioneering.MODID,new GauntletHUD());
+        e.registerBelow(VanillaGuiOverlay.CHAT_PANEL.id(), DavesPotioneering.MODID,new GauntletHUDForge());
     }
 
     private static void stackAdj1(ClientPlayerNetworkEvent.LoggingIn e) {

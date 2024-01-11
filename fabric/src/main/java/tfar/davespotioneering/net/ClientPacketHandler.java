@@ -5,7 +5,8 @@ import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.FriendlyByteBuf;
-import tfar.davespotioneering.client.GauntletHUD;
+import tfar.davespotioneering.client.GauntletHUDCommon;
+import tfar.davespotioneering.client.GauntletHUDFabric;
 
 import java.util.stream.IntStream;
 
@@ -19,6 +20,6 @@ public class ClientPacketHandler {
         int size = buf.readInt();
         int[] cooldowns = new int[size];
         IntStream.range(0,size).forEach(i -> cooldowns[i] = buf.readInt());
-        client.execute(() -> GauntletHUD.cooldowns = cooldowns);
+        client.execute(() -> GauntletHUDCommon.cooldowns = cooldowns);
     }
 }
