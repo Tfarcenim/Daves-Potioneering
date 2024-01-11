@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import tfar.davespotioneering.blockentity.CAdvancedBrewingStandBlockEntity;
 import tfar.davespotioneering.blockentity.CPotionInjectorBlockEntity;
 import tfar.davespotioneering.blockentity.CReinforcedCauldronBlockEntity;
+import tfar.davespotioneering.client.HudPreset;
 import tfar.davespotioneering.inventory.BasicInventoryBridge;
 import tfar.davespotioneering.item.CGauntletItem;
 
@@ -93,4 +94,11 @@ public interface IPlatformHelper {
     int coatingUses();
     int gauntletCooldown();
     int potionSwitchCooldown();
+
+    int gauntletHudX();
+    int gauntletHudY();
+    HudPreset preset();
+    void setGauntletHudX(int x);
+    void setGauntletHudY(int y);
+    void setPreset(HudPreset preset);
 }

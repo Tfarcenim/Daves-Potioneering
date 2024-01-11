@@ -21,6 +21,7 @@ import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.DavesPotioneeringForge;
 import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.blockentity.*;
+import tfar.davespotioneering.client.HudPreset;
 import tfar.davespotioneering.inv.BrewingHandler;
 import tfar.davespotioneering.inv.PotionInjectorHandler;
 import tfar.davespotioneering.inv.slots.FuelSlot;
@@ -197,5 +198,35 @@ public class ForgePlatformHelper implements IPlatformHelper {
     @Override
     public int potionSwitchCooldown() {
         return ModConfig.Server.potion_switch_cooldown.get();
+    }
+
+    @Override
+    public int gauntletHudX() {
+        return ModConfig.Client.gauntlet_hud_x.get();
+    }
+
+    @Override
+    public int gauntletHudY() {
+        return ModConfig.Client.gauntlet_hud_y.get();
+    }
+
+    @Override
+    public HudPreset preset() {
+        return ModConfig.Client.gauntlet_hud_preset.get();
+    }
+
+    @Override
+    public void setGauntletHudX(int x) {
+        ModConfig.Client.gauntlet_hud_x.set(x);
+    }
+
+    @Override
+    public void setGauntletHudY(int y) {
+        ModConfig.Client.gauntlet_hud_y.set(y);
+    }
+
+    @Override
+    public void setPreset(HudPreset preset) {
+        ModConfig.Client.gauntlet_hud_preset.set(preset);
     }
 }

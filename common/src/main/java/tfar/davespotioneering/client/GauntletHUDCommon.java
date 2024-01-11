@@ -30,9 +30,6 @@ public class GauntletHUDCommon {
     static final int maxCooldown = 40;
     public static int[] cooldowns = new int[6];
     static int cooldown = maxCooldown;
-    public static int x;
-    public static int y;
-    public static HudPreset preset;
     static boolean forwardCycle = false;
     static Potion activePotion = null;
     static Potion prePotion = null;
@@ -100,6 +97,9 @@ public class GauntletHUDCommon {
 
     public static void render(Gui gui, GuiGraphics guiGraphics, float partialTick, int screenWidth, int screenHeight) {
 
+        int hudX = Services.PLATFORM.gauntletHudX();
+        int hudY = Services.PLATFORM.gauntletHudY();
+
         // get player from client
         Player player = mc.player;
         if (player == null) return;
@@ -113,19 +113,19 @@ public class GauntletHUDCommon {
 
             RenderSystem.setShaderColor(1, 1, 1, 1);
 
-            if (GauntletHUDCommon.preset == HudPreset.ABOVE_HOTBAR) {
-                GauntletHUDCommon.x = (screenWidth- GauntletHUDCommon.TEX_WIDTH) / 2;
-                GauntletHUDCommon.y = screenHeight - Math.min(Services.PLATFORM.leftHeight(gui),Services.PLATFORM.rightHeight(gui)) - GauntletHUDCommon.TEX_HEIGHT;
+            if (Services.PLATFORM.preset() == HudPreset.ABOVE_HOTBAR) {
+                hudX = (screenWidth- GauntletHUDCommon.TEX_WIDTH) / 2;
+                hudY = screenHeight - Math.min(Services.PLATFORM.leftHeight(gui),Services.PLATFORM.rightHeight(gui)) - GauntletHUDCommon.TEX_HEIGHT;
                 if (((GuiAccess)gui).getToolHighlightTimer() > 0) {
 
-                    GauntletHUDCommon.y -= 10;
+                    hudY -= 10;
                 }
             }
 
             int yOffset;
 
-            int xFixed = GauntletHUDCommon.x;
-            int yFixed = GauntletHUDCommon.y;
+            int xFixed = hudX;
+            int yFixed = hudY;
 
             if (GauntletHUDCommon.forwardCycle) {
                 GauntletHUDCommon.cooldown--;
