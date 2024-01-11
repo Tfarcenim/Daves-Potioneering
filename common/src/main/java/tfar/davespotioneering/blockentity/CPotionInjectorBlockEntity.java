@@ -19,6 +19,9 @@ import javax.annotation.Nullable;
 
 public class CPotionInjectorBlockEntity extends BlockEntity implements MenuProvider {
 
+    public static final int GAUNTLET = 6;
+    public static final int BLAZE = 7;
+
     public BasicInventoryBridge handler;
 
     public CPotionInjectorBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos p_155283_, BlockState p_155284_) {

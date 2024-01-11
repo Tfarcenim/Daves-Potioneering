@@ -15,7 +15,7 @@ public class PotionInjectorBlockEntity extends CPotionInjectorBlockEntity{
             @Override
             protected void onContentsChanged(int slot) {
                 super.onContentsChanged(slot);
-                if (slot == PotionInjectorHandler.GAUNTLET) {
+                if (slot == CPotionInjectorBlockEntity.GAUNTLET) {
                     ItemStack stack = getStackInSlot(slot);
                     CPotionInjectorBlock.setHasGauntlet(level,worldPosition,getBlockState(),!stack.isEmpty());
                 }

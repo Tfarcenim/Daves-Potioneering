@@ -94,4 +94,9 @@ public class BrewingHandler extends ItemStackHandler implements BasicInventoryBr
     public void $load(CompoundTag tag) {
         deserializeNBT(tag);
     }
+
+    @Override
+    public int $getSlots() {
+        return getSlots();
+    }
 }

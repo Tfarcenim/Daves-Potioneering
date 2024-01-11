@@ -10,10 +10,10 @@ import tfar.davespotioneering.item.GauntletItem;
 
 import javax.annotation.Nonnull;
 
-public class PotionInjectorHandler extends ItemStackHandler implements BasicInventoryBridge {
+import static tfar.davespotioneering.blockentity.CPotionInjectorBlockEntity.BLAZE;
+import static tfar.davespotioneering.blockentity.CPotionInjectorBlockEntity.GAUNTLET;
 
-    public static final int GAUNTLET = 6;
-    public static final int BLAZE = 7;
+public class PotionInjectorHandler extends ItemStackHandler implements BasicInventoryBridge {
 
     public PotionInjectorHandler(int slots) {
         super(slots);

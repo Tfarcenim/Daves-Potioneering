@@ -84,21 +84,6 @@ public class BrewingHandler extends SimpleContainer implements BasicInventoryBri
         }
     }
 
-    public ListTag getTags() {
-        ListTag nbtTagList = new ListTag();
-        for (int i = 0; i < this.getContainerSize(); i++)
-        {
-            if (!getItems().get(i).isEmpty())
-            {
-                CompoundTag itemTag = new CompoundTag();
-                itemTag.putInt("Slot", i);
-                getItems().get(i).save(itemTag);
-                nbtTagList.add(itemTag);
-            }
-        }
-        return nbtTagList;
-    }
-
     @Override
     public ItemStack $getStackInSlot(int slot) {
         return getItem(slot);
@@ -107,6 +92,11 @@ public class BrewingHandler extends SimpleContainer implements BasicInventoryBri
     @Override
     public NonNullList<ItemStack> $getStacks() {
         return items;
+    }
+
+    @Override
+    public int $getSlots() {
+        return getContainerSize();
     }
 
     @Override

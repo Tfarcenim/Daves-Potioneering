@@ -14,6 +14,7 @@ import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import tfar.davespotioneering.PotionUtils2;
+import tfar.davespotioneering.blockentity.CPotionInjectorBlockEntity;
 import tfar.davespotioneering.init.ModMenuTypes;
 import tfar.davespotioneering.inventory.BasicInventoryBridge;
 import tfar.davespotioneering.item.CGauntletItem;
@@ -108,21 +109,21 @@ public class CPotionInjectorMenu extends AbstractContainerMenu {
     public static final int BLAZE_CAP = 32;
 
     private void storePotionsAndBlaze() {
-        ItemStack gauntlet = inventory.$getStackInSlot(PotionInjectorHandler.GAUNTLET);
+        ItemStack gauntlet = inventory.$getStackInSlot(CPotionInjectorBlockEntity.GAUNTLET);
         if (!gauntlet.isEmpty()) {
             CompoundTag newNbt = new CompoundTag();
             ListTag potionList = new ListTag();
             CompoundTag oldNBT = gauntlet.getOrCreateTag();
 
-            CompoundTag info = oldNBT.getCompound(GauntletItem.INFO);
-            ListTag oldPotionList = info.getList(GauntletItem.POTIONS, Tag.TAG_COMPOUND);
+            CompoundTag info = oldNBT.getCompound(CGauntletItem.INFO);
+            ListTag oldPotionList = info.getList(CGauntletItem.POTIONS, Tag.TAG_COMPOUND);
 
-            for (int i = 0; i < PotionInjectorHandler.GAUNTLET; i++) {
+            for (int i = 0; i < CPotionInjectorBlockEntity.GAUNTLET; i++) {
                 CompoundTag oldTag = oldPotionList.isEmpty() ? new CompoundTag() : oldPotionList.getCompound(i);
                 Potion oldPotion = oldPotionList.isEmpty() ? Potions.EMPTY : PotionUtils.getPotion(oldTag);
                 List<MobEffectInstance> oldCustomEffects = oldPotionList.isEmpty() ? List.of() : PotionUtils.getCustomEffects(oldTag);
                 if (oldPotion == Potions.EMPTY && oldCustomEffects.isEmpty()) {
-                    ItemStack potionStack = inventory.getStackInSlot(i);
+                    ItemStack potionStack = inventory.$getStackInSlot(i);
                     potionList.add(PotionUtils2.saveAllEffects(new CompoundTag(),PotionUtils.getPotion(potionStack),PotionUtils.getCustomEffects(potionStack)));
                     inventory.extractItem(i, 1, false);
                     //copy old potion over
@@ -134,22 +135,22 @@ public class CPotionInjectorMenu extends AbstractContainerMenu {
             newNbt.putInt(CGauntletItem.ACTIVE_POTION, 0);
             newNbt.put(CGauntletItem.POTIONS, potionList);
 
-            int presentBlaze = info.getInt(GauntletItem.BLAZE);
+            int presentBlaze = info.getInt(CGauntletItem.BLAZE);
 
-            int blazeInsert = Math.min(BLAZE_CAP - presentBlaze,Math.min(BLAZE_CAP,inventory.getStackInSlot(PotionInjectorHandler.BLAZE).getCount()));
+            int blazeInsert = Math.min(BLAZE_CAP - presentBlaze,Math.min(BLAZE_CAP,inventory.$getStackInSlot(PotionInjectorHandler.BLAZE).getCount()));
 
             newNbt.putInt(CGauntletItem.BLAZE,blazeInsert + presentBlaze);
             inventory.extractItem(PotionInjectorHandler.BLAZE,blazeInsert,false);
             System.out.println(potionList.getElementType());
-            gauntlet.getTag().put(GauntletItem.INFO,newNbt);
+            gauntlet.getTag().put(CGauntletItem.INFO,newNbt);
         }
     }
 
     private void removePotionsAndBlaze() {
-        ItemStack gauntlet = inventory.getStackInSlot(PotionInjectorHandler.GAUNTLET);
+        ItemStack gauntlet = inventory.$getStackInSlot(PotionInjectorHandler.GAUNTLET);
         if (!gauntlet.isEmpty()) {
-            CompoundTag nbt = gauntlet.getTag().getCompound(GauntletItem.INFO);
-            ListTag listNBT = nbt.getList(GauntletItem.POTIONS, Tag.TAG_COMPOUND);
+            CompoundTag nbt = gauntlet.getTag().getCompound(CGauntletItem.INFO);
+            ListTag listNBT = nbt.getList(CGauntletItem.POTIONS, Tag.TAG_COMPOUND);
 
             boolean allRemoved = true;
             for (int i = 0; i < listNBT.size(); i++) {
@@ -171,23 +172,23 @@ public class CPotionInjectorMenu extends AbstractContainerMenu {
                 }
             }
             if (allRemoved) {
-                nbt.remove(GauntletItem.POTIONS);
+                nbt.remove(CGauntletItem.POTIONS);
             }
 
-            int presentBlaze = inventory.getStackInSlot(PotionInjectorHandler.BLAZE).getCount();
+            int presentBlaze = inventory.$getStackInSlot(CPotionInjectorBlockEntity.BLAZE).getCount();
 
-            int maxBlazeRemove = inventory.getSlotLimit(PotionInjectorHandler.BLAZE) - presentBlaze;
+            int maxBlazeRemove = inventory.$getSlotLimit(CPotionInjectorBlockEntity.BLAZE) - presentBlaze;
 
-            int blaze = nbt.getInt(GauntletItem.BLAZE);
+            int blaze = nbt.getInt(CGauntletItem.BLAZE);
 
             int blazeRemove = Math.min(maxBlazeRemove,blaze);
 
-            inventory.insertItem(PotionInjectorHandler.BLAZE,new ItemStack(Items.BLAZE_POWDER,blazeRemove),false);
+            inventory.insertItem(CPotionInjectorBlockEntity.BLAZE,new ItemStack(Items.BLAZE_POWDER,blazeRemove),false);
 
             if (blaze > blazeRemove) {
-                nbt.putInt(GauntletItem.BLAZE,blaze - blazeRemove);
+                nbt.putInt(CGauntletItem.BLAZE,blaze - blazeRemove);
             } else {
-                nbt.remove(GauntletItem.BLAZE);
+                nbt.remove(CGauntletItem.BLAZE);
             }
         }
     }
@@ -207,8 +208,8 @@ public class CPotionInjectorMenu extends AbstractContainerMenu {
             ItemStack stack = inventory.getStackInSlot(PotionInjectorHandler.GAUNTLET);
             CompoundTag nbt = stack.getTag();
             if (nbt != null) {
-                CompoundTag info = nbt.getCompound(GauntletItem.INFO);
-                ListTag listNBT = info.getList(GauntletItem.POTIONS, Tag.TAG_COMPOUND);
+                CompoundTag info = nbt.getCompound(CGauntletItem.INFO);
+                ListTag listNBT = info.getList(CGauntletItem.POTIONS, Tag.TAG_COMPOUND);
                 if (!listNBT.isEmpty()) {
                     for (Tag nb : listNBT) {
                         CompoundTag tag = (CompoundTag)nb;

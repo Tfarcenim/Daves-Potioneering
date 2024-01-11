@@ -9,6 +9,7 @@
     "ItemAccess",
     "LayeredCauldronBlockMixin",
     "LivingEntityMixin",
+    "PlayerMixinFabric",
     "PotionBrewingMixin",
     "PotionSlotMixin",
     "PotionUtilsMixin",

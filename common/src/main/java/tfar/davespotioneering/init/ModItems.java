@@ -1,7 +1,7 @@
 package tfar.davespotioneering.init;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
@@ -52,8 +52,12 @@ public class ModItems {
     public static final Item AGED_UMBRELLA = new AgedUmbrellaItem(baseUmbrella(),"aged");
 
 
-    public static final TagKey<Item> BLACKLISTED = ItemTags.create(new ResourceLocation(DavesPotioneering.MODID,"blacklisted"));
-    public static final TagKey<Item> WHITELISTED = ItemTags.create(new ResourceLocation(DavesPotioneering.MODID,"whitelisted"));
+    public static final TagKey<Item> BLACKLISTED = create(new ResourceLocation(DavesPotioneering.MODID,"blacklisted"));
+    public static final TagKey<Item> WHITELISTED = create(new ResourceLocation(DavesPotioneering.MODID,"whitelisted"));
+
+    public static TagKey<Item> create(final ResourceLocation name) {
+        return TagKey.create(Registries.ITEM, name);
+    }
 
 
     public static Item.Properties baseUmbrella() {

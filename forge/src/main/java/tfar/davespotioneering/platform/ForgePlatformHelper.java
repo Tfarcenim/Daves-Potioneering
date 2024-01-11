@@ -2,8 +2,11 @@ package tfar.davespotioneering.platform;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockState;
@@ -26,7 +29,10 @@ import tfar.davespotioneering.inv.slots.FuelSlot;
 import tfar.davespotioneering.inv.slots.IngredientSlot;
 import tfar.davespotioneering.inv.slots.PotionSlot;
 import tfar.davespotioneering.inventory.BasicInventoryBridge;
+import tfar.davespotioneering.item.CGauntletItem;
 import tfar.davespotioneering.item.UmbrellaItem;
+import tfar.davespotioneering.net.PacketHandler;
+import tfar.davespotioneering.net.S2CCooldownPacket;
 import tfar.davespotioneering.platform.services.IPlatformHelper;
 
 import java.lang.reflect.Field;
@@ -113,6 +119,27 @@ public class ForgePlatformHelper implements IPlatformHelper {
         return new ReinforcedCauldronBlockEntity(pos,state);
     }
 
+    @Override
+    public int[] getGauntletCooldowns(Player player) {
+        CompoundTag persistent = player.getPersistentData();
+        if (!persistent.contains(DavesPotioneering.MODID)) return new int[6];
+        CompoundTag tag = persistent.getCompound(DavesPotioneering.MODID);
+        int[] cooldowns = tag.getIntArray(CGauntletItem.COOLDOWNS);
+        return cooldowns;
+    }
+
+    @Override
+    public void setGauntletCooldowns(Player player, int[] cooldowns) {
+        CompoundTag persistent = player.getPersistentData();
+        CompoundTag tag = persistent.getCompound(DavesPotioneering.MODID);
+        tag.putIntArray(CGauntletItem.COOLDOWNS, cooldowns);
+    }
+
+    @Override
+    public void syncGauntletCooldowns(Player player, int[] cooldowns) {
+        PacketHandler.sendToClient(new S2CCooldownPacket(cooldowns), (ServerPlayer) player);
+    }
+
     //configs
 
     @Override
@@ -133,5 +160,10 @@ public class ForgePlatformHelper implements IPlatformHelper {
     @Override
     public int coatingUses() {
         return ModConfig.Server.coating_uses.get();
+    }
+
+    @Override
+    public int gauntletCooldown() {
+        return ModConfig.Server.gauntlet_cooldown.get();
     }
 }

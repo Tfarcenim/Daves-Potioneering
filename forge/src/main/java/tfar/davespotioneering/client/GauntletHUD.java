@@ -16,9 +16,9 @@ import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import tfar.davespotioneering.DavesPotioneering;
-import tfar.davespotioneering.DavesPotioneeringForge;
 import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.init.ModSoundEvents;
+import tfar.davespotioneering.item.CGauntletItem;
 import tfar.davespotioneering.item.GauntletItem;
 import tfar.davespotioneering.mixin.GuiAccess;
 import tfar.davespotioneering.platform.Services;
@@ -142,7 +142,7 @@ public class GauntletHUD implements IGuiOverlay {
         // check if holding gauntlet
         if (g.getItem() instanceof GauntletItem) {
             // get nbt
-            CompoundTag info = player.getMainHandItem().getOrCreateTag().getCompound(GauntletItem.INFO);
+            CompoundTag info = player.getMainHandItem().getOrCreateTag().getCompound(CGauntletItem.INFO);
             Potion[] potions = GauntletItem.getVisibleEffects(info);
 
 
@@ -183,10 +183,10 @@ public class GauntletHUD implements IGuiOverlay {
             }
             poseStack.blit(hud,xFixed, yFixed, 0, 0, 1 + 43 * yOffset, TEX_WIDTH, TEX_HEIGHT, 128, 128);
 
-            int active = info.getInt(GauntletItem.ACTIVE_POTION);
+            int active = info.getInt(CGauntletItem.ACTIVE_POTION);
 
-            int prev = active > 0 ? active - 1 : GauntletItem.SLOTS - 1;
-            int next = active < GauntletItem.SLOTS - 1 ? active + 1 : 0;
+            int prev = active > 0 ? active - 1 : CGauntletItem.SLOTS - 1;
+            int next = active < CGauntletItem.SLOTS - 1 ? active + 1 : 0;
 
             renderPotion(prePotion, poseStack, xFixed + 3, yFixed + 21, cooldowns[prev]);
             renderPotion(activePotion, poseStack, xFixed + 51, yFixed + 5, cooldowns[active]);

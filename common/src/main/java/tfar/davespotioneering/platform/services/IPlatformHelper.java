@@ -3,6 +3,7 @@ package tfar.davespotioneering.platform.services;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -70,9 +71,16 @@ public interface IPlatformHelper {
     CAdvancedBrewingStandBlockEntity makeAdvancedBrewingStand(BlockPos pos, BlockState state);
     CReinforcedCauldronBlockEntity makeReinforcedCauldron(BlockPos pos, BlockState state);
 
+    int[] getGauntletCooldowns(Player player);
+
+    void setGauntletCooldowns(Player player,int[] cooldowns);
+
+    void syncGauntletCooldowns(Player player,int[] cooldowns);
+
     //configs
     boolean coatTools();
     boolean spikeFood();
     boolean coatAnything();
     int coatingUses();
+    int gauntletCooldown();
 }
