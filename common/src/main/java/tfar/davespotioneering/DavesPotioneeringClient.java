@@ -6,12 +6,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.renderer.EffectInstance;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.PotionUtils;
@@ -172,4 +174,16 @@ public class DavesPotioneeringClient {
         return stack.getItem() instanceof PotionItem || stack.getItem() instanceof ArrowItem;
     }
 
+    public static int computeinvis2Color(MobEffectInstance effectinstance) {
+        int k = effectinstance.getEffect().getColor();
+        int l = 1;
+        float r = (float)(l * (k >> 16 & 255)) / 255.0F;
+        float g = (float)(l * (k >> 8 & 255)) / 255.0F;
+        float b = (float)(l * (k & 255)) / 255.0F;
+
+        r = r * 255.0F;
+        g = g * 255.0F;
+        b = b * 255.0F;
+        return (int)r << 16 | (int)g << 8 | (int)b;
+    }
 }
