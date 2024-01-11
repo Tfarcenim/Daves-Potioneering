@@ -14,21 +14,15 @@ import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import tfar.davespotioneering.block.ModCauldronInteractions;
-import tfar.davespotioneering.config.ClothConfig;
+import tfar.davespotioneering.config.DavesPotioneeringClothConfig;
 import tfar.davespotioneering.init.*;
-import tfar.davespotioneering.mixin.BlockEntityTypeAcces;
 import tfar.davespotioneering.net.PacketHandler;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class DavesPotioneeringFabric implements ModInitializer {
     // Directly reference a log4j logger.
 
-    public static ClothConfig CONFIG;
+    public static DavesPotioneeringClothConfig CONFIG;
 
     @Override
     public void onInitialize() {
@@ -39,8 +33,8 @@ public class DavesPotioneeringFabric implements ModInitializer {
         UseEntityCallback.EVENT.register(FabricEvents::milkCow);
         AttackEntityCallback.EVENT.register(FabricEvents::afterHit);
 
-        AutoConfig.register(ClothConfig.class, JanksonConfigSerializer::new);
-        CONFIG = AutoConfig.getConfigHolder(ClothConfig.class).getConfig();
+        AutoConfig.register(DavesPotioneeringClothConfig.class, JanksonConfigSerializer::new);
+        CONFIG = AutoConfig.getConfigHolder(DavesPotioneeringClothConfig.class).getConfig();
 
         Util.setStackSize(Items.POTION, DavesPotioneeringFabric.CONFIG.potion_stack_size);
         Util.setStackSize(Items.SPLASH_POTION, DavesPotioneeringFabric.CONFIG.splash_potion_stack_size);

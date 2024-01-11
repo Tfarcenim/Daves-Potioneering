@@ -11,7 +11,6 @@ import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.client.HudPreset;
 import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.block.CPotionInjectorBlock;
-import tfar.davespotioneering.client.GauntletHUDForge;
 import tfar.davespotioneering.client.GauntletHUDMovementScreen;
 import tfar.davespotioneering.init.*;
 import tfar.davespotioneering.item.UmbrellaItem;

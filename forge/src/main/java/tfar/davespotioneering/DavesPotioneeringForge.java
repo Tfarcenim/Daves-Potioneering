@@ -25,7 +25,6 @@ import net.minecraftforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import tfar.davespotioneering.block.ModCauldronInteractions;
 import tfar.davespotioneering.client.ClientEvents;
-import tfar.davespotioneering.client.GauntletHUDForge;
 import tfar.davespotioneering.datagen.ModDatagen;
 import tfar.davespotioneering.effect.PotionIngredient;
 import tfar.davespotioneering.init.*;
@@ -58,7 +57,7 @@ public class DavesPotioneeringForge {
             bus.addListener(ClientEvents::registerLoader);
             bus.addListener(ClientEvents::particle);
             bus.addListener(ClientEvents::overlay);
-            bus.addListener(GauntletHUDForge::bake);
+            //bus.addListener(GauntletHUDForge::bake);
         }
         DavesPotioneering.earlySetup();
     }

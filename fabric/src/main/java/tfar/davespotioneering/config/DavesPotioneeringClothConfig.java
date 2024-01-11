@@ -7,7 +7,7 @@ import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.client.HudPreset;
 
 @Config(name = DavesPotioneering.MODID)
-public class ClothConfig implements ConfigData {
+public class DavesPotioneeringClothConfig implements ConfigData {
 
     //client
     @Comment("HUD X")

@@ -2,13 +2,21 @@ package tfar.davespotioneering.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
 import tfar.davespotioneering.DavesPotioneering;
+import tfar.davespotioneering.init.ModSoundEvents;
+import tfar.davespotioneering.item.CGauntletItem;
+import tfar.davespotioneering.mixin.GuiAccess;
 import tfar.davespotioneering.platform.Services;
 
 public class GauntletHUDCommon {
@@ -87,6 +95,74 @@ public class GauntletHUDCommon {
             int w = 18;
             int scale = getScaledCooldown(w, cooldown);
             matrixStack.fill(x, y + w - scale, x + 18, y + w, 0x7fffffff);
+        }
+    }
+
+    public static void render(Gui gui, GuiGraphics guiGraphics, float partialTick, int screenWidth, int screenHeight) {
+
+        // get player from client
+        Player player = mc.player;
+        if (player == null) return;
+        ItemStack g = player.getMainHandItem();
+        // check if holding gauntlet
+        if (g.getItem() instanceof CGauntletItem) {
+            // get nbt
+            CompoundTag info = player.getMainHandItem().getOrCreateTag().getCompound(CGauntletItem.INFO);
+            Potion[] potions = CGauntletItem.getVisibleEffects(info);
+
+
+            RenderSystem.setShaderColor(1, 1, 1, 1);
+
+            if (GauntletHUDCommon.preset == HudPreset.ABOVE_HOTBAR) {
+                GauntletHUDCommon.x = (screenWidth- GauntletHUDCommon.TEX_WIDTH) / 2;
+                GauntletHUDCommon.y = screenHeight - Math.min(Services.PLATFORM.leftHeight(gui),Services.PLATFORM.rightHeight(gui)) - GauntletHUDCommon.TEX_HEIGHT;
+                if (((GuiAccess)gui).getToolHighlightTimer() > 0) {
+
+                    GauntletHUDCommon.y -= 10;
+                }
+            }
+
+            int yOffset;
+
+            int xFixed = GauntletHUDCommon.x;
+            int yFixed = GauntletHUDCommon.y;
+
+            if (GauntletHUDCommon.forwardCycle) {
+                GauntletHUDCommon.cooldown--;
+                yOffset = 2;
+                if (GauntletHUDCommon.cooldown <= 0) {
+                    GauntletHUDCommon.mc.getSoundManager().play(SimpleSoundInstance.forUI(ModSoundEvents.GAUNTLET_SCROLL, 1.0F));
+                    GauntletHUDCommon.forwardCycle = false;
+                    GauntletHUDCommon.cooldown = GauntletHUDCommon.maxCooldown;
+                }
+            } else if (GauntletHUDCommon.backwardCycle) {
+                GauntletHUDCommon.cooldown--;
+                yOffset = 1;
+                if (GauntletHUDCommon.cooldown <= 0) {
+                    GauntletHUDCommon.mc.getSoundManager().play(SimpleSoundInstance.forUI(ModSoundEvents.GAUNTLET_SCROLL, 1.0F));
+                    GauntletHUDCommon.backwardCycle = false;
+                    GauntletHUDCommon.cooldown = GauntletHUDCommon.maxCooldown;
+                }
+            } else {
+                yOffset = 0;
+            }
+            guiGraphics.blit(GauntletHUDCommon.hud,xFixed, yFixed, 0, 0, 1 + 43 * yOffset, GauntletHUDCommon.TEX_WIDTH, GauntletHUDCommon.TEX_HEIGHT, 128, 128);
+
+            int active = info.getInt(CGauntletItem.ACTIVE_POTION);
+
+            int prev = active > 0 ? active - 1 : CGauntletItem.SLOTS - 1;
+            int next = active < CGauntletItem.SLOTS - 1 ? active + 1 : 0;
+
+            GauntletHUDCommon.renderPotion(GauntletHUDCommon.prePotion, guiGraphics, xFixed + 3, yFixed + 21, GauntletHUDCommon.cooldowns[prev]);
+            GauntletHUDCommon.renderPotion(GauntletHUDCommon.activePotion, guiGraphics, xFixed + 51, yFixed + 5, GauntletHUDCommon.cooldowns[active]);
+            GauntletHUDCommon.renderPotion(GauntletHUDCommon.postPotion, guiGraphics, xFixed + 99, yFixed + 21, GauntletHUDCommon.cooldowns[next]);
+
+            if (potions == null) {
+                // reset
+                GauntletHUDCommon.init(null, null, null);
+                return;
+            }
+            GauntletHUDCommon.init(potions[0], potions[1], potions[2]);
         }
     }
 

@@ -7,6 +7,6 @@ import me.shedaniel.autoconfig.AutoConfig;
 public class ModMenuScren implements ModMenuApi {
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return screen -> AutoConfig.getConfigScreen(ClothConfig.class, screen).get();
+        return screen -> AutoConfig.getConfigScreen(DavesPotioneeringClothConfig.class, screen).get();
     }
 }

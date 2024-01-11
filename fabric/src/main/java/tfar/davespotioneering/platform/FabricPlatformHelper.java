@@ -1,5 +1,6 @@
 package tfar.davespotioneering.platform;
 
+import net.minecraft.client.gui.Gui;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -130,6 +131,16 @@ public class FabricPlatformHelper implements IPlatformHelper {
     @Override
     public CGauntletItem makeGauntlet(Item.Properties properties) {
         return new GauntletItemFabric(properties);
+    }
+
+    @Override
+    public int rightHeight(Gui gui) {
+        return 39;
+    }
+
+    @Override
+    public int leftHeight(Gui gui) {
+        return 39;
     }
 
     //configs

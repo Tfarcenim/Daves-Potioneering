@@ -6,7 +6,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.FriendlyByteBuf;
 import tfar.davespotioneering.client.GauntletHUDCommon;
-import tfar.davespotioneering.client.GauntletHUDFabric;
 
 import java.util.stream.IntStream;
 

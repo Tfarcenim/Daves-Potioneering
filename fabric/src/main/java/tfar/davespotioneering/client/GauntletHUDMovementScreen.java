@@ -75,7 +75,6 @@ public class GauntletHUDMovementScreen extends Screen {
     }
 
     public static void open() {
-        Minecraft.getInstance().setScreen(null);
         Minecraft.getInstance().setScreen(new GauntletHUDMovementScreen());
     }
 }

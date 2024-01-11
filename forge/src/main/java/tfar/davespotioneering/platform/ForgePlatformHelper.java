@@ -1,5 +1,6 @@
 package tfar.davespotioneering.platform;
 
+import net.minecraft.client.gui.Gui;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
@@ -10,6 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.items.IItemHandler;
@@ -153,6 +155,16 @@ public class ForgePlatformHelper implements IPlatformHelper {
     @Override
     public CGauntletItem makeGauntlet(Item.Properties properties) {
         return new GauntletItem(properties);
+    }
+
+    @Override
+    public int rightHeight(Gui gui) {
+        return ((ForgeGui)gui).rightHeight;
+    }
+
+    @Override
+    public int leftHeight(Gui gui) {
+        return ((ForgeGui)gui).leftHeight;
     }
 
     //configs

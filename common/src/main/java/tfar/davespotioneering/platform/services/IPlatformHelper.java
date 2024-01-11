@@ -1,5 +1,6 @@
 package tfar.davespotioneering.platform.services;
 
+import net.minecraft.client.gui.Gui;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.world.Container;
@@ -81,6 +82,9 @@ public interface IPlatformHelper {
 
     void syncGauntletCooldowns(Player player,int[] cooldowns);
     CGauntletItem makeGauntlet(Item.Properties properties);
+
+    int leftHeight(Gui gui);
+    int rightHeight(Gui gui);
 
     //configs
     boolean coatTools();

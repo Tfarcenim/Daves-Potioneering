@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -172,25 +173,10 @@ public class DavesPotioneeeringClientFabric implements ClientModInitializer {
 
 
     public static void gauntletHud(GuiGraphics matrixStack, float tickDelta) {
-        // only renders when the hotbar renders
-        //            if (Minecraft.getInstance().currentScreen != null) return;
-        // get player from client
-        Player player = Minecraft.getInstance().player;
-        if (player == null) return;
-        ItemStack g = player.getMainHandItem();
-        // check if holding gauntlet
-        if (g.getItem() instanceof GauntletItemFabric) {
-            // get nbt
-            CompoundTag info = player.getMainHandItem().getOrCreateTag().getCompound("info");
-            Potion[] potions = CGauntletItem.getVisibleEffects(info);
-            GauntletHUDFabric.render(matrixStack);
-            if (potions == null) {
-                // reset
-                GauntletHUDCommon.init(null, null, null);
-                return;
-            }
-            GauntletHUDCommon.init(potions[0], potions[1], potions[2]);
-        }
+        Gui gui = GauntletHUDCommon.mc.gui;
+        int screenWidth = GauntletHUDCommon.mc.getWindow().getGuiScaledWidth();
+        int screenHeight = GauntletHUDCommon.mc.getWindow().getGuiScaledHeight();
+        GauntletHUDCommon.render(gui,matrixStack,tickDelta,screenWidth,screenHeight);
     }
 
     public static void playerTick(Minecraft e) {

@@ -66,7 +66,6 @@ public class GauntletHUDMovementScreen extends Screen {
             ModConfig.Client.gauntlet_hud_x.set(GauntletHUDCommon.x);
             ModConfig.Client.gauntlet_hud_y.set(GauntletHUDCommon.y);
             ModConfig.Client.gauntlet_hud_preset.set(GauntletHUDCommon.preset);
-            GauntletHUDForge.refreshPosition();
         }
         return super.mouseReleased(mouseX, mouseY, mouseButton);
     }

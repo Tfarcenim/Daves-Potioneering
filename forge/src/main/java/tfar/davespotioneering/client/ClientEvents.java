@@ -18,6 +18,7 @@ import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.*;
+import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -115,8 +116,10 @@ public class ClientEvents {
         DavesPotioneeringClient.clientSetup();
     }
 
+    public static final IGuiOverlay OVERLAY = GauntletHUDCommon::render;
+
     public static void overlay(RegisterGuiOverlaysEvent e) {
-        e.registerBelow(VanillaGuiOverlay.CHAT_PANEL.id(), DavesPotioneering.MODID,new GauntletHUDForge());
+        e.registerBelow(VanillaGuiOverlay.CHAT_PANEL.id(), DavesPotioneering.MODID,OVERLAY);
     }
 
     private static void stackAdj1(ClientPlayerNetworkEvent.LoggingIn e) {
