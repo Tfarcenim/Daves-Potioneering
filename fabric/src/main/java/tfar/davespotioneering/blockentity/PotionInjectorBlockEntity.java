@@ -10,8 +10,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class PotionInjectorBlockEntity extends CPotionInjectorBlockEntity {
 
-
-
     public PotionInjectorBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos blockPos, BlockState blockState) {
         super(tileEntityTypeIn,blockPos,blockState);
         handler = new PotionInjectorHandlerFabric(8) {

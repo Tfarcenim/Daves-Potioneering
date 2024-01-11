@@ -6,15 +6,8 @@ import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.TieredItem;
-import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
@@ -33,11 +26,8 @@ import tfar.davespotioneering.init.ModBlockEntityTypes;
 import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.init.ModMenuTypes;
 import tfar.davespotioneering.init.ModParticleTypes;
-import tfar.davespotioneering.item.GauntletItem;
-import tfar.davespotioneering.net.C2SGauntletCyclePacket;
-import tfar.davespotioneering.net.PacketHandler;
 
-public class ClientEvents {
+public class DavesPotioneeringClientForge {
 
     public static void particle(RegisterParticleProvidersEvent e) {
 
@@ -53,54 +43,24 @@ public class ClientEvents {
     }
 
     public static void onMouseInput(InputEvent.MouseButton e) {
-        Player player = Minecraft.getInstance().player;
-        if (player == null) return;
-        ItemStack held = player.getMainHandItem();
-        if (held.isEmpty()) return;
-        if (held.getItem() instanceof GauntletItem && player.isShiftKeyDown()) {
-            if (e.getButton() == 2) {
-                GauntletHUDMovementScreen.open();
-            }
-        }
+        DavesPotioneeringClient.onMouseInput(e.getButton());
     }
 
     public static void onMouseScroll(InputEvent.MouseScrollingEvent event) {
-        Player player = Minecraft.getInstance().player;
-        if (player == null) return;
-        ItemStack held = player.getMainHandItem();
-        if (held.isEmpty()) return;
-        if (held.getItem() instanceof GauntletItem && player.isShiftKeyDown()) {
-            if (event.getScrollDelta() == 1.f) {
-                PacketHandler.sendToServer(new C2SGauntletCyclePacket(true));
-                GauntletHUDCommon.backwardCycle();
-            } else {
-                PacketHandler.sendToServer(new C2SGauntletCyclePacket(false));
-                GauntletHUDCommon.forwardCycle();
-            }
-            event.setCanceled(true);
-        }
+        boolean cancel = DavesPotioneeringClient.onMouseScroll(event.getScrollDelta());
+        if (cancel) event.setCanceled(true);
     }
 
     public static void tooltips(ItemTooltipEvent e) {
-        ItemStack stack = e.getItemStack();
-
-        if (!PotionUtils.getMobEffects(stack).isEmpty()) {
-            if (stack.getItem() instanceof TieredItem) {
-                e.getToolTip().add(Component.literal("Coated with"));
-                PotionUtils.addPotionTooltip(stack, e.getToolTip(), 0.125F);
-                e.getToolTip().add(Component.literal("Uses: " + stack.getTag().getInt("uses")));
-            } else if (stack.getItem().isEdible()) {
-                PotionUtils.addPotionTooltip(stack, e.getToolTip(), 0.125F);
-            }
-        }
+        DavesPotioneeringClient.tooltips(e.getItemStack(),e.getToolTip());
     }
 
     public static void doClientStuff(final FMLClientSetupEvent event) {
-        MinecraftForge.EVENT_BUS.addListener(ClientEvents::tooltips);
-        MinecraftForge.EVENT_BUS.addListener(ClientEvents::onMouseInput);
-        MinecraftForge.EVENT_BUS.addListener(ClientEvents::onMouseScroll);
-        MinecraftForge.EVENT_BUS.addListener(ClientEvents::playerTick);
-        MinecraftForge.EVENT_BUS.addListener(ClientEvents::stackAdj1);
+        MinecraftForge.EVENT_BUS.addListener(DavesPotioneeringClientForge::tooltips);
+        MinecraftForge.EVENT_BUS.addListener(DavesPotioneeringClientForge::onMouseInput);
+        MinecraftForge.EVENT_BUS.addListener(DavesPotioneeringClientForge::onMouseScroll);
+        MinecraftForge.EVENT_BUS.addListener(DavesPotioneeringClientForge::playerTick);
+        MinecraftForge.EVENT_BUS.addListener(DavesPotioneeringClientForge::stackAdj1);
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.COMPOUND_BREWING_STAND, RenderType.cutoutMipped());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.POTION_INJECTOR,RenderType.translucent());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.REINFORCED_WATER_CAULDRON,RenderType.translucent());

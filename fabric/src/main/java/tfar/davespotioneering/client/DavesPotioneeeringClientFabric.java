@@ -12,24 +12,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
-import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.phys.Vec3;
-import org.lwjgl.glfw.GLFW;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
 import tfar.davespotioneering.DavesPotioneeringClient;
-import tfar.davespotioneering.DavesPotioneeringFabric;
-import tfar.davespotioneering.block.CLayeredReinforcedCauldronBlock;
 import tfar.davespotioneering.client.model.gecko.DoubleGeoItemStackRenderer;
 import tfar.davespotioneering.client.model.gecko.GeoItemModel;
 import tfar.davespotioneering.client.particle.FastDripParticle;
@@ -38,9 +30,6 @@ import tfar.davespotioneering.init.ModBlockEntityTypes;
 import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.init.ModMenuTypes;
 import tfar.davespotioneering.init.ModParticleTypes;
-import tfar.davespotioneering.item.GauntletItemFabric;
-import tfar.davespotioneering.mixin.ParticleManagerAccess;
-import tfar.davespotioneering.net.C2SGauntletCyclePacket;
 import tfar.davespotioneering.net.ClientPacketHandler;
 
 import java.util.List;
@@ -61,8 +50,6 @@ public class DavesPotioneeeringClientFabric implements ClientModInitializer {
         ItemTooltipCallback.EVENT.register(DavesPotioneeeringClientFabric::tooltips);
         HudRenderCallback.EVENT.register(DavesPotioneeeringClientFabric::gauntletHud);
         ClientTickEvents.START_CLIENT_TICK.register(DavesPotioneeeringClientFabric::playerTick);
-
-
 
         ColorProviderRegistry.BLOCK.register(DavesPotioneeringClient.CAULDRON, ModBlocks.REINFORCED_WATER_CAULDRON);
 
@@ -100,57 +87,17 @@ public class DavesPotioneeeringClientFabric implements ClientModInitializer {
                 GeoItemModel.makeOpenAgedUmbrella());
     }
 
-    public static void onMouseInput(long handle, int button, int action, int mods) {
-        Player player = Minecraft.getInstance().player;
-        if (player == null) return;
-        ItemStack held = player.getMainHandItem();
-        if (held.isEmpty()) return;
-        if (held.getItem() instanceof GauntletItemFabric && player.isShiftKeyDown()) {
-            if (button == GLFW.GLFW_MOUSE_BUTTON_3) {
-                GauntletHUDMovementScreen.open();
-            }
-        }
+    public static void onMouseInput(int button) {
+        DavesPotioneeringClient.onMouseInput(button);
     }
 
     public static boolean onMouseScroll(double scrollDelta) {
-        Player player = Minecraft.getInstance().player;
-        if (player == null) return false;
-        ItemStack held = player.getMainHandItem();
-        if (held.isEmpty()) return false;
-        if (held.getItem() instanceof GauntletItemFabric && player.isShiftKeyDown()) {
-            if (scrollDelta == 1.f) {
-                C2SGauntletCyclePacket.encode(true);
-                GauntletHUDCommon.backwardCycle();
-            } else {
-                C2SGauntletCyclePacket.encode(false);
-                GauntletHUDCommon.forwardCycle();
-            }
-            return true;
-        }
-        return false;
+        DavesPotioneeringClient.onMouseScroll(scrollDelta);
     }
 
     public static void tooltips(ItemStack stack, TooltipFlag e2, List<Component> tooltip) {
-        if (!dontTooltip(stack) && PotionUtils.getPotion(stack) != Potions.EMPTY) {
-            if (stack.getItem().isEdible()) {
-                if (DavesPotioneeringFabric.CONFIG.show_spiked_food) {
-                    tooltip.add(Component.literal("Spiked with"));
-                    PotionUtils.addPotionTooltip(stack, tooltip, 0.125F);
-                }
-            } else {
-                tooltip.add(Component.literal("Coated with"));
-                PotionUtils.addPotionTooltip(stack, tooltip, 0.125F);
-                tooltip.add(Component.literal("Uses: " + stack.getTag().getInt(CLayeredReinforcedCauldronBlock.USES)));
-            }
-        }
+        DavesPotioneeringClient.tooltips(stack,tooltip);
     }
-
-    public static boolean dontTooltip(ItemStack stack) {
-        return stack.getItem() instanceof PotionItem || stack.getItem() instanceof ArrowItem;
-    }
-
-
-
     public static void gauntletHud(GuiGraphics matrixStack, float tickDelta) {
         Gui gui = GauntletHUDCommon.mc.gui;
         int screenWidth = GauntletHUDCommon.mc.getWindow().getGuiScaledWidth();

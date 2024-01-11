@@ -22,6 +22,8 @@ import tfar.davespotioneering.inventory.BasicInventoryBridge;
 import tfar.davespotioneering.item.CGauntletItem;
 import tfar.davespotioneering.item.GauntletItemFabric;
 import tfar.davespotioneering.item.UmbrellaItem;
+import tfar.davespotioneering.net.C2SGauntletCyclePacket;
+import tfar.davespotioneering.net.ClientPacketHandler;
 import tfar.davespotioneering.net.PacketHandler;
 import tfar.davespotioneering.platform.services.IPlatformHelper;
 import net.fabricmc.loader.api.FabricLoader;
@@ -102,6 +104,11 @@ public class FabricPlatformHelper implements IPlatformHelper {
     @Override
     public void syncGauntletCooldowns(Player player, int[] cooldowns) {
         PacketHandler.sendCooldowns((ServerPlayer) player,cooldowns);
+    }
+
+    @Override
+    public void cycleGauntlet(boolean up) {
+        C2SGauntletCyclePacket.encode(up);
     }
 
     @Override

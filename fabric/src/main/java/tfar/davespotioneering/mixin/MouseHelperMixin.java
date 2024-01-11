@@ -12,8 +12,8 @@ public class MouseHelperMixin {
 
     //replacement for Forge's InputEvent.MouseInputEvent
     @Inject(method = "onPress",at = @At("RETURN"))
-    private void inputEventMouseInputEventHook(long handle, int button, int action, int mods, CallbackInfo ci) {
-        DavesPotioneeeringClientFabric.onMouseInput(handle, button, action, mods);
+    private void inputEventMouseInputEventHook(int button, CallbackInfo ci) {
+        DavesPotioneeeringClientFabric.onMouseInput(button);
     }
 
     //replacement for Forge's InputEvent.MouseScrollEvent

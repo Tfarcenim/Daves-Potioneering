@@ -24,7 +24,7 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import tfar.davespotioneering.block.ModCauldronInteractions;
-import tfar.davespotioneering.client.ClientEvents;
+import tfar.davespotioneering.client.DavesPotioneeringClientForge;
 import tfar.davespotioneering.datagen.ModDatagen;
 import tfar.davespotioneering.effect.PotionIngredient;
 import tfar.davespotioneering.init.*;
@@ -53,10 +53,10 @@ public class DavesPotioneeringForge {
         MinecraftForge.EVENT_BUS.addListener(GauntletItem::tickCooldowns);
         if (FMLEnvironment.dist.isClient()) {
             // Register the doClientStuff method for modloading
-            bus.addListener(ClientEvents::doClientStuff);
-            bus.addListener(ClientEvents::registerLoader);
-            bus.addListener(ClientEvents::particle);
-            bus.addListener(ClientEvents::overlay);
+            bus.addListener(DavesPotioneeringClientForge::doClientStuff);
+            bus.addListener(DavesPotioneeringClientForge::registerLoader);
+            bus.addListener(DavesPotioneeringClientForge::particle);
+            bus.addListener(DavesPotioneeringClientForge::overlay);
             //bus.addListener(GauntletHUDForge::bake);
         }
         DavesPotioneering.earlySetup();

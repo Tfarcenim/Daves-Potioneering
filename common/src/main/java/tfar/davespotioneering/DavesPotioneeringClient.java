@@ -9,29 +9,33 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import org.lwjgl.glfw.GLFW;
 import tfar.davespotioneering.blockentity.CReinforcedCauldronBlockEntity;
+import tfar.davespotioneering.client.GauntletHUDCommon;
+import tfar.davespotioneering.client.GauntletHUDMovementScreen;
 import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.init.ModItems;
 import tfar.davespotioneering.init.ModParticleTypes;
+import tfar.davespotioneering.item.CGauntletItem;
 import tfar.davespotioneering.mixin.ParticleManagerAccess;
 import tfar.davespotioneering.platform.Services;
+
+import java.util.List;
 
 public class DavesPotioneeringClient {
 
     public static final ClampedItemPropertyFunction GAUNTLET = (stack, level, entity, i) -> stack.hasTag() ? stack.getTag().getBoolean("active") ? 1 : 0 : 0;
 
     public static KeyMapping CONFIG_KEY = new KeyMapping("key.davespotioneering.open_config",
-            InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_3,"key.categories."+ DavesPotioneering.MODID);
+            InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_3, "key.categories." + DavesPotioneering.MODID);
 
     public static final BlockColor CAULDRON = (state, reader, pos, index) -> {
         if (pos != null) {
@@ -44,7 +48,7 @@ public class DavesPotioneeringClient {
 
     public static void clientSetup() {
 
-        ItemProperties.register(ModItems.POTIONEER_GAUNTLET, new ResourceLocation("active"),GAUNTLET);
+        ItemProperties.register(ModItems.POTIONEER_GAUNTLET, new ResourceLocation("active"), GAUNTLET);
 
         registerBlockingProperty(ModItems.WHITE_UMBRELLA);
         registerBlockingProperty(ModItems.ORANGE_UMBRELLA);
@@ -71,7 +75,7 @@ public class DavesPotioneeringClient {
 
     public static void registerBlockingProperty(Item item) {
         ItemProperties.register(item, new ResourceLocation("blocking"),
-                (stack, world, entity,i) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
+                (stack, world, entity, i) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
     }
 
     public static void spawnFluidParticle(ClientLevel world, Vec3 blockPosIn, ParticleOptions particleDataIn, int color) {
@@ -91,7 +95,7 @@ public class DavesPotioneeringClient {
     }
 
     public static void clientPlayerTick(Player player) {
-        if(player.level().getGameTime() % Services.PLATFORM.particleDripRate() == 0) {
+        if (player.level().getGameTime() % Services.PLATFORM.particleDripRate() == 0) {
 
             ItemStack stack = player.getMainHandItem();
 
@@ -120,6 +124,52 @@ public class DavesPotioneeringClient {
                 DavesPotioneeringClient.spawnFluidParticle(Minecraft.getInstance().level, vec, particleData, color);
             }
         }
+    }
+
+    public static void onMouseInput(int button) {
+        Player player = Minecraft.getInstance().player;
+        if (player == null) return;
+        ItemStack held = player.getMainHandItem();
+        if (held.isEmpty()) return;
+        if (held.getItem() instanceof CGauntletItem && player.isShiftKeyDown()) {
+            if (button == GLFW.GLFW_MOUSE_BUTTON_3) {
+                GauntletHUDMovementScreen.open();
+            }
+        }
+    }
+
+    public static boolean onMouseScroll(double scrollDelta) {
+        Player player = Minecraft.getInstance().player;
+        if (player == null) return false;
+        ItemStack held = player.getMainHandItem();
+        if (held.isEmpty()) return false;
+        if (held.getItem() instanceof CGauntletItem && player.isShiftKeyDown()) {
+            if (scrollDelta == 1.f) {
+                Services.PLATFORM.cycleGauntlet(true);
+                GauntletHUDCommon.backwardCycle();
+            } else {
+                Services.PLATFORM.cycleGauntlet(false);
+                GauntletHUDCommon.forwardCycle();
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public static void tooltips(ItemStack stack, List<Component> tooltips) {
+        if (!PotionUtils.getMobEffects(stack).isEmpty()) {
+            if (stack.getItem() instanceof TieredItem) {
+                tooltips.add(Component.literal("Coated with"));
+                PotionUtils.addPotionTooltip(stack, tooltips, 0.125F);
+                tooltips.add(Component.literal("Uses: " + stack.getTag().getInt("uses")));
+            } else if (stack.getItem().isEdible()) {
+                PotionUtils.addPotionTooltip(stack, tooltips, 0.125F);
+            }
+        }
+    }
+
+    public static boolean dontTooltip(ItemStack stack) {
+        return stack.getItem() instanceof PotionItem || stack.getItem() instanceof ArrowItem;
     }
 
 }

@@ -33,48 +33,4 @@ public class PotionInjectorHandlerFabric extends BridgedSimpleContainer {
         }
         return super.canPlaceItem(slot, stack);
     }
-
-    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-        if (stack.isEmpty())
-            return ItemStack.EMPTY;
-
-        if (!canPlaceItem(slot, stack))
-            return stack;
-
-        ItemStack existing = getItem(slot);
-
-        int limit = getStackLimit(stack);
-
-        if (!existing.isEmpty())
-        {
-            if (!ItemHandlerHelper.canItemStacksStack(stack, existing))
-                return stack;
-
-            limit -= existing.getCount();
-        }
-
-        if (limit <= 0)
-            return stack;
-
-        boolean reachedLimit = stack.getCount() > limit;
-
-        if (!simulate)
-        {
-            if (existing.isEmpty())
-            {
-                this.setItem(slot, reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, limit) : stack);
-            }
-            else
-            {
-                existing.grow(reachedLimit ? limit : stack.getCount());
-            }
-           // onContentsChanged(slot);
-        }
-
-        return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.getCount()- limit) : ItemStack.EMPTY;
-    }
-
-    protected int getStackLimit(@Nonnull ItemStack stack) {
-        return Math.min(getMaxStackSize(), stack.getMaxStackSize());
-    }
 }

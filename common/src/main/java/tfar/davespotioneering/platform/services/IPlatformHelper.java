@@ -81,7 +81,10 @@ public interface IPlatformHelper {
 
     void setGauntletCooldowns(Player player,int[] cooldowns);
 
+    //packets
     void syncGauntletCooldowns(Player player,int[] cooldowns);
+    void cycleGauntlet(boolean up);
+
     CGauntletItem makeGauntlet(Item.Properties properties);
 
     int leftHeight(Gui gui);
