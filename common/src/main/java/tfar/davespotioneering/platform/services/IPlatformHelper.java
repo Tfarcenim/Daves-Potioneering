@@ -88,4 +88,5 @@ public interface IPlatformHelper {
     boolean coatAnything();
     int coatingUses();
     int gauntletCooldown();
+    int potionSwitchCooldown();
 }

@@ -6,20 +6,23 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.BrewingStandMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
 import tfar.davespotioneering.duck.BrewingStandDuck;
 import tfar.davespotioneering.init.*;
+import tfar.davespotioneering.menu.CAdvancedBrewingStandMenu;
+import tfar.davespotioneering.mixin.BrewingStandContainerAccess;
 import tfar.davespotioneering.platform.Services;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.Items;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,4 +68,31 @@ public class DavesPotioneering {
     public static void potionBrew(BlockEntity brewingStandTileEntity, ItemStack ingredient) {
         ((BrewingStandDuck)brewingStandTileEntity).addXp(Util.getBrewXp(ingredient));
     }
+
+    public static void heldItemChangeEvent(Player player) {
+        ItemStack stack = player.getMainHandItem();
+        if ((stack.getItem() instanceof LingeringPotionItem || stack.getItem() instanceof SplashPotionItem)) {
+            player.getCooldowns().addCooldown(Items.SPLASH_POTION, Services.PLATFORM.potionSwitchCooldown());
+            player.getCooldowns().addCooldown(Items.LINGERING_POTION, Services.PLATFORM.potionSwitchCooldown());
+        }
+    }
+
+
+    //this is called when the player takes a potion from the brewing stand
+    public static void playerTakeBrewedPotion(Player player) {
+        if (!player.level().isClientSide) {
+            AbstractContainerMenu container = player.containerMenu;
+            BlockEntity entity = null;
+            if (container instanceof BrewingStandMenu) {
+                entity = (BrewingStandBlockEntity)((BrewingStandContainerAccess)container).getBrewingStand();
+            } else if (container instanceof CAdvancedBrewingStandMenu) {
+                entity = ((CAdvancedBrewingStandMenu)container).blockEntity;
+            }
+
+            if (entity != null) {
+                ((BrewingStandDuck)entity).dump(player);
+            }
+        }
+    }
+
 }

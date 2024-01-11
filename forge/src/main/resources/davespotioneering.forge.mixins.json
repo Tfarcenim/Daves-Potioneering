@@ -6,14 +6,7 @@
   "mixins": [
     "BrewingRecipeRegistryMixin",
     "BrewingStandBlockEntityMixin",
-    "BrewingStandContainerAccess",
-    "BrewingStandContainerMixin",
-    "ItemAccess",
-    "LayeredCauldronBlockMixin",
-    "PlayerEntityMixin",
-    "PotionItemMixin",
-    "ServerPlayNetHandlerMixin",
-    "ThrowablePotionItemMixin"
+    "BrewingStandContainerMixin"
   ],
   "client": [
     "ItemOverrideListMixin"

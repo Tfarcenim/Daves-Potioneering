@@ -8,23 +8,16 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.BrewingStandMenu;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
 import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.Nullable;
 import tfar.davespotioneering.block.CLayeredReinforcedCauldronBlock;
-import tfar.davespotioneering.duck.BrewingStandDuck;
 import tfar.davespotioneering.init.ModPotions;
 import tfar.davespotioneering.item.UmbrellaItem;
-import tfar.davespotioneering.menu.CAdvancedBrewingStandMenu;
-import tfar.davespotioneering.mixin.BrewingStandContainerAccess;
 
 public class FabricEvents {
 
@@ -68,30 +61,7 @@ public class FabricEvents {
         return InteractionResult.PASS;
     }
 
-    public static void heldItemChangeEvent(Player player) {
-        ItemStack stack = player.getMainHandItem();
-        if ((stack.getItem() instanceof LingeringPotionItem || stack.getItem() instanceof SplashPotionItem)) {
-            player.getCooldowns().addCooldown(Items.SPLASH_POTION, DavesPotioneeringFabric.CONFIG.potion_use_cooldown);
-            player.getCooldowns().addCooldown(Items.LINGERING_POTION, DavesPotioneeringFabric.CONFIG.potion_use_cooldown);
-        }
-    }
 
-    //this is called when the player takes a potion from the brewing stand
-    public static void playerTakeBrewedPotion(Player player) {
-        if (!player.level().isClientSide) {
-            AbstractContainerMenu container = player.containerMenu;
-            BlockEntity entity = null;
-            if (container instanceof BrewingStandMenu) {
-                entity = (BrewingStandBlockEntity)((BrewingStandContainerAccess)container).getBrewingStand();
-            } else if (container instanceof CAdvancedBrewingStandMenu) {
-                entity = ((CAdvancedBrewingStandMenu)container).blockEntity;
-            }
-
-            if (entity != null) {
-                ((BrewingStandDuck)entity).dump(player);
-            }
-        }
-    }
 
     public static boolean canApplyEffect(LivingEntity entity) {
         if (entity instanceof Player) {

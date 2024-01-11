@@ -6,9 +6,12 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "BlockEntityTypeAcces",
+    "BrewingStandContainerAccess",
     "ItemAccess",
+    "LayeredCauldronBlockMixin",
     "PlayerEntityMixin",
     "PotionItemMixin",
+    "ServerPlayNetHandlerMixin",
     "ThrowablePotionItemMixin"
   ],
   "client": [

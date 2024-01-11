@@ -30,7 +30,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CReinforcedCauldronBlockEntity extends BlockEntity {
+public abstract class CReinforcedCauldronBlockEntity extends BlockEntity {
 
     @Nonnull
     protected Potion potion = Potions.EMPTY;

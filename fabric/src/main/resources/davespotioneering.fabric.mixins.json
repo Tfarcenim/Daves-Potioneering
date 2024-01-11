@@ -3,18 +3,14 @@
   "package": "tfar.davespotioneering.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "BrewingStandBlockEntityMixin",
-    "BrewingStandContainerAccess",
     "BrewingStandContainerMixin",
     "ItemAccess",
-    "LayeredCauldronBlockMixin",
     "LivingEntityMixin",
     "PlayerMixinFabric",
     "PotionBrewingMixin",
-    "PotionSlotMixin",
+    "PotionSlotMixinFabric",
     "PotionUtilsMixin",
-    "ServerPlayerInteractionManagerMixin",
-    "ServerPlayNetHandlerMixin"
+    "ServerPlayerInteractionManagerMixin"
   ],
   "client": [
     "BakedModelManagerAccess",

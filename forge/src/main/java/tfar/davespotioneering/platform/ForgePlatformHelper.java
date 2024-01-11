@@ -181,4 +181,9 @@ public class ForgePlatformHelper implements IPlatformHelper {
     public int gauntletCooldown() {
         return ModConfig.Server.gauntlet_cooldown.get();
     }
+
+    @Override
+    public int potionSwitchCooldown() {
+        return ModConfig.Server.potion_switch_cooldown.get();
+    }
 }
