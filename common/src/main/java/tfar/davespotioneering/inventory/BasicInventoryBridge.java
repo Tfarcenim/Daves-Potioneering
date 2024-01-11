@@ -11,9 +11,12 @@ public interface BasicInventoryBridge {
 
     NonNullList<ItemStack> $getStacks();
     int $getSlots();
+    int $getSlotLimit(int slot);
 
     CompoundTag $save();
     void $load(CompoundTag tag);
+    ItemStack $extractItem(int slot, int amount,boolean simulate);
+    ItemStack $insertItem(int slot,ItemStack stack,boolean simulate);
 
 
 }

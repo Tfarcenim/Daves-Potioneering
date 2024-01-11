@@ -24,6 +24,7 @@ import net.minecraft.world.level.Level;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.PotionUtils2;
 import tfar.davespotioneering.init.ModSoundEvents;
+import tfar.davespotioneering.menu.CPotionInjectorMenu;
 import tfar.davespotioneering.platform.Services;
 
 import javax.annotation.Nullable;
@@ -154,6 +155,20 @@ public class CGauntletItem extends SwordItem {
         }
         return blaze;
     }
+
+
+    @Override
+    public int getBarWidth(ItemStack stack) {
+        double blaze = getBlaze(stack);
+        return CPotionInjectorMenu.BLAZE_CAP - (int) blaze;
+    }
+
+
+    @Override
+    public int getBarColor(ItemStack stack) {
+        return ChatFormatting.GOLD.getColor();
+    }
+
 
     public static Potion[] getVisibleEffects(CompoundTag info) {
         ListTag nbts = info.getList(POTIONS, Tag.TAG_COMPOUND);

@@ -44,9 +44,8 @@ public class CLayeredReinforcedCauldronBlock extends LayeredCauldronBlock implem
 
     public static final BooleanProperty DRAGONS_BREATH = BooleanProperty.create("dragons_breath");
 
-
     public static int brew_speed = 12;
-
+    public static final String USES = "uses";
     public CLayeredReinforcedCauldronBlock(Properties properties) {
         this(properties, LayeredCauldronBlock.RAIN, ModCauldronInteractions.WATER);
     }

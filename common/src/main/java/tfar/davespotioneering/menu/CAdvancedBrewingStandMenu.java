@@ -12,18 +12,18 @@ import tfar.davespotioneering.init.ModMenuTypes;
 import tfar.davespotioneering.inventory.BasicInventoryBridge;
 import tfar.davespotioneering.platform.Services;
 
-public class AdvancedBrewingStandMenu extends AbstractContainerMenu {
+public class CAdvancedBrewingStandMenu extends AbstractContainerMenu {
     private final ContainerData data;
 
     public CAdvancedBrewingStandBlockEntity blockEntity;
 
     //client
-    public AdvancedBrewingStandMenu(int id, Inventory playerInventory) {
+    public CAdvancedBrewingStandMenu(int id, Inventory playerInventory) {
         this(id, playerInventory, Services.PLATFORM.makeBrewingHandler(CAdvancedBrewingStandBlockEntity.SLOTS), new SimpleContainerData(2),null);
     }
 
     //common
-    public AdvancedBrewingStandMenu(int id, Inventory playerInventory, BasicInventoryBridge inventory, ContainerData data, CAdvancedBrewingStandBlockEntity advancedBrewingStandBlockEntity) {
+    public CAdvancedBrewingStandMenu(int id, Inventory playerInventory, BasicInventoryBridge inventory, ContainerData data, CAdvancedBrewingStandBlockEntity advancedBrewingStandBlockEntity) {
         super(ModMenuTypes.ADVANCED_BREWING_STAND, id);
        // assertInventorySize(inventory, 5);
        // assertIntArraySize(data, 2);

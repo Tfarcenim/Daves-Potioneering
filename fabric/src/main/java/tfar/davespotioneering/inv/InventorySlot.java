@@ -4,9 +4,9 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 public class InventorySlot extends Slot {
-    private final PotionInjectorHandler inventory;
+    private final PotionInjectorHandlerFabric inventory;
 
-    public InventorySlot(PotionInjectorHandler inventory, int index, int x, int y) {
+    public InventorySlot(PotionInjectorHandlerFabric inventory, int index, int x, int y) {
         super(inventory, index, x, y);
         this.inventory = inventory;
     }

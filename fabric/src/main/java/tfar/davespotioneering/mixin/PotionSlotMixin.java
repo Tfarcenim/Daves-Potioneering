@@ -13,6 +13,6 @@ import tfar.davespotioneering.FabricEvents;
 public class PotionSlotMixin {
     @Inject(method = "onTake",at = @At(value = "INVOKE",target = "Lnet/minecraft/advancements/critereon/BrewedPotionTrigger;trigger(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/item/alchemy/Potion;)V"))
     private void onBrew(Player playerEntity, ItemStack itemStack, CallbackInfo ci) {
-        FabricEvents.playerTakedBrewedPotion(playerEntity);
+        FabricEvents.playerTakeBrewedPotion(playerEntity);
     }
 }

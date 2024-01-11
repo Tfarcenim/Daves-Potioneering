@@ -125,7 +125,7 @@ public class CPotionInjectorMenu extends AbstractContainerMenu {
                 if (oldPotion == Potions.EMPTY && oldCustomEffects.isEmpty()) {
                     ItemStack potionStack = inventory.$getStackInSlot(i);
                     potionList.add(PotionUtils2.saveAllEffects(new CompoundTag(),PotionUtils.getPotion(potionStack),PotionUtils.getCustomEffects(potionStack)));
-                    inventory.extractItem(i, 1, false);
+                    inventory.$extractItem(i, 1, false);
                     //copy old potion over
                 } else {
                     potionList.add(oldPotionList.get(i));
@@ -137,17 +137,17 @@ public class CPotionInjectorMenu extends AbstractContainerMenu {
 
             int presentBlaze = info.getInt(CGauntletItem.BLAZE);
 
-            int blazeInsert = Math.min(BLAZE_CAP - presentBlaze,Math.min(BLAZE_CAP,inventory.$getStackInSlot(PotionInjectorHandler.BLAZE).getCount()));
+            int blazeInsert = Math.min(BLAZE_CAP - presentBlaze,Math.min(BLAZE_CAP,inventory.$getStackInSlot(CPotionInjectorBlockEntity.BLAZE).getCount()));
 
             newNbt.putInt(CGauntletItem.BLAZE,blazeInsert + presentBlaze);
-            inventory.extractItem(PotionInjectorHandler.BLAZE,blazeInsert,false);
+            inventory.$extractItem(CPotionInjectorBlockEntity.BLAZE,blazeInsert,false);
             System.out.println(potionList.getElementType());
             gauntlet.getTag().put(CGauntletItem.INFO,newNbt);
         }
     }
 
     private void removePotionsAndBlaze() {
-        ItemStack gauntlet = inventory.$getStackInSlot(PotionInjectorHandler.GAUNTLET);
+        ItemStack gauntlet = inventory.$getStackInSlot(CPotionInjectorBlockEntity.GAUNTLET);
         if (!gauntlet.isEmpty()) {
             CompoundTag nbt = gauntlet.getTag().getCompound(CGauntletItem.INFO);
             ListTag listNBT = nbt.getList(CGauntletItem.POTIONS, Tag.TAG_COMPOUND);
@@ -159,12 +159,12 @@ public class CPotionInjectorMenu extends AbstractContainerMenu {
                 Potion potion = PotionUtils.getPotion(inbt);
                 List<MobEffectInstance> customEffects = PotionUtils.getCustomEffects(inbt);
                 if (potion != Potions.EMPTY || !customEffects.isEmpty()) {
-                    ItemStack present = inventory.getStackInSlot(i);
-                    if (present.getCount() < inventory.getSlotLimit(i)) {
+                    ItemStack present = inventory.$getStackInSlot(i);
+                    if (present.getCount() < inventory.$getSlotLimit(i)) {
                         ItemStack stack = new ItemStack(Items.LINGERING_POTION);
                         PotionUtils.setPotion(stack, potion);
                         PotionUtils.setCustomEffects(stack,customEffects);
-                        inventory.insertItem(i, stack, false);
+                        inventory.$insertItem(i, stack, false);
                         listNBT.set(i,new CompoundTag());
                     } else {
                         allRemoved = false;
@@ -183,7 +183,7 @@ public class CPotionInjectorMenu extends AbstractContainerMenu {
 
             int blazeRemove = Math.min(maxBlazeRemove,blaze);
 
-            inventory.insertItem(CPotionInjectorBlockEntity.BLAZE,new ItemStack(Items.BLAZE_POWDER,blazeRemove),false);
+            inventory.$insertItem(CPotionInjectorBlockEntity.BLAZE,new ItemStack(Items.BLAZE_POWDER,blazeRemove),false);
 
             if (blaze > blazeRemove) {
                 nbt.putInt(CGauntletItem.BLAZE,blaze - blazeRemove);
@@ -196,16 +196,16 @@ public class CPotionInjectorMenu extends AbstractContainerMenu {
     public SoundTy getSound(boolean inject) {
         if (inject) {
             for (int i = 0; i < 6; i++) {
-                if (!inventory.getStackInSlot(i).isEmpty()) {
+                if (!inventory.$getStackInSlot(i).isEmpty()) {
                     return SoundTy.BOTH;
                 }
             }
 
-            return inventory.getStackInSlot(PotionInjectorHandler.BLAZE).isEmpty() ? SoundTy.NONE : SoundTy.BLAZE;
+            return inventory.$getStackInSlot(CPotionInjectorBlockEntity.BLAZE).isEmpty() ? SoundTy.NONE : SoundTy.BLAZE;
 
 
         } else {
-            ItemStack stack = inventory.getStackInSlot(PotionInjectorHandler.GAUNTLET);
+            ItemStack stack = inventory.$getStackInSlot(CPotionInjectorBlockEntity.GAUNTLET);
             CompoundTag nbt = stack.getTag();
             if (nbt != null) {
                 CompoundTag info = nbt.getCompound(CGauntletItem.INFO);
@@ -219,7 +219,7 @@ public class CPotionInjectorMenu extends AbstractContainerMenu {
                         }
                     }
                 }
-                if (info.getInt(GauntletItem.BLAZE) > 0) {
+                if (info.getInt(CGauntletItem.BLAZE) > 0) {
                     return SoundTy.BLAZE;
                 }
             }

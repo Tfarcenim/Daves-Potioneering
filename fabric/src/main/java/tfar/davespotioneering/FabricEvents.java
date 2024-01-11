@@ -23,6 +23,7 @@ import tfar.davespotioneering.block.CLayeredReinforcedCauldronBlock;
 import tfar.davespotioneering.duck.BrewingStandDuck;
 import tfar.davespotioneering.init.ModPotions;
 import tfar.davespotioneering.item.UmbrellaItem;
+import tfar.davespotioneering.menu.CAdvancedBrewingStandMenu;
 import tfar.davespotioneering.mixin.BrewingStandContainerAccess;
 
 public class FabricEvents {
@@ -76,14 +77,14 @@ public class FabricEvents {
     }
 
     //this is called when the player takes a potion from the brewing stand
-    public static void playerTakedBrewedPotion(Player player) {
+    public static void playerTakeBrewedPotion(Player player) {
         if (!player.level().isClientSide) {
             AbstractContainerMenu container = player.containerMenu;
             BlockEntity entity = null;
             if (container instanceof BrewingStandMenu) {
                 entity = (BrewingStandBlockEntity)((BrewingStandContainerAccess)container).getBrewingStand();
-            } else if (container instanceof AdvancedBrewingStandContainer) {
-                entity = ((AdvancedBrewingStandContainer)container).blockEntity;
+            } else if (container instanceof CAdvancedBrewingStandMenu) {
+                entity = ((CAdvancedBrewingStandMenu)container).blockEntity;
             }
 
             if (entity != null) {

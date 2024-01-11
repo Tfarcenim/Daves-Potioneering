@@ -21,14 +21,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import tfar.davespotioneering.inventory.BasicInventoryBridge;
 
-public class BrewingHandler extends SimpleContainer implements BasicInventoryBridge {
+public class BrewingHandlerFabric extends BridgedSimpleContainer {
 
-    public BrewingHandler(int size) {
+    public BrewingHandlerFabric(int size) {
         super(size);
-    }
-
-    public NonNullList<ItemStack> getItems() {
-        return items;
     }
 
     public int[] getSlotsForFace(Direction side) {
@@ -71,46 +67,4 @@ public class BrewingHandler extends SimpleContainer implements BasicInventoryBri
         FUEL_AND_POTIONS = potion_fuel.stream().mapToInt(i -> i).toArray();
     }
 
-    public void readTags(ListTag tags) {
-        for (int i = 0; i < tags.size(); i++)
-        {
-            CompoundTag itemTags = tags.getCompound(i);
-            int slot = itemTags.getInt("Slot");
-
-            if (slot >= 0 && slot < getItems().size())
-            {
-                getItems().set(i,ItemStack.of(itemTags));
-            }
-        }
-    }
-
-    @Override
-    public ItemStack $getStackInSlot(int slot) {
-        return getItem(slot);
-    }
-
-    @Override
-    public NonNullList<ItemStack> $getStacks() {
-        return items;
-    }
-
-    @Override
-    public int $getSlots() {
-        return getContainerSize();
-    }
-
-    @Override
-    public void $setStackInSlot(int slot, ItemStack stack) {
-        setItem(slot,stack);
-    }
-
-    @Override
-    public CompoundTag $save() {
-        return ContainerHelper.saveAllItems(new CompoundTag(),getItems(),true);
-    }
-
-    @Override
-    public void $load(CompoundTag tag) {
-        ContainerHelper.loadAllItems(tag,getItems());
-    }
 }

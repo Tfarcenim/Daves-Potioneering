@@ -29,7 +29,9 @@ import tfar.davespotioneering.inv.slots.FuelSlot;
 import tfar.davespotioneering.inv.slots.IngredientSlot;
 import tfar.davespotioneering.inv.slots.PotionSlot;
 import tfar.davespotioneering.inventory.BasicInventoryBridge;
+import tfar.davespotioneering.item.AgedUmbrellaItem;
 import tfar.davespotioneering.item.CGauntletItem;
+import tfar.davespotioneering.item.GauntletItem;
 import tfar.davespotioneering.item.UmbrellaItem;
 import tfar.davespotioneering.net.PacketHandler;
 import tfar.davespotioneering.net.S2CCooldownPacket;
@@ -81,7 +83,12 @@ public class ForgePlatformHelper implements IPlatformHelper {
         return new UmbrellaItem(builder,name,style);
     }
 
-    public Slot makeBasic(BasicInventoryBridge handle,int slot,int x, int y) {
+    @Override
+    public Item makeAgedUmbrella(Item.Properties builder, String style) {
+        return new AgedUmbrellaItem(builder,style);
+    }
+
+    public Slot makeBasic(BasicInventoryBridge handle, int slot, int x, int y) {
         return new SlotItemHandler((IItemHandler) handle,slot,x,y);
     }
     @Override
@@ -138,6 +145,11 @@ public class ForgePlatformHelper implements IPlatformHelper {
     @Override
     public void syncGauntletCooldowns(Player player, int[] cooldowns) {
         PacketHandler.sendToClient(new S2CCooldownPacket(cooldowns), (ServerPlayer) player);
+    }
+
+    @Override
+    public CGauntletItem makeGauntlet(Item.Properties properties) {
+        return new GauntletItem(properties);
     }
 
     //configs

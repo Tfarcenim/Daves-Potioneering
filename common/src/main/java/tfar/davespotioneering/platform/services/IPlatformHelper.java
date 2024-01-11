@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import tfar.davespotioneering.blockentity.CAdvancedBrewingStandBlockEntity;
 import tfar.davespotioneering.blockentity.CReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.inventory.BasicInventoryBridge;
+import tfar.davespotioneering.item.CGauntletItem;
 
 import java.util.Locale;
 
@@ -57,6 +58,7 @@ public interface IPlatformHelper {
         return makeBasicUmbrella(builder,name.getName().toLowerCase(Locale.ROOT),style);
     }
     Item makeBasicUmbrella(Item.Properties builder, String name, String style);
+    Item makeAgedUmbrella(Item.Properties builder,String style);
 
     default Slot makeBasic(BasicInventoryBridge handle,int slot,int x, int y) {
         return new Slot((Container) handle,slot,x,y);
@@ -76,6 +78,7 @@ public interface IPlatformHelper {
     void setGauntletCooldowns(Player player,int[] cooldowns);
 
     void syncGauntletCooldowns(Player player,int[] cooldowns);
+    CGauntletItem makeGauntlet(Item.Properties properties);
 
     //configs
     boolean coatTools();

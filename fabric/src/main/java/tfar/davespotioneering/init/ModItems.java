@@ -6,8 +6,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
 import tfar.davespotioneering.DavesPotioneering;
-import tfar.davespotioneering.DavesPotioneeringFabric;
-import tfar.davespotioneering.item.GauntletItem;
+import tfar.davespotioneering.item.GauntletItemFabric;
 import tfar.davespotioneering.item.SimpleGauntletItem;
 import tfar.davespotioneering.item.UmbrellaItem;
 
@@ -32,7 +31,7 @@ public class ModItems {
     
     public static final Item COMPOUND_BREWING_STAND = new BlockItem(ModBlocks.COMPOUND_BREWING_STAND,new Item.Properties());
     public static final Item REINFORCED_CAULDRON = new BlockItem(ModBlocks.REINFORCED_CAULDRON,new Item.Properties());
-    public static final Item POTIONEER_GAUNTLET = new GauntletItem(new Item.Properties().durability(32));
+    public static final Item POTIONEER_GAUNTLET = new GauntletItemFabric(new Item.Properties().durability(32));
     public static final Item NETHERITE_GAUNTLET = new SimpleGauntletItem(Tiers.NETHERITE,4,-2.8f,new Item.Properties(),NET_ID);
     public static final Item RUDIMENTARY_GAUNTLET = new SimpleGauntletItem(Tiers.IRON,3,-2.8f,new Item.Properties(),RUD_ID);
 

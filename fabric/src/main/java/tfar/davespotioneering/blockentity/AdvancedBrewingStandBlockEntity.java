@@ -12,7 +12,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.FabricUtil;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
-import tfar.davespotioneering.inv.BrewingHandler;
+import tfar.davespotioneering.inv.BrewingHandlerFabric;
 
 import javax.annotation.Nullable;
 
@@ -24,7 +24,7 @@ public class AdvancedBrewingStandBlockEntity extends CAdvancedBrewingStandBlockE
 
     protected AdvancedBrewingStandBlockEntity(BlockEntityType<?> typeIn, BlockPos blockPos, BlockState blockState) {
         super(typeIn,blockPos,blockState);
-        handler = new BrewingHandler(SLOTS);
+        handler = new BrewingHandlerFabric(SLOTS);
     }
 
     protected boolean canBrew() {

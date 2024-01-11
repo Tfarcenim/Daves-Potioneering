@@ -7,11 +7,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 public class SidedItemHandler implements Container {
-    protected final BrewingHandler inv;
+    protected final BrewingHandlerFabric inv;
     private final Direction direction;
 
 
-    public SidedItemHandler(BrewingHandler inv,Direction direction) {
+    public SidedItemHandler(BrewingHandlerFabric inv, Direction direction) {
         this.inv = inv;
         this.direction = direction;
     }

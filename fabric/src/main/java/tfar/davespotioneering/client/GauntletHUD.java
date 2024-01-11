@@ -1,7 +1,6 @@
 package tfar.davespotioneering.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -19,7 +18,7 @@ import net.minecraft.world.item.alchemy.Potion;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.DavesPotioneeringFabric;
 import tfar.davespotioneering.init.ModSoundEvents;
-import tfar.davespotioneering.item.GauntletItem;
+import tfar.davespotioneering.item.GauntletItemFabric;
 import tfar.davespotioneering.mixin.GuiAccess;
 
 public class GauntletHUD {
@@ -102,9 +101,9 @@ public class GauntletHUD {
         ItemStack g = player.getMainHandItem();
 
         CompoundTag info = g.getOrCreateTag().getCompound("info");
-        renderPotion(prePotion, matrixStack, xFixed + 3, yFixed + 21, GauntletItem.getCooldownFromPotionByIndex(info.getInt("activePotionIndex")-1, player));
-        renderPotion(activePotion, matrixStack, xFixed + 51, yFixed + 5, GauntletItem.getCooldownFromPotionByIndex(info.getInt("activePotionIndex"),player));
-        renderPotion(postPotion, matrixStack, xFixed + 99, yFixed + 21, GauntletItem.getCooldownFromPotionByIndex(info.getInt("activePotionIndex")+1, player));
+        renderPotion(prePotion, matrixStack, xFixed + 3, yFixed + 21, GauntletItemFabric.getCooldownFromPotionByIndex(info.getInt("activePotionIndex")-1, player));
+        renderPotion(activePotion, matrixStack, xFixed + 51, yFixed + 5, GauntletItemFabric.getCooldownFromPotionByIndex(info.getInt("activePotionIndex"),player));
+        renderPotion(postPotion, matrixStack, xFixed + 99, yFixed + 21, GauntletItemFabric.getCooldownFromPotionByIndex(info.getInt("activePotionIndex")+1, player));
      //   matrixStack.popPose();
     }
 

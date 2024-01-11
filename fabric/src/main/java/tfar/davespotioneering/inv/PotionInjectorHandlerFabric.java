@@ -1,23 +1,18 @@
 package tfar.davespotioneering.inv;
 
-import net.minecraft.core.NonNullList;
-import net.minecraft.world.ContainerHelper;
-import tfar.davespotioneering.inventory.BasicInventoryBridge;
-import tfar.davespotioneering.item.GauntletItem;
+import tfar.davespotioneering.item.GauntletItemFabric;
 
 import javax.annotation.Nonnull;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.world.SimpleContainer;
+
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-public class PotionInjectorHandler extends SimpleContainer implements BasicInventoryBridge {
+public class PotionInjectorHandlerFabric extends BridgedSimpleContainer {
 
     public static final int GAUNTLET = 6;
     public static final int BLAZE = 7;
 
-    public PotionInjectorHandler(int slots) {
+    public PotionInjectorHandlerFabric(int slots) {
         super(slots);
     }
 
@@ -32,7 +27,7 @@ public class PotionInjectorHandler extends SimpleContainer implements BasicInven
             case 5:
                 return stack.getItem() == Items.LINGERING_POTION;
             case GAUNTLET:
-                return stack.getItem() instanceof GauntletItem;
+                return stack.getItem() instanceof GauntletItemFabric;
             case BLAZE:
                 return stack.getItem() == Items.BLAZE_POWDER;
         }
@@ -79,33 +74,7 @@ public class PotionInjectorHandler extends SimpleContainer implements BasicInven
         return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.getCount()- limit) : ItemStack.EMPTY;
     }
 
-    protected int getStackLimit(@Nonnull ItemStack stack)
-    {
+    protected int getStackLimit(@Nonnull ItemStack stack) {
         return Math.min(getMaxStackSize(), stack.getMaxStackSize());
-    }
-
-    @Override
-    public ItemStack $getStackInSlot(int slot) {
-        return getItem(slot);
-    }
-
-    @Override
-    public void $setStackInSlot(int slot, ItemStack stack) {
-        setItem(slot,stack);
-    }
-
-    @Override
-    public NonNullList<ItemStack> $getStacks() {
-        return items;
-    }
-
-    @Override
-    public CompoundTag $save() {
-        return ContainerHelper.saveAllItems(new CompoundTag(),items,true);
-    }
-
-    @Override
-    public void $load(CompoundTag tag) {
-        ContainerHelper.loadAllItems(new CompoundTag(),items);
     }
 }

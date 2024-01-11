@@ -2,7 +2,7 @@ package tfar.davespotioneering.blockentity;
 
 import tfar.davespotioneering.block.CPotionInjectorBlock;
 import tfar.davespotioneering.init.ModBlockEntityTypes;
-import tfar.davespotioneering.inv.PotionInjectorHandler;
+import tfar.davespotioneering.inv.PotionInjectorHandlerFabric;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -14,7 +14,7 @@ public class PotionInjectorBlockEntity extends CPotionInjectorBlockEntity {
 
     public PotionInjectorBlockEntity(BlockEntityType<?> tileEntityTypeIn, BlockPos blockPos, BlockState blockState) {
         super(tileEntityTypeIn,blockPos,blockState);
-        handler = new PotionInjectorHandler(8) {
+        handler = new PotionInjectorHandlerFabric(8) {
             @Override
             public void setChanged() {
                 super.setChanged();

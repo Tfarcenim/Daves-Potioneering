@@ -48,7 +48,8 @@ import tfar.davespotioneering.client.model.gecko.GeoItemModel;
 import tfar.davespotioneering.client.particle.FastDripParticle;
 import tfar.davespotioneering.client.particle.TintedSplashParticle;
 import tfar.davespotioneering.init.*;
-import tfar.davespotioneering.item.GauntletItem;
+import tfar.davespotioneering.item.CGauntletItem;
+import tfar.davespotioneering.item.GauntletItemFabric;
 import tfar.davespotioneering.mixin.ParticleManagerAccess;
 import tfar.davespotioneering.net.C2SGauntletCyclePacket;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -80,8 +81,8 @@ public class ClientEvents implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.POTION_INJECTOR,RenderType.translucent());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.REINFORCED_WATER_CAULDRON,RenderType.translucent());
 
-        MenuScreens.register(ModContainerTypes.ADVANCED_BREWING_STAND, AdvancedBrewingStandScreen::new);
-        MenuScreens.register(ModContainerTypes.ALCHEMICAL_GAUNTLET, PotionInjectorScreen::new);
+        MenuScreens.register(ModMenuTypes.ADVANCED_BREWING_STAND, AdvancedBrewingStandScreen::new);
+        MenuScreens.register(ModMenuTypes.ALCHEMICAL_GAUNTLET, PotionInjectorScreen::new);
 
         BlockEntityRenderers.register(ModBlockEntityTypes.POTION_INJECTOR, PotionInjectorRenderer::new);
 
@@ -165,7 +166,7 @@ public class ClientEvents implements ClientModInitializer {
         if (player == null) return;
         ItemStack held = player.getMainHandItem();
         if (held.isEmpty()) return;
-        if (held.getItem() instanceof GauntletItem && player.isShiftKeyDown()) {
+        if (held.getItem() instanceof GauntletItemFabric && player.isShiftKeyDown()) {
             if (button == GLFW.GLFW_MOUSE_BUTTON_3) {
                 GauntletHUDMovementScreen.open();
             }
@@ -177,7 +178,7 @@ public class ClientEvents implements ClientModInitializer {
         if (player == null) return false;
         ItemStack held = player.getMainHandItem();
         if (held.isEmpty()) return false;
-        if (held.getItem() instanceof GauntletItem && player.isShiftKeyDown()) {
+        if (held.getItem() instanceof GauntletItemFabric && player.isShiftKeyDown()) {
             if (scrollDelta == 1.f) {
                 C2SGauntletCyclePacket.encode(true);
                 GauntletHUD.backwardCycle();
@@ -219,10 +220,10 @@ public class ClientEvents implements ClientModInitializer {
         if (player == null) return;
         ItemStack g = player.getMainHandItem();
         // check if holding gauntlet
-        if (g.getItem() instanceof GauntletItem) {
+        if (g.getItem() instanceof GauntletItemFabric) {
             // get nbt
             CompoundTag info = player.getMainHandItem().getOrCreateTag().getCompound("info");
-            Potion[] potions = GauntletItem.getPotionsFromNBT(info);
+            Potion[] potions = CGauntletItem.getVisibleEffects(info);
             GauntletHUD.render(matrixStack);
             if (potions == null) {
                 // reset

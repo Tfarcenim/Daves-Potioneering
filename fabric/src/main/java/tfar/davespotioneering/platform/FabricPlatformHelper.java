@@ -14,10 +14,11 @@ import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
 import tfar.davespotioneering.blockentity.CAdvancedBrewingStandBlockEntity;
 import tfar.davespotioneering.blockentity.CReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.blockentity.ReinforcedCauldronBlockEntity;
-import tfar.davespotioneering.config.ClothConfig;
-import tfar.davespotioneering.inv.BrewingHandler;
-import tfar.davespotioneering.inv.PotionInjectorHandler;
+import tfar.davespotioneering.inv.BrewingHandlerFabric;
+import tfar.davespotioneering.inv.PotionInjectorHandlerFabric;
 import tfar.davespotioneering.inventory.BasicInventoryBridge;
+import tfar.davespotioneering.item.CGauntletItem;
+import tfar.davespotioneering.item.GauntletItemFabric;
 import tfar.davespotioneering.item.UmbrellaItem;
 import tfar.davespotioneering.platform.services.IPlatformHelper;
 import net.fabricmc.loader.api.FabricLoader;
@@ -82,12 +83,12 @@ public class FabricPlatformHelper implements IPlatformHelper {
 
     @Override
     public BasicInventoryBridge makeBrewingHandler(int slots) {
-        return new BrewingHandler(slots);
+        return new BrewingHandlerFabric(slots);
     }
 
     @Override
     public BasicInventoryBridge makePotionInjector(int slots) {
-        return new PotionInjectorHandler(slots);
+        return new PotionInjectorHandlerFabric(slots);
     }
 
     @Override
@@ -98,6 +99,11 @@ public class FabricPlatformHelper implements IPlatformHelper {
     @Override
     public CReinforcedCauldronBlockEntity makeReinforcedCauldron(BlockPos pos, BlockState state) {
         return new ReinforcedCauldronBlockEntity(pos,state);
+    }
+
+    @Override
+    public CGauntletItem makeGauntlet(Item.Properties properties) {
+        return new GauntletItemFabric(properties);
     }
 
     //configs

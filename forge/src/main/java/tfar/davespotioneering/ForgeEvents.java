@@ -27,7 +27,7 @@ import tfar.davespotioneering.block.CLayeredReinforcedCauldronBlock;
 import tfar.davespotioneering.duck.BrewingStandDuck;
 import tfar.davespotioneering.init.ModPotions;
 import tfar.davespotioneering.item.UmbrellaItem;
-import tfar.davespotioneering.menu.AdvancedBrewingStandMenu;
+import tfar.davespotioneering.menu.CAdvancedBrewingStandMenu;
 import tfar.davespotioneering.mixin.BrewingStandContainerAccess;
 
 public class ForgeEvents {
@@ -95,7 +95,7 @@ public class ForgeEvents {
             BlockEntity entity = null;
             if (container instanceof BrewingStandMenu) {
                 entity = (BrewingStandBlockEntity)((BrewingStandContainerAccess)container).getBrewingStand();
-            } else if (container instanceof AdvancedBrewingStandMenu advancedBrewingStandMenu) {
+            } else if (container instanceof CAdvancedBrewingStandMenu advancedBrewingStandMenu) {
                 entity = advancedBrewingStandMenu.blockEntity;
             }
 

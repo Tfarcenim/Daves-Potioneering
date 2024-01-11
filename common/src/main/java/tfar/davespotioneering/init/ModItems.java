@@ -8,8 +8,6 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tiers;
 import tfar.davespotioneering.DavesPotioneering;
-import tfar.davespotioneering.item.AgedUmbrellaItem;
-import tfar.davespotioneering.item.GauntletItem;
 import tfar.davespotioneering.item.SimpleGauntletItem;
 import tfar.davespotioneering.platform.Services;
 
@@ -24,7 +22,7 @@ public class ModItems {
 
     public static final Item COMPOUND_BREWING_STAND = new BlockItem(ModBlocks.COMPOUND_BREWING_STAND,new Item.Properties());
     public static final Item REINFORCED_CAULDRON = new BlockItem(ModBlocks.REINFORCED_CAULDRON,new Item.Properties());
-    public static final Item POTIONEER_GAUNTLET = new GauntletItem(new Item.Properties().durability(32));
+    public static final Item POTIONEER_GAUNTLET = Services.PLATFORM.makeGauntlet(new Item.Properties().durability(32));
     public static final Item NETHERITE_GAUNTLET = new SimpleGauntletItem(Tiers.NETHERITE,4,-2.8f,new Item.Properties());
     public static final Item RUDIMENTARY_GAUNTLET = new SimpleGauntletItem(Tiers.IRON,3,-2.8f,new Item.Properties());
 
@@ -49,7 +47,7 @@ public class ModItems {
     public static final Item BLACK_UMBRELLA = Services.PLATFORM.makeBasicUmbrella(baseUmbrella(),DyeColor.BLACK,"classic");
 
     public static final Item GILDED_UMBRELLA = Services.PLATFORM.makeBasicUmbrella(baseUmbrella(),"gilded","gilded");
-    public static final Item AGED_UMBRELLA = new AgedUmbrellaItem(baseUmbrella(),"aged");
+    public static final Item AGED_UMBRELLA = Services.PLATFORM.makeAgedUmbrella(baseUmbrella(),"aged");
 
 
     public static final TagKey<Item> BLACKLISTED = create(new ResourceLocation(DavesPotioneering.MODID,"blacklisted"));
