@@ -119,12 +119,11 @@ public class DavesPotioneeringForge {
 
         strongRecipe(Potions.INVISIBILITY,ModPotions.STRONG_INVISIBILITY);
 
-        Set<Block> newSet = new HashSet<>(((BlockEntityTypeAcces)BlockEntityType.LECTERN).getValidBlocks());
-        newSet.add(ModBlocks.MAGIC_LECTERN);
-        ((BlockEntityTypeAcces)BlockEntityType.LECTERN).setValidBlocks(newSet);
-
         PacketHandler.registerMessages();
         ModCauldronInteractions.bootStrap();
+
+
+
         DavesPotioneering.commonSetup();
     }
 

@@ -35,11 +35,6 @@ public class DavesPotioneeringFabric implements ModInitializer {
         DavesPotioneering.earlySetup();
         Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB,new ResourceLocation(DavesPotioneering.MODID,"tab"),ModCreativeTab.DAVESPOTIONEERING);
 
-        Set<Block> newSet = new HashSet<>(((BlockEntityTypeAcces)BlockEntityType.LECTERN).getValidBlocks());
-        newSet.add(ModBlocks.MAGIC_LECTERN);
-        ((BlockEntityTypeAcces)BlockEntityType.LECTERN).setValidBlocks(newSet);
-
-
       //  UseItemCallback.EVENT.register(FabricEvents::potionCooldown);
         UseEntityCallback.EVENT.register(FabricEvents::milkCow);
         AttackEntityCallback.EVENT.register(FabricEvents::afterHit);

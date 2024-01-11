@@ -20,13 +20,16 @@ import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
 import tfar.davespotioneering.duck.BrewingStandDuck;
 import tfar.davespotioneering.init.*;
 import tfar.davespotioneering.menu.CAdvancedBrewingStandMenu;
+import tfar.davespotioneering.mixin.BlockEntityTypeAcces;
 import tfar.davespotioneering.mixin.BrewingStandContainerAccess;
 import tfar.davespotioneering.platform.Services;
 import net.minecraft.core.registries.BuiltInRegistries;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 // This class is part of the common project meaning it is shared between all supported loaders. Code written here can only
 // import and access the vanilla codebase, libraries used by vanilla, and optionally third party libraries that provide
@@ -54,6 +57,9 @@ public class DavesPotioneering {
     // write the majority of your code here and load it from your loader specific projects. This example has some
     // code that gets invoked by the entry point of the loader specific projects.
     public static void commonSetup() {
+        Set<Block> newSet = new HashSet<>(((BlockEntityTypeAcces)BlockEntityType.LECTERN).getValidBlocks());
+        newSet.add(ModBlocks.MAGIC_LECTERN);
+        ((BlockEntityTypeAcces)BlockEntityType.LECTERN).setValidBlocks(newSet);
     }
 
     public static void onEat(Player player, ItemStack stack) {

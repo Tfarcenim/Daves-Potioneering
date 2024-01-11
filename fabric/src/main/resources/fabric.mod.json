@@ -22,7 +22,7 @@
       "tfar.davespotioneering.DavesPotioneeringFabric"
     ],
     "client": [
-      "tfar.davespotioneering.client.ClientEvents"
+      "tfar.davespotioneering.client.DavesPotioneeeringClientFabric"
 
     ],
 
@@ -31,6 +31,7 @@
     ]
   },
   "mixins": [
+    "davespotioneering.mixins.json",
     "davespotioneering.fabric.mixins.json"
   ],
 

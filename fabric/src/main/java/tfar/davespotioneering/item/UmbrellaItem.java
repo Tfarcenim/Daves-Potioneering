@@ -8,7 +8,7 @@ import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
 import software.bernie.geckolib.util.GeckoLibUtil;
-import tfar.davespotioneering.client.ClientEvents;
+import tfar.davespotioneering.client.DavesPotioneeeringClientFabric;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -36,7 +36,7 @@ public class UmbrellaItem extends CUmbrellaItem implements GeoItem {
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 if (this.renderer == null)
-                    this.renderer = ClientEvents.umbrella(name);
+                    this.renderer = DavesPotioneeeringClientFabric.umbrella(name);
 
                 return this.renderer;
             }

@@ -111,6 +111,7 @@ public class ClientEvents {
 
         BlockEntityRenderers.register(ModBlockEntityTypes.POTION_INJECTOR, PotionInjectorRenderer::new);
 
+        Minecraft.getInstance().getBlockColors().register(DavesPotioneeringClient.CAULDRON,ModBlocks.REINFORCED_WATER_CAULDRON);
         DavesPotioneeringClient.clientSetup();
     }
 

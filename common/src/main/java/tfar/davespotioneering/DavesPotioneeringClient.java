@@ -3,6 +3,7 @@ package tfar.davespotioneering;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
@@ -20,16 +21,16 @@ public class DavesPotioneeringClient {
     public static KeyMapping CONFIG_KEY = new KeyMapping("key.davespotioneering.open_config",
             InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_3,"key.categories."+ DavesPotioneering.MODID);
 
-    public static void clientSetup() {
+    public static final BlockColor CAULDRON = (state, reader, pos, index) -> {
+        if (pos != null) {
+            BlockEntity blockEntity = reader.getBlockEntity(pos);
+            if (blockEntity instanceof CReinforcedCauldronBlockEntity reinforced)
+                return reinforced.getColor();
+        }
+        return 0xffffff;
+    };
 
-        Minecraft.getInstance().getBlockColors().register((state, reader, pos, index) -> {
-            if (pos != null) {
-                BlockEntity blockEntity = reader.getBlockEntity(pos);
-                if (blockEntity instanceof CReinforcedCauldronBlockEntity reinforced)
-                    return reinforced.getColor();
-            }
-            return 0xffffff;
-        }, ModBlocks.REINFORCED_WATER_CAULDRON);
+    public static void clientSetup() {
 
         ItemProperties.register(ModItems.POTIONEER_GAUNTLET, new ResourceLocation("active"),GAUNTLET);
 

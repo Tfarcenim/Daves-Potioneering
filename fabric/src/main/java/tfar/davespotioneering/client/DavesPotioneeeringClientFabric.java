@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -25,12 +26,14 @@ import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import org.lwjgl.glfw.GLFW;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
 import tfar.davespotioneering.DavesPotioneeringClient;
 import tfar.davespotioneering.DavesPotioneeringFabric;
 import tfar.davespotioneering.block.CLayeredReinforcedCauldronBlock;
+import tfar.davespotioneering.blockentity.CReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.client.model.gecko.DoubleGeoItemStackRenderer;
 import tfar.davespotioneering.client.model.gecko.GeoItemModel;
 import tfar.davespotioneering.client.particle.FastDripParticle;
@@ -48,7 +51,7 @@ import tfar.davespotioneering.net.ClientPacketHandler;
 import java.util.List;
 import java.util.Locale;
 
-public class ClientEvents implements ClientModInitializer {
+public class DavesPotioneeeringClientFabric implements ClientModInitializer {
 
 
     @Override
@@ -60,10 +63,13 @@ public class ClientEvents implements ClientModInitializer {
 
         KeyBindingHelper.registerKeyBinding(DavesPotioneeringClient.CONFIG_KEY);
 
-        ItemTooltipCallback.EVENT.register(ClientEvents::tooltips);
-        HudRenderCallback.EVENT.register(ClientEvents::gauntletHud);
-        ClientTickEvents.START_CLIENT_TICK.register(ClientEvents::playerTick);
+        ItemTooltipCallback.EVENT.register(DavesPotioneeeringClientFabric::tooltips);
+        HudRenderCallback.EVENT.register(DavesPotioneeeringClientFabric::gauntletHud);
+        ClientTickEvents.START_CLIENT_TICK.register(DavesPotioneeeringClientFabric::playerTick);
 
+
+
+        ColorProviderRegistry.BLOCK.register(DavesPotioneeringClient.CAULDRON, ModBlocks.REINFORCED_WATER_CAULDRON);
 
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.COMPOUND_BREWING_STAND, RenderType.cutoutMipped());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.POTION_INJECTOR,RenderType.translucent());
