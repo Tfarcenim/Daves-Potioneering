@@ -18,15 +18,12 @@ import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec3;
 import org.lwjgl.glfw.GLFW;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
@@ -41,7 +38,6 @@ import tfar.davespotioneering.init.ModBlockEntityTypes;
 import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.init.ModMenuTypes;
 import tfar.davespotioneering.init.ModParticleTypes;
-import tfar.davespotioneering.item.CGauntletItem;
 import tfar.davespotioneering.item.GauntletItemFabric;
 import tfar.davespotioneering.mixin.ParticleManagerAccess;
 import tfar.davespotioneering.net.C2SGauntletCyclePacket;
@@ -104,23 +100,6 @@ public class DavesPotioneeeringClientFabric implements ClientModInitializer {
                 GeoItemModel.makeOpenAgedUmbrella());
     }
 
-    public static void switchGameMode(GameType oldGameType, GameType newGameType) {
-        if (DavesPotioneeringFabric.CONFIG.gauntlet_hud_preset == HudPreset.ABOVE_HOTBAR && newGameType == GameType.SURVIVAL) {
-            DavesPotioneeringFabric.CONFIG.gauntlet_hud_x = getFixedPositionValue(Minecraft.getInstance().getWindow().getGuiScaledHeight() - 42 - 40, false);
-        }
-        if (DavesPotioneeringFabric.CONFIG.gauntlet_hud_preset == HudPreset.ABOVE_HOTBAR && newGameType == GameType.CREATIVE) {
-            DavesPotioneeringFabric.CONFIG.gauntlet_hud_y = getFixedPositionValue(Minecraft.getInstance().getWindow().getGuiScaledHeight() - 42 - 25, false);
-        }
-    }
-
-    public static int getFixedPositionValue(int value, boolean isWidth) {
-        return isWidth ? value * 2 - Minecraft.getInstance().getWindow().getGuiScaledWidth() : value -
-                Minecraft.getInstance().getWindow().getGuiScaledHeight();
-    }
-  //  public static void registerLoader(final ModelRegistryEvent event) {
-  //      ModelLoaderRegistry.registerLoader(new ResourceLocation(MODID, "fullbright"), ModelLoader.INSTANCE);
- //   }
-
     public static void onMouseInput(long handle, int button, int action, int mods) {
         Player player = Minecraft.getInstance().player;
         if (player == null) return;
@@ -181,51 +160,8 @@ public class DavesPotioneeeringClientFabric implements ClientModInitializer {
 
     public static void playerTick(Minecraft e) {
         Player player = e.player;
-        if (player != null && player.level().getGameTime() % DavesPotioneeringFabric.CONFIG.particle_drip_rate == 0) {
-
-            ItemStack stack = player.getMainHandItem();
-
-            if (stack.getItem() instanceof TieredItem && PotionUtils.getPotion(stack) != Potions.EMPTY) {
-
-
-                ParticleOptions particleData = ModParticleTypes.FAST_DRIPPING_WATER;
-
-                Vec3 vec = player.position().add(0, +player.getBbHeight() / 2, 0);
-
-                double yaw = -Mth.wrapDegrees(player.getYRot());
-
-                double of1 = Math.random() * .60 + .15;
-                double of2 = .40 + Math.random() * .10;
-
-
-                double z1 = Math.cos(yaw * Math.PI / 180) * of1;
-                double x1 = Math.sin(yaw * Math.PI / 180) * of1;
-
-                double z2 = Math.cos((yaw + 270) * Math.PI / 180) * of2;
-                double x2 = Math.sin((yaw + 270) * Math.PI / 180) * of2;
-
-                vec = vec.add(x1 + x2, 0, z1 + z2);
-
-                int color = PotionUtils.getColor(stack);
-                spawnFluidParticle(Minecraft.getInstance().level, vec, particleData, color);
-            }
+        if (player != null) {
+            DavesPotioneeringClient.clientPlayerTick(player);
         }
     }
-
-    private static void spawnFluidParticle(ClientLevel world, Vec3 blockPosIn, ParticleOptions particleDataIn, int color) {
-        // world.spawnParticle(new BlockPos(blockPosIn), particleDataIn, voxelshape, blockPosIn.getY() +.5);
-
-        Particle particle = ((ParticleManagerAccess) Minecraft.getInstance().particleEngine).$makeParticle(particleDataIn, blockPosIn.x, blockPosIn.y, blockPosIn.z, 0, -.10, 0);
-
-        float red = (color >> 16 & 0xff) / 255f;
-        float green = (color >> 8 & 0xff) / 255f;
-        float blue = (color & 0xff) / 255f;
-
-        particle.setColor(red, green, blue);
-
-        Minecraft.getInstance().particleEngine.add(particle);
-
-        //world.addParticle(particleDataIn,blockPosIn.x,blockPosIn.y,blockPosIn.z,0,-.10,0);
-    }
-
 }

@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.DavesPotioneeringFabric;
 import tfar.davespotioneering.blockentity.*;
+import tfar.davespotioneering.client.HudPreset;
 import tfar.davespotioneering.duck.PlayerDuckFabric;
 import tfar.davespotioneering.inv.BrewingHandlerFabric;
 import tfar.davespotioneering.inv.PotionInjectorHandlerFabric;
@@ -135,12 +136,12 @@ public class FabricPlatformHelper implements IPlatformHelper {
 
     @Override
     public int rightHeight(Gui gui) {
-        return 39;
+        return 49;
     }
 
     @Override
     public int leftHeight(Gui gui) {
-        return 39;
+        return 49;
     }
 
     //configs
@@ -172,5 +173,40 @@ public class FabricPlatformHelper implements IPlatformHelper {
     @Override
     public int potionSwitchCooldown() {
         return DavesPotioneeringFabric.CONFIG.potion_use_cooldown;
+    }
+
+    @Override
+    public int gauntletHudX() {
+        return DavesPotioneeringFabric.CONFIG.gauntlet_hud_x;
+    }
+
+    @Override
+    public int gauntletHudY() {
+        return DavesPotioneeringFabric.CONFIG.gauntlet_hud_y;
+    }
+
+    @Override
+    public HudPreset preset() {
+        return DavesPotioneeringFabric.CONFIG.gauntlet_hud_preset;
+    }
+
+    @Override
+    public void setGauntletHudX(int x) {
+        DavesPotioneeringFabric.CONFIG.gauntlet_hud_x = x;
+    }
+
+    @Override
+    public void setGauntletHudY(int y) {
+        DavesPotioneeringFabric.CONFIG.gauntlet_hud_y = y;
+    }
+
+    @Override
+    public void setPreset(HudPreset preset) {
+        DavesPotioneeringFabric.CONFIG.gauntlet_hud_preset = preset;
+    }
+
+    @Override
+    public int particleDripRate() {
+        return DavesPotioneeringFabric.CONFIG.particle_drip_rate;
     }
 }

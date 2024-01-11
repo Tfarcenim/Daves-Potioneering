@@ -229,4 +229,9 @@ public class ForgePlatformHelper implements IPlatformHelper {
     public void setPreset(HudPreset preset) {
         ModConfig.Client.gauntlet_hud_preset.set(preset);
     }
+
+    @Override
+    public int particleDripRate() {
+        return ModConfig.Client.particle_drip_rate.get();
+    }
 }

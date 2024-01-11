@@ -2,8 +2,6 @@ package tfar.davespotioneering.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -36,7 +34,6 @@ import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.init.ModMenuTypes;
 import tfar.davespotioneering.init.ModParticleTypes;
 import tfar.davespotioneering.item.GauntletItem;
-import tfar.davespotioneering.mixin.ParticleManagerAccess;
 import tfar.davespotioneering.net.C2SGauntletCyclePacket;
 import tfar.davespotioneering.net.PacketHandler;
 
@@ -130,50 +127,8 @@ public class ClientEvents {
 
     public static void playerTick(TickEvent.PlayerTickEvent e) {
         Player player = e.player;
-        if (e.phase == TickEvent.Phase.END && e.side == LogicalSide.CLIENT && player.level().getGameTime() % ModConfig.Client.particle_drip_rate.get() == 0) {
-
-            ItemStack stack = player.getMainHandItem();
-
-            if (stack.getItem() instanceof TieredItem && !PotionUtils.getMobEffects(stack).isEmpty()) {
-
-
-                ParticleOptions particleData = ModParticleTypes.FAST_DRIPPING_WATER;
-
-                Vec3 vec = player.position().add(0, +player.getBbHeight() / 2, 0);
-
-                double yaw = -Mth.wrapDegrees(player.getYRot());
-
-                double of1 = Math.random() * .60 + .15;
-                double of2 = .40 + Math.random() * .10;
-
-
-                double z1 = Math.cos(yaw * Math.PI / 180) * of1;
-                double x1 = Math.sin(yaw * Math.PI / 180) * of1;
-
-                double z2 = Math.cos((yaw + 270) * Math.PI / 180) * of2;
-                double x2 = Math.sin((yaw + 270) * Math.PI / 180) * of2;
-
-                vec = vec.add(x1 + x2, 0, z1 + z2);
-
-                int color = PotionUtils.getColor(stack);
-                spawnFluidParticle(Minecraft.getInstance().level, vec, particleData, color);
-            }
+        if (player != null && e.phase == TickEvent.Phase.END && e.side == LogicalSide.CLIENT) {
+            DavesPotioneeringClient.clientPlayerTick(player);
         }
-    }
-
-    private static void spawnFluidParticle(ClientLevel world, Vec3 blockPosIn, ParticleOptions particleDataIn, int color) {
-        // world.spawnParticle(new BlockPos(blockPosIn), particleDataIn, voxelshape, blockPosIn.getY() +.5);
-
-        Particle particle = ((ParticleManagerAccess) Minecraft.getInstance().particleEngine).$makeParticle(particleDataIn, blockPosIn.x, blockPosIn.y, blockPosIn.z, 0, -.10, 0);
-
-        float red = (color >> 16 & 0xff) / 255f;
-        float green = (color >> 8 & 0xff) / 255f;
-        float blue = (color & 0xff) / 255f;
-
-        particle.setColor(red, green, blue);
-
-        Minecraft.getInstance().particleEngine.add(particle);
-
-        //world.addParticle(particleDataIn,blockPosIn.x,blockPosIn.y,blockPosIn.z,0,-.10,0);
     }
 }

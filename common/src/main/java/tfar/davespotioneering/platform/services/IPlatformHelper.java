@@ -101,4 +101,6 @@ public interface IPlatformHelper {
     void setGauntletHudX(int x);
     void setGauntletHudY(int y);
     void setPreset(HudPreset preset);
+
+    int particleDripRate();
 }

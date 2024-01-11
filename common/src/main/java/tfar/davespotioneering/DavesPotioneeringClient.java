@@ -4,15 +4,27 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
 import org.lwjgl.glfw.GLFW;
 import tfar.davespotioneering.blockentity.CReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.init.ModItems;
+import tfar.davespotioneering.init.ModParticleTypes;
+import tfar.davespotioneering.mixin.ParticleManagerAccess;
+import tfar.davespotioneering.platform.Services;
 
 public class DavesPotioneeringClient {
 
@@ -60,6 +72,54 @@ public class DavesPotioneeringClient {
     public static void registerBlockingProperty(Item item) {
         ItemProperties.register(item, new ResourceLocation("blocking"),
                 (stack, world, entity,i) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
+    }
+
+    public static void spawnFluidParticle(ClientLevel world, Vec3 blockPosIn, ParticleOptions particleDataIn, int color) {
+        // world.spawnParticle(new BlockPos(blockPosIn), particleDataIn, voxelshape, blockPosIn.getY() +.5);
+
+        Particle particle = ((ParticleManagerAccess) Minecraft.getInstance().particleEngine).$makeParticle(particleDataIn, blockPosIn.x, blockPosIn.y, blockPosIn.z, 0, -.10, 0);
+
+        float red = (color >> 16 & 0xff) / 255f;
+        float green = (color >> 8 & 0xff) / 255f;
+        float blue = (color & 0xff) / 255f;
+
+        particle.setColor(red, green, blue);
+
+        Minecraft.getInstance().particleEngine.add(particle);
+
+        //world.addParticle(particleDataIn,blockPosIn.x,blockPosIn.y,blockPosIn.z,0,-.10,0);
+    }
+
+    public static void clientPlayerTick(Player player) {
+        if(player.level().getGameTime() % Services.PLATFORM.particleDripRate() == 0) {
+
+            ItemStack stack = player.getMainHandItem();
+
+            if (stack.getItem() instanceof TieredItem && !PotionUtils.getMobEffects(stack).isEmpty()) {
+
+
+                ParticleOptions particleData = ModParticleTypes.FAST_DRIPPING_WATER;
+
+                Vec3 vec = player.position().add(0, +player.getBbHeight() / 2, 0);
+
+                double yaw = -Mth.wrapDegrees(player.getYRot());
+
+                double of1 = Math.random() * .60 + .15;
+                double of2 = .40 + Math.random() * .10;
+
+
+                double z1 = Math.cos(yaw * Math.PI / 180) * of1;
+                double x1 = Math.sin(yaw * Math.PI / 180) * of1;
+
+                double z2 = Math.cos((yaw + 270) * Math.PI / 180) * of2;
+                double x2 = Math.sin((yaw + 270) * Math.PI / 180) * of2;
+
+                vec = vec.add(x1 + x2, 0, z1 + z2);
+
+                int color = PotionUtils.getColor(stack);
+                DavesPotioneeringClient.spawnFluidParticle(Minecraft.getInstance().level, vec, particleData, color);
+            }
+        }
     }
 
 }

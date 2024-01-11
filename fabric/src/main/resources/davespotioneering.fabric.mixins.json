@@ -18,8 +18,7 @@
     "ItemOverrideListMixin",
     "ItemRendererMixin",
     "ModelBakeryMixin",
-    "MouseHelperMixin",
-    "PlayerInfoMixin"
+    "MouseHelperMixin"
   ],
   "injectors": {
     "defaultRequire": 1
