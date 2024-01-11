@@ -74,10 +74,10 @@ public class ClientEvents {
         if (held.getItem() instanceof GauntletItem && player.isShiftKeyDown()) {
             if (event.getScrollDelta() == 1.f) {
                 PacketHandler.sendToServer(new C2SGauntletCyclePacket(true));
-                GauntletHUDForge.backwardCycle();
+                GauntletHUDCommon.backwardCycle();
             } else {
                 PacketHandler.sendToServer(new C2SGauntletCyclePacket(false));
-                GauntletHUDForge.forwardCycle();
+                GauntletHUDCommon.forwardCycle();
             }
             event.setCanceled(true);
         }

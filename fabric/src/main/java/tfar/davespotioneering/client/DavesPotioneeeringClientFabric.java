@@ -140,10 +140,10 @@ public class DavesPotioneeeringClientFabric implements ClientModInitializer {
         if (held.getItem() instanceof GauntletItemFabric && player.isShiftKeyDown()) {
             if (scrollDelta == 1.f) {
                 C2SGauntletCyclePacket.encode(true);
-                GauntletHUDFabric.backwardCycle();
+                GauntletHUDCommon.backwardCycle();
             } else {
                 C2SGauntletCyclePacket.encode(false);
-                GauntletHUDFabric.forwardCycle();
+                GauntletHUDCommon.forwardCycle();
             }
             return true;
         }
@@ -186,10 +186,10 @@ public class DavesPotioneeeringClientFabric implements ClientModInitializer {
             GauntletHUDFabric.render(matrixStack);
             if (potions == null) {
                 // reset
-                GauntletHUDFabric.init(null, null, null);
+                GauntletHUDCommon.init(null, null, null);
                 return;
             }
-            GauntletHUDFabric.init(potions[0], potions[1], potions[2]);
+            GauntletHUDCommon.init(potions[0], potions[1], potions[2]);
         }
     }
 
