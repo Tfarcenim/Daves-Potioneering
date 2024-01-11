@@ -36,8 +36,6 @@
   "davespotioneering.gui.moveGauntletHUD.preset3": "Right Bottom",
   "davespotioneering.gui.moveGauntletHUD.preset4": "Above Hotbar",
   "davespotioneering.spiked_with.tooltip": "Spiked with:",
-  "davespotioneering.tooltip.gauntlet": "%s %s",
-  "davespotioneering.tooltip.gauntlet.withDuration": "%s %s (%s)",
   "effect.davespotioneering.milk": "Milk",
   "item.davespotioneering.aged_umbrella": "Umbrella",
   "item.davespotioneering.aged_umbrella.desc": "Keeps you from getting wet!",

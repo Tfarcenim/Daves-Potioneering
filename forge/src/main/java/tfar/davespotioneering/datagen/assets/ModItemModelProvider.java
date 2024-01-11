@@ -69,7 +69,7 @@ public class ModItemModelProvider extends ItemModelProvider {
     }
 
     private void perspectiveGauntlet(String name) {
-        ItemModelBuilder r3dFile = getBuilder("item/3d/" + name + "_1")
+        ItemModelBuilder r3dFile = nested()
                 .parent(getExistingFile(modLoc("item/3d/" + name)));
 
         ItemModelBuilder rSpriteFile = getBuilder("sprite/" + name)
