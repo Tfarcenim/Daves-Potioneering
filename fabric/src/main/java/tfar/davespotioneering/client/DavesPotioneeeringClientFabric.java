@@ -43,6 +43,7 @@ public class DavesPotioneeeringClientFabric implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        DavesPotioneeringClient.clientSetup();
 
         ParticleFactoryRegistry.getInstance().register(ModParticleTypes.FAST_DRIPPING_WATER,FastDripParticle.DrippingWaterFactory::new);
         ParticleFactoryRegistry.getInstance().register(ModParticleTypes.FAST_FALLING_WATER, FastDripParticle.FallingWaterFactory::new);
@@ -58,14 +59,16 @@ public class DavesPotioneeeringClientFabric implements ClientModInitializer {
 
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.COMPOUND_BREWING_STAND, RenderType.cutoutMipped());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.POTION_INJECTOR,RenderType.translucent());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.REINFORCED_WATER_CAULDRON,RenderType.translucent());
+        if (!DavesPotioneeringClient.IS_EMBEDDIUM_OR_SODIUM_HERE)
+            BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.REINFORCED_WATER_CAULDRON,RenderType.translucent());
+        else
+            BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.REINFORCED_WATER_CAULDRON,RenderType.cutoutMipped());
 
         MenuScreens.register(ModMenuTypes.ADVANCED_BREWING_STAND, AdvancedBrewingStandScreen::new);
         MenuScreens.register(ModMenuTypes.ALCHEMICAL_GAUNTLET, PotionInjectorScreen::new);
 
         BlockEntityRenderers.register(ModBlockEntityTypes.POTION_INJECTOR, PotionInjectorRenderer::new);
         //BuiltinItemRendererRegistry.INSTANCE.register(ModItems.AGED_UMBRELLA,createAgedUmbrellaItemStackRenderer());
-        DavesPotioneeringClient.clientSetup();
         ClientPacketHandler.registerClientMessages();
     }
 

@@ -59,6 +59,8 @@ public class DavesPotioneeringClientForge {
     }
 
     public static void doClientStuff(final FMLClientSetupEvent event) {
+        DavesPotioneeringClient.clientSetup();
+
         MinecraftForge.EVENT_BUS.addListener(DavesPotioneeringClientForge::tooltips);
         MinecraftForge.EVENT_BUS.addListener(DavesPotioneeringClientForge::onMouseInput);
         MinecraftForge.EVENT_BUS.addListener(DavesPotioneeringClientForge::onMouseScroll);
@@ -66,14 +68,17 @@ public class DavesPotioneeringClientForge {
         MinecraftForge.EVENT_BUS.addListener(DavesPotioneeringClientForge::stackAdj1);
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.COMPOUND_BREWING_STAND, RenderType.cutoutMipped());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.POTION_INJECTOR,RenderType.translucent());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.REINFORCED_WATER_CAULDRON,RenderType.translucent());
+        if(!DavesPotioneeringClient.IS_EMBEDDIUM_OR_SODIUM_HERE)
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.REINFORCED_WATER_CAULDRON,RenderType.translucent());
+        else
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.REINFORCED_WATER_CAULDRON,RenderType.cutoutMipped());
+
         MenuScreens.register(ModMenuTypes.ADVANCED_BREWING_STAND, AdvancedBrewingStandScreen::new);
         MenuScreens.register(ModMenuTypes.ALCHEMICAL_GAUNTLET, PotionInjectorScreen::new);
 
         BlockEntityRenderers.register(ModBlockEntityTypes.POTION_INJECTOR, PotionInjectorRenderer::new);
 
         Minecraft.getInstance().getBlockColors().register(DavesPotioneeringClient.CAULDRON,ModBlocks.REINFORCED_WATER_CAULDRON);
-        DavesPotioneeringClient.clientSetup();
     }
 
     public static final IGuiOverlay OVERLAY = GauntletHUDCommon::render;

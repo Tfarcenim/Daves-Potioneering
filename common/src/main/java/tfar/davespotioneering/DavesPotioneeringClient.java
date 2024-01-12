@@ -48,7 +48,12 @@ public class DavesPotioneeringClient {
         return 0xffffff;
     };
 
+    public static boolean IS_EMBEDDIUM_OR_SODIUM_HERE;
+
     public static void clientSetup() {
+
+        IS_EMBEDDIUM_OR_SODIUM_HERE = Services.PLATFORM.isModLoaded("sodium") || Services.PLATFORM.isModLoaded("rubidium")
+                || Services.PLATFORM.isModLoaded("embeddium");
 
         ItemProperties.register(ModItems.POTIONEER_GAUNTLET, new ResourceLocation("active"), GAUNTLET);
 
