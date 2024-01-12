@@ -114,8 +114,8 @@ public class GauntletHUDCommon {
             RenderSystem.setShaderColor(1, 1, 1, 1);
 
             if (Services.PLATFORM.preset() == HudPreset.ABOVE_HOTBAR) {
-                hudX = (screenWidth- GauntletHUDCommon.TEX_WIDTH) / 2;
-                hudY = screenHeight - Math.min(Services.PLATFORM.leftHeight(gui),Services.PLATFORM.rightHeight(gui)) - GauntletHUDCommon.TEX_HEIGHT;
+                hudX = (screenWidth- TEX_WIDTH) / 2;
+                hudY = screenHeight - Math.min(Services.PLATFORM.leftHeight(gui),Services.PLATFORM.rightHeight(gui)) - TEX_HEIGHT;
                 if (((GuiAccess)gui).getToolHighlightTimer() > 0) {
 
                     hudY -= 10;
@@ -127,42 +127,42 @@ public class GauntletHUDCommon {
             int xFixed = hudX;
             int yFixed = hudY;
 
-            if (GauntletHUDCommon.forwardCycle) {
-                GauntletHUDCommon.cooldown--;
+            if (forwardCycle) {
+                cooldown--;
                 yOffset = 2;
-                if (GauntletHUDCommon.cooldown <= 0) {
-                    GauntletHUDCommon.mc.getSoundManager().play(SimpleSoundInstance.forUI(ModSoundEvents.GAUNTLET_SCROLL, 1.0F));
-                    GauntletHUDCommon.forwardCycle = false;
-                    GauntletHUDCommon.cooldown = GauntletHUDCommon.maxCooldown;
+                if (cooldown <= 0) {
+                    mc.getSoundManager().play(SimpleSoundInstance.forUI(ModSoundEvents.GAUNTLET_SCROLL, 1.0F));
+                    forwardCycle = false;
+                    cooldown = maxCooldown;
                 }
-            } else if (GauntletHUDCommon.backwardCycle) {
-                GauntletHUDCommon.cooldown--;
+            } else if (backwardCycle) {
+                cooldown--;
                 yOffset = 1;
-                if (GauntletHUDCommon.cooldown <= 0) {
-                    GauntletHUDCommon.mc.getSoundManager().play(SimpleSoundInstance.forUI(ModSoundEvents.GAUNTLET_SCROLL, 1.0F));
-                    GauntletHUDCommon.backwardCycle = false;
-                    GauntletHUDCommon.cooldown = GauntletHUDCommon.maxCooldown;
+                if (cooldown <= 0) {
+                    mc.getSoundManager().play(SimpleSoundInstance.forUI(ModSoundEvents.GAUNTLET_SCROLL, 1.0F));
+                    backwardCycle = false;
+                    cooldown = maxCooldown;
                 }
             } else {
                 yOffset = 0;
             }
-            guiGraphics.blit(GauntletHUDCommon.hud,xFixed, yFixed, 0, 0, 1 + 43 * yOffset, GauntletHUDCommon.TEX_WIDTH, GauntletHUDCommon.TEX_HEIGHT, 128, 128);
+            guiGraphics.blit(hud,xFixed, yFixed, 0, 0, 1 + 43 * yOffset, TEX_WIDTH, TEX_HEIGHT, 128, 128);
 
             int active = info.getInt(CGauntletItem.ACTIVE_POTION);
 
             int prev = active > 0 ? active - 1 : CGauntletItem.SLOTS - 1;
             int next = active < CGauntletItem.SLOTS - 1 ? active + 1 : 0;
 
-            GauntletHUDCommon.renderPotion(GauntletHUDCommon.prePotion, guiGraphics, xFixed + 3, yFixed + 21, GauntletHUDCommon.cooldowns[prev]);
-            GauntletHUDCommon.renderPotion(GauntletHUDCommon.activePotion, guiGraphics, xFixed + 51, yFixed + 5, GauntletHUDCommon.cooldowns[active]);
-            GauntletHUDCommon.renderPotion(GauntletHUDCommon.postPotion, guiGraphics, xFixed + 99, yFixed + 21, GauntletHUDCommon.cooldowns[next]);
+            renderPotion(prePotion, guiGraphics, xFixed + 3, yFixed + 21, cooldowns[prev]);
+            renderPotion(activePotion, guiGraphics, xFixed + 51, yFixed + 5, cooldowns[active]);
+            renderPotion(postPotion, guiGraphics, xFixed + 99, yFixed + 21, cooldowns[next]);
 
             if (potions == null) {
                 // reset
-                GauntletHUDCommon.init(null, null, null);
+                init(null, null, null);
                 return;
             }
-            GauntletHUDCommon.init(potions[0], potions[1], potions[2]);
+            init(potions[0], potions[1], potions[2]);
         }
     }
 

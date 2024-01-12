@@ -146,7 +146,7 @@ public class DavesPotioneeringClient {
         ItemStack held = player.getMainHandItem();
         if (held.isEmpty()) return false;
         if (held.getItem() instanceof CGauntletItem && player.isShiftKeyDown()) {
-            if (scrollDelta == 1.f) {
+            if (scrollDelta > 0) {
                 Services.PLATFORM.cycleGauntlet(true);
                 GauntletHUDCommon.backwardCycle();
             } else {

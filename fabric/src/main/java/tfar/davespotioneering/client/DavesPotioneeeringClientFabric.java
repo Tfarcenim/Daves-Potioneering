@@ -92,7 +92,7 @@ public class DavesPotioneeeringClientFabric implements ClientModInitializer {
     }
 
     public static boolean onMouseScroll(double scrollDelta) {
-        DavesPotioneeringClient.onMouseScroll(scrollDelta);
+        return DavesPotioneeringClient.onMouseScroll(scrollDelta);
     }
 
     public static void tooltips(ItemStack stack, TooltipFlag e2, List<Component> tooltip) {
