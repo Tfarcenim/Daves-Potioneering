@@ -5,8 +5,7 @@
   "refmap": "davespotioneering.refmap.json",
   "mixins": [
     "BrewingRecipeRegistryMixin",
-    "BrewingStandBlockEntityMixin",
-    "BrewingStandContainerMixin"
+    "BrewingStandBlockEntityMixin"
   ],
   "client": [
     "ItemOverrideListMixin"
