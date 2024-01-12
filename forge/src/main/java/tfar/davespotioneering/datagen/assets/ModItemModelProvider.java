@@ -30,8 +30,8 @@ public class ModItemModelProvider extends ItemModelProvider {
         makeSimpleBlockItem(ModItems.MAGIC_LECTERN);
         makeSimpleBlockItem(ModItems.POTION_INJECTOR);
 
-        otherGauntlets();
-        alchemicalGauntlet();
+      //  otherGauntlets();
+      //  alchemicalGauntlet();do not generate as we need to worry about fabric
 
         for (DyeColor dyeColor : DyeColor.values()) {
            classicUmbrella(dyeColor);
