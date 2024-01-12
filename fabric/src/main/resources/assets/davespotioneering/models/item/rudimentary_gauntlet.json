@@ -1,6 +1,4 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "davespotioneering:item/sprite/rudimentary_gauntlet"
-  }
+      "gui_light": "front",
+      "parent": "davespotioneering:item/3d/rudimentary_gauntlet"
 }
