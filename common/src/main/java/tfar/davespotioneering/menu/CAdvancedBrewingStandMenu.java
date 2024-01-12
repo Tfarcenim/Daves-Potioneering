@@ -7,6 +7,7 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.blockentity.CAdvancedBrewingStandBlockEntity;
 import tfar.davespotioneering.init.ModMenuTypes;
 import tfar.davespotioneering.inventory.BasicInventoryBridge;
@@ -106,6 +107,116 @@ public class CAdvancedBrewingStandMenu extends AbstractContainerMenu {
         }
 
         return itemstack;
+    }
+
+    /**
+     * Merges provided ItemStack with the first available one in the container/player inventor between minIndex
+     * (included) and maxIndex (excluded). Args : stack, minIndex, maxIndex, negativDirection. [!] the Container
+     * implementation do not check if the item is valid for the slot
+     *
+     */
+    protected boolean moveItemStackTo(ItemStack pStack, int pStartIndex, int pEndIndex, boolean pReverseDirection) {
+        if (DavesPotioneering.isFabric) {
+            return patchedMoveTo(this,pStack,pStartIndex,pEndIndex,pReverseDirection);
+        }
+        //don't use the patch on forge
+        return super.moveItemStackTo(pStack,pStartIndex,pEndIndex,pReverseDirection);
+    }
+
+
+    /**
+     *
+     *!!!this is required on fabric, but not forge
+     *
+     * @param menu
+     * @param pStack
+     * @param pStartIndex
+     * @param pEndIndex
+     * @param pReverseDirection
+     * @return
+     */
+    public static boolean patchedMoveTo(AbstractContainerMenu menu,ItemStack pStack, int pStartIndex, int pEndIndex, boolean pReverseDirection) {
+        boolean flag = false;
+        int i = pStartIndex;
+        if (pReverseDirection) {
+            i = pEndIndex - 1;
+        }
+
+        if (pStack.isStackable()) {
+            while(!pStack.isEmpty()) {
+                if (pReverseDirection) {
+                    if (i < pStartIndex) {
+                        break;
+                    }
+                } else if (i >= pEndIndex) {
+                    break;
+                }
+
+                Slot slot = menu.slots.get(i);
+                ItemStack itemstack = slot.getItem();
+                if (!itemstack.isEmpty() && ItemStack.isSameItemSameTags(pStack, itemstack)) {
+                    int j = itemstack.getCount() + pStack.getCount();
+                    int maxSize = Math.min(slot.getMaxStackSize(), pStack.getMaxStackSize());
+                    if (j <= maxSize) {
+                        pStack.setCount(0);
+                        itemstack.setCount(j);
+                        slot.setChanged();
+                        flag = true;
+                    } else if (itemstack.getCount() < maxSize) {
+                        pStack.shrink(maxSize - itemstack.getCount());
+                        itemstack.setCount(maxSize);
+                        slot.setChanged();
+                        flag = true;
+                    }
+                }
+
+                if (pReverseDirection) {
+                    --i;
+                } else {
+                    ++i;
+                }
+            }
+        }
+
+        if (!pStack.isEmpty()) {
+            if (pReverseDirection) {
+                i = pEndIndex - 1;
+            } else {
+                i = pStartIndex;
+            }
+
+            while(true) {
+                if (pReverseDirection) {
+                    if (i < pStartIndex) {
+                        break;
+                    }
+                } else if (i >= pEndIndex) {
+                    break;
+                }
+
+                Slot slot1 = menu.slots.get(i);
+                ItemStack itemstack1 = slot1.getItem();
+                if (itemstack1.isEmpty() && slot1.mayPlace(pStack)) {
+                    if (pStack.getCount() > slot1.getMaxStackSize()) {
+                        slot1.setByPlayer(pStack.split(slot1.getMaxStackSize()));
+                    } else {
+                        slot1.setByPlayer(pStack.split(pStack.getCount()));
+                    }
+
+                    slot1.setChanged();
+                    flag = true;
+                    break;
+                }
+
+                if (pReverseDirection) {
+                    --i;
+                } else {
+                    ++i;
+                }
+            }
+        }
+
+        return flag;
     }
 
     public int getFuel() {

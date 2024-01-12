@@ -19,6 +19,7 @@ import tfar.davespotioneering.duck.PlayerDuckFabric;
 import tfar.davespotioneering.inv.BrewingHandlerFabric;
 import tfar.davespotioneering.inv.PotionInjectorHandlerFabric;
 import tfar.davespotioneering.inventory.BasicInventoryBridge;
+import tfar.davespotioneering.inventory.SlightlyLargerPotionSlot;
 import tfar.davespotioneering.item.CGauntletItem;
 import tfar.davespotioneering.item.GauntletItemFabric;
 import tfar.davespotioneering.item.UmbrellaItem;
@@ -84,7 +85,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
 
     @Override
     public Slot makePotSlot(BasicInventoryBridge handle, int slot, int x, int y) {
-        return new BrewingStandMenu.PotionSlot((Container) handle,slot,x,y);
+        return new SlightlyLargerPotionSlot((Container) handle,slot,x,y);
     }
 
     @Override

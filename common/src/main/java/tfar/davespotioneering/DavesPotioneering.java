@@ -40,6 +40,7 @@ public class DavesPotioneering {
     public static final String MOD_NAME = "Dave's Potioneering";
     public static final Logger LOG = LoggerFactory.getLogger(MOD_NAME);
     public static final String MODID = "davespotioneering";
+    public static final boolean isFabric = Services.PLATFORM.getPlatformName().equals("Fabric");
 
     public static void earlySetup() {
         Services.PLATFORM.superRegister(ModBlocks.class,BuiltInRegistries.BLOCK, Block.class);

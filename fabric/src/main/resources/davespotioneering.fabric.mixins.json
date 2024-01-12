@@ -3,7 +3,8 @@
   "package": "tfar.davespotioneering.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "BrewingStandContainerMixin",
+    "BrewingStandBlockEntityMixin",
+    "BrewingStandMenuMixinFabric",
     "ItemAccess",
     "LivingEntityMixin",
     "PlayerMixinFabric",

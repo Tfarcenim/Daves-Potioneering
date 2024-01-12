@@ -106,6 +106,4 @@ public class CAdvancedBrewingStandBlock extends BrewingStandBlock {
     public BlockEntity newBlockEntity(BlockPos p_152698_, BlockState p_152699_) {
         return Services.PLATFORM.makeAdvancedBrewingStand(p_152698_, p_152699_);
     }
-
-
 }
