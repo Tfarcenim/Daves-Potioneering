@@ -14,6 +14,7 @@ import tfar.davespotioneering.blockentity.CPotionInjectorBlockEntity;
 import tfar.davespotioneering.blockentity.CReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.client.HudPreset;
 import tfar.davespotioneering.inventory.BasicInventoryBridge;
+import tfar.davespotioneering.inventory.RespectfulSlot;
 import tfar.davespotioneering.item.CGauntletItem;
 
 import java.util.Locale;
@@ -63,7 +64,7 @@ public interface IPlatformHelper {
     Item makeAgedUmbrella(Item.Properties builder,String style);
 
     default Slot makeBasic(BasicInventoryBridge handle,int slot,int x, int y) {
-        return new Slot((Container) handle,slot,x,y);
+        return new RespectfulSlot((Container) handle,slot,x,y);
     }
     Slot makeIngSlot(BasicInventoryBridge handle,int slot,int x, int y);
     Slot makePotSlot(BasicInventoryBridge handle,int slot,int x, int y);
