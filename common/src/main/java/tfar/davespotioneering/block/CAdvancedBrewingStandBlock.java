@@ -8,6 +8,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -17,6 +18,7 @@ import net.minecraft.world.level.block.BrewingStandBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import tfar.davespotioneering.Util;
@@ -82,6 +84,15 @@ public class CAdvancedBrewingStandBlock extends BrewingStandBlock {
             }
 
             super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
+        }
+    }
+
+    public void setPlacedBy(Level pLevel, BlockPos pPos, BlockState pState, LivingEntity pPlacer, ItemStack pStack) {
+        if (pStack.hasCustomHoverName()) {
+            BlockEntity blockentity = pLevel.getBlockEntity(pPos);
+            if (blockentity instanceof CAdvancedBrewingStandBlockEntity) {
+                ((CAdvancedBrewingStandBlockEntity)blockentity).setCustomName(pStack.getHoverName());
+            }
         }
     }
 

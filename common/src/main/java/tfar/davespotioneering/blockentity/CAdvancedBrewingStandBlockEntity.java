@@ -2,9 +2,11 @@ package tfar.davespotioneering.blockentity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -28,7 +30,12 @@ import tfar.davespotioneering.menu.CAdvancedBrewingStandMenu;
 
 import java.util.Arrays;
 
-public abstract class CAdvancedBrewingStandBlockEntity extends BlockEntity implements MenuProvider, BrewingStandDuck {
+public abstract class CAdvancedBrewingStandBlockEntity extends BlockEntity implements MenuProvider, Nameable, BrewingStandDuck {
+
+    public static final int FUEL_USES = 40;
+    public static final int DATA_BREW_TIME = 0;
+    public static final int DATA_FUEL_USES = 1;
+
 
     /** an array of the output slot indices */
 
@@ -42,6 +49,8 @@ public abstract class CAdvancedBrewingStandBlockEntity extends BlockEntity imple
     public static final int TIME = 200;
 
     protected int xp;
+    @Nullable
+    private Component name;
 
     public static final int SLOTS = POTIONS.length + INGREDIENTS.length + 1;
 
@@ -61,9 +70,9 @@ public abstract class CAdvancedBrewingStandBlockEntity extends BlockEntity imple
     protected final ContainerData data = new ContainerData() {
         public int get(int index) {
             switch(index) {
-                case 0:
+                case DATA_BREW_TIME:
                     return brewTime;
-                case 1:
+                case DATA_FUEL_USES:
                     return fuel;
                 default:
                     return 0;
@@ -72,10 +81,10 @@ public abstract class CAdvancedBrewingStandBlockEntity extends BlockEntity imple
 
         public void set(int index, int value) {
             switch(index) {
-                case 0:
+                case DATA_BREW_TIME:
                     brewTime = value;
                     break;
-                case 1:
+                case DATA_FUEL_USES:
                     fuel = value;
             }
 
@@ -90,9 +99,23 @@ public abstract class CAdvancedBrewingStandBlockEntity extends BlockEntity imple
         return Component.translatable("container.davespotioneering.compound_brewing");
     }
 
+    public void setCustomName(Component name) {
+        this.name = name;
+    }
+
+
+    public Component getName() {
+        return this.name != null ? this.name : this.getDefaultName();
+    }
+
     @Override
     public Component getDisplayName() {
-        return getDefaultName();
+        return this.getName();
+    }
+
+    @Nullable
+    public Component getCustomName() {
+        return this.name;
     }
 
     public BasicInventoryBridge getBrewingHandler() {
@@ -103,7 +126,7 @@ public abstract class CAdvancedBrewingStandBlockEntity extends BlockEntity imple
     public static void serverTick(Level p_155286_, BlockPos p_155287_, BlockState p_155288_, CAdvancedBrewingStandBlockEntity brewingStand) {
         ItemStack fuelStack = brewingStand.handler.$getStackInSlot(FUEL);
         if (brewingStand.fuel <= 0 && fuelStack.getItem() == Items.BLAZE_POWDER) {
-            brewingStand.fuel = 20;
+            brewingStand.fuel = FUEL_USES;
             fuelStack.shrink(1);
             brewingStand.setChanged();
         }
@@ -223,6 +246,9 @@ public abstract class CAdvancedBrewingStandBlockEntity extends BlockEntity imple
         this.fuel = nbt.getInt("Fuel");
         xp = nbt.getInt("xp");
         ContainerHelper.loadAllItems(nbt,handler.$getStacks());
+        if (nbt.contains("CustomName", Tag.TAG_STRING)) {
+            this.name = Component.Serializer.fromJson(nbt.getString("CustomName"));
+        }
     }
 
     @Override
@@ -232,5 +258,8 @@ public abstract class CAdvancedBrewingStandBlockEntity extends BlockEntity imple
         compound.putInt("Fuel", this.fuel);
         compound.putInt("xp",xp);
         ContainerHelper.saveAllItems(compound,handler.$getStacks());
+        if (this.name != null) {
+            compound.putString("CustomName", Component.Serializer.toJson(this.name));
+        }
     }
 }

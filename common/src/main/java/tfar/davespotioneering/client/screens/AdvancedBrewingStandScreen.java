@@ -33,18 +33,24 @@ public class AdvancedBrewingStandScreen extends AbstractContainerScreen<CAdvance
         this.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
+    @Override
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+        super.renderLabels(graphics, mouseX, mouseY);
+        graphics.drawString(this.font, menu.getFuel()+"", 20, 62, 0x404040, false);
+    }
+
     protected void renderBg(GuiGraphics matrixStack, float partialTicks, int x, int y) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
         matrixStack.blit(BREWING_STAND_GUI_TEXTURES,i, j, 0, 0, this.imageWidth, this.imageHeight);
         int fuel = this.menu.getFuel();
-        int l = Mth.clamp((18 * fuel + 20 - 1) / 20, 0, 18);
+        int fuelWidth = Mth.clamp((18 * fuel + 20 - 1) / CAdvancedBrewingStandBlockEntity.FUEL_USES, 0, 18);
 
         int y1 = 42;
 
-        if (l > 0) {
-            matrixStack.blit(BREWING_STAND_GUI_TEXTURES, i + 60, j + 28 + y1, 176, 29, l, 4);
+        if (fuelWidth > 0) {
+            matrixStack.blit(BREWING_STAND_GUI_TEXTURES, i + 60, j + 28 + y1, 176, 29, fuelWidth, 4);
         }
 
 
@@ -60,6 +66,5 @@ public class AdvancedBrewingStandScreen extends AbstractContainerScreen<CAdvance
                 matrixStack.blit(BREWING_STAND_GUI_TEXTURES, i + 63, j + y1 + 27 - length, 185, 29 - length, 12, length);
             }
         }
-
     }
 }

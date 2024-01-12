@@ -109,11 +109,11 @@ public class CAdvancedBrewingStandMenu extends AbstractContainerMenu {
     }
 
     public int getFuel() {
-        return this.data.get(1);
+        return this.data.get(CAdvancedBrewingStandBlockEntity.DATA_FUEL_USES);
     }
 
     public int getBrewTime() {
-        return this.data.get(0);
+        return this.data.get(CAdvancedBrewingStandBlockEntity.DATA_BREW_TIME);
     }
 
 }
