@@ -23,6 +23,7 @@ import tfar.davespotioneering.item.CGauntletItem;
 import tfar.davespotioneering.item.GauntletItemFabric;
 import tfar.davespotioneering.item.UmbrellaItem;
 import tfar.davespotioneering.net.C2SGauntletCyclePacket;
+import tfar.davespotioneering.net.C2SPotionInjector;
 import tfar.davespotioneering.net.ClientPacketHandler;
 import tfar.davespotioneering.net.PacketHandler;
 import tfar.davespotioneering.platform.services.IPlatformHelper;
@@ -101,6 +102,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
         ((PlayerDuckFabric)player).setGauntletCooldowns(cooldowns);
     }
 
+    //packets
     @Override
     public void syncGauntletCooldowns(Player player, int[] cooldowns) {
         PacketHandler.sendCooldowns((ServerPlayer) player,cooldowns);
@@ -109,6 +111,11 @@ public class FabricPlatformHelper implements IPlatformHelper {
     @Override
     public void cycleGauntlet(boolean up) {
         C2SGauntletCyclePacket.encode(up);
+    }
+
+    @Override
+    public void sendPotionInjectorButton(int id) {
+        C2SPotionInjector.send(id);
     }
 
     @Override

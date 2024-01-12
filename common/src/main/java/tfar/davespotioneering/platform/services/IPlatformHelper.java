@@ -84,6 +84,7 @@ public interface IPlatformHelper {
     //packets
     void syncGauntletCooldowns(Player player,int[] cooldowns);
     void cycleGauntlet(boolean up);
+    void sendPotionInjectorButton(int id);
 
     CGauntletItem makeGauntlet(Item.Properties properties);
 

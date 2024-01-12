@@ -1,14 +1,14 @@
-package tfar.davespotioneering.client;
+package tfar.davespotioneering.client.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 import tfar.davespotioneering.DavesPotioneering;
-import tfar.davespotioneering.blockentity.AdvancedBrewingStandBlockEntity;
+import tfar.davespotioneering.blockentity.CAdvancedBrewingStandBlockEntity;
 import tfar.davespotioneering.menu.CAdvancedBrewingStandMenu;
 
 public class AdvancedBrewingStandScreen extends AbstractContainerScreen<CAdvancedBrewingStandMenu> {
@@ -50,7 +50,7 @@ public class AdvancedBrewingStandScreen extends AbstractContainerScreen<CAdvance
 
         int brewTime = this.menu.getBrewTime();
         if (brewTime > 0) {
-            int length = (int)(28.0F * (1.0F - (float)brewTime / AdvancedBrewingStandBlockEntity.TIME));
+            int length = (int)(28.0F * (1.0F - (float)brewTime / CAdvancedBrewingStandBlockEntity.TIME));
             if (length > 0) {
                 matrixStack.blit(BREWING_STAND_GUI_TEXTURES, i + 97, j + y1, 176, 0, 9, length);
             }

@@ -1,4 +1,4 @@
-package tfar.davespotioneering.client;
+package tfar.davespotioneering.client.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
@@ -13,7 +13,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.menu.CPotionInjectorMenu;
-import tfar.davespotioneering.net.C2SPotionInjector;
+import tfar.davespotioneering.platform.Services;
 
 import java.util.function.Supplier;
 
@@ -24,7 +24,7 @@ public class PotionInjectorScreen extends AbstractContainerScreen<CPotionInjecto
         inventoryLabelY += 26;
     }
 
-    private static final ResourceLocation TEXTURES = new ResourceLocation(DavesPotioneering.MODID,"textures/gui/potion_injector.png");
+    private static final ResourceLocation GUI_TEXTURES = new ResourceLocation(DavesPotioneering.MODID,"textures/gui/potion_injector.png");
 
     public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
@@ -32,7 +32,6 @@ public class PotionInjectorScreen extends AbstractContainerScreen<CPotionInjecto
         this.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
-    protected static final Button.CreateNarration DEFAULT_NARRATION = Supplier::get;
 
 
     @Override
@@ -41,6 +40,9 @@ public class PotionInjectorScreen extends AbstractContainerScreen<CPotionInjecto
         int x = leftPos + 47;
         int y = topPos + 76;
         int w = 24;
+
+        final Button.CreateNarration DEFAULT_NARRATION = Supplier::get;
+
         addRenderableWidget(new Button(x,y,36,20,Component.literal("Strip"),this::strip,DEFAULT_NARRATION){
             @Override
             public void playDownSound(SoundManager handler) {
@@ -76,11 +78,11 @@ public class PotionInjectorScreen extends AbstractContainerScreen<CPotionInjecto
     }
 
     private void inject(Button b) {
-        C2SPotionInjector.send(0);
+        Services.PLATFORM.sendPotionInjectorButton(0);
     }
 
     private void strip(Button b) {
-        C2SPotionInjector.send(1);
+        Services.PLATFORM.sendPotionInjectorButton(1);
     }
 
     @Override
@@ -88,6 +90,6 @@ public class PotionInjectorScreen extends AbstractContainerScreen<CPotionInjecto
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
-        matrixStack.blit(TEXTURES, i, j, 0, 0, this.imageWidth, this.imageHeight);
+        matrixStack.blit(GUI_TEXTURES, i, j, 0, 0, this.imageWidth, this.imageHeight);
     }
 }

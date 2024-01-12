@@ -33,6 +33,7 @@ import tfar.davespotioneering.item.CGauntletItem;
 import tfar.davespotioneering.item.GauntletItem;
 import tfar.davespotioneering.item.UmbrellaItem;
 import tfar.davespotioneering.net.C2SGauntletCyclePacket;
+import tfar.davespotioneering.net.C2SPotionInjector;
 import tfar.davespotioneering.net.PacketHandler;
 import tfar.davespotioneering.net.S2CCooldownPacket;
 import tfar.davespotioneering.platform.services.IPlatformHelper;
@@ -149,6 +150,7 @@ public class ForgePlatformHelper implements IPlatformHelper {
         tag.putIntArray(CGauntletItem.COOLDOWNS, cooldowns);
     }
 
+    //packets
     @Override
     public void syncGauntletCooldowns(Player player, int[] cooldowns) {
         PacketHandler.sendToClient(new S2CCooldownPacket(cooldowns), (ServerPlayer) player);
@@ -157,6 +159,11 @@ public class ForgePlatformHelper implements IPlatformHelper {
     @Override
     public void cycleGauntlet(boolean up) {
         PacketHandler.sendToServer(new C2SGauntletCyclePacket(up));
+    }
+
+    @Override
+    public void sendPotionInjectorButton(int id) {
+        PacketHandler.sendToServer(new C2SPotionInjector(id));
     }
 
     @Override
