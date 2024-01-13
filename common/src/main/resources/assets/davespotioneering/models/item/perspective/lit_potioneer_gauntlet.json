@@ -2,7 +2,7 @@
   "gui_light": "front",
   "loader": "forge:separate_transforms",
   "base": {
-    "parent": "davespotioneering:item/3d/lit_potioneer_gauntlet_2"
+    "parent": "davespotioneering:item/3d/lit_potioneer_gauntlet"
   },
   "perspectives": {
     "gui": {
