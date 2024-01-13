@@ -17,8 +17,6 @@
     "BakedModelManagerAccess",
     "BakedModelManagerMixin",
     "ItemOverrideListMixin",
-    "ItemRendererMixin",
-    "ModelBakeryMixin",
     "MouseHelperMixin"
   ],
   "injectors": {

@@ -83,11 +83,8 @@ public class ForgeEvents {
     }
 
     public static void canApplyEffect(MobEffectEvent.Applicable e) {
-        LivingEntity entity = e.getEntity();
-        if (entity instanceof Player player) {
-            if (player.getUseItem().getItem() instanceof UmbrellaItem) {
-                e.setResult(Event.Result.DENY);
-            }
+        if (!DavesPotioneering.canApplyEffect(e.getEntity())) {
+            e.setResult(Event.Result.DENY);
         }
     }
 

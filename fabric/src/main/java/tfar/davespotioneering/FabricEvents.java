@@ -60,16 +60,4 @@ public class FabricEvents {
         }
         return InteractionResult.PASS;
     }
-
-
-
-    public static boolean canApplyEffect(LivingEntity entity) {
-        if (entity instanceof Player) {
-            Player player = (Player)entity;
-            if (player.getUseItem().getItem() instanceof UmbrellaItem) {
-                return false;
-            }
-        }
-        return true;
-    }
 }

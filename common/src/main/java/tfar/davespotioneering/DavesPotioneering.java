@@ -5,6 +5,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.BrewingStandMenu;
@@ -19,6 +20,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
 import tfar.davespotioneering.duck.BrewingStandDuck;
 import tfar.davespotioneering.init.*;
+import tfar.davespotioneering.item.CUmbrellaItem;
 import tfar.davespotioneering.menu.CAdvancedBrewingStandMenu;
 import tfar.davespotioneering.mixin.BlockEntityTypeAcces;
 import tfar.davespotioneering.mixin.BrewingStandContainerAccess;
@@ -102,4 +104,12 @@ public class DavesPotioneering {
         }
     }
 
+    public static boolean canApplyEffect(LivingEntity entity) {
+        if (entity instanceof Player player) {
+            if (player.getUseItem().getItem() instanceof CUmbrellaItem) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
