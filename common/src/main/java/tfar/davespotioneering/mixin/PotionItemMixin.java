@@ -10,7 +10,6 @@ public class PotionItemMixin {
 
     /**
      * @author Tfar
-     * @reason to change potion drinking times
      * @param stack
      * @return
      */
