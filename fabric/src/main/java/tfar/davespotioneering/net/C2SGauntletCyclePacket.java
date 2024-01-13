@@ -8,7 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
-import tfar.davespotioneering.item.GauntletItemFabric;
+import tfar.davespotioneering.item.CGauntletItem;
 
 public class C2SGauntletCyclePacket implements ServerPlayNetworking.PlayChannelHandler {
 
@@ -26,9 +26,9 @@ public class C2SGauntletCyclePacket implements ServerPlayNetworking.PlayChannelH
     public void handle(ServerPlayer player, boolean up) {
         player.getServer().execute(() -> {
             if (up) {
-                GauntletItemFabric.cycleGauntletForward(player);
+                CGauntletItem.cycleGauntletForward(player);
             } else {
-                GauntletItemFabric.cycleGauntletBackward(player);
+                CGauntletItem.cycleGauntletBackward(player);
             }
         });
     }

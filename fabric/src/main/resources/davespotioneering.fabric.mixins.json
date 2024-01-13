@@ -14,9 +14,10 @@
     "ServerPlayerInteractionManagerMixin"
   ],
   "client": [
-    "BakedModelManagerAccess",
     "BakedModelManagerMixin",
+    "BakedOverrideAccessor",
     "ItemOverrideListMixin",
+    "ItemOverridesAccessor",
     "MouseHelperMixin"
   ],
   "injectors": {

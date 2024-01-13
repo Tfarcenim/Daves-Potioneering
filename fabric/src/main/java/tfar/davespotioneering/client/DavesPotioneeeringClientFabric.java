@@ -70,7 +70,8 @@ public class DavesPotioneeeringClientFabric implements ClientModInitializer {
 
         BlockEntityRenderers.register(ModBlockEntityTypes.POTION_INJECTOR, PotionInjectorRenderer::new);
 
-        ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(ClientHooks.RUDIMENTARY_3D,ClientHooks.NETHERITE_3D));
+        ModelLoadingPlugin.register(pluginContext ->
+                pluginContext.addModels(ClientHooks.RUDIMENTARY_3D,ClientHooks.NETHERITE_3D,ClientHooks.POTIONEER_SPRITE,ClientHooks.LIT_POTIONEER_SPRITE));
 
         //BuiltinItemRendererRegistry.INSTANCE.register(ModItems.AGED_UMBRELLA,createAgedUmbrellaItemStackRenderer());
         ClientPacketHandler.registerClientMessages();

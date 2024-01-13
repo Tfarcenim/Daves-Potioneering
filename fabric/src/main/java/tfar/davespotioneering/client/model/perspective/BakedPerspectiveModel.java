@@ -75,8 +75,9 @@ public class BakedPerspectiveModel extends ForwardingBakedModel {
     @Override
     public void emitItemQuads(ItemStack stack, Supplier<RandomSource> randomSupplier, RenderContext context) {
         ItemDisplayContext itemDisplayContext = context.itemTransformationMode();
-        if (perspectives.containsKey(itemDisplayContext)) {
-            perspectives.get(itemDisplayContext).emitItemQuads(stack, randomSupplier, context);
+        BakedModel perspectiveModel = perspectives.get(itemDisplayContext);
+        if (perspectiveModel != null) {
+            perspectiveModel.emitItemQuads(stack, randomSupplier, context);
         } else {
             super.emitItemQuads(stack, randomSupplier, context);
         }

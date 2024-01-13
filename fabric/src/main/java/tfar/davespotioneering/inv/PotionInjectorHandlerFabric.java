@@ -1,11 +1,10 @@
 package tfar.davespotioneering.inv;
 
-import tfar.davespotioneering.item.GauntletItemFabric;
-
 import javax.annotation.Nonnull;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import tfar.davespotioneering.item.CGauntletItem;
 
 public class PotionInjectorHandlerFabric extends BridgedSimpleContainer {
 
@@ -27,7 +26,7 @@ public class PotionInjectorHandlerFabric extends BridgedSimpleContainer {
             case 5:
                 return stack.getItem() == Items.LINGERING_POTION;
             case GAUNTLET:
-                return stack.getItem() instanceof GauntletItemFabric;
+                return stack.getItem() instanceof CGauntletItem;
             case BLAZE:
                 return stack.getItem() == Items.BLAZE_POWDER;
         }

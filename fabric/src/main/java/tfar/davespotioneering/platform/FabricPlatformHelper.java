@@ -10,6 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.BrewingStandMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.block.state.BlockState;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.DavesPotioneeringFabric;
@@ -21,11 +22,9 @@ import tfar.davespotioneering.inv.PotionInjectorHandlerFabric;
 import tfar.davespotioneering.inventory.BasicInventoryBridge;
 import tfar.davespotioneering.inventory.SlightlyLargerPotionSlot;
 import tfar.davespotioneering.item.CGauntletItem;
-import tfar.davespotioneering.item.GauntletItemFabric;
 import tfar.davespotioneering.item.UmbrellaItem;
 import tfar.davespotioneering.net.C2SGauntletCyclePacket;
 import tfar.davespotioneering.net.C2SPotionInjector;
-import tfar.davespotioneering.net.ClientPacketHandler;
 import tfar.davespotioneering.net.PacketHandler;
 import tfar.davespotioneering.platform.services.IPlatformHelper;
 import net.fabricmc.loader.api.FabricLoader;
@@ -146,7 +145,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
 
     @Override
     public CGauntletItem makeGauntlet(Item.Properties properties) {
-        return new GauntletItemFabric(properties);
+        return new CGauntletItem(Tiers.NETHERITE, 4, -2.8f, properties);
     }
 
     @Override
