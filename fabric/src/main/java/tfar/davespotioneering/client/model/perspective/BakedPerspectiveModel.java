@@ -31,106 +31,30 @@ public class BakedPerspectiveModel extends ForwardingBakedModel {
     }
 
     public static ItemTransforms createPerspectiveTransforms(BakedModel base,ImmutableMap<ItemDisplayContext, BakedModel> perspectives) {
-        ItemTransforms transforms = new ItemTransforms(base.getTransforms());
+        ItemTransforms baseTransforms = base.getTransforms();
 
-        if (perspectives.containsKey(ItemDisplayContext.THIRD_PERSON_LEFT_HAND)) {
-            transforms = new ItemTransforms(
-                    perspectives.get(ItemDisplayContext.THIRD_PERSON_LEFT_HAND).getTransforms().thirdPersonLeftHand,
-                    transforms.thirdPersonRightHand,
-                    transforms.firstPersonLeftHand,
-                    transforms.firstPersonRightHand,
-                    transforms.head,
-                    transforms.gui,
-                    transforms.ground,
-                    transforms.fixed);
-        }
+        baseTransforms = new ItemTransforms(
+                perspectives.containsKey(ItemDisplayContext.THIRD_PERSON_LEFT_HAND) ?
+                        perspectives.get(ItemDisplayContext.THIRD_PERSON_LEFT_HAND).getTransforms().thirdPersonLeftHand : baseTransforms.thirdPersonLeftHand,
 
-        if (perspectives.containsKey(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND)) {
-            transforms = new ItemTransforms(
-                    transforms.thirdPersonLeftHand,
-                    perspectives.get(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND).getTransforms().thirdPersonRightHand,
-                    transforms.firstPersonLeftHand,
-                    transforms.firstPersonRightHand,
-                    transforms.head,
-                    transforms.gui,
-                    transforms.ground,
-                    transforms.fixed);
-        }
+                perspectives.containsKey(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND) ?
+                        perspectives.get(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND).getTransforms().thirdPersonRightHand : baseTransforms.thirdPersonRightHand,
 
-        if (perspectives.containsKey(ItemDisplayContext.FIRST_PERSON_LEFT_HAND)) {
-            transforms = new ItemTransforms(
-                    transforms.thirdPersonLeftHand,
-                    transforms.thirdPersonRightHand,
-                    perspectives.get(ItemDisplayContext.FIRST_PERSON_LEFT_HAND).getTransforms().firstPersonLeftHand,
-                    transforms.firstPersonRightHand,
-                    transforms.head,
-                    transforms.gui,
-                    transforms.ground,
-                    transforms.fixed);
-        }
+                perspectives.containsKey(ItemDisplayContext.FIRST_PERSON_LEFT_HAND) ?
+                        perspectives.get(ItemDisplayContext.FIRST_PERSON_LEFT_HAND).getTransforms().firstPersonLeftHand : baseTransforms.firstPersonLeftHand,
 
-        if (perspectives.containsKey(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND)) {
-            transforms = new ItemTransforms(
-                    transforms.thirdPersonLeftHand,
-                    transforms.thirdPersonRightHand,
-                    transforms.firstPersonLeftHand,
-                    perspectives.get(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND).getTransforms().firstPersonRightHand,
-                    transforms.head,
-                    transforms.gui,
-                    transforms.ground,
-                    transforms.fixed);
-        }
+                perspectives.containsKey(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND) ?
+                        perspectives.get(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND).getTransforms().firstPersonRightHand : baseTransforms.firstPersonRightHand,
 
-        if (perspectives.containsKey(ItemDisplayContext.HEAD)) {
-            transforms = new ItemTransforms(
-                    transforms.thirdPersonLeftHand,
-                    transforms.thirdPersonRightHand,
-                    transforms.firstPersonLeftHand,
-                    transforms.firstPersonRightHand,
-                    perspectives.get(ItemDisplayContext.HEAD).getTransforms().head,
-                    transforms.gui,
-                    transforms.ground,
-                    transforms.fixed);
-        }
+                perspectives.containsKey(ItemDisplayContext.HEAD) ? perspectives.get(ItemDisplayContext.HEAD).getTransforms().head : baseTransforms.head,
 
-        if (perspectives.containsKey(ItemDisplayContext.GUI)) {
-            transforms = new ItemTransforms(
-                    transforms.thirdPersonLeftHand,
-                    transforms.thirdPersonRightHand,
-                    transforms.firstPersonLeftHand,
-                    transforms.firstPersonRightHand,
-                    transforms.head,
-                    perspectives.get(ItemDisplayContext.GUI).getTransforms().gui,
-                    transforms.ground,
-                    transforms.fixed);
-        }
+                perspectives.containsKey(ItemDisplayContext.GUI) ? perspectives.get(ItemDisplayContext.GUI).getTransforms().gui : baseTransforms.gui,
 
+                perspectives.containsKey(ItemDisplayContext.GROUND) ? perspectives.get(ItemDisplayContext.GROUND).getTransforms().ground : baseTransforms.ground,
 
-        if (perspectives.containsKey(ItemDisplayContext.GROUND)) {
-            transforms = new ItemTransforms(
-                    transforms.thirdPersonLeftHand,
-                    transforms.thirdPersonRightHand,
-                    transforms.firstPersonLeftHand,
-                    transforms.firstPersonRightHand,
-                    transforms.head,
-                    transforms.gui,
-                    perspectives.get(ItemDisplayContext.GROUND).getTransforms().ground,
-                    transforms.fixed);
-        }
+                perspectives.containsKey(ItemDisplayContext.FIXED) ? perspectives.get(ItemDisplayContext.FIXED).getTransforms().fixed : baseTransforms.fixed);
 
-        if (perspectives.containsKey(ItemDisplayContext.FIXED)) {
-            transforms = new ItemTransforms(
-                    transforms.thirdPersonLeftHand,
-                    transforms.thirdPersonRightHand,
-                    transforms.firstPersonLeftHand,
-                    transforms.firstPersonRightHand,
-                    transforms.head,
-                    transforms.gui,
-                    transforms.ground,
-                    perspectives.get(ItemDisplayContext.FIXED).getTransforms().fixed);
-        }
-
-        return transforms;
+        return baseTransforms;
     }
 
     @Override
