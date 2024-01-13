@@ -30,7 +30,15 @@ public class ModItemModelProvider extends ItemModelProvider {
         makeSimpleBlockItem(ModItems.MAGIC_LECTERN);
         makeSimpleBlockItem(ModItems.POTION_INJECTOR);
 
-      //  otherGauntlets();
+        makeSpriteModel("rudimentary_gauntlet");
+        makeSpriteModel("netherite_gauntlet");
+
+        String s = "potioneer_gauntlet";
+
+        makeSpriteModel(s);
+        makeSpriteModel("lit_"+s);
+
+        //  otherGauntlets();
       //  alchemicalGauntlet();do not generate as we need to worry about fabric
 
         for (DyeColor dyeColor : DyeColor.values()) {
@@ -68,13 +76,18 @@ public class ModItemModelProvider extends ItemModelProvider {
         perspectiveGauntlet("netherite_gauntlet");
     }
 
+    protected ItemModelBuilder makeSpriteModel(String name) {
+        return getBuilder("item/sprite/" + name)
+                .parent(getExistingFile(mcLoc("item/generated")))
+                .texture("layer0", "item/sprite/" + name);
+
+    }
+
     private void perspectiveGauntlet(String name) {
         ItemModelBuilder r3dFile = nested()
                 .parent(getExistingFile(modLoc("item/3d/" + name)));
 
-        ItemModelBuilder rSpriteFile = getBuilder("sprite/" + name)
-                .parent(getExistingFile(mcLoc("item/generated")))
-                .texture("layer0", "item/sprite/" + name);
+        ItemModelBuilder rSpriteFile = makeSpriteModel(name);
 
         getBuilder(name).guiLight(BlockModel.GuiLight.FRONT)
                 .customLoader(SeparateTransformsModelBuilder::begin).base(rSpriteFile)

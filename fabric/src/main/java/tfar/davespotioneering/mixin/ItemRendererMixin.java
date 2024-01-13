@@ -19,11 +19,11 @@ public class ItemRendererMixin {
 
     @Shadow @Final private ItemModelShaper itemModelShaper;
 
-    @ModifyVariable(method = "render"
-    ,at = @At(value = "INVOKE",target = "Lnet/minecraft/client/renderer/block/model/ItemTransforms;getTransform(Lnet/minecraft/world/item/ItemDisplayContext;)Lnet/minecraft/client/renderer/block/model/ItemTransform;"), argsOnly = true)
-    private BakedModel modified(BakedModel model, ItemStack stack, ItemDisplayContext renderMode, boolean leftHanded, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay, BakedModel model1) {
-        return ClientHooks.modifyModel(model, stack,renderMode,leftHanded,matrices,vertexConsumers,light,overlay,this.itemModelShaper);
-    }
+   // @ModifyVariable(method = "render"
+  //  ,at = @At(value = "INVOKE",target = "Lnet/minecraft/client/renderer/block/model/ItemTransforms;getTransform(Lnet/minecraft/world/item/ItemDisplayContext;)Lnet/minecraft/client/renderer/block/model/ItemTransform;"), argsOnly = true)
+  //  private BakedModel modified(BakedModel model, ItemStack stack, ItemDisplayContext renderMode, boolean leftHanded, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay, BakedModel model1) {
+  //      return ClientHooks.modifyModel(model, stack,renderMode,leftHanded,matrices,vertexConsumers,light,overlay,this.itemModelShaper);
+  //  }
 
    /* @ModifyVariable(
             method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",

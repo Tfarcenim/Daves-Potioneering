@@ -1,4 +1,3 @@
 {
-      "gui_light": "front",
-      "parent": "davespotioneering:item/3d/netherite_gauntlet"
+      "parent": "davespotioneering:item/sprite/netherite_gauntlet"
 }

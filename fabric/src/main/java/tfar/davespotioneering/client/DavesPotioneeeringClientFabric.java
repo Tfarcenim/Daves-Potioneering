@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
@@ -37,9 +38,9 @@ import tfar.davespotioneering.net.ClientPacketHandler;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class DavesPotioneeeringClientFabric implements ClientModInitializer {
-
 
     @Override
     public void onInitializeClient() {
@@ -68,6 +69,9 @@ public class DavesPotioneeeringClientFabric implements ClientModInitializer {
         MenuScreens.register(ModMenuTypes.ALCHEMICAL_GAUNTLET, PotionInjectorScreen::new);
 
         BlockEntityRenderers.register(ModBlockEntityTypes.POTION_INJECTOR, PotionInjectorRenderer::new);
+
+        ModelLoadingPlugin.register(pluginContext -> pluginContext.addModels(ClientHooks.RUDIMENTARY_3D,ClientHooks.NETHERITE_3D));
+
         //BuiltinItemRendererRegistry.INSTANCE.register(ModItems.AGED_UMBRELLA,createAgedUmbrellaItemStackRenderer());
         ClientPacketHandler.registerClientMessages();
     }

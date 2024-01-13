@@ -21,9 +21,11 @@ public class ModelBakeryMixin {
 
     @Shadow @Final private Map<ResourceLocation, UnbakedModel> topLevelModels;
 
+    @Shadow @Final public static ModelResourceLocation MISSING_MODEL_LOCATION;
+
     @Inject(method = "loadTopLevel",at = @At("RETURN"))
     private void injectedModels(ModelResourceLocation modelId, CallbackInfo ci) {
-        if (modelId.getPath().contains("trident_in_hand")) {
+        if (modelId == MISSING_MODEL_LOCATION) {
             ClientHooks.injectCustomModels((ModelBakery)(Object)this, unbakedCache, topLevelModels);
         }
     }
