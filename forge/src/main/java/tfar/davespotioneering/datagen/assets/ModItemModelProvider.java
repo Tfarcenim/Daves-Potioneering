@@ -41,6 +41,18 @@ public class ModItemModelProvider extends ItemModelProvider {
         //  otherGauntlets();
       //  alchemicalGauntlet();do not generate as we need to worry about fabric
 
+
+        ModelFile unlitFile = new ModelFile.UncheckedModelFile(modLoc("item/perspective/" + s));
+
+        ModelFile litFile = new ModelFile.UncheckedModelFile(modLoc("item/perspective/lit_" + s));
+        ModelFile GENERATE = getExistingFile(mcLoc("item/generated"));
+
+        getBuilder(s).parent(GENERATE)
+                .override().model(unlitFile).predicate(mcLoc("active"), 0).end()
+                .override().model(litFile).predicate(mcLoc("active"), 1).end();
+
+
+
         for (DyeColor dyeColor : DyeColor.values()) {
            classicUmbrella(dyeColor);
         }
@@ -102,18 +114,20 @@ public class ModItemModelProvider extends ItemModelProvider {
 
         String s = "potioneer_gauntlet";
 
-        ModelFile GENERATE = getExistingFile(mcLoc("item/generated"));
-
-        getBuilder("item/sprite/"+s).parent(GENERATE).texture("layer0",modLoc("item/sprite/"+s));
-        getBuilder("item/sprite/lit_"+s).parent(GENERATE).texture("layer0",modLoc("item/sprite/lit_"+s));
-
         ModelFile unlitFile = getExistingFile(modLoc("item/perspective/" + s));
 
         ModelFile litFile = getExistingFile(modLoc("item/perspective/lit_" + s));
+        ModelFile GENERATE = getExistingFile(mcLoc("item/generated"));
 
         getBuilder(s).parent(GENERATE)
                 .override().model(unlitFile).predicate(mcLoc("active"), 0).end()
                 .override().model(litFile).predicate(mcLoc("active"), 1).end();
+
+
+        getBuilder("item/sprite/"+s).parent(GENERATE).texture("layer0",modLoc("item/sprite/"+s));
+        getBuilder("item/sprite/lit_"+s).parent(GENERATE).texture("layer0",modLoc("item/sprite/lit_"+s));
+
+
     }
 
     protected void makeSimpleBlockItem(Item item, ResourceLocation loc) {

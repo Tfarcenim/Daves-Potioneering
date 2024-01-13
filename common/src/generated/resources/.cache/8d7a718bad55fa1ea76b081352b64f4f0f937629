@@ -1,4 +1,4 @@
-// 1.20.1	2024-01-12T15:37:02.9805616	Item Models: davespotioneering
+// 1.20.1	2024-01-13T04:34:22.5237767	Item Models: davespotioneering
 ea7126a2a96786f08e6a2fc3b4b92f9570b365a5 assets/davespotioneering/models/item/aged_umbrella.json
 d48537427f674f9583af4fd3ef53af1906d6c7f4 assets/davespotioneering/models/item/black_umbrella.json
 45a4d34d5d5cd1929123a4fc2a9259cd09d63508 assets/davespotioneering/models/item/blue_umbrella.json
@@ -51,6 +51,7 @@ e29f01e11306ff1fa7c48b7874bb4b42081c6148 assets/davespotioneering/models/item/li
 690f0a705187c6667a24787ed7b78e5e5be4a3f5 assets/davespotioneering/models/item/open_yellow_umbrella.json
 7d0267cf287521de1422e1d200f5e0a7cc93cf34 assets/davespotioneering/models/item/orange_umbrella.json
 088cc548d129b95f0e0918da32c43af4f484f4ed assets/davespotioneering/models/item/pink_umbrella.json
+04fde3b5faf7d502659f51948383f3c68ed0be6b assets/davespotioneering/models/item/potioneer_gauntlet.json
 2e4d517b20712e22a13aa3fc884a356fa805c443 assets/davespotioneering/models/item/potion_injector.json
 d4f12ec1440d18e33450990a1f126e78247b9433 assets/davespotioneering/models/item/purple_umbrella.json
 b600374006de7609addc7856fc6b18331567b364 assets/davespotioneering/models/item/red_umbrella.json
