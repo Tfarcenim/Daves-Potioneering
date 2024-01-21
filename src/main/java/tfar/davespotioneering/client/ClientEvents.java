@@ -22,6 +22,7 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
@@ -35,6 +36,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
+import net.minecraft.world.World;
 import org.lwjgl.glfw.GLFW;
 import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.block.LayeredReinforcedCauldronBlock;
@@ -49,6 +51,7 @@ import tfar.davespotioneering.item.GauntletItem;
 import tfar.davespotioneering.mixin.ParticleManagerAccess;
 import tfar.davespotioneering.net.C2SGauntletCyclePacket;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Locale;
 
@@ -135,6 +138,16 @@ public class ClientEvents implements ClientModInitializer {
 
     public static final UnclampedModelPredicateProvider GAUNTLET = (stack, level, entity, i) -> stack.hasNbt() ? stack.getNbt().getBoolean("active") ? 1 : 0 : 0;
 
+    public static final UnclampedModelPredicateProvider BLOCKING = (stack, world, entity,i) -> entity != null && entity.isUsingItem() && entity.getActiveItem() == stack ? 1.0F : 0.0F;
+
+    public static ItemStack itemStack;
+    public static WeakReference<World> level;
+    public static WeakReference<LivingEntity> player;
+    public static int seed;
+
+    public static float computeBlockingOverride() {
+        return BLOCKING.unclampedCall(itemStack,(ClientWorld) level.get(), player.get(), seed);
+    }
 
     public static BuiltinItemRendererRegistry.DynamicItemRenderer umbrella(String s) {
         return createGeoClassicUmbrellaItemStackRenderer(s);
@@ -221,8 +234,7 @@ public class ClientEvents implements ClientModInitializer {
     }
 
     private static void registerBlockingProperty(Item item) {
-        ModelPredicateProviderRegistry.register(item, new Identifier("blocking"),
-                (stack, world, entity,i) -> entity != null && entity.isUsingItem() && entity.getActiveItem() == stack ? 1.0F : 0.0F);
+        ModelPredicateProviderRegistry.register(item, new Identifier("blocking"), BLOCKING);
     }
 
     public static void gauntletHud(MatrixStack matrixStack, float tickDelta) {

@@ -25,7 +25,6 @@
     "BakedModelManagerMixin",
     "BakedQuadAccess",
     "IngameGuiAccess",
-    "ItemOverrideListMixin",
     "ItemRendererMixin",
     "ModelBakeryMixin",
     "ModelOverrideListMixin",

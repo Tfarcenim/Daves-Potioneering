@@ -6,6 +6,7 @@ import net.minecraft.client.render.entity.model.EntityModelLoader;
 import net.minecraft.util.Identifier;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
+import tfar.davespotioneering.client.ClientEvents;
 
 import java.util.function.Function;
 
@@ -22,10 +23,9 @@ public class DoubleGeoItemStackRenderer<T extends IAnimatable> extends GeoItemSt
         this.modelProvider2 = modelProvider2;
     }
 
-    public static final ThreadLocal<Float> override = ThreadLocal.withInitial(() -> 0f);
-
     @Override
     public AnimatedGeoModel<T> getGeoModelProvider() {
-        return override.get() == 1 ? modelProvider2 : modelProvider;
+        float override = ClientEvents.computeBlockingOverride();
+        return override > 0 ? modelProvider2 : modelProvider;
     }
 }
