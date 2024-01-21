@@ -8,6 +8,7 @@ import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
@@ -21,6 +22,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.*;
@@ -42,6 +44,8 @@ import tfar.davespotioneering.mixin.ParticleManagerAccess;
 import tfar.davespotioneering.net.C2SGauntletCyclePacket;
 import tfar.davespotioneering.net.PacketHandler;
 
+import java.lang.ref.WeakReference;
+
 public class ClientEvents {
 
     public static void particle(RegisterParticleProvidersEvent e) {
@@ -55,6 +59,17 @@ public class ClientEvents {
 
     public static void registerLoader(final ModelEvent.RegisterGeometryLoaders event) {
       //  event.register("fullbright", ModelLoader.INSTANCE);
+    }
+
+    public static ItemStack itemStack;
+    public static WeakReference<Level> level;
+    public static WeakReference<LivingEntity> player;
+    public static int seed;
+
+    public static final ClampedItemPropertyFunction BLOCKING = (stack, world, entity, i) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F;
+
+    public static float computeBlockingOverride() {
+        return BLOCKING.unclampedCall(itemStack,(ClientLevel) level.get(), player.get(), seed);
     }
 
     public static void onMouseInput(InputEvent.MouseButton e) {
