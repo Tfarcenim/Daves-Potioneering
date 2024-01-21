@@ -22,7 +22,6 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
-import tfar.davespotioneering.DavesPotioneeringClient;
 import tfar.davespotioneering.client.model.gecko.DoubleGeoItemStackRenderer;
 import tfar.davespotioneering.client.model.gecko.GeoItemModel;
 import tfar.davespotioneering.client.particle.FastDripParticle;
@@ -38,7 +37,6 @@ import tfar.davespotioneering.net.ClientPacketHandler;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 public class DavesPotioneeeringClientFabric implements ClientModInitializer {
 

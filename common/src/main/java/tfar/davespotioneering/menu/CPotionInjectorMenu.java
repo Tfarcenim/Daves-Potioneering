@@ -13,6 +13,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
+import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.PotionUtils2;
 import tfar.davespotioneering.blockentity.CPotionInjectorBlockEntity;
 import tfar.davespotioneering.init.ModMenuTypes;
@@ -191,6 +192,20 @@ public class CPotionInjectorMenu extends AbstractContainerMenu {
                 nbt.remove(CGauntletItem.BLAZE);
             }
         }
+    }
+
+    /**
+     * Merges provided ItemStack with the first available one in the container/player inventor between minIndex
+     * (included) and maxIndex (excluded). Args : stack, minIndex, maxIndex, negativDirection. [!] the Container
+     * implementation do not check if the item is valid for the slot
+     *
+     */
+    protected boolean moveItemStackTo(ItemStack pStack, int pStartIndex, int pEndIndex, boolean pReverseDirection) {
+        if (DavesPotioneering.isFabric) {
+            return CAdvancedBrewingStandMenu.patchedMoveTo(this,pStack,pStartIndex,pEndIndex,pReverseDirection);
+        }
+        //don't use the patch on forge
+        return super.moveItemStackTo(pStack,pStartIndex,pEndIndex,pReverseDirection);
     }
 
     public SoundTy getSound(boolean inject) {

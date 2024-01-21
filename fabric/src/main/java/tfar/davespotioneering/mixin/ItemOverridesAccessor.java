@@ -11,7 +11,4 @@ public interface ItemOverridesAccessor {
     @Accessor
     ItemOverrides.BakedOverride[] getOverrides();
 
-    @Accessor @Mutable
-    void setOverrides(ItemOverrides.BakedOverride[] overrides);
-
 }

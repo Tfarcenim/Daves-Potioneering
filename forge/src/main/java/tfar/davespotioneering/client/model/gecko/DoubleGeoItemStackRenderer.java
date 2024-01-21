@@ -4,6 +4,7 @@ import net.minecraft.world.item.Item;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
+import tfar.davespotioneering.client.DavesPotioneeringClient;
 
 public class DoubleGeoItemStackRenderer<T extends Item & GeoAnimatable> extends GeoItemRenderer<T> {
 
@@ -14,9 +15,8 @@ public class DoubleGeoItemStackRenderer<T extends Item & GeoAnimatable> extends 
         this.modelProvider2 = modelProvider2;
     }
 
-    public static final ThreadLocal<Float> override = ThreadLocal.withInitial(() -> 1f);
-
     public GeoModel<T> getGeoModel() {
-        return override.get() == 1 ? modelProvider2 : model;
+        float override = DavesPotioneeringClient.computeBlockingOverride();
+        return override > 0 ? modelProvider2 : model;
     }
 }

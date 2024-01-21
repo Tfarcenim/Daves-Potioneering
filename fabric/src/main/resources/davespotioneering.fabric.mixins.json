@@ -16,7 +16,6 @@
   "client": [
     "BakedModelManagerMixin",
     "BakedOverrideAccessor",
-    "ItemOverrideListMixin",
     "ItemOverridesAccessor",
     "MouseHelperMixin"
   ],

@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.jetbrains.annotations.NotNull;
 import tfar.davespotioneering.item.CGauntletItem;
 
 public class PotionInjectorHandlerFabric extends BridgedSimpleContainer {
@@ -31,5 +32,10 @@ public class PotionInjectorHandlerFabric extends BridgedSimpleContainer {
                 return stack.getItem() == Items.BLAZE_POWDER;
         }
         return super.canPlaceItem(slot, stack);
+    }
+
+    @Override
+    public int getSlotLimit(int slot) {
+        return slot == BLAZE ? super.getSlotLimit(slot) : 1;
     }
 }

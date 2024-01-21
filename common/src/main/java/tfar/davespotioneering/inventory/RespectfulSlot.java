@@ -13,6 +13,11 @@ public class RespectfulSlot extends Slot {
     }
 
     @Override
+    public int getMaxStackSize() {
+        return ((BasicInventoryBridge)container).$getSlotLimit(slotIndex);
+    }
+
+    @Override
     public boolean mayPlace(ItemStack stack) {
         return container.canPlaceItem(slotIndex, stack);
     }

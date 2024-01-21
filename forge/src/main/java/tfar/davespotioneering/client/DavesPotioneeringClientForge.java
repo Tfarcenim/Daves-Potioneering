@@ -17,7 +17,6 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import tfar.davespotioneering.DavesPotioneering;
-import tfar.davespotioneering.DavesPotioneeringClient;
 import tfar.davespotioneering.ModConfig;
 import tfar.davespotioneering.Util;
 import tfar.davespotioneering.client.particle.FastDripParticle;

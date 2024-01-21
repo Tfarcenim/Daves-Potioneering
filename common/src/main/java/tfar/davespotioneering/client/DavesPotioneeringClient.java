@@ -1,4 +1,4 @@
-package tfar.davespotioneering;
+package tfar.davespotioneering.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
@@ -6,7 +6,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.EffectInstance;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.particles.ParticleOptions;
@@ -14,22 +13,23 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import org.lwjgl.glfw.GLFW;
+import tfar.davespotioneering.DavesPotioneering;
 import tfar.davespotioneering.blockentity.CReinforcedCauldronBlockEntity;
-import tfar.davespotioneering.client.GauntletHUDCommon;
-import tfar.davespotioneering.client.GauntletHUDMovementScreen;
-import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.init.ModItems;
 import tfar.davespotioneering.init.ModParticleTypes;
 import tfar.davespotioneering.item.CGauntletItem;
 import tfar.davespotioneering.mixin.ParticleManagerAccess;
 import tfar.davespotioneering.platform.Services;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class DavesPotioneeringClient {
@@ -80,9 +80,14 @@ public class DavesPotioneeringClient {
     }
 
 
+    public static final ClampedItemPropertyFunction BLOCKING = (stack, world, entity, i) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F;
+
     public static void registerBlockingProperty(Item item) {
-        ItemProperties.register(item, new ResourceLocation("blocking"),
-                (stack, world, entity, i) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
+        ItemProperties.register(item, new ResourceLocation("blocking"),BLOCKING);
+    }
+
+    public static float computeBlockingOverride() {
+        return BLOCKING.unclampedCall(itemStack,(ClientLevel) level.get(), player.get(), seed);
     }
 
     public static void spawnFluidParticle(ClientLevel world, Vec3 blockPosIn, ParticleOptions particleDataIn, int color) {
@@ -174,6 +179,11 @@ public class DavesPotioneeringClient {
             }
         }
     }
+
+    public static ItemStack itemStack;
+    public static WeakReference<Level> level;
+    public static WeakReference<LivingEntity> player;
+    public static int seed;
 
     public static boolean dontTooltip(ItemStack stack) {
         return stack.getItem() instanceof PotionItem || stack.getItem() instanceof ArrowItem;
