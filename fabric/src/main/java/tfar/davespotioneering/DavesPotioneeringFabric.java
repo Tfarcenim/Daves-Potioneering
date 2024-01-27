@@ -3,6 +3,7 @@ package tfar.davespotioneering;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.core.Registry;
@@ -39,9 +40,9 @@ public class DavesPotioneeringFabric implements ModInitializer {
         Util.setStackSize(Items.POTION, DavesPotioneeringFabric.CONFIG.potion_stack_size);
         Util.setStackSize(Items.SPLASH_POTION, DavesPotioneeringFabric.CONFIG.splash_potion_stack_size);
         Util.setStackSize(Items.LINGERING_POTION, DavesPotioneeringFabric.CONFIG.lingering_potion_stack_size);
+        CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> DavesPotioneering.tagsUpdated());
 
         PacketHandler.registerMessages();
-        ModCauldronInteractions.bootStrap();
         DavesPotioneering.commonSetup();
     }
 

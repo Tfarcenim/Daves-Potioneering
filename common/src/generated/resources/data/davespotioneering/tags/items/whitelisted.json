@@ -1,3 +1,16 @@
 {
-  "values": []
+  "values": [
+    {
+      "id": "tetra:modular_sword",
+      "required": false
+    },
+    {
+      "id": "tetra:modular_single",
+      "required": false
+    },
+    {
+      "id": "tetra:modular_double",
+      "required": false
+    }
+  ]
 }

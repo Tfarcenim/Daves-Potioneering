@@ -111,7 +111,7 @@ public class DavesPotioneeringClient {
 
             ItemStack stack = player.getMainHandItem();
 
-            if (stack.getItem() instanceof TieredItem && !PotionUtils.getMobEffects(stack).isEmpty()) {
+            if (!PotionUtils.getMobEffects(stack).isEmpty() && DavesPotioneering.canBeTipped(stack)) {
 
 
                 ParticleOptions particleData = ModParticleTypes.FAST_DRIPPING_WATER;
@@ -170,7 +170,7 @@ public class DavesPotioneeringClient {
 
     public static void tooltips(ItemStack stack, List<Component> tooltips) {
         if (!PotionUtils.getMobEffects(stack).isEmpty()) {
-            if (stack.getItem() instanceof TieredItem) {
+            if (DavesPotioneering.canBeTipped(stack)) {
                 tooltips.add(Component.literal("Coated with"));
                 PotionUtils.addPotionTooltip(stack, tooltips, 0.125F);
                 tooltips.add(Component.literal("Uses: " + stack.getTag().getInt("uses")));
@@ -179,6 +179,8 @@ public class DavesPotioneeringClient {
             }
         }
     }
+
+
 
     public static ItemStack itemStack;
     public static WeakReference<Level> level;

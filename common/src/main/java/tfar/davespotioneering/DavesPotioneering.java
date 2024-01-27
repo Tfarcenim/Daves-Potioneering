@@ -5,6 +5,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -18,6 +19,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
+import tfar.davespotioneering.block.CLayeredReinforcedCauldronBlock;
+import tfar.davespotioneering.block.ModCauldronInteractions;
+import tfar.davespotioneering.client.DavesPotioneeringClient;
 import tfar.davespotioneering.duck.BrewingStandDuck;
 import tfar.davespotioneering.init.*;
 import tfar.davespotioneering.item.CUmbrellaItem;
@@ -106,10 +110,34 @@ public class DavesPotioneering {
 
     public static boolean canApplyEffect(LivingEntity entity) {
         if (entity instanceof Player player) {
-            if (player.getUseItem().getItem() instanceof CUmbrellaItem) {
-                return false;
-            }
+            return !(player.getUseItem().getItem() instanceof CUmbrellaItem);
         }
         return true;
+    }
+
+    public static void afterHit(Player player, LivingEntity victim) {
+        ItemStack weapon = player.getMainHandItem();
+        if (canBeTipped(weapon)) {
+            Potion potion = PotionUtils.getPotion(weapon);
+            if (potion != Potions.EMPTY) {
+                for(MobEffectInstance effectinstance : potion.getEffects()) {
+                    victim.addEffect(new MobEffectInstance(effectinstance.getEffect(), Math.max(effectinstance.getDuration() / 8, 1), effectinstance.getAmplifier(), effectinstance.isAmbient(), effectinstance.isVisible()));
+                }
+                if (!player.getAbilities().instabuild)
+                    CLayeredReinforcedCauldronBlock.useCharge(weapon);
+            }
+        }
+    }
+
+    public static boolean canBeTipped(ItemStack stack) {
+        return stack.getItem() instanceof TieredItem || stack.is(ModItems.WHITELISTED);
+    }
+
+    public static void tagsUpdated() {
+        long start = net.minecraft.Util.getNanos();
+        ModCauldronInteractions.reload();
+        long end = net.minecraft.Util.getNanos();
+        long time = end - start;
+        LOG.info("Took "+time + " nanos to reload cauldron interactions");
     }
 }

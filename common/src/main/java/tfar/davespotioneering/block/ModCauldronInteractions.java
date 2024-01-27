@@ -22,8 +22,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import tfar.davespotioneering.PotionUtils2;
+import tfar.davespotioneering.Util;
 import tfar.davespotioneering.blockentity.CReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.init.ModBlocks;
+import tfar.davespotioneering.init.ModItems;
 import tfar.davespotioneering.init.ModPotions;
 
 import javax.annotation.Nonnull;
@@ -64,7 +66,12 @@ public class ModCauldronInteractions {
     static final CauldronInteraction FILL_LAVA = (p_175676_, p_175677_, p_175678_, p_175679_, p_175680_, p_175681_) -> CauldronInteraction.emptyBucket(p_175677_, p_175678_, p_175679_, p_175680_, p_175681_, Blocks.LAVA_CAULDRON.defaultBlockState(), SoundEvents.BUCKET_EMPTY_LAVA);
     static final CauldronInteraction FILL_POWDER_SNOW = (p_175669_, p_175670_, p_175671_, p_175672_, p_175673_, p_175674_) -> CauldronInteraction.emptyBucket(p_175670_, p_175671_, p_175672_, p_175673_, p_175674_, Blocks.POWDER_SNOW_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3), SoundEvents.BUCKET_EMPTY_POWDER_SNOW);
 
-    public static void bootStrap() {
+    public static void reload() {
+        clearAndDefault(WATER);
+        clearAndDefault(EMPTY);
+        clearAndDefault(LAVA);
+        clearAndDefault(POWDER_SNOW);
+
         addDefaultInteractions(EMPTY);
         EMPTY.put(Items.POTION, (state, level, pos, player, hand, stack) -> {
             if (!level.isClientSide) {
@@ -185,10 +192,13 @@ public class ModCauldronInteractions {
         WATER.put(Items.ARROW, (state, level, pos, player, stack, stack2) -> arrowCoating(state, level, pos, player, stack2));
 
         for (Item item : BuiltInRegistries.ITEM) {
+            if (item.builtInRegistryHolder().is(ModItems.BLACKLISTED)) continue;//do not allow blacklisted items under any circumstances
             if (item instanceof TieredItem) {
                 WATER.put(item, (state, level, pos, player, stack, stack2) -> weaponCoating(state, level, pos, player, stack2));
             } else if (item.isEdible()) {
                 WATER.put(item,ModCauldronInteractions::spikedFood);
+            } else if (item.builtInRegistryHolder().is(ModItems.WHITELISTED)) {
+                WATER.put(item, (state, level, pos, player, stack, stack2) -> weaponCoating(state, level, pos, player, stack2));
             }
         }
 
@@ -201,10 +211,17 @@ public class ModCauldronInteractions {
         addDefaultInteractions(POWDER_SNOW);
     }
 
-    static void addDefaultInteractions(Map<Item, CauldronInteraction> p_175648_) {
-    //    p_175648_.put(Items.LAVA_BUCKET, FILL_LAVA);
-        p_175648_.put(Items.WATER_BUCKET, FILL_WATER);
- //       p_175648_.put(Items.POWDER_SNOW_BUCKET, FILL_POWDER_SNOW);
+    static void clearAndDefault(Map<Item, CauldronInteraction> map) {
+        map.clear();
+        for (Item item : BuiltInRegistries.ITEM) {
+            map.put(item,(blockState, level, blockPos, player, interactionHand, itemStack) -> InteractionResult.PASS);
+        }
+    }
+
+    static void addDefaultInteractions(Map<Item, CauldronInteraction> map) {
+    //    map.put(Items.LAVA_BUCKET, FILL_LAVA);
+        map.put(Items.WATER_BUCKET, FILL_WATER);
+ //       map.put(Items.POWDER_SNOW_BUCKET, FILL_POWDER_SNOW);
     }
 
 

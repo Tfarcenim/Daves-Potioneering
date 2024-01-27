@@ -55,19 +55,8 @@ public class ForgeEvents {
 
         Entity trueSource = source.getEntity();
 
-        if (trueSource instanceof LivingEntity attacker) {
-
-            ItemStack weapon = attacker.getMainHandItem();
-
-            if (weapon.getItem() instanceof TieredItem) {
-                Potion potion = PotionUtils.getPotion(weapon);
-                if (potion != Potions.EMPTY) {
-                    for(MobEffectInstance effectinstance : potion.getEffects()) {
-                        victim.addEffect(new MobEffectInstance(effectinstance.getEffect(), Math.max(effectinstance.getDuration() / 8, 1), effectinstance.getAmplifier(), effectinstance.isAmbient(), effectinstance.isVisible()));
-                    }
-                    CLayeredReinforcedCauldronBlock.useCharge(weapon);
-                }
-            }
+        if (trueSource instanceof Player attacker) {
+            DavesPotioneering.afterHit(attacker,victim);
         }
     }
 

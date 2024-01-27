@@ -13,6 +13,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
+import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -51,6 +52,7 @@ public class DavesPotioneeringForge {
         bus.addListener(this::setup);
         MinecraftForge.EVENT_BUS.addListener(this::stackAdj);
         MinecraftForge.EVENT_BUS.addListener(GauntletItem::tickCooldowns);
+        MinecraftForge.EVENT_BUS.addListener(this::tagReload);
         if (FMLEnvironment.dist.isClient()) {
             // Register the doClientStuff method for modloading
             bus.addListener(DavesPotioneeringClientForge::doClientStuff);
@@ -91,6 +93,10 @@ public class DavesPotioneeringForge {
         e.register(Registries.CREATIVE_MODE_TAB,new ResourceLocation(DavesPotioneering.MODID, DavesPotioneering.MODID),() -> ModCreativeTab.DAVESPOTIONEERING);
     }
 
+    private void tagReload(TagsUpdatedEvent event) {
+        DavesPotioneering.tagsUpdated();
+    }
+
     private void setup(final FMLCommonSetupEvent event) {
         ForgeEvents.register();
 
@@ -109,7 +115,7 @@ public class DavesPotioneeringForge {
         strongRecipe(Potions.INVISIBILITY,ModPotions.STRONG_INVISIBILITY);
 
         PacketHandler.registerMessages();
-        ModCauldronInteractions.bootStrap();
+        ModCauldronInteractions.reload();
 
 
 

@@ -16,6 +16,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.Nullable;
 import tfar.davespotioneering.block.CLayeredReinforcedCauldronBlock;
+import tfar.davespotioneering.init.ModItems;
 import tfar.davespotioneering.init.ModPotions;
 import tfar.davespotioneering.item.UmbrellaItem;
 
@@ -45,19 +46,10 @@ public class FabricEvents {
     }
 
     public static InteractionResult afterHit(Player player, Level e2, InteractionHand e3, Entity victim, @Nullable EntityHitResult e5) {
-
-        ItemStack weapon = player.getMainHandItem();
-
-        if (weapon.getItem() instanceof TieredItem) {
-            Potion potion = PotionUtils.getPotion(weapon);
-            if (potion != Potions.EMPTY) {
-                for(MobEffectInstance effectinstance : potion.getEffects()) {
-                    ((LivingEntity)victim).addEffect(new MobEffectInstance(effectinstance.getEffect(), Math.max(effectinstance.getDuration() / 8, 1), effectinstance.getAmplifier(), effectinstance.isAmbient(), effectinstance.isVisible()));
-                }
-                if (!player.getAbilities().instabuild)
-                    CLayeredReinforcedCauldronBlock.useCharge(weapon);
-            }
+        if (victim instanceof LivingEntity livingVictim) {
+            DavesPotioneering.afterHit(player,livingVictim);
         }
+
         return InteractionResult.PASS;
     }
 }

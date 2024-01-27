@@ -32,7 +32,7 @@ public class Util {
         TOOL,FOOD,ANY;
 
         public static CoatingType getCoatingType(ItemStack stack) {
-            if (stack.getItem() instanceof TieredItem) {
+            if (DavesPotioneering.canBeTipped(stack)) {
                 return TOOL;
             }
             else if (stack.getItem().isEdible()) {

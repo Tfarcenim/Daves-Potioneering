@@ -64,6 +64,10 @@ subprojects {
                 includeGroup "dev.architectury"
             }
         }
+
+        maven {
+            url "https://cursemaven.com"
+        }
     }
 
     tasks.withType(JavaCompile).configureEach {
