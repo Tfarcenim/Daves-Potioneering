@@ -6,6 +6,8 @@ import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
+import tfar.davespotioneering.init.ModItems;
 import tfar.davespotioneering.mixin.ItemAccess;
 
 import java.util.List;
@@ -29,16 +31,17 @@ public class Util {
         pStackList.forEach(stack -> Containers.dropItemStack(pLevel, pPos.getX(), pPos.getY(), pPos.getZ(), stack));
     }
     public enum CoatingType {
-        TOOL,FOOD,ANY;
+        TOOL,FOOD;
 
+        @Nullable
         public static CoatingType getCoatingType(ItemStack stack) {
-            if (DavesPotioneering.canBeTipped(stack)) {
+            if (stack.is(ModItems.WHITELISTED)) {
                 return TOOL;
             }
             else if (stack.getItem().isEdible()) {
                 return FOOD;
             }
-            return ANY;
+            return null;
         }
     }
 

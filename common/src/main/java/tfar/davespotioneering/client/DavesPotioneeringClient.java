@@ -111,7 +111,7 @@ public class DavesPotioneeringClient {
 
             ItemStack stack = player.getMainHandItem();
 
-            if (!PotionUtils.getMobEffects(stack).isEmpty() && DavesPotioneering.canBeTipped(stack)) {
+            if (!PotionUtils.getMobEffects(stack).isEmpty() && stack.is(ModItems.WHITELISTED)) {
 
 
                 ParticleOptions particleData = ModParticleTypes.FAST_DRIPPING_WATER;
@@ -170,7 +170,7 @@ public class DavesPotioneeringClient {
 
     public static void tooltips(ItemStack stack, List<Component> tooltips) {
         if (!PotionUtils.getMobEffects(stack).isEmpty()) {
-            if (DavesPotioneering.canBeTipped(stack)) {
+            if (stack.is(ModItems.WHITELISTED)) {
                 tooltips.add(Component.literal("Coated with"));
                 PotionUtils.addPotionTooltip(stack, tooltips, 0.125F);
                 tooltips.add(Component.literal("Uses: " + stack.getTag().getInt("uses")));

@@ -1,5 +1,6 @@
 {
   "values": [
+    "#minecraft:tools",
     {
       "id": "tetra:modular_sword",
       "required": false

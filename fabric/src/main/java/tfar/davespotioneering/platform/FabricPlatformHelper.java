@@ -159,19 +159,10 @@ public class FabricPlatformHelper implements IPlatformHelper {
     }
 
     //configs
-    @Override
-    public boolean coatTools() {
-        return DavesPotioneeringFabric.CONFIG.coat_tools;
-    }
 
     @Override
     public boolean spikeFood() {
         return DavesPotioneeringFabric.CONFIG.spike_food;
-    }
-
-    @Override
-    public boolean coatAnything() {
-        return DavesPotioneeringFabric.CONFIG.coat_anything;
     }
 
     @Override

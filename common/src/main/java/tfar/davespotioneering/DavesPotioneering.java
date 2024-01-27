@@ -3,6 +3,7 @@ package tfar.davespotioneering;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -117,7 +118,7 @@ public class DavesPotioneering {
 
     public static void afterHit(Player player, LivingEntity victim) {
         ItemStack weapon = player.getMainHandItem();
-        if (canBeTipped(weapon)) {
+        if (weapon.is(ModItems.WHITELISTED)) {
             Potion potion = PotionUtils.getPotion(weapon);
             if (potion != Potions.EMPTY) {
                 for(MobEffectInstance effectinstance : potion.getEffects()) {
@@ -127,10 +128,6 @@ public class DavesPotioneering {
                     CLayeredReinforcedCauldronBlock.useCharge(weapon);
             }
         }
-    }
-
-    public static boolean canBeTipped(ItemStack stack) {
-        return stack.getItem() instanceof TieredItem || stack.is(ModItems.WHITELISTED);
     }
 
     public static void tagsUpdated() {

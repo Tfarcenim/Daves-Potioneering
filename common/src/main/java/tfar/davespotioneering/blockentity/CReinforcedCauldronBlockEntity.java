@@ -130,13 +130,6 @@ public abstract class CReinforcedCauldronBlockEntity extends BlockEntity {
                 if (dragon)
                     CLayeredReinforcedCauldronBlock.handleArrowCoating(blockState, level, worldPosition, null, stack);
             } else if (cLevel == 3 && dragon) {
-                if (coatingType == Util.CoatingType.TOOL && !Services.PLATFORM.coatTools())
-                    return;//check if tools can be coated
-
-
-                if (coatingType == Util.CoatingType.ANY && !Services.PLATFORM.coatAnything() && !stack.is(ModItems.WHITELISTED))
-                    return;
-                //check if anything can be coated AND the item is not in a whitelist
 
                 //burn off a layer, then schedule the rest of the ticks
                 entity.level().playSound(null, worldPosition, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.8F, 1);

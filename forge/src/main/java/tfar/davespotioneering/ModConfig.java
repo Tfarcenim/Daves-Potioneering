@@ -35,9 +35,7 @@ public class ModConfig {
 
 
         public static ForgeConfigSpec.BooleanValue show_spiked_food;
-        public static ForgeConfigSpec.BooleanValue coat_tools;
         public static ForgeConfigSpec.BooleanValue spike_food;
-        public static ForgeConfigSpec.BooleanValue coat_anything;
         public static ForgeConfigSpec.IntValue potion_stack_size;
         public static ForgeConfigSpec.IntValue splash_potion_stack_size;
         public static ForgeConfigSpec.IntValue lingering_potion_stack_size;
@@ -46,7 +44,6 @@ public class ModConfig {
             builder.push("general");
             milk = builder.define("milk",true);
             gauntlet_cooldown = builder.defineInRange("gauntlet_cooldown", 600, 1, Integer.MAX_VALUE);
-            coat_tools = builder.define("coat_tools",true);
             spike_food = builder.define("spike_food",true);
             show_spiked_food = builder.define("show_spiked_food",true);
             gauntlet_cooldown = builder.defineInRange("gauntlet_cooldown", 600, 1, Integer.MAX_VALUE);
@@ -55,7 +52,6 @@ public class ModConfig {
                     .defineInRange("potion_switch_cooldown", 30, 0, 20000);
             potion_throw_cooldown = builder.comment("Cooldown in ticks when throwing potions").translation(pot_throw_key)
                     .defineInRange("potion_throw_cooldown", 30, 0, 20000);
-            coat_anything = builder.comment("Allows all items to be coated").define("coat_anything",false);
             coating_uses = builder.comment("Number of uses per coating").defineInRange("coating_uses",25,1,Integer.MAX_VALUE);
 
             potion_stack_size = builder.defineInRange("potion_stack_size", 16, 1, 64);

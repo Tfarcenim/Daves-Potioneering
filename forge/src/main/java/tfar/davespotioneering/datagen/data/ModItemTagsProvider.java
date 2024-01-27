@@ -4,6 +4,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -26,9 +27,12 @@ public class ModItemTagsProvider extends ItemTagsProvider {
         return new ResourceLocation("tetra",path);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void addTags(HolderLookup.Provider pProvider) {
         tag(ModItems.BLACKLISTED).add(Items.POTION, Items.SPLASH_POTION,Items.LINGERING_POTION);
-        tag(ModItems.WHITELISTED).addOptional(modular_sword).addOptional(modular_single).addOptional(modular_double);
+        tag(ModItems.WHITELISTED)
+                .addTags(ItemTags.TOOLS)
+                .addOptional(modular_sword).addOptional(modular_single).addOptional(modular_double);
     }
 }

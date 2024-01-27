@@ -93,9 +93,7 @@ public interface IPlatformHelper {
     int rightHeight(Gui gui);
 
     //configs
-    boolean coatTools();
     boolean spikeFood();
-    boolean coatAnything();
     int coatingUses();
     int gauntletCooldown();
     int potionSwitchCooldown();

@@ -27,6 +27,7 @@ import tfar.davespotioneering.blockentity.CReinforcedCauldronBlockEntity;
 import tfar.davespotioneering.init.ModBlocks;
 import tfar.davespotioneering.init.ModItems;
 import tfar.davespotioneering.init.ModPotions;
+import tfar.davespotioneering.platform.Services;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -86,6 +87,9 @@ public class ModCauldronInteractions {
                 if (blockEntity instanceof CReinforcedCauldronBlockEntity reinforced) {
                     reinforced.setPotion(PotionUtils.getPotion(stack));
                     reinforced.setCustomEffects(PotionUtils.getCustomEffects(stack));
+                    if (stack.hasTag() && stack.getTag().contains(PotionUtils.TAG_CUSTOM_POTION_COLOR)) {
+                        reinforced.setCustomPotionColor(PotionUtils.getColor(stack));
+                    }
                 }
 
                 level.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
@@ -193,12 +197,10 @@ public class ModCauldronInteractions {
 
         for (Item item : BuiltInRegistries.ITEM) {
             if (item.builtInRegistryHolder().is(ModItems.BLACKLISTED)) continue;//do not allow blacklisted items under any circumstances
-            if (item instanceof TieredItem) {
+            else if (item.builtInRegistryHolder().is(ModItems.WHITELISTED)) {
                 WATER.put(item, (state, level, pos, player, stack, stack2) -> weaponCoating(state, level, pos, player, stack2));
-            } else if (item.isEdible()) {
+            } else if (Services.PLATFORM.spikeFood() && item.isEdible()) {
                 WATER.put(item,ModCauldronInteractions::spikedFood);
-            } else if (item.builtInRegistryHolder().is(ModItems.WHITELISTED)) {
-                WATER.put(item, (state, level, pos, player, stack, stack2) -> weaponCoating(state, level, pos, player, stack2));
             }
         }
 

@@ -183,19 +183,10 @@ public class ForgePlatformHelper implements IPlatformHelper {
 
     //configs
 
-    @Override
-    public boolean coatTools() {
-        return ModConfig.Server.coat_tools.get();
-    }
 
     @Override
     public boolean spikeFood() {
         return ModConfig.Server.spike_food.get();
-    }
-
-    @Override
-    public boolean coatAnything() {
-        return ModConfig.Server.coat_anything.get();
     }
 
     @Override
