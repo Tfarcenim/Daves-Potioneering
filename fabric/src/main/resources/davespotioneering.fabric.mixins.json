@@ -11,7 +11,8 @@
     "PotionBrewingMixin",
     "PotionSlotMixinFabric",
     "PotionUtilsMixin",
-    "ServerPlayerInteractionManagerMixin"
+    "ServerPlayerInteractionManagerMixin",
+    "ServerPlayerMixinFabric"
   ],
   "client": [
     "BakedModelManagerMixin",

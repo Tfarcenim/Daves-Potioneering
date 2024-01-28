@@ -199,7 +199,7 @@ public class ModCauldronInteractions {
             if (item.builtInRegistryHolder().is(ModItems.BLACKLISTED)) continue;//do not allow blacklisted items under any circumstances
             else if (item.builtInRegistryHolder().is(ModItems.WHITELISTED)) {
                 WATER.put(item, (state, level, pos, player, stack, stack2) -> weaponCoating(state, level, pos, player, stack2));
-            } else if (Services.PLATFORM.spikeFood() && item.isEdible()) {
+            } else if (item.isEdible()) {
                 WATER.put(item,ModCauldronInteractions::spikedFood);
             }
         }
@@ -289,6 +289,7 @@ public class ModCauldronInteractions {
 
     @Nonnull
     static InteractionResult dragonsBreath(BlockState state, Level level, BlockPos pos, Player player, InteractionHand p_175715_, ItemStack stack) {
+        if (state.getValue(CLayeredReinforcedCauldronBlock.DRAGONS_BREATH)) return InteractionResult.PASS;
         if (!level.isClientSide) {
             if (!player.getAbilities().instabuild) {
                 player.awardStat(Stats.USE_CAULDRON);
@@ -298,8 +299,6 @@ public class ModCauldronInteractions {
 
                 if (!player.getInventory().add(stack1)) {
                     player.drop(stack1, false);
-                } else {
-                    //     ((ServerPlayer) player).refreshContainer(player.inventoryMenu);
                 }
             }
             level.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
@@ -316,6 +315,7 @@ public class ModCauldronInteractions {
 
     @Nonnull
     static InteractionResult spikedFood(BlockState state, Level level, BlockPos pos, Player player, InteractionHand p_175715_, ItemStack stack) {
+        if (!Services.PLATFORM.spikeFood()) return InteractionResult.PASS;
         CLayeredReinforcedCauldronBlock.handleFoodSpiking(state,level,pos,player,p_175715_,stack);
         return InteractionResult.sidedSuccess(level.isClientSide);
     }

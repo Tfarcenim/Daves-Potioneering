@@ -34,6 +34,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -135,6 +137,12 @@ public class DavesPotioneering {
         ModCauldronInteractions.reload();
         long end = net.minecraft.Util.getNanos();
         long time = end - start;
-        LOG.info("Took "+time + " nanos to reload cauldron interactions");
+        float ms = time /1000000f;
+
+        DecimalFormat df = new DecimalFormat("#.####");
+        df.setRoundingMode(RoundingMode.DOWN);
+        String s = df.format(ms);
+
+        LOG.info("Took "+ s + " ms to reload cauldron interactions");
     }
 }

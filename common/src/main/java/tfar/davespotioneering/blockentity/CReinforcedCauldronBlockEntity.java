@@ -113,10 +113,10 @@ public abstract class CReinforcedCauldronBlockEntity extends BlockEntity {
     public void onEntityCollision(Entity entity) {
         if (entity instanceof ItemEntity) {
             ItemStack stack = ((ItemEntity) entity).getItem();
-            if (stack.is(ModItems.BLACKLISTED)) return;
 
             boolean dragon = getBlockState().getValue(CLayeredReinforcedCauldronBlock.DRAGONS_BREATH);
             Util.CoatingType coatingType = Util.CoatingType.getCoatingType(stack);
+            if (coatingType == null) return;
 
             BlockState blockState = getBlockState();
             int cLevel = blockState.getValue(LayeredCauldronBlock.LEVEL);

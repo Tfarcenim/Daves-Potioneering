@@ -2,7 +2,7 @@ package tfar.davespotioneering.inv;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import tfar.davespotioneering.item.GauntletItem;
+import tfar.davespotioneering.item.CGauntletItem;
 
 import javax.annotation.Nonnull;
 
@@ -19,7 +19,7 @@ public class PotionInjectorHandler extends BridgedItemStackHandler {
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
         return switch (slot) {
             case 0, 1, 2, 3, 4, 5 -> stack.getItem() == Items.LINGERING_POTION;
-            case GAUNTLET -> stack.getItem() instanceof GauntletItem;
+            case GAUNTLET -> stack.getItem() instanceof CGauntletItem;
             case BLAZE -> stack.getItem() == Items.BLAZE_POWDER;
             default -> super.isItemValid(slot, stack);
         };

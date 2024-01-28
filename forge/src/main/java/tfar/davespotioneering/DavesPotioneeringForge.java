@@ -4,6 +4,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
@@ -14,6 +15,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.event.TagsUpdatedEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -24,12 +26,11 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
-import tfar.davespotioneering.block.ModCauldronInteractions;
 import tfar.davespotioneering.client.DavesPotioneeringClientForge;
 import tfar.davespotioneering.datagen.ModDatagen;
 import tfar.davespotioneering.effect.PotionIngredient;
 import tfar.davespotioneering.init.*;
-import tfar.davespotioneering.item.GauntletItem;
+import tfar.davespotioneering.item.CGauntletItem;
 import tfar.davespotioneering.net.PacketHandler;
 
 import java.util.*;
@@ -51,7 +52,7 @@ public class DavesPotioneeringForge {
         // Register the setup method for modloading
         bus.addListener(this::setup);
         MinecraftForge.EVENT_BUS.addListener(this::stackAdj);
-        MinecraftForge.EVENT_BUS.addListener(GauntletItem::tickCooldowns);
+        MinecraftForge.EVENT_BUS.addListener(this::playerTick);
         MinecraftForge.EVENT_BUS.addListener(this::tagReload);
         if (FMLEnvironment.dist.isClient()) {
             // Register the doClientStuff method for modloading
@@ -115,11 +116,12 @@ public class DavesPotioneeringForge {
         strongRecipe(Potions.INVISIBILITY,ModPotions.STRONG_INVISIBILITY);
 
         PacketHandler.registerMessages();
-        ModCauldronInteractions.reload();
-
-
-
         DavesPotioneering.commonSetup();
+    }
+
+    private void playerTick(TickEvent.PlayerTickEvent event) {
+        if (event.player instanceof ServerPlayer serverPlayer)
+            CGauntletItem.tickCooldownsCommon(serverPlayer);
     }
 
     private void stackAdj(ServerStartingEvent e) {

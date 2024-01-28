@@ -30,7 +30,6 @@ import tfar.davespotioneering.inv.slots.PotionSlot;
 import tfar.davespotioneering.inventory.BasicInventoryBridge;
 import tfar.davespotioneering.item.AgedUmbrellaItem;
 import tfar.davespotioneering.item.CGauntletItem;
-import tfar.davespotioneering.item.GauntletItem;
 import tfar.davespotioneering.item.UmbrellaItem;
 import tfar.davespotioneering.net.C2SGauntletCyclePacket;
 import tfar.davespotioneering.net.C2SPotionInjector;
@@ -164,11 +163,6 @@ public class ForgePlatformHelper implements IPlatformHelper {
     @Override
     public void sendPotionInjectorButton(int id) {
         PacketHandler.sendToServer(new C2SPotionInjector(id));
-    }
-
-    @Override
-    public CGauntletItem makeGauntlet(Item.Properties properties) {
-        return new GauntletItem(properties);
     }
 
     @Override

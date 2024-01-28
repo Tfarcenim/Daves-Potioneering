@@ -45,7 +45,7 @@ public class CLayeredReinforcedCauldronBlock extends LayeredCauldronBlock implem
     public static final BooleanProperty DRAGONS_BREATH = BooleanProperty.create("dragons_breath");
 
     public static int brew_speed = 12;
-    public static final String USES = "uses";
+
     public CLayeredReinforcedCauldronBlock(Properties properties) {
         this(properties, LayeredCauldronBlock.RAIN, ModCauldronInteractions.WATER);
     }
@@ -110,9 +110,6 @@ public class CLayeredReinforcedCauldronBlock extends LayeredCauldronBlock implem
         }
     }
 
-    public static boolean canStripEffects(ItemStack stack) {
-        return !(stack.getItem() instanceof PotionItem);
-    }
     public static void handleFoodSpiking(BlockState state, Level level, BlockPos pos, @Nullable Player player, InteractionHand p_175715_, ItemStack stack) {
         int wLevel = state.getValue(LEVEL);
         if (stack.getCount() < 8) {

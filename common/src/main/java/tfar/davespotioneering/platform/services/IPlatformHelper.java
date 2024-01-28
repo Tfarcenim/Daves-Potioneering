@@ -87,8 +87,6 @@ public interface IPlatformHelper {
     void cycleGauntlet(boolean up);
     void sendPotionInjectorButton(int id);
 
-    CGauntletItem makeGauntlet(Item.Properties properties);
-
     int leftHeight(Gui gui);
     int rightHeight(Gui gui);
 

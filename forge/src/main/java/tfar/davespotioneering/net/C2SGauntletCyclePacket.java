@@ -3,7 +3,7 @@ package tfar.davespotioneering.net;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
-import tfar.davespotioneering.item.GauntletItem;
+import tfar.davespotioneering.item.CGauntletItem;
 
 import java.util.function.Supplier;
 
@@ -26,9 +26,9 @@ public class C2SGauntletCyclePacket {
         ctx.get().enqueueWork(() -> {
             ServerPlayer player = ctx.get().getSender();
             if (up) {
-                GauntletItem.cycleGauntletForward(player);
+                CGauntletItem.cycleGauntletForward(player);
             } else {
-                GauntletItem.cycleGauntletBackward(player);
+                CGauntletItem.cycleGauntletBackward(player);
             }
         });
         ctx.get().setPacketHandled(true);

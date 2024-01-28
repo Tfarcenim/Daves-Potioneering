@@ -7,6 +7,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -198,7 +199,7 @@ public class CGauntletItem extends SwordItem {
         return new Potion[]{activePotion, prePotion, postPotion};
     }
 
-    public static void tickCooldownsCommon(Player player) {
+    public static void tickCooldownsCommon(ServerPlayer player) {
 
 
         int[] cooldowns = Services.PLATFORM.getGauntletCooldowns(player);
@@ -252,8 +253,6 @@ public class CGauntletItem extends SwordItem {
         info.putInt(ACTIVE_POTION, index);
     }
 
-
-
     public static void setPotionCooldownByIndex(int index, int cooldown, Player living) {
         int[] cooldowns = Services.PLATFORM.getGauntletCooldowns(living);
         if (cooldowns.length == 0) {
@@ -269,9 +268,7 @@ public class CGauntletItem extends SwordItem {
         return cooldowns[indexOfPotion];
     }
 
-
     public MutableComponent getCtrlDescriptions(int i) {
         return Component.translatable(this.getDescriptionId() + i +".ctrl.desc");
     }
-
 }

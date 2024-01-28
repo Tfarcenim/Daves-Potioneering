@@ -35,6 +35,10 @@ public class Util {
 
         @Nullable
         public static CoatingType getCoatingType(ItemStack stack) {
+            if (stack.is(ModItems.BLACKLISTED)) {
+                return null;
+            }
+
             if (stack.is(ModItems.WHITELISTED)) {
                 return TOOL;
             }

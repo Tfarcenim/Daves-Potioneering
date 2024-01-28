@@ -144,11 +144,6 @@ public class FabricPlatformHelper implements IPlatformHelper {
     }
 
     @Override
-    public CGauntletItem makeGauntlet(Item.Properties properties) {
-        return new CGauntletItem(Tiers.NETHERITE, 4, -2.8f, properties);
-    }
-
-    @Override
     public int rightHeight(Gui gui) {
         return 49;
     }

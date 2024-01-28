@@ -61,15 +61,4 @@ public class AdvancedBrewingStandBlockEntity extends CAdvancedBrewingStandBlockE
     }
 
 
-    @Nullable
-    public static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> checkType(BlockEntityType<A> blockEntityType, BlockEntityType<E> blockEntityType2, BlockEntityTicker<? super E> blockEntityTicker) {
-        return blockEntityType2 == blockEntityType ? (BlockEntityTicker<A>) blockEntityTicker : null;
-    }
-
-    protected static void setChanged(Level world, BlockPos blockPos, BlockState blockState) {
-        world.blockEntityChanged(blockPos);
-        if (!blockState.isAir()) {
-            world.updateNeighbourForOutputSignal(blockPos, blockState.getBlock());
-        }
-    }
 }

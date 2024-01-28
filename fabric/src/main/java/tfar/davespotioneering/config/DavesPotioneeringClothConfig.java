@@ -29,7 +29,7 @@ public class DavesPotioneeringClothConfig implements ConfigData {
     public int potion_use_cooldown = 30;
     public int potion_throw_cooldown = 30;
 
-    public int gauntlet_cooldown = 30;
+    public int gauntlet_cooldown = 600;
     public int coating_uses = 25;
     public boolean spike_food = true;
     public boolean show_spiked_food = true;
