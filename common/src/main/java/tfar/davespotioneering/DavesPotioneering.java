@@ -1,12 +1,9 @@
 package tfar.davespotioneering;
 
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -15,14 +12,12 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
 import tfar.davespotioneering.block.CLayeredReinforcedCauldronBlock;
 import tfar.davespotioneering.block.ModCauldronInteractions;
-import tfar.davespotioneering.client.DavesPotioneeringClient;
 import tfar.davespotioneering.duck.BrewingStandDuck;
 import tfar.davespotioneering.init.*;
 import tfar.davespotioneering.item.CUmbrellaItem;
@@ -52,14 +47,14 @@ public class DavesPotioneering {
     public static final boolean isFabric = Services.PLATFORM.getPlatformName().equals("Fabric");
 
     public static void earlySetup() {
-        Services.PLATFORM.superRegister(ModBlocks.class,BuiltInRegistries.BLOCK, Block.class);
-        Services.PLATFORM.superRegister(ModEffects.class,BuiltInRegistries.MOB_EFFECT, MobEffect.class);
-        Services.PLATFORM.superRegister(ModItems.class,BuiltInRegistries.ITEM, Item.class);
-        Services.PLATFORM.superRegister(ModBlockEntityTypes.class,BuiltInRegistries.BLOCK_ENTITY_TYPE, BlockEntityType.class);
-        Services.PLATFORM.superRegister(ModMenuTypes.class,BuiltInRegistries.MENU, MenuType.class);
-        Services.PLATFORM.superRegister(ModPotions.class,BuiltInRegistries.POTION, Potion.class);
-        Services.PLATFORM.superRegister(ModParticleTypes.class,BuiltInRegistries.PARTICLE_TYPE, ParticleType.class);
-        Services.PLATFORM.superRegister(ModSoundEvents.class,BuiltInRegistries.SOUND_EVENT, SoundEvent.class);
+        Services.PLATFORM.superRegister(ModBlocks.class, BuiltInRegistries.BLOCK, Block.class);
+        Services.PLATFORM.superRegister(ModEffects.class, BuiltInRegistries.MOB_EFFECT, MobEffect.class);
+        Services.PLATFORM.superRegister(ModItems.class, BuiltInRegistries.ITEM, Item.class);
+        Services.PLATFORM.superRegister(ModBlockEntityTypes.class, BuiltInRegistries.BLOCK_ENTITY_TYPE, BlockEntityType.class);
+        Services.PLATFORM.superRegister(ModMenuTypes.class, BuiltInRegistries.MENU, MenuType.class);
+        Services.PLATFORM.superRegister(ModPotions.class, BuiltInRegistries.POTION, Potion.class);
+        Services.PLATFORM.superRegister(ModParticleTypes.class, BuiltInRegistries.PARTICLE_TYPE, ParticleType.class);
+        Services.PLATFORM.superRegister(ModSoundEvents.class, BuiltInRegistries.SOUND_EVENT, SoundEvent.class);
     }
 
 
@@ -67,9 +62,9 @@ public class DavesPotioneering {
     // write the majority of your code here and load it from your loader specific projects. This example has some
     // code that gets invoked by the entry point of the loader specific projects.
     public static void commonSetup() {
-        Set<Block> newSet = new HashSet<>(((BlockEntityTypeAcces)BlockEntityType.LECTERN).getValidBlocks());
+        Set<Block> newSet = new HashSet<>(((BlockEntityTypeAcces) BlockEntityType.LECTERN).getValidBlocks());
         newSet.add(ModBlocks.MAGIC_LECTERN);
-        ((BlockEntityTypeAcces)BlockEntityType.LECTERN).setValidBlocks(newSet);
+        ((BlockEntityTypeAcces) BlockEntityType.LECTERN).setValidBlocks(newSet);
     }
 
     public static void onEat(Player player, ItemStack stack) {
@@ -82,7 +77,7 @@ public class DavesPotioneering {
     //this is called when the potion is done brewing, we use this instead of the forge event because it has a reference
     // to the blockentity that created the potions
     public static void potionBrew(BlockEntity brewingStandTileEntity, ItemStack ingredient) {
-        ((BrewingStandDuck)brewingStandTileEntity).addXp(Util.getBrewXp(ingredient));
+        ((BrewingStandDuck) brewingStandTileEntity).addXp(Util.getBrewXp(ingredient));
     }
 
     public static void heldItemChangeEvent(Player player) {
@@ -100,13 +95,13 @@ public class DavesPotioneering {
             AbstractContainerMenu container = player.containerMenu;
             BlockEntity entity = null;
             if (container instanceof BrewingStandMenu) {
-                entity = (BrewingStandBlockEntity)((BrewingStandContainerAccess)container).getBrewingStand();
+                entity = (BrewingStandBlockEntity) ((BrewingStandContainerAccess) container).getBrewingStand();
             } else if (container instanceof CAdvancedBrewingStandMenu) {
-                entity = ((CAdvancedBrewingStandMenu)container).blockEntity;
+                entity = ((CAdvancedBrewingStandMenu) container).blockEntity;
             }
 
             if (entity != null) {
-                ((BrewingStandDuck)entity).dump(player);
+                ((BrewingStandDuck) entity).dump(player);
             }
         }
     }
@@ -120,29 +115,32 @@ public class DavesPotioneering {
 
     public static void afterHit(Player player, LivingEntity victim) {
         ItemStack weapon = player.getMainHandItem();
-        if (weapon.is(ModItems.WHITELISTED)) {
-            Potion potion = PotionUtils.getPotion(weapon);
-            if (potion != Potions.EMPTY) {
-                for(MobEffectInstance effectinstance : potion.getEffects()) {
-                    victim.addEffect(new MobEffectInstance(effectinstance.getEffect(), Math.max(effectinstance.getDuration() / 8, 1), effectinstance.getAmplifier(), effectinstance.isAmbient(), effectinstance.isVisible()));
-                }
-                if (!player.getAbilities().instabuild)
-                    CLayeredReinforcedCauldronBlock.useCharge(weapon);
+        if (isCoatable(weapon)) {
+            List<MobEffectInstance> potion = PotionUtils.getMobEffects(weapon);
+            for (MobEffectInstance effectinstance : potion) {
+                victim.addEffect(new MobEffectInstance(effectinstance.getEffect(), Math.max(effectinstance.getDuration() / 8, 1), effectinstance.getAmplifier(), effectinstance.isAmbient(), effectinstance.isVisible()));
             }
+            if (!player.getAbilities().instabuild)
+                CLayeredReinforcedCauldronBlock.useCharge(weapon);
         }
     }
+
+    public static boolean isCoatable(ItemStack stack) {
+        return stack.is(ModItems.WHITELISTED) && !stack.is(ModItems.BLACKLISTED);
+    }
+
 
     public static void tagsUpdated() {
         long start = net.minecraft.Util.getNanos();
         ModCauldronInteractions.reload();
         long end = net.minecraft.Util.getNanos();
         long time = end - start;
-        float ms = time /1000000f;
+        float ms = time / 1000000f;
 
         DecimalFormat df = new DecimalFormat("#.####");
         df.setRoundingMode(RoundingMode.DOWN);
         String s = df.format(ms);
 
-        LOG.info("Took "+ s + " ms to reload cauldron interactions");
+        LOG.info("Took " + s + " ms to reload cauldron interactions");
     }
 }

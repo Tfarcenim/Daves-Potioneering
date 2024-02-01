@@ -9,17 +9,17 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import javax.annotation.Nonnull;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class SidedItemHandler implements IItemHandlerModifiable {
     protected final BrewingHandler inv;
     private final Direction direction;
 
 
-    public static Map<Direction,LazyOptional<? extends IItemHandler>> create(BrewingHandler inv) {
+    public static Map<Direction,LazyOptional<? extends IItemHandler>> create(Supplier<BrewingHandler> inv) {
         Map<Direction,LazyOptional<? extends IItemHandler>> ret = new EnumMap<>(Direction.class);
         for (Direction direction : Direction.values()) {
-            IItemHandlerModifiable iItemHandler = new SidedItemHandler(inv,direction);
-            ret.put(direction,LazyOptional.of(() -> iItemHandler));
+            ret.put(direction,LazyOptional.of(() -> new SidedItemHandler(inv.get(),direction)));
         }
         return ret;
     }

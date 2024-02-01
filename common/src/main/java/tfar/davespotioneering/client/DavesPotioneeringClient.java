@@ -111,7 +111,7 @@ public class DavesPotioneeringClient {
 
             ItemStack stack = player.getMainHandItem();
 
-            if (!PotionUtils.getMobEffects(stack).isEmpty() && stack.is(ModItems.WHITELISTED)) {
+            if (!PotionUtils.getMobEffects(stack).isEmpty() && DavesPotioneering.isCoatable(stack)) {
 
 
                 ParticleOptions particleData = ModParticleTypes.FAST_DRIPPING_WATER;
@@ -170,7 +170,7 @@ public class DavesPotioneeringClient {
 
     public static void tooltips(ItemStack stack, List<Component> tooltips) {
         if (!PotionUtils.getMobEffects(stack).isEmpty()) {
-            if (stack.is(ModItems.WHITELISTED)) {
+            if (DavesPotioneering.isCoatable(stack)) {
                 tooltips.add(Component.literal("Coated with"));
                 PotionUtils.addPotionTooltip(stack, tooltips, 0.125F);
                 tooltips.add(Component.literal("Uses: " + stack.getTag().getInt("uses")));
@@ -187,9 +187,6 @@ public class DavesPotioneeringClient {
     public static WeakReference<LivingEntity> player;
     public static int seed;
 
-    public static boolean dontTooltip(ItemStack stack) {
-        return stack.getItem() instanceof PotionItem || stack.getItem() instanceof ArrowItem;
-    }
 
     public static int computeinvis2Color(MobEffectInstance effectinstance) {
         int k = effectinstance.getEffect().getColor();

@@ -122,7 +122,7 @@ public class AdvancedBrewingStandBlockEntity extends CAdvancedBrewingStandBlockE
 
     //forge specific stuff
 
-    Map<Direction,LazyOptional<? extends IItemHandler>> handlers = SidedItemHandler.create((BrewingHandler) handler);
+    Map<Direction,LazyOptional<? extends IItemHandler>> handlers = SidedItemHandler.create(() -> (BrewingHandler) handler);
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
