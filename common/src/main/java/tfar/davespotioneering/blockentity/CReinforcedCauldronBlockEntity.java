@@ -48,13 +48,15 @@ public abstract class CReinforcedCauldronBlockEntity extends BlockEntity {
         return potion;
     }
 
-    public List<MobEffectInstance> getCustomEffects() {
-        return customEffects;
-    }
+
 
     public void setPotion(@Nonnull Potion potion) {
         this.potion = potion;
         setChanged();
+    }
+
+    public List<MobEffectInstance> getCustomEffects() {
+        return customEffects;
     }
 
     public void setCustomEffects(List<MobEffectInstance> customEffects) {
@@ -62,15 +64,16 @@ public abstract class CReinforcedCauldronBlockEntity extends BlockEntity {
         setChanged();
     }
 
-    @Override
-    public void load(CompoundTag nbt) {
-        potion = PotionUtils.getPotion(nbt);
-        customEffects = PotionUtils.getCustomEffects(nbt);
-        if (nbt.contains(PotionUtils.TAG_CUSTOM_POTION_COLOR)) {
-            customPotionColor = nbt.getInt(PotionUtils.TAG_CUSTOM_POTION_COLOR);
-        }
-        super.load(nbt);
+    @Nullable
+    public Integer getCustomPotionColor() {
+        return customPotionColor;
     }
+
+    public void setCustomPotionColor(@Nullable Integer customPotionColor) {
+        this.customPotionColor = customPotionColor;
+    }
+
+
 
     public int getColor() {
         if (potion == Potions.WATER) {
@@ -84,6 +87,15 @@ public abstract class CReinforcedCauldronBlockEntity extends BlockEntity {
         }
     }
 
+    @Override
+    public void load(CompoundTag nbt) {
+        potion = PotionUtils.getPotion(nbt);
+        customEffects = PotionUtils.getCustomEffects(nbt);
+        if (nbt.contains(PotionUtils.TAG_CUSTOM_POTION_COLOR)) {
+            customPotionColor = nbt.getInt(PotionUtils.TAG_CUSTOM_POTION_COLOR);
+        }
+        super.load(nbt);
+    }
 
     @Override
     public void saveAdditional(CompoundTag compound) {
@@ -91,14 +103,7 @@ public abstract class CReinforcedCauldronBlockEntity extends BlockEntity {
         super.saveAdditional(compound);
     }
 
-    @Nullable
-    public Integer getCustomPotionColor() {
-        return customPotionColor;
-    }
 
-    public void setCustomPotionColor(@Nullable Integer customPotionColor) {
-        this.customPotionColor = customPotionColor;
-    }
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);

@@ -23,7 +23,7 @@ public class ModItems {
 
     public static final Item COMPOUND_BREWING_STAND = new BlockItem(ModBlocks.COMPOUND_BREWING_STAND,new Item.Properties());
     public static final Item REINFORCED_CAULDRON = new BlockItem(ModBlocks.REINFORCED_CAULDRON,new Item.Properties());
-    public static final Item POTIONEER_GAUNTLET = new CGauntletItem(Tiers.NETHERITE, 4, -2.8f,new Item.Properties().durability(32));
+    public static final Item POTIONEER_GAUNTLET = new CGauntletItem(Tiers.NETHERITE, 4, -2.8f,new Item.Properties());
     public static final Item NETHERITE_GAUNTLET = new SimpleGauntletItem(Tiers.NETHERITE,4,-2.8f,new Item.Properties());
     public static final Item RUDIMENTARY_GAUNTLET = new SimpleGauntletItem(Tiers.IRON,3,-2.8f,new Item.Properties());
 

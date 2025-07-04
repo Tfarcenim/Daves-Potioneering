@@ -1,4 +1,4 @@
-// 1.20.1	2023-08-26T15:40:04.5723214	Recipes
+// 1.20.1	2025-07-03T21:45:49.1027578	Recipes
 ae41a23951dff29e44125eb4a0d219d12d507602 data/davespotioneering/advancements/recipes/brewing/compound_brewing_stand.json
 7c63c4ea7bcead902d99bd9a292447312190c8ce data/davespotioneering/advancements/recipes/brewing/potion_injector.json
 61469a0bb2f3fa8c68319217e9147ee1bf1f3f3a data/davespotioneering/advancements/recipes/brewing/reinforced_cauldron.json
@@ -37,7 +37,7 @@ b59cdf0386a93130febf0416c14cc412085804bf data/davespotioneering/recipes/light_gr
 49967a060cb7c9d0a729af642aac345f00854568 data/davespotioneering/recipes/magenta_umbrella.json
 4a8e8484d9de5db1e08378e12c5e626ee065c64f data/davespotioneering/recipes/orange_umbrella.json
 7e43eb457f91e56580dce66d7675a69ff1786aec data/davespotioneering/recipes/pink_umbrella.json
-ff654d713db7db229449de31c2cf96fb6a5a29e8 data/davespotioneering/recipes/potioneer_gauntlet.json
+f73627f47fa64bda7621ba36d963d7f02b551736 data/davespotioneering/recipes/potioneer_gauntlet.json
 9957e4ed628f5e087172750484401d56ae784456 data/davespotioneering/recipes/potion_injector.json
 827280ac6bad32cf4012966df0a6bcb6665ead93 data/davespotioneering/recipes/purple_umbrella.json
 b952266d34c5df17ac617d075dbb367222d7e180 data/davespotioneering/recipes/red_umbrella.json

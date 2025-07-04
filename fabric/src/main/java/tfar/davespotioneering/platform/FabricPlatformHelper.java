@@ -6,6 +6,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.BrewingStandMenu;
 import net.minecraft.world.inventory.Slot;
@@ -208,5 +209,10 @@ public class FabricPlatformHelper implements IPlatformHelper {
     @Override
     public int particleDripRate() {
         return DavesPotioneeringFabric.CONFIG.particle_drip_rate;
+    }
+
+    @Override
+    public void applyMilkEffect(LivingEntity living) {
+        living.removeAllEffects();
     }
 }

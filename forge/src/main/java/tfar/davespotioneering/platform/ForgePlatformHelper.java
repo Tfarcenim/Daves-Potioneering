@@ -7,9 +7,11 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.fml.ModList;
@@ -231,5 +233,10 @@ public class ForgePlatformHelper implements IPlatformHelper {
     @Override
     public int particleDripRate() {
         return ModConfig.Client.particle_drip_rate.get();
+    }
+
+    @Override
+    public void applyMilkEffect(LivingEntity living) {
+        living.curePotionEffects(Items.MILK_BUCKET.getDefaultInstance());
     }
 }

@@ -26,7 +26,7 @@ public class ModLootTableProvider extends LootTableProvider {
     }
 
     public static LootTableProvider create(PackOutput pOutput) {
-        return new ModLootTableProvider(pOutput, BuiltInLootTables.all(), List.of(new LootTableProvider.SubProviderEntry(() -> new ModBlockLoot(), LootContextParamSets.BLOCK)));
+        return new ModLootTableProvider(pOutput, BuiltInLootTables.all(), List.of(new LootTableProvider.SubProviderEntry(ModBlockLoot::new, LootContextParamSets.BLOCK)));
     }
 
     @Override

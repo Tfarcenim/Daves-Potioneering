@@ -4,6 +4,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.DyeColor;
@@ -104,4 +105,6 @@ public interface IPlatformHelper {
     void setPreset(HudPreset preset);
 
     int particleDripRate();
+
+    void applyMilkEffect(LivingEntity living);
 }

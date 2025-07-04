@@ -8,7 +8,9 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.world.item.Items;
+import tfar.davespotioneering.datagen.ShapedRecipeBuilderCustom;
 import tfar.davespotioneering.init.ModItems;
+import tfar.davespotioneering.init.ModRecipeSerializers;
 
 import java.util.function.Consumer;
 
@@ -170,12 +172,13 @@ public class ModRecipeProvider extends RecipeProvider {
                 .pattern("aba").pattern("cac").pattern("dad")
                 .unlockedBy("has_leather", has(Items.LEATHER)).save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT,ModItems.POTIONEER_GAUNTLET)
+        ShapedRecipeBuilderCustom.shaped(RecipeCategory.COMBAT,ModItems.POTIONEER_GAUNTLET)
                 .define('a', Items.GLASS_BOTTLE)
                 .define('b', Items.HOPPER)
                 .define('c', ModItems.NETHERITE_GAUNTLET)
                 .define('d', Items.LEVER)
                 .pattern("aba").pattern("aca").pattern("ada")
+                .serializer(ModRecipeSerializers.UPGRADE)
                 .unlockedBy("has_netherite_gauntlet", has(ModItems.NETHERITE_GAUNTLET)).save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT,ModItems.RUDIMENTARY_GAUNTLET)

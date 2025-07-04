@@ -12,6 +12,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -55,6 +56,7 @@ public class DavesPotioneering {
         Services.PLATFORM.superRegister(ModPotions.class, BuiltInRegistries.POTION, Potion.class);
         Services.PLATFORM.superRegister(ModParticleTypes.class, BuiltInRegistries.PARTICLE_TYPE, ParticleType.class);
         Services.PLATFORM.superRegister(ModSoundEvents.class, BuiltInRegistries.SOUND_EVENT, SoundEvent.class);
+        Services.PLATFORM.superRegister(ModRecipeSerializers.class, BuiltInRegistries.RECIPE_SERIALIZER, RecipeSerializer.class);
     }
 
 
